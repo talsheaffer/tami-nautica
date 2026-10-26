@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#121314">
+  <meta name="description" content="מסע מרחבי 2.5D אינטראקטיבי לרגל יום הולדתה ה-70 של האמנית תמר שפר (תמי)">
+  <title>תמר שפר @ 70 | ארכיטקטורה של דאגה ושבריריות</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+  <script>
+    (function () {
+      var isRemote = location.protocol.indexOf('http') === 0 &&
+        ((location.hostname !== '127.0.0.1' && location.hostname !== 'localhost') ||
+         location.search.indexOf('diag=1') !== -1);
+      var t0 = Date.now();
+      var sid = Math.random().toString(36).slice(2, 8);
+      window.__sendDiag = function (event, detail) {
+        if (!isRemote) return;
+        var payload = JSON.stringify({
+          sid: sid,
+          t_ms: Date.now() - t0,
+          event: event,
+          detail: detail || {}
+        });
+        try {
+          fetch('/__diag', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true
+          }).catch(function () {});
+        } catch (e) {}
+      };
+      if (!isRemote) return;
+      var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      window.__sendDiag('html_boot', {
+        ua: navigator.userAgent,
+        vw: window.innerWidth,
+        vh: window.innerHeight,
+        dpr: window.devicePixelRatio || 1,
+        secure: !!window.isSecureContext,
+        orient: (screen.orientation && screen.orientation.type) || window.orientation || 'unknown',
+        conn: conn ? { type: conn.effectiveType, downMbps: conn.downlink, rtt: conn.rtt } : null
+      });
+      window.addEventListener('error', function (ev) {
+        var target = ev.target && ev.target !== window ? (ev.target.src || ev.target.href || ev.target.tagName) : null;
+        window.__sendDiag('window_error', {
+          msg: ev.message || 'resource_error',
+          file: ev.filename || target,
+          line: ev.lineno || 0,
+          col: ev.colno || 0
+        });
+      }, true);
+      window.addEventListener('unhandledrejection', function (ev) {
+        window.__sendDiag('unhandled_rejection', {
+          reason: String(ev.reason && (ev.reason.stack || ev.reason.message || ev.reason))
+        });
+      });
+      var origErr = console.error;
+      console.error = function () {
+        origErr.apply(console, arguments);
+        window.__sendDiag('console_error', { args: Array.prototype.slice.call(arguments).map(String).join(' ') });
+      };
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Loading Screen Overlay -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">טוען מרחבים רב-שכבתיים...</div>
+  </div>
+
+  <!-- WebGL Canvas Container -->
+  <div id="canvas-container">
+    <canvas id="spatial-canvas"></canvas>
+  </div>
+
+  <!-- Minimalist RTL Hebrew UI Chrome -->
+  <div id="ui-overlay" dir="rtl">
+    
+    <!-- Top Bar Navigation -->
+    <header class="top-bar">
+      <div class="title-badge">
+        <h1>
+          תמר שפר
+          <span class="age-tag">70</span>
+          — ארכיטקטורה של דאגה ושבריריות
+        </h1>
+        <p>מסע מרחבי 2.5D בין מחוזות חיים למיצבי אמנות | כ״ה בתשרי תשפ״ז</p>
+      </div>
+
+      <div class="top-actions">
+        <button id="info-toggle-btn" class="icon-btn" aria-label="אודות המרחב והיצירה">
+          ℹ️ אודות וסיפור המרחב
+        </button>
+        <button id="fullscreen-btn" class="icon-btn" aria-label="מסך מלא">
+          ⛶ מסך מלא
+        </button>
+      </div>
+    </header>
+
+    <!-- Center Interaction Hint -->
+    <div id="center-hint" class="center-hint">
+      גרור לסיבוב מבט · צבוט / גלגל עכבר או WASD להליכה קדימה ואחורה במרחב
+    </div>
+
+    <!-- Bottom Floating Dock -->
+    <footer class="bottom-dock">
+      <!-- Scene Navigation Pills -->
+      <nav class="scene-pills" role="navigation" aria-label="בחירת מרחב">
+        <button class="scene-btn active" data-scene="herzliya" aria-pressed="true">
+          🏡 חצר הילדות בהרצליה
+        </button>
+        <button class="scene-btn" data-scene="denya" aria-pressed="false">
+          🏛️ הסטודיו בדניה — "בנה ביתך"
+        </button>
+      </nav>
+
+      <!-- Auxiliary Controls (Sound, Gyro & Pose Reset) -->
+      <div class="aux-controls">
+        <button id="audio-toggle" class="aux-btn" aria-label="סאונד סביבתי">
+          ♫ צלילי גן ורוח
+        </button>
+        <button id="gyro-toggle" class="aux-btn" aria-label="מצב ג'יירו למובייל">
+          ⟲ מצב הטיה: עכבר / ג׳יירו
+        </button>
+        <button id="reset-pose-btn" class="aux-btn" aria-label="איפוס מיקום וזווית מצלמה">
+          ↺ איפוס מבט
+        </button>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Curatorial Info Drawer (Expandable) -->
+  <aside id="info-drawer" class="info-drawer" dir="rtl" aria-label="מידע אוצרותי וביוגרפי">
+    <div class="drawer-header">
+      <h2>מרחבי הזיכרון והחומר של תמר שפר</h2>
+      <button id="close-drawer-btn" class="close-btn" aria-label="סגור חלונית">✕</button>
+    </div>
+
+    <div class="drawer-content">
+      <!-- Story Card 1: Herzliya -->
+      <article id="story-herzliya" class="story-card">
+        <h3>מרחב 1: חצר הילדות בהרצליה וסדנת אבא מיכאל</h3>
+        <p>
+          הבית והחצר בהרצליה שבהם גדלה תמי לצד אחותה אראלה ז״ל היוו את העוגן הרגשי והחושי של חייה. אמה אהובה פריד (לבית לובטקין) ניהלה בחצר גן ילדים שופע חום, ואביה מיכאל פריד — איש בעל "ידי זהב", דאגן עמוק ואוהב "היפים והאמיצים" — בנה ותיקן במו ידיו כל מתקן.
+        </p>
+        <blockquote>
+          "בית שהיה לי בילדותי על עץ בחצר והיה מקום מפלט מושלם... הקפסולות עשויות נייר אריזה חום פשוט והן חלולות — מקום המיועד למנוחה וכמפלט מהכאוס שמסביב."
+        </blockquote>
+        <span class="source-tag">מתוך: הביאנלה לנייר (מוזיאון ארץ ישראל) | ויקי: places/herzliya-home-and-yard.md</span>
+      </article>
+
+      <!-- Story Card 2: Denya & Bene Beitcha -->
+      <article id="story-denya" class="story-card">
+        <h3>מרחב 2: הסטודיו בדניה ותערוכת "בנה ביתך" (מוזיאון רמת גן, 2026)</h3>
+        <p>
+          ברחוב גרינבוים 80 בדניה, בבית שבנתה עם בעלה גדי מול מדרון ואדי הכרמל הפראי, שוכן הסטודיו שבו תמי מפרקת את ההיגיון ההנדסי המדויק מתקופתה באלביט וברפא״ל לטובת פיסול במלט, נייר אריזה וצינורות תעשייתיים.
+        </p>
+        <blockquote>
+          "אני יוצרת ארכיטקטורות מדומיינות חסרות כל היגיון מבני... המציאות תלויית נקודת מבט. הבית אינו עוד מבצר אלא מקום שביר המורכב מסימולקרות, תחליפים ושרידים."
+        </blockquote>
+        <p>
+          <em>חשיפת המראה:</em> בהטיית המבט במרחב זה, משתקפות במראה המעוותת דמויותיהם החמות של גדי, אראלה ז״ל והנכדות יערה וכרמל — העוגן האמיתי של הבית.
+        </p>
+        <span class="source-tag">מתוך: קטלוג תערוכת 'בנה ביתך' (אוצרת: שרי גולן) | ויקי: art/solo-exhibition-bene-beitcha.md</span>
+      </article>
+    </div>
+  </aside>
+
+  <!-- Module Entry Script -->
+  <script type="module" src="js/app.js"></script>
+
+</body>
+</html>

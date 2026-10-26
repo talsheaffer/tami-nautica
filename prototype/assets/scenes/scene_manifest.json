@@ -1,0 +1,186 @@
+{
+  "pipeline_config": {
+    "output_dir_relpath": "prototype/assets/scenes",
+    "manifest_filename": "scene_manifest.json",
+    "dimensions": {
+      "width": 1500,
+      "height": 1000
+    },
+    "outpainting": {
+      "expansion_factor": 1.8,
+      "feather_collar_px": 24,
+      "color_match_band_px": 64,
+      "min_registration_corr": 0.92
+    },
+    "depth_model": {
+      "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+      "background_gaussian_sigma": 18.0,
+      "depth_discontinuity_percentile_fg": 62.0,
+      "depth_discontinuity_percentile_mid": 30.0
+    },
+    "segmentation": {
+      "rembg_model_name": "isnet-general-use",
+      "sam_model_id": "facebook/sam-vit-base",
+      "alpha_foreground_threshold": 92,
+      "alpha_full_opaque_threshold": 195,
+      "min_component_area_px": 350,
+      "sam_morph_close_px": 7,
+      "edge_feather_sigma": 0.85
+    },
+    "inpainting": {
+      "dilation_radius_px": 26,
+      "mask_blur_sigma": 3.0,
+      "jpeg_quality": 91
+    },
+    "scenes": [
+      {
+        "scene_id": "herzliya",
+        "title_he": "חצר הילדות בהרצליה — קפסולות הנייר (׳אולי שם יהיה יותר טוב׳)",
+        "source_image_relpath": "media/binyamin_gallery/binyamin_אולי_שם_יהיה_יותר_טוב.jpg_a23a554b.jpg",
+        "outpaint_raw_relpath": "prototype/assets/outpaint_sources/scene1_herzliya_outpaint_raw.jpg",
+        "reflection_source_relpath": null,
+        "lama_inner_output_filename": "scene1_herzliya_lama_inner.jpg",
+        "bg_output_filename": "scene1_herzliya_bg_inpainted.jpg",
+        "mid_output_filename": "scene1_herzliya_mid.png",
+        "fg_output_filename": "scene1_herzliya_fg.png",
+        "depth_output_filename": "scene1_herzliya_depth.png",
+        "reflection_output_filename": null,
+        "segmentation_backend": "isnet",
+        "fg_x_range_norm": [
+          0.22,
+          0.62
+        ],
+        "fg_min_depth_quantile": 0.48,
+        "sam_fg_boxes": [],
+        "sam_mid_boxes": [
+          {
+            "x0": 194,
+            "y0": 488,
+            "x1": 274,
+            "y1": 604
+          }
+        ],
+        "reflection_apertures": []
+      },
+      {
+        "scene_id": "denya",
+        "title_he": "הסטודיו בדניה ותערוכת ׳בנה ביתך׳ (מוזיאון רמת גן)",
+        "source_image_relpath": "media/museum_press/rgma_bene_beitcha_TAMAR-SHEFER-YUVAL-HAI-1.jpg_a3cb100a.jpg",
+        "outpaint_raw_relpath": "prototype/assets/outpaint_sources/scene2_denya_outpaint_raw.jpg",
+        "reflection_source_relpath": "media/darchei_etzim_pdfs/darchei_etzim_2011_plate_003.jpg_32d2f7b3.jpg",
+        "lama_inner_output_filename": "scene2_denya_lama_inner.jpg",
+        "bg_output_filename": "scene2_denya_bg_inpainted.jpg",
+        "mid_output_filename": "scene2_denya_mid.png",
+        "fg_output_filename": "scene2_denya_fg.png",
+        "depth_output_filename": "scene2_denya_depth.png",
+        "reflection_output_filename": "scene2_reflections.png",
+        "segmentation_backend": "sam_boxes",
+        "fg_x_range_norm": [
+          0.01,
+          0.45
+        ],
+        "fg_min_depth_quantile": 0.52,
+        "sam_fg_boxes": [
+          {
+            "x0": 336,
+            "y0": 74,
+            "x1": 456,
+            "y1": 376
+          },
+          {
+            "x0": 188,
+            "y0": 330,
+            "x1": 246,
+            "y1": 446
+          },
+          {
+            "x0": 112,
+            "y0": 300,
+            "x1": 480,
+            "y1": 842
+          },
+          {
+            "x0": 364,
+            "y0": 412,
+            "x1": 642,
+            "y1": 846
+          },
+          {
+            "x0": 44,
+            "y0": 660,
+            "x1": 306,
+            "y1": 922
+          }
+        ],
+        "sam_mid_boxes": [
+          {
+            "x0": 656,
+            "y0": 490,
+            "x1": 724,
+            "y1": 654
+          },
+          {
+            "x0": 766,
+            "y0": 448,
+            "x1": 1006,
+            "y1": 660
+          },
+          {
+            "x0": 982,
+            "y0": 676,
+            "x1": 1106,
+            "y1": 718
+          }
+        ],
+        "reflection_apertures": [
+          {
+            "x0": 1218,
+            "y0": 500,
+            "x1": 1282,
+            "y1": 570,
+            "max_alpha": 125,
+            "feather_sigma": 4.5
+          }
+        ]
+      }
+    ]
+  },
+  "scenes": {
+    "herzliya": {
+      "id": "herzliya",
+      "title": "חצר הילדות בהרצליה — קפסולות הנייר (׳אולי שם יהיה יותר טוב׳)",
+      "segmentationBackend": "isnet",
+      "innerWidth": 1500,
+      "innerHeight": 1000,
+      "bgExpandedWidth": 2700,
+      "bgExpandedHeight": 1800,
+      "bgExpansionFactor": 1.8,
+      "outpaintRegistrationCorr": 0.9945,
+      "bgTexture": "assets/scenes/scene1_herzliya_bg_inpainted.jpg",
+      "midTexture": "assets/scenes/scene1_herzliya_mid.png",
+      "fgTexture": "assets/scenes/scene1_herzliya_fg.png",
+      "depthTexture": "assets/scenes/scene1_herzliya_depth.png",
+      "reflectionTexture": null,
+      "fgCoverageRatio": 0.0329,
+      "midCoverageRatio": 0.0365
+    },
+    "denya": {
+      "id": "denya",
+      "title": "הסטודיו בדניה ותערוכת ׳בנה ביתך׳ (מוזיאון רמת גן)",
+      "segmentationBackend": "sam_boxes",
+      "innerWidth": 1500,
+      "innerHeight": 1000,
+      "bgExpandedWidth": 2700,
+      "bgExpandedHeight": 1800,
+      "bgExpansionFactor": 1.8,
+      "outpaintRegistrationCorr": 0.9924,
+      "bgTexture": "assets/scenes/scene2_denya_bg_inpainted.jpg",
+      "midTexture": "assets/scenes/scene2_denya_mid.png",
+      "fgTexture": "assets/scenes/scene2_denya_fg.png",
+      "depthTexture": "assets/scenes/scene2_denya_depth.png",
+      "reflectionTexture": "assets/scenes/scene2_reflections.png",
+      "fgCoverageRatio": 0.1455,
+      "midCoverageRatio": 0.0219
+    }
+  }
+}

@@ -1,0 +1,160 @@
+# ==============================================================================
+# Tamar "Tami" Sheaffer 70th-Birthday Project — .gitignore
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Virtual Environments
+# ------------------------------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ------------------------------------------------------------------------------
+# 2. Python Caches, Bytecode & Build Artifacts
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.dylib
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# ------------------------------------------------------------------------------
+# 3. Node, Web & Playwright Artifacts
+# ------------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.playwright/
+playwright-report/
+test-results/
+
+# ------------------------------------------------------------------------------
+# 4. OS & Editor Artifacts
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ------------------------------------------------------------------------------
+# 5. Scratch, Diagnostics & Transient Workspaces
+# ------------------------------------------------------------------------------
+scratch/
+tmp/
+temp/
+.agents/teamwork/
+
+# ------------------------------------------------------------------------------
+# 6. Images & Media Formats (Strict Read-Only Privacy & Binary Omission)
+# ------------------------------------------------------------------------------
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
+*.tif
+*.tiff
+*.bmp
+*.ico
+*.heic
+*.heif
+*.avif
+*.raw
+*.cr2
+*.nef
+*.svg
+
+# Video & Audio Formats
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.mp3
+*.wav
+*.m4a
+*.flac
+*.aac
+
+# Document Binaries
+*.pdf
+
+# ------------------------------------------------------------------------------
+# 7. Media Archive, Ingestion & Asset Stores (Preserve .gitkeep and Manifests)
+# ------------------------------------------------------------------------------
+media/**/*
+!media/**/
+!media/**/.gitkeep
+
+drop_folder/incoming/*
+!drop_folder/incoming/.gitkeep
+
+prototype/assets/outpaint_sources/*
+!prototype/assets/outpaint_sources/.gitkeep
+
+prototype/assets/scenes/*
+!prototype/assets/scenes/.gitkeep
+!prototype/assets/scenes/scene_manifest.json
+
+# ------------------------------------------------------------------------------
+# 8. Data, Databases, Model Weights & Serialized Dumps
+# ------------------------------------------------------------------------------
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+*.parquet
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.pt
+*.pth
+*.onnx
+*.bin
+*.dat
+
+# Catalog Generated Data Artifacts (Preserve Tag Vocabularies)
+catalog/*.sqlite
+catalog/*.db
+catalog/*.csv
+catalog/catalog.json
+!catalog/tag_vocabularies.json

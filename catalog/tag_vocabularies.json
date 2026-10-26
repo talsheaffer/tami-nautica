@@ -1,0 +1,288 @@
+{
+  "people": [
+    {
+      "canonical": "Tamar 'Tami' Sheaffer",
+      "canonical_he": "תמר 'תמי' שפר",
+      "role": "Celebrant, artist, retired systems engineer",
+      "aliases": [
+        "tami", "tamar", "tamar sheaffer", "תמי", "תמר", "תמר שפר",
+        "זוגתי שתחיה", "זוגתי", "תמי שפר"
+      ],
+      "regex": "\\b(tami|tamar|sheaffer|תמי|תמר|זוגתי)\\b"
+    },
+    {
+      "canonical": "Gad Sheaffer",
+      "canonical_he": "גד 'גדי' שפר",
+      "role": "Husband, author of 'דרכי עצים', woodworker, engineer",
+      "aliases": [
+        "gad", "gadi", "gad sheaffer", "גד", "גדי", "גדי שפר", "הש\"ג", "shingimel"
+      ],
+      "regex": "\\b(gad|gadi|גדי|הש\"ג|ש\"ג)\\b"
+    },
+    {
+      "canonical": "Michael Fried",
+      "canonical_he": "מיכאל פריד",
+      "role": "Father, 'hands of gold', safety-minded worrier",
+      "aliases": [
+        "michael", "michael fried", "מיכאל", "מיכאל פריד", "אבא מיכאל", "סבא מיכאל", "פריד"
+      ],
+      "regex": "\\b(michael|fried|מיכאל|פריד)\\b"
+    },
+    {
+      "canonical": "Ahuva Fried",
+      "canonical_he": "אהובה פריד",
+      "role": "Mother, kindergarten teacher, warmth with children",
+      "aliases": [
+        "ahuva", "ahuva fried", "אהובה", "אהובה פריד", "אהובה לובטקין", "אמא אהובה", "סבתא אהובה"
+      ],
+      "regex": "\\b(ahuva|אהובה)\\b"
+    },
+    {
+      "canonical": "Er'ela Fried",
+      "canonical_he": "אראלה פריד",
+      "role": "Beloved sister, laughter, humor, creative spirit",
+      "aliases": [
+        "erela", "er'ela", "erela fried", "אראלה", "אראלה פריד", "אחותי אראלה"
+      ],
+      "regex": "\\b(erela|er'ela|אראלה)\\b"
+    },
+    {
+      "canonical": "Guy Sheaffer",
+      "canonical_he": "גיא שפר",
+      "role": "Eldest son, father of Ya'ara and Carmel",
+      "aliases": [
+        "guy", "guy sheaffer", "גיא", "גיא שפר", "בכורנו"
+      ],
+      "regex": "\\b(guy|גיא|בכורנו)\\b"
+    },
+    {
+      "canonical": "Tal Sheaffer",
+      "canonical_he": "טל שפר",
+      "role": "Younger son, project author, lived in Montreal",
+      "aliases": [
+        "tal", "tal sheaffer", "טל", "טל שפר"
+      ],
+      "regex": "\\b(tal|טל|טל שפר)\\b"
+    },
+    {
+      "canonical": "Ya'ara",
+      "canonical_he": "יערה",
+      "role": "Granddaughter",
+      "aliases": [
+        "yaara", "ya'ara", "יערה", "יערה שפר"
+      ],
+      "regex": "\\b(yaara|ya'ara|יערה)\\b"
+    },
+    {
+      "canonical": "Carmel",
+      "canonical_he": "כרמל",
+      "role": "Granddaughter",
+      "aliases": [
+        "carmel", "כרמל", "כרמל שפר"
+      ],
+      "regex": "\\b(carmel|כרמל)\\b"
+    },
+    {
+      "canonical": "Beni",
+      "canonical_he": "בני",
+      "role": "Lifelong family friend",
+      "aliases": [
+        "beni", "benny", "בני"
+      ],
+      "regex": "\\b(beni|benny|בני)\\b"
+    },
+    {
+      "canonical": "Peri",
+      "canonical_he": "פרי",
+      "role": "Lifelong family friend",
+      "aliases": [
+        "peri", "פרי"
+      ],
+      "regex": "\\b(peri|פרי)\\b"
+    }
+  ],
+  "places": [
+    {
+      "canonical": "Herzliya (parents' house & yard)",
+      "canonical_he": "הרצליה (בית ההורים והחצר)",
+      "significance": "Childhood roots, Michael's workshop, Ahuva's kindergarten yard",
+      "aliases": [
+        "herzliya", "הרצליה", "חצר בהרצליה", "בית ההורים", "עץ הילדות", "גן ילדים"
+      ],
+      "regex": "\\b(herzliya|הרצליה|חצר|גן הילדים)\\b"
+    },
+    {
+      "canonical": "Haifa: Arlozorov",
+      "canonical_he": "חיפה: ארלוזורוב",
+      "significance": "First married home in Haifa, where Guy was born",
+      "aliases": [
+        "arlozorov", "ארלוזורוב", "ארלוזורוב 87", "הדר הכרמל", "הדר"
+      ],
+      "regex": "\\b(arlozorov|ארלוזורוב|הדר)\\b"
+    },
+    {
+      "canonical": "Haifa: Einstein",
+      "canonical_he": "חיפה: איינשטיין",
+      "significance": "Second Haifa home, where Tal was born",
+      "aliases": [
+        "einstein", "איינשטיין", "רחוב איינשטיין", "אחוזה"
+      ],
+      "regex": "\\b(einstein|איינשטיין|אחוזה)\\b"
+    },
+    {
+      "canonical": "Haifa: Denya (80 Greenboim St & studio)",
+      "canonical_he": "חיפה: דניה (גרינבוים 80 והסטודיו)",
+      "significance": "Current home and art studio overlooking Mount Carmel",
+      "aliases": [
+        "denya", "דניה", "גרינבוים", "גרינבוים 80", "סטודיו בדניה", "סטודיו", "greenboim"
+      ],
+      "regex": "\\b(denya|דניה|גרינבוים|greenboim|סטודיו)\\b"
+    },
+    {
+      "canonical": "Paris (Cité des Arts)",
+      "canonical_he": "פריז (סיטה דז אר)",
+      "significance": "6-month artist residency on the Seine (2016)",
+      "aliases": [
+        "paris", "cite des arts", "cité des arts", "פריז", "סיטה", "סיטה דז אר"
+      ],
+      "regex": "\\b(paris|פריז|cite des arts|cité des arts|סיטה)\\b"
+    },
+    {
+      "canonical": "Technion",
+      "canonical_he": "טכניון",
+      "significance": "Computer Science B.Sc., where Tami and Gadi met",
+      "aliases": [
+        "technion", "טכניון", "הטכניון", "מדעי המחשב"
+      ],
+      "regex": "\\b(technion|טכניון)\\b"
+    },
+    {
+      "canonical": "Ramat Gan Museum",
+      "canonical_he": "מוזיאון רמת גן לאמנות ישראלית",
+      "significance": "Current major 2026 solo exhibition 'בנה ביתך' (curator Sari Golan)",
+      "aliases": [
+        "ramat gan museum", "rgma", "מוזיאון רמת גן", "בנה ביתך", "שרי גולן"
+      ],
+      "regex": "\\b(ramat gan|מוזיאון רמת גן|בנה ביתך|שרי גולן)\\b"
+    },
+    {
+      "canonical": "Binyamin Gallery",
+      "canonical_he": "גלריה בנימין",
+      "significance": "Tel Aviv artists' cooperative gallery, founding member",
+      "aliases": [
+        "binyamin", "binyamin gallery", "גלריה בנימין", "בנימין"
+      ],
+      "regex": "\\b(binyamin|בנימין|גלריה בנימין)\\b"
+    },
+    {
+      "canonical": "Bogliasco Italy",
+      "canonical_he": "בוגליאסקו, איטליה",
+      "significance": "International artist fellowship/residency in Liguria (2020)",
+      "aliases": [
+        "bogliasco", "בוגליאסקו", "איטליה", "liguria", "ליגוריה"
+      ],
+      "regex": "\\b(bogliasco|בוגליאסקו|איטליה|liguria)\\b"
+    },
+    {
+      "canonical": "Montreal",
+      "canonical_he": "מונטריאול",
+      "significance": "Visiting Tal during his 2 years in Montreal",
+      "aliases": [
+        "montreal", "מונטריאול", "קנדה"
+      ],
+      "regex": "\\b(montreal|מונטריאול|קנדה)\\b"
+    },
+    {
+      "canonical": "New York",
+      "canonical_he": "ניו יורק",
+      "significance": "Family reunion with Tal in New York",
+      "aliases": [
+        "new york", "nyc", "ניו יורק", "מנהטן", "manhattan"
+      ],
+      "regex": "\\b(new york|nyc|ניו יורק|מנהטן)\\b"
+    },
+    {
+      "canonical": "Southern France",
+      "canonical_he": "דרום צרפת",
+      "significance": "Recent family travels with Gadi and Guy (Provence, Arles)",
+      "aliases": [
+        "southern france", "france", "פרובנס", "ארל", "דרום צרפת", "provence", "arles"
+      ],
+      "regex": "\\b(southern france|provence|arles|פרובנס|ארל|דרום צרפת)\\b"
+    }
+  ],
+  "art_motifs": [
+    {
+      "canonical": "paper",
+      "canonical_he": "נייר",
+      "aliases": [
+        "paper", "brown paper", "packing paper", "נייר", "נייר אריזה", "נייר חום", "ביאנלה לנייר"
+      ],
+      "regex": "\\b(paper|נייר|אריזה)\\b"
+    },
+    {
+      "canonical": "papier-mâché",
+      "canonical_he": "עיסת נייר",
+      "aliases": [
+        "papier-mâché", "papier mache", "עיסת נייר"
+      ],
+      "regex": "\\b(papier[- ]m[aâ]ch[eé]|עיסת נייר)\\b"
+    },
+    {
+      "canonical": "cement",
+      "canonical_he": "מלט / בטון",
+      "aliases": [
+        "cement", "concrete", "מלט", "בטון", "יציקה", "יציקות"
+      ],
+      "regex": "\\b(cement|concrete|מלט|בטון|יציקה|יציקות)\\b"
+    },
+    {
+      "canonical": "earth",
+      "canonical_he": "אדמת חמרה / לבנים כבושות",
+      "aliases": [
+        "earth", "hamra", "חמרה", "אדמה", "לבנים כבושות", "צופן", "code"
+      ],
+      "regex": "\\b(earth|hamra|חמרה|אדמה|לבנים כבושות|צופן)\\b"
+    },
+    {
+      "canonical": "capsules/enclosures",
+      "canonical_he": "קפסולות ומארזים",
+      "aliases": [
+        "capsule", "capsules", "enclosure", "enclosures", "קפסולה", "קפסולות", "מארז", "מארזים", "צבירת מקום"
+      ],
+      "regex": "\\b(capsule|capsules|enclosure|enclosures|קפסול|מארז)\\b"
+    },
+    {
+      "canonical": "pipes/conduits",
+      "canonical_he": "צינורות ומובילים",
+      "aliases": [
+        "pipes", "pipe", "conduits", "conduit", "צינור", "צינורות", "מובילים"
+      ],
+      "regex": "\\b(pipe|pipes|conduit|conduits|צינור|צינורות|מוביל)\\b"
+    },
+    {
+      "canonical": "misshapen furniture",
+      "canonical_he": "רהיטים חתוכים ומעוותים",
+      "aliases": [
+        "furniture", "chair", "table", "misshapen furniture", "רהיטים", "כיסא", "שולחן חתוך", "ארון", "מיטה"
+      ],
+      "regex": "\\b(furniture|chair|table|רהיט|רהיטים|כיסא|שולחן|ארון)\\b"
+    },
+    {
+      "canonical": "broken/blurry reflections",
+      "canonical_he": "מראות והשתקפויות מטושטשות",
+      "aliases": [
+        "mirror", "mirrors", "reflection", "reflections", "מראה", "מראות", "השתקפות", "השתקפויות", "זכוכית"
+      ],
+      "regex": "\\b(mirror|mirrors|reflection|reflections|מראה|מראות|השתקפ)\\b"
+    },
+    {
+      "canonical": "simulacra of home",
+      "canonical_he": "בנה ביתך / סימולקרה של הבית",
+      "aliases": [
+        "simulacra", "simulacrum", "home", "house", "build your home", "בנה ביתך", "סימולקרה", "עקורים", "מחסה"
+      ],
+      "regex": "\\b(simulacr|home|house|בנה ביתך|סימולקר|עקורים|מחסה)\\b"
+    }
+  ]
+}
