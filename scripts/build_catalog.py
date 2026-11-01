@@ -14,6 +14,8 @@ Schema (17 fields):
   date_or_era, people, places, art_themes, confidence_notes
 """
 
+from __future__ import annotations
+
 import os
 import sys
 import json
@@ -22,6 +24,7 @@ import re
 import hashlib
 import sqlite3
 import argparse
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
@@ -31,6 +34,92 @@ except ImportError:
     Image = None
 
 
+@dataclass(frozen=True)
+class UprightDerivativeConfig:
+    """SSOT for upright display derivatives of archival images whose stored pixels are rotated.
+
+    A media sidecar may declare ``display_rotation_cw_deg`` (one of ``allowed_rotations_cw_deg``).
+    The archival file is never modified; instead the catalog build writes a rotated JPEG copy under
+    ``<media_dir>/<derivatives_subdir>/`` (excluded from scanning) and points the entry's
+    ``display_rel_path`` at it. Entries without rotation get ``display_rel_path == rel_path``.
+    """
+
+    sidecar_field: str = "display_rotation_cw_deg"
+    allowed_rotations_cw_deg: tuple[int, ...] = (0, 90, 180, 270)
+    derivatives_subdir: str = "_upright_derivatives"
+    jpeg_quality: int = 92
+
+    def to_dict(self) -> Dict[str, Any]:
+        d = asdict(self)
+        d["allowed_rotations_cw_deg"] = list(self.allowed_rotations_cw_deg)
+        return d
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "UprightDerivativeConfig":
+        return cls(
+            sidecar_field=str(data["sidecar_field"]),
+            allowed_rotations_cw_deg=tuple(int(v) for v in data["allowed_rotations_cw_deg"]),
+            derivatives_subdir=str(data["derivatives_subdir"]),
+            jpeg_quality=int(data["jpeg_quality"]),
+        )
+
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict(), ensure_ascii=False, indent=2)
+
+    @classmethod
+    def from_json(cls, text: str) -> "UprightDerivativeConfig":
+        return cls.from_dict(json.loads(text))
+
+
+UPRIGHT_DERIVATIVES = UprightDerivativeConfig()
+
+
+def parse_display_rotation(sidecar_meta: Dict[str, Any], sidecar_path: Path,
+                           cfg: UprightDerivativeConfig) -> int:
+    """Returns the declared clockwise display rotation (0 when absent); fails loud on invalid values."""
+    raw = sidecar_meta.get(cfg.sidecar_field, 0)
+    if isinstance(raw, bool) or not isinstance(raw, int) or raw not in cfg.allowed_rotations_cw_deg:
+        raise ValueError(
+            f"{sidecar_path}: '{cfg.sidecar_field}' must be one of {cfg.allowed_rotations_cw_deg}, got {raw!r}"
+        )
+    return raw
+
+
+def write_upright_derivative(source_path: Path, media_dir: Path, rotation_cw_deg: int,
+                             cfg: UprightDerivativeConfig) -> Path:
+    """Writes (if absent) a clockwise-rotated JPEG copy of `source_path`; the source is never touched."""
+    transpose_for_cw = {
+        90: Image.Transpose.ROTATE_270,
+        180: Image.Transpose.ROTATE_180,
+        270: Image.Transpose.ROTATE_90,
+    }
+    rel_under_media = source_path.relative_to(media_dir)
+    dest = (media_dir / cfg.derivatives_subdir / rel_under_media.parent
+            / f"{source_path.stem}_cw{rotation_cw_deg}.jpg")
+    if dest.is_file():
+        return dest
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with Image.open(source_path) as img:
+        icc_profile = img.info.get("icc_profile")
+        rotated = img.convert("RGB").transpose(transpose_for_cw[rotation_cw_deg])
+    save_kwargs: Dict[str, Any] = {"quality": cfg.jpeg_quality}
+    if icc_profile:
+        save_kwargs["icc_profile"] = icc_profile
+    rotated.save(dest, "JPEG", **save_kwargs)
+    return dest
+
+
+def prune_stale_upright_derivatives(media_dir: Path, referenced: set[Path],
+                                    cfg: UprightDerivativeConfig) -> None:
+    """Deletes derivative files no longer referenced by any catalog entry (no dead artifacts)."""
+    root = media_dir / cfg.derivatives_subdir
+    if not root.is_dir():
+        return
+    for path in sorted(root.rglob("*")):
+        if path.is_file() and path.resolve() not in referenced:
+            path.unlink()
+
+
 # Default tag vocabularies with canonical names and regex matchers
 DEFAULT_VOCABULARIES = {
     "people": [
@@ -38,7 +127,8 @@ DEFAULT_VOCABULARIES = {
         {"canonical": "Gad Sheaffer", "regex": r"\b(gad|gadi|גדי|הש\"ג|ש\"ג)\b"},
         {"canonical": "Michael Fried", "regex": r"\b(michael|fried|מיכאל|פריד)\b"},
         {"canonical": "Ahuva Fried", "regex": r"\b(ahuva|אהובה)\b"},
-        {"canonical": "Er'ela Fried", "regex": r"\b(erela|er'ela|אראלה)\b"},
+        {"canonical": "Er'ela Sadan", "regex": r"\b(erela|er'ela|אראלה)\b"},
+        {"canonical": "Ada Wertheimer", "regex": r"\b(ada|wertheimer|עדה|ורטהיימר)\b"},
         {"canonical": "Guy Sheaffer", "regex": r"\b(guy|גיא|בכורנו)\b"},
         {"canonical": "Tal Sheaffer", "regex": r"\b(tal|טל|טל שפר)\b"},
         {"canonical": "Ya'ara", "regex": r"\b(yaara|ya'ara|יערה)\b"},
@@ -47,10 +137,10 @@ DEFAULT_VOCABULARIES = {
         {"canonical": "Peri", "regex": r"\b(peri|פרי)\b"}
     ],
     "places": [
-        {"canonical": "Herzliya (parents' house & yard)", "regex": r"\b(herzliya|הרצליה|חצר|גן הילדים)\b"},
-        {"canonical": "Haifa: Arlozorov", "regex": r"\b(arlozorov|ארלוזורוב|הדר)\b"},
-        {"canonical": "Haifa: Einstein", "regex": r"\b(einstein|איינשטיין|אחוזה)\b"},
-        {"canonical": "Haifa: Denya (80 Greenboim St & studio)", "regex": r"\b(denya|דניה|גרינבוים|greenboim|סטודיו)\b"},
+        {"canonical": "Herzliya (parents' house & yard)", "regex": r"(?<!מוזיאון )(?<!רחוב )\b(?:herzliya|[במהל]?הרצליה(?! פיתוח)|גן הילדים של אהובה|בית פריד|בית ההורים בהרצליה)\b"},
+        {"canonical": "Haifa: Arlozorov", "regex": r"\b(?:arlozorov|[במהל]?ארלוזורוב|הדר הכרמל|בר גיורא)\b"},
+        {"canonical": "Haifa: Einstein", "regex": r"(?<!אלברט )(?<!שם )\b(?:einstein|[במהל]?איינשטיין|[במהל]?אינשטיין|אחוזה חיפה)\b"},
+        {"canonical": "Haifa: Denya (80 Greenboim St & studio)", "regex": r"\b(?:denya|[במהל]?דניה|[במהל]?גרינבוים|greenboim|g80)\b"},
         {"canonical": "Paris (Cité des Arts)", "regex": r"\b(paris|פריז|cite des arts|cité des arts|סיטה)\b"},
         {"canonical": "Technion", "regex": r"\b(technion|טכניון)\b"},
         {"canonical": "Ramat Gan Museum", "regex": r"\b(ramat gan|מוזיאון רמת גן|בנה ביתך|שרי גולן)\b"},
@@ -69,7 +159,8 @@ DEFAULT_VOCABULARIES = {
         {"canonical": "pipes/conduits", "regex": r"\b(pipe|pipes|conduit|conduits|צינור|צינורות|מוביל)\b"},
         {"canonical": "misshapen furniture", "regex": r"\b(furniture|chair|table|רהיט|רהיטים|כיסא|שולחן|ארון)\b"},
         {"canonical": "broken/blurry reflections", "regex": r"\b(mirror|mirrors|reflection|reflections|מראה|מראות|השתקפ)\b"},
-        {"canonical": "simulacra of home", "regex": r"\b(simulacr|home|house|בנה ביתך|סימולקר|עקורים|מחסה)\b"}
+        {"canonical": "simulacra of home", "regex": r"\b(simulacr|home|house|בנה ביתך|סימולקר|עקורים|מחסה)\b"},
+        {"canonical": "drawings", "regex": r"\b(drawing|drawings|pencil|pencils|ink|aquarelle|cruising|roaming|רישום|רישומים|עיפרון|עפרונות|דיו|שיטוט)\b"}
     ]
 }
 
@@ -82,6 +173,12 @@ SOURCE_GROUP_COLORS = {
     "whatsapp_family": {"bg": "#0d9488", "fg": "#ffffff", "label": "WhatsApp Archive"},
     "drop_folder_imports": {"bg": "#0891b2", "fg": "#ffffff", "label": "Drop Ingestion"},
     "unknown": {"bg": "#64748b", "fg": "#ffffff", "label": "Media"}
+}
+
+# Canonical mapping from dedicated media subdirectories to controlled catalog source_group
+FOLDER_TO_SOURCE_GROUP: Dict[str, str] = {
+    "herzliya_fried_house": "drop_folder_imports",
+    "haifa_homes_incoming": "drop_folder_imports",
 }
 
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".tiff"}
@@ -172,12 +269,44 @@ def scan_media_directory(
 
     entries = []
     seen_hashes = {}
-    counter = 1
 
-    # Walk all files in media directory
-    for root, _, files in os.walk(media_dir):
+    existing_ids_by_sha: Dict[str, str] = {}
+    existing_ids_by_rel: Dict[str, str] = {}
+    used_ids: set[str] = set()
+    max_existing_num = 0
+    existing_catalog_path = project_root / "catalog" / "catalog.json"
+    if existing_catalog_path.exists():
+        try:
+            with open(existing_catalog_path, "r", encoding="utf-8") as ef:
+                existing_items = json.load(ef)
+            if isinstance(existing_items, list):
+                for item in existing_items:
+                    if not isinstance(item, dict):
+                        continue
+                    eid = str(item.get("id") or "").strip()
+                    if not eid:
+                        continue
+                    if item.get("sha256"):
+                        existing_ids_by_sha[str(item["sha256"])] = eid
+                    if item.get("rel_path"):
+                        existing_ids_by_rel[str(item["rel_path"])] = eid
+                    m_num = re.search(r"_(\d+)$", eid)
+                    if m_num:
+                        max_existing_num = max(max_existing_num, int(m_num.group(1)))
+        except Exception as e:
+            if verbose:
+                print(f"[WARN] Could not load existing catalog IDs from {existing_catalog_path}: {e}")
+
+    counter = max_existing_num + 1 if max_existing_num > 0 else 1
+
+    # Walk all files in media directory deterministically (never re-ingest our own upright derivatives)
+    for root, dirs, files in os.walk(media_dir):
+        if Path(root) == media_dir:
+            dirs[:] = [d for d in dirs if d != UPRIGHT_DERIVATIVES.derivatives_subdir]
+        dirs.sort()
         rel_root = Path(root).relative_to(media_dir)
-        source_group = rel_root.parts[0] if len(rel_root.parts) > 0 else "unknown"
+        raw_folder = rel_root.parts[0] if len(rel_root.parts) > 0 else "unknown"
+        default_source_group = FOLDER_TO_SOURCE_GROUP.get(raw_folder, raw_folder)
 
         for file in sorted(files):
             file_path = Path(root) / file
@@ -189,14 +318,13 @@ def scan_media_directory(
             sidecar_path = file_path.with_suffix(file_path.suffix + ".json")
             if not sidecar_path.exists():
                 sidecar_path = file_path.with_suffix(".json")
-            sidecar_meta = {}
+            sidecar_meta: Dict[str, Any] = {}
             if sidecar_path.exists():
-                try:
-                    with open(sidecar_path, "r", encoding="utf-8") as sf:
-                        sidecar_meta = json.load(sf)
-                except Exception as e:
-                    if verbose:
-                        print(f"[WARN] Failed to read sidecar {sidecar_path}: {e}")
+                with open(sidecar_path, "r", encoding="utf-8") as sf:
+                    sidecar_meta = json.load(sf)
+
+            source_group = str(sidecar_meta.get("source_group") or default_source_group)
+            id_prefix = raw_folder[:4].upper() if raw_folder != "unknown" else source_group[:4].upper()
 
             # Validate image with Pillow
             if Image is None:
@@ -240,15 +368,15 @@ def scan_media_directory(
             # Tag matching
             combined_text = f"{title} {caption} {file} {source_group}"
             people_tags = list(sidecar_meta.get("people") or [])
-            if not people_tags:
+            if not people_tags and not sidecar_meta.get("people_locked"):
                 people_tags = match_tags(combined_text, vocabularies.get("people", []))
 
             places_tags = list(sidecar_meta.get("places") or [])
-            if not places_tags:
+            if not places_tags and not sidecar_meta.get("places_locked"):
                 places_tags = match_tags(combined_text, vocabularies.get("places", []))
 
             art_tags = list(sidecar_meta.get("art_themes") or [])
-            if not art_tags:
+            if not art_tags and not sidecar_meta.get("art_themes_locked"):
                 art_tags = match_tags(combined_text, vocabularies.get("art_motifs", []))
 
             # Default art theme or people tag if source hints
@@ -260,13 +388,34 @@ def scan_media_directory(
 
             confidence_notes = sidecar_meta.get("confidence_notes") or f"Verified: Non-corrupt {width}x{height} {mime_type} from {source_group}"
 
-            item_id = f"IMG_{source_group[:4].upper()}_{counter:04d}"
-            counter += 1
+            preserved_id = (
+                str(sidecar_meta.get("id") or "").strip()
+                or existing_ids_by_sha.get(sha256, "")
+                or existing_ids_by_rel.get(rel_path, "")
+            )
+            if preserved_id and preserved_id not in used_ids:
+                item_id = preserved_id
+            else:
+                item_id = f"IMG_{id_prefix}_{counter:04d}"
+                counter += 1
+                while item_id in used_ids:
+                    item_id = f"IMG_{id_prefix}_{counter:04d}"
+                    counter += 1
+            used_ids.add(item_id)
+
+            display_rotation_cw_deg = parse_display_rotation(sidecar_meta, sidecar_path, UPRIGHT_DERIVATIVES)
+            if display_rotation_cw_deg:
+                derivative = write_upright_derivative(file_path, media_dir, display_rotation_cw_deg, UPRIGHT_DERIVATIVES)
+                display_rel_path = str(derivative.relative_to(project_root))
+            else:
+                display_rel_path = rel_path
 
             entry = {
                 "id": item_id,
                 "filename": file,
                 "rel_path": rel_path,
+                "display_rel_path": display_rel_path,
+                "display_rotation_cw_deg": display_rotation_cw_deg,
                 "sha256": sha256,
                 "width": width,
                 "height": height,
@@ -808,7 +957,7 @@ def generate_contact_sheet_html(entries: List[Dict[str, Any]], output_path: Path
 """
 
     for idx, e in enumerate(entries):
-        card_img_url = f"../{e['rel_path']}"
+        card_img_url = f"../{e['display_rel_path']}"
         grp = e["source_group"]
         grp_style = SOURCE_GROUP_COLORS.get(grp, SOURCE_GROUP_COLORS["unknown"])
 
@@ -955,7 +1104,7 @@ def generate_contact_sheet_html(entries: List[Dict[str, Any]], output_path: Path
       const item = CATALOG_DATA[idx];
       const imgPath = '../' + item.rel_path;
 
-      modalImg.src = imgPath;
+      modalImg.src = '../' + item.display_rel_path;
       modalTitle.textContent = item.title;
       modalCaption.textContent = item.caption || item.filename;
       modalOrigLink.href = imgPath;
@@ -1036,6 +1185,12 @@ def build_all_catalogs(
 
     if verbose:
         print(f"Total valid media assets discovered: {len(entries)}")
+
+    prune_stale_upright_derivatives(
+        media_dir,
+        {(project_root / e["display_rel_path"]).resolve() for e in entries},
+        UPRIGHT_DERIVATIVES,
+    )
 
     json_path = catalog_dir / "catalog.json"
     csv_path = catalog_dir / "catalog.csv"

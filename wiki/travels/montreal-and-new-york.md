@@ -2,7 +2,7 @@
 title: "Travels: Montreal & New York | מסעות: מונטריאול וניו יורק"
 slug: "montreal-and-new-york"
 category: "travels"
-era: "2010s–2020s"
+era: "2017–2020s"
 people:
   - "Tamar 'Tami' Sheaffer"
   - "Gad Sheaffer"
@@ -13,55 +13,60 @@ related_art:
   - "../art/artist-statement-philosophy.md"
 sources:
   - type: "blog"
+    title: "Québécois — דרכי עצים"
+    ref: "https://theshingimel.wordpress.com/2017/12/24/quebecois/"
+  - type: "blog"
     title: "אדום אדום — דרכי עצים"
     ref: "https://theshingimel.wordpress.com/2018/10/05/%d7%90%d7%93%d7%95%d7%9d-%d7%90%d7%93%d7%95%d7%9d/"
   - type: "blog"
     title: "בדרך — דרכי עצים"
     ref: "https://theshingimel.wordpress.com/2018/10/08/on-the-road-again/"
-  - type: "user_seed"
-    title: "User Biographical Seeds"
-    ref: "ORIGINAL_REQUEST.md:27"
 verification_status: "verified"
+last_updated: "2026-10-26"
 ---
 
 # Travels: Montreal & New York
 # מסעות: מונטריאול וניו יורק
 
-Among the most cherished travel memories in Tami Sheaffer's life are her journeys to North America to visit her younger son, **Tal Sheaffer**, during the two years he lived, studied, and worked in **Montreal, Canada**, alongside extended reunions in **New York City**[^user-seed].
+Among Tami and [Gadi Sheaffer](../family/gad-sheaffer.md)'s most cherished transatlantic journeys are their visits to North America to reunite with their younger son, **[Tal Sheaffer](../family/sons-guy-and-tal.md)**, during his years studying and living in **Montreal, Canada**, paired with extended stays in **New York City** and drives through New England and the Hudson River Valley[^blog-quebecois][^blog-red].
 
 ---
 
-## Montreal: Urbanity, Creativity & Northern Light
+## Montreal in Winter: *"אמריקאי, אבל בצרפתית"* | מונטריאול בחורף
 
-When Tal relocated to Montreal for his graduate studies, Tami and Gadi embraced the city with enthusiasm. Montreal's unique cultural tapestry—bilingual French-English vitality, historic masonry architecture, harsh winter climates, and vibrant underground art scene—held immense appeal for Tami:
-- **Walking the Neighborhoods:** Tami and Gadi explored Montreal on foot, walking the historic Plateau-Mont-Royal with its iconic exterior wrought-iron staircases, strolling Mount Royal park, and discovering local markets and bakeries.
-- **Studio & University Visits:** Tami took keen interest in Tal's studies and creative projects, sharing long conversations about design, software engineering, and the arts over coffee in local cafés.
-- **The Northern Environment:** The stark seasonal contrasts of Quebec—the vibrant crimson and gold of autumn followed by deep, silent snowscapes—resonated with Tami's sensitivity to environmental light and domestic shelter.
+Visiting Tal in Montreal in December 2017 amid deep winter cold, Tami and Gadi walked neighborhoods, cafés, and galleries while marveling at Quebec's uncanny sensory hybrid of French language and North American material culture:
 
----
-
-## New York City: The Artistic Epicenter
-
-Every journey to visit Tal was paired with extended stays in New York City, where the family met for shared exploration[^blog-red]:
-- **Museum Marathons:** Tami immersed herself in New York's cultural institutions, spending entire days at the Museum of Modern Art (MoMA), the Whitney Museum of American Art, the Guggenheim, and the Dia Art Foundation in Beacon. Seeing retrospectives of monumental sculptors (Richard Serra, Eva Hesse, Louise Bourgeois) and minimalists reinforced her confidence in her own large-scale, tactile installations.
-- **Chelsea & Lower East Side Galleries:** Walking through gallery districts, Tami observed contemporary global trends, confirming her intuition that authentic, manual, low-tech material truth has become increasingly rare and valuable.
-- **Family Life in Manhattan:** Staying in rented apartments, cooking meals together, browsing secondhand bookstores, and wandering the High Line, these New York gatherings were anchors of pure family joy.
+> ״עדיין מוזר לי, אחרי ארבעה ימים במונטריאול, הניגוד בין מה ששומעים פה ומה שרואים פה. לא מדוייק, כי גם השילוט פה, לא רק השפה המדוברת, כולו בצרפתית. אבל כל השאר, הבניינים, המכוניות, המתקן לאספקת מגבות נייר בשירותים, חיבורי ברזי ההשקיה ברחוב, המותגים ברחובות (רק ש starbucks נקרא כאן café starbucks)... הכל פה אמריקאי למהדרין. אמריקאי במובן ״ארצות הברית״, לא היבשת כמובן. אמריקאי, אבל בצרפתית.״
+> — גד שפר, [״Québécois״, בלוג *דרכי עצים* (24 בדצמבר 2017)](https://theshingimel.wordpress.com/2017/12/24/quebecois/)[^blog-quebecois]
 
 ---
 
-## The Autumn Road Trip: Hudson River Valley (2018)
+## New York Museums & Driving Up the Hudson (Autumn 2018) | ניו יורק, ההדסון וצבעי השלכת
 
-In the autumn of **2018**, Tami and Gadi undertook an unforgettable North American road trip chronicled on Gadi's blog in the post *"אדום אדום"* (Red Red)[^blog-red]:
-- After arriving via Lisbon, Cape Verde, Boston, and Yale University Art Gallery, they spent two full weeks in New York City with Tal.
-- Reunited, the trio embarked on a scenic drive northward in a rental car, tracing the Hudson River Valley toward Montreal to catch the peak of the world-famous fall foliage season.
-- While Gadi humorously noted on his blog that they arrived slightly early for the full fiery foliage explosion ("הפספוס היה בסדר גודל של שבועיים... האדום-אדום של השלכת היה רק עץ פה עץ שם"), the journey through upstate New York, stopping at small towns, roadside diners, and contemporary sculpture parks, was a highlight of deep family closeness.
+In September–October 2018, Tami and Gadi embarked on a sweeping Atlantic itinerary to meet Tal in **New York City**—traveling via Lisbon, Cape Verde, Boston, Cape Cod, and the Yale University Art Gallery, spending two full weeks together in Manhattan, and then driving north with Tal up the Hudson River Valley to Montreal[^blog-red]:
+
+> ״הדרך לפגישה עם בננו בניו יורק עברה בליסבון, איי קייפ וורדה (איים באוקיאנוס האטלנטי, מדינה אפריקאית), בוסטון (בטיסה ישירה מקייפ וורדה), קייפ קוד (בה גרים רבים מיוצאי קייפ וורדה, אגב), המוזיאון הנפלא של אוניברסיטת ייל ושבועיים בניו יורק. ואחרי כן, אמורים היו להיות צבעי השלכת המפורסמים, כאשר נעשה את דרכנו יחד במכונית במעלה נהר ההדסון אל מונטריאול, שם הוא לומד. מסתבר שעדיף לעשות את זה באוקטובר. לא זו בלבד שהאדום-אדום של השלכת היה רק עץ פה עץ שם, אלא שגם במוזיאונים רבים וגלריות לא מעטות התערוכות היו בהקמה, אחרי העונה המתה של הקיץ ולקראת עונת האמנות האמיתית, המתחילה באוקטובר.״
+> — גד שפר, [״אדום אדום״, בלוג *דרכי עצים* (5 באוקטובר 2018)](https://theshingimel.wordpress.com/2018/10/05/%d7%90%d7%93%d7%95%d7%9d-%d7%90%d7%93%d7%95%d7%9d/)[^blog-red]
+
+---
+
+## Civic Contrast on Returning to Haifa | מהכניסה למנהרת הולנד לכביש נשר
+
+Days after returning to **[80 Greenboim St. in Haifa](../places/haifa-greenboim-80-denya.md)** from two weeks of driving through Boston, New York, Montreal, and Quebec City, Gadi captured the sharp cultural whiplash between North American road courtesy and Israeli territoriality near the old Nesher cement works:
+
+> ״כל זה אחרי כשבועיים של נהיגה בארצות הברית וקנדה, כולל בתוך ערים גדולות וצפופות כמו בוסטון, ניו-יורק, מונטריאול וקוויבק-סיטי... אף לא פעם אחת נתקלנו בקושי להשתלב בתנועה, המאד כבדה לפעמים, אפילו לא במקום כמו הכניסה מצד ניו-גרז׳י למנהרת הולנד המובילה למנהטן, שם תשעה מסלולים הופכים שניים. שום בעיה. לא בקנדה, שם האנשים בכלל והנהגים בפרט אולטרא מנומסים (תענוג…) ולא בארה״ב, גם לא תחת טראמפ, אפילו לא בניו-יורק.״
+> — גד שפר, [״בדרך״, בלוג *דרכי עצים* (8 באוקטובר 2018)](https://theshingimel.wordpress.com/2018/10/08/on-the-road-again/)[^blog-road]
+
+For Tami, whose [artistic practice](../art/artist-statement-philosophy.md) constantly probes spatial friction, borders, and museum architectures, these North American museum marathons and road trips with Tal combined intellectual nourishment with deep family warmth[^philosophy].
 
 ---
 
 ## Footnotes & Sources
 
-[^user-seed]: User Biographical Seeds, *ORIGINAL_REQUEST.md*, line 27.
-[^blog-red]: Gad Sheaffer, "אדום אדום", *דרכי עצים*, 05/10/2018, https://theshingimel.wordpress.com/2018/10/05/%d7%90%d7%93%d7%95%d7%9d-%d7%90%d7%93%d7%95%d7%9d/
+[^blog-quebecois]: גד שפר, [״Québécois״ — ביקור חורף במונטריאול, בלוג *דרכי עצים* (24.12.2017)](https://theshingimel.wordpress.com/2017/12/24/quebecois/).
+[^blog-red]: גד שפר, [״אדום אדום״ — ניו יורק, אוניברסיטת ייל, עמק ההדסון ומונטריאול, בלוג *דרכי עצים* (05.10.2018)](https://theshingimel.wordpress.com/2018/10/05/%d7%90%d7%93%d7%95%d7%9d-%d7%90%d7%93%d7%95%d7%9d/).
+[^blog-road]: גד שפר, [״בדרך״ — חזרה מנהיגה בארה״ב ובקנדה לחיפה, בלוג *דרכי עצים* (08.10.2018)](https://theshingimel.wordpress.com/2018/10/08/on-the-road-again/).
+[^philosophy]: ראו [הצהרת האמנית ופילוסופיה אסתטית](../art/artist-statement-philosophy.md) ו-[הבנים: גיא וטל שפר](../family/sons-guy-and-tal.md).
 
 ---
 

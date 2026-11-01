@@ -10,7 +10,7 @@ people:
   - "Tal Sheaffer"
   - "Ahuva Fried"
   - "Michael Fried"
-  - "Er'ela Fried"
+  - "Er'ela Sadan"
 related_places:
   - "../places/haifa-greenboim-80-denya.md"
   - "../places/herzliya-home-and-yard.md"
@@ -18,21 +18,18 @@ related_art:
   - "../art/solo-exhibition-bene-beitcha.md"
   - "../art/artist-statement-philosophy.md"
 sources:
-  - type: "user_seed"
-    title: "Original Request Seeds"
-    ref: "ORIGINAL_REQUEST.md:21-29"
   - type: "blog"
-    title: "דרכי עצים"
+    title: "דרכי עצים — אהובה, מיכאל, והטיול הגדול"
     ref: "https://theshingimel.wordpress.com/"
-  - type: "pdf"
-    title: "דרכי עצים 2011–2025"
-    ref: "Annual PDF Volumes"
   - type: "site"
     title: "Tamar Sheaffer CV & Portfolio"
     ref: "https://tamarsheaffer.site/about/"
+  - type: "press"
+    title: "פורטפוליו — ראיון עם תמר שפר וביקורת תערוכת ״בנה ביתך״"
+    ref: "https://www.prtfl.co.il/archives/179933"
   - type: "museum"
     title: "Ramat Gan Museum Exhibition 'בנה ביתך'"
-    ref: "Catalog Essay by Sari Golan, 2026"
+    ref: "https://rgma.org.il/"
 verification_status: "verified"
 last_updated: "2026-10-26"
 ---
@@ -47,9 +44,9 @@ last_updated: "2026-10-26"
 
 ## 1. Overview & Life Synthesis | תמצית חיים
 
-Born on **25 October 1956** (כ"ה בתשרי תשי"ז) in Israel, **Tamar "Tami" Sheaffer (תמר שפר)** reaches her 70th birthday on **25 October 2026**[^birth-date]. Her life represents a singular synthesis of analytical rigor and visceral tactile artistry: a brilliant career in defense systems engineering at **Elbit Systems** and **Rafael**, combined with a fearless mid-life reinvention as one of Israel's most compelling contemporary installation artists[^cv-ref].
+Born on **25 October 1956** (כ"ה בתשרי תשי"ז) in Israel, **Tamar "Tami" Sheaffer (תמר שפר)** reaches her 70th birthday on **25 October 2026**[^birth-date]. Her life represents a singular synthesis of analytical rigor and visceral tactile artistry: a distinguished career in defense systems engineering at **Elbit Systems** and **Rafael**, followed by a fearless mid-life reinvention as one of Israel's compelling contemporary installation artists[^cv-ref][^prtfl-interview].
 
-Throughout seven decades, Tami has lived with uncompromising integrity. In the male-dominated engineering boardrooms of the 1980s and 1990s, she was an outspoken workplace feminist who demanded equal respect and mentored junior women. In the quiet of her home, she built a loving life with her husband **Gad "Gadi" Sheaffer** across three Haifa residences, raising their two sons, **Guy** and **Tal**. In her art studio in Denya, she produces monumental, fragile installations made of packing paper, papier-mâché pulp, and heavy cast concrete—structures that echo her existential anxieties over the fragility of Israeli society and the precarity of "the home."
+Throughout seven decades, Tami has lived with uncompromising integrity. In the male-dominated engineering boardrooms of the 1980s and 1990s, she was an outspoken [workplace feminist](engineering-and-feminism.md) who demanded equal respect and mentored junior women[^seed-career]. Together with her husband **[Gad "Gadi" Sheaffer](../family/gad-sheaffer.md)** across three Haifa residences, she raised their two sons, **[Guy and Tal](../family/sons-guy-and-tal.md)**[^seed-homes]. In her [studio at 80 Greenboim St. in Denya](../places/haifa-greenboim-80-denya.md), she builds spatial installations out of brown packing paper, textiles, wood, earth, and cast concrete—giving visual form to intangible thoughts and confronting the precarity of "the home"[^binyamin-ref][^prtfl-bene].
 
 ---
 
@@ -60,33 +57,29 @@ Throughout seven decades, Tami has lived with uncompromising integrity. In the m
 │
 1960s ── Childhood in Herzliya; mother's kindergarten yard; father's workshop; deep bond with sister Er'ela.
 │
-1974 ── Begins B.Sc. in Computer Science at the Technion in Haifa; meets Gad Sheaffer.
+1974 ── Begins B.Sc. in Computer Science at the Technion in Haifa; meets Gad Sheaffer in Linear Algebra 1.
 │
-1978 ── Marries Gadi; begins systems engineering career at Elbit Systems.
+Late 1970s/1982 ── Marries Gadi; lives at 87 Arlozorov St., Hadar; post-graduation journey to India; begins engineering career at Elbit Systems.
 │
-1980s ── Lives at 87 Arlozorov St., Hadar; eldest son Guy born; transitions to Rafael defense tech.
+1980s ── Eldest son Guy born at Arlozorov St.; advances in defense systems engineering at Elbit and Rafael.
 │
-1980s/90s ── Moves to Einstein St., Ahuza; younger son Tal born; advocates for workplace equity.
+1990s ── Moves to 33A Einstein St., Ahuza; younger son Tal born; advocates for workplace equity.
 │
-1990s ── Builds family home and art studio at 80 Greenboim St., Denya, Haifa.
+Early 2000s ── Designs and builds custom family home and art studio at 80 Greenboim St., Denya, Haifa.
 │
-2004/05 ── Takes early retirement from Rafael to pursue artistic vocation full-time.
+2005–2009 ── Shifts to part-time work and studies Fine Arts at HaMidrasha School of Art (Beit Berl College).
 │
-2005–2009 ── Studies Fine Arts at HaMidrasha School of Art (Beit Berl College).
+2006 ── Loss of parents Ahuva Fried (8 June 2006) and Michael Fried (26 November 2006).
 │
-2009–2011 ── Completes Master of Fine Arts (MFA) at University of Haifa; exhibits in Tel Aviv Museum.
+2009–2011 ── Resigns from high-tech; completes MFA at University of Haifa; exhibits "צופן" at Tel Aviv Museum.
 │
-2011 ── Founding cooperative member of Binyamin Gallery, Tel Aviv.
+2011–Present ── Cooperative member of Binyamin Gallery, Tel Aviv; solo debut "now \ (here+there)" (2013).
 │
-2013 ── Loss of mother Ahuva Fried (née Lubetkin) at age 90.
+2016 ── 6-month artist residency at Cité Internationale des Arts, Paris (Studio 8422), living with Gadi on the Seine.
 │
-2016–2017 ── 6-month artist residency at Cité Internationale des Arts, Paris, living with Gadi on the Seine.
+2019–2020 ── Solo show "Low Sun" (The LAB); Bogliasco Foundation Fellowship (Liguria, Italy); solo show "Flight Mode".
 │
-2019 ── Solo exhibition "Low Sun" at The LAB, Tel Aviv; granddaughters Ya'ara & Carmel bring immense joy.
-│
-2020 ── International Fellowship at Bogliasco Foundation (Genoa, Italy); solo exhibition "Flight Mode".
-│
-2020s ── Sister Er'ela Fried passes away; deep mourning tempered by memories of shared laughter.
+2020s ── Granddaughters Ya'ara & Carmel bring immense joy; permanent Haifa installation "כאן גרה אשה..."; solo show in Jerusalem (2023); loss of beloved sister Er'ela.
 │
 2026 ── Landmark 70th-year solo exhibition "בנה ביתך / The New Normal" at Ramat Gan Museum of Israeli Art;
          70th Birthday celebrated with family (25 October 2026).
@@ -97,40 +90,39 @@ Throughout seven decades, Tami has lived with uncompromising integrity. In the m
 ## 3. Formative Chapters | פרקי חיים
 
 ### 3.1 Childhood in Herzliya & The Heritage of Resilience
-Tami grew up in a home imbued with historical gravitas and boundless warmth. Her parents, **Michael Fried** and **Ahuva Fried (née Lubetkin)**, were true *"מלח הארץ"* (salt of the earth)[^seed-parents]. Michael had survived perilous seas on the illegal immigration ship *Parita* in 1939[^blog-parita], while Ahuva had arrived in 1938 from Byten, leaving behind a family whose name was immortalized by her sister, Warsaw Ghetto Uprising commander Zivia Lubetkin[^blog-ahuva].
+Tami grew up in [Herzliya](../places/herzliya-home-and-yard.md) in a home imbued with historical gravitas and warmth. Her parents, **Michael Fried** and **Ahuva Fried (née Lubetkin)**, were pioneers whom Gadi affectionately described in Hebrew as *״מלח הארץ. באמת. באמת מהאנשים שהכינו עבורנו את המקום הזה, במו ידיהם״* ([״אהובה״, *דרכי עצים*](https://theshingimel.wordpress.com/2013/06/08/ahuva-fried/))[^blog-ahuva]. Michael had arrived on Tel Aviv's beach on August 22, 1939 aboard the clandestine *Ma'apilim* ship *Parita* and served as a British Army mechanic in Europe[^blog-parita], while Ahuva had arrived at age 14 in 1938 with Youth Aliyah from Byten, losing nearly her entire family in the Holocaust save her sister—Warsaw Ghetto Uprising leader Zivia Lubetkin—and her brother Shlomo[^blog-ahuva].
 
-In their Herzliya home, Ahuva ran a bustling kindergarten in the garden, while Michael, a craftsman with "hands of gold" (ידי זהב), repaired furniture, worried about home security, and faithfully watched *The Bold and the Beautiful* (*היפים והאמיצים*)[^seed-parents]. Tami and her sister **Er'ela** developed a bond marked by conspiratorial humor and endless laughter—a relationship that sustained Tami throughout her entire adulthood.
+In their self-built Herzliya home, Ahuva worked as a devoted kindergarten teacher, while Michael—a craftsman with *״ידי זהב, ממש״* ([״מיכאל״, *דרכי עצים*](https://theshingimel.wordpress.com/2013/11/26/fried-2/))[^blog-parita]—fashioned ceramics and silver jewelry in a wooden shed at the back of the yard, worried tenderly over family safety, and faithfully watched *The Bold and the Beautiful* (*היפים והאמיצים*)[^seed-parents]. Alongside her sister **[Er'ela](../family/erela-sadan.md)**, Tami forged a lifelong bond marked by conspiratorial wit and ringing laughter[^seed-parents].
 
 *Read more: [Early Life, Herzliya Roots & Technion](early-life-herzliya.md) and [Parents: Ahuva & Michael Fried](../family/ahuva-and-michael-fried.md).*
 
 ### 3.2 The Pragmatic Choice & The Technion
-Endowed with an innate artistic sensibility and a talent for drawing, Tami nevertheless chose the pragmatic path in young adulthood, enrolling in the competitive Computer Science program at the **Technion — Israel Institute of Technology** in Haifa[^seed-technion]. It was at the Technion that she met her intellectual peer and life partner, **Gad "Gadi" Sheaffer**, embarking on a marriage that has spanned five decades.
+Endowed with a love of art from youth, Tami chose economic independence first, enrolling in Computer Science at the **Technion — Israel Institute of Technology** in Haifa (*״כשהלכתי ללמוד מדעי המחשב בטכניון המחשבה הייתה להיות עצמאית כלכלית ולעסוק בשעות הפנאי באמנות״*, [*פורטפוליו*](https://www.prtfl.co.il/archives/179933))[^prtfl-interview]. In a single Linear Algebra 1 lecture at the Technion, she met **[Gad "Gadi" Sheaffer](../family/gad-sheaffer.md)** (*״הספקתי גם להכיר את זוגתי שתחייה בשיעור אלגברה אחד, ואפילו להתחתן אתה״*, [״׳הטיול הגדול׳ אחרי צבא״, *דרכי עצים*](https://theshingimel.wordpress.com/2023/06/08/2/))[^blog-technion], beginning a partnership spanning five decades.
 
 *Read more: [Husband & Partner: Gad 'Gadi' Sheaffer](../family/gad-sheaffer.md).*
 
 ### 3.3 Defense Systems Engineering & Workplace Feminism
-For over two decades, Tami worked as a high-level systems engineer in Israel's premier defense technological institutions: first at **Elbit Systems**, and subsequently at **Rafael Advanced Defense Systems**[^seed-career]. She specialized in complex real-time system architectures, mastering the logic of inputs, telemetry, enclosures, and structural dependencies.
-
-In an era when female engineers in defense technology were rare, Tami refused to assimilate into the prevailing masculine culture. She was an outspoken, courageous workplace feminist who challenged disparities in compensation, insisted on meritocratic recognition, and mentored younger women entering technical careers[^seed-career].
+For over two decades, Tami worked as a senior systems engineer at **Elbit Systems** and **Rafael Advanced Defense Systems**, architecting complex real-time defense systems while standing up as a trailblazing workplace feminist who demanded equitable pay, challenged patriarchal norms, and mentored younger female engineers[^seed-career].
 
 *Read more: [Engineering Career & Workplace Feminism](engineering-and-feminism.md).*
 
 ### 3.4 Motherhood & Haifa Homes
-With Gadi, Tami built a warm family life across three distinct neighborhoods of Haifa:
-1. **[87 Arlozorov St., Hadar](../places/haifa-arlozorov-87.md):** Their first married home, where eldest son **Guy** was born[^seed-homes].
-2. **[Einstein St., Ahuza](../places/haifa-einstein.md):** Their leafy second home on Mount Carmel, where younger son **Tal** was born[^seed-homes].
-3. **[80 Greenboim St., Denya](../places/haifa-greenboim-80-denya.md):** Their custom-built sanctuary on the southern slopes of Mount Carmel, featuring a tranquil garden, a woodworking workshop for Gadi, and a spacious art studio for Tami[^seed-homes].
+With Gadi, Tami built family life across three Haifa residences:
+1. **[87 Arlozorov St., Hadar (1982–1992)](../places/haifa-arlozorov-87.md):** Their renovated rooftop apartment overlooking Haifa Bay, where they became parents[^seed-homes].
+2. **[33A Einstein St., Ahuza (1992–2004)](../places/haifa-einstein.md):** Their quiet garden-facing Carmel apartment where they raised Guy and Tal[^seed-homes].
+3. **[80 Greenboim St., Denya (2004–Present)](../places/haifa-greenboim-80-denya.md):** Their custom-built modernist home above Nahal Tira, housing Gadi's woodworking shop and Tami's sculpture studio[^seed-homes].
 
-As a mother, Tami was fiercely protective, thoughtful, and deeply involved in her sons' growth, supporting Guy through his adulthood in Haifa and Tal through his years in Montreal and New York. Later, the birth of Guy's daughters, **Ya'ara** and **Carmel**, brought pure, unadulterated joy into her life, rekindling the playful spirit of the Herzliya kindergarten yard.
+In recent years, her granddaughters **[Ya'ara and Carmel](../family/granddaughters-yaara-carmel.md)** have brought radiant joy, family dances, and laughter into her life[^blog-granddaughters].
 
 *Read more: [Sons: Guy & Tal Sheaffer](../family/sons-guy-and-tal.md) and [Granddaughters: Ya'ara & Carmel](../family/granddaughters-yaara-carmel.md).*
 
 ### 3.5 The Second Act: HaMidrasha, MFA & Artistic Eminence
-Upon taking early retirement from Rafael in the mid-2000s, Tami pursued fine art with the same discipline she had brought to engineering. She studied at the prestigious **HaMidrasha School of Art (המדרשה - בית ברל)** from 2005 to 2009, followed by an MFA at the **University of Haifa** (2009–2011)[^cv-ref].
+Turning from high-tech to fine art, Tami studied at **[HaMidrasha School of Art](../art/education-midrasha-haifa.md)** (2005–2009) and earned her **MFA at the University of Haifa** (2009–2011)[^cv-ref]:
 
-Refusing to produce conventional decorative works, Tami dedicated herself to demanding, large-scale installation art. In 2011, she became a founding member of the artist-run **Binyamin Gallery (גלריה בנימין)** in Tel Aviv[^binyamin-ref]. Her work earned international recognition, including a prestigious 6-month residency at the **Cité Internationale des Arts** in Paris (2016–2017) and an international fellowship at the **Bogliasco Foundation** in Liguria, Italy (2020)[^cv-ref].
+> ״בסופו של דבר האמנות הפכה עבורי עיסוק מרכזי. הרגשתי שכל רגע שלי בהייטק הוא זיוף. התפטרתי והתחלתי לימודי תואר שני באמנות באוניברסיטת חיפה. מאז 2011, כשסיימתי, אני עסוקה רק באמנות.״
+> — תמר שפר, בראיון לענבל כהן חמו, [״כשהסביבה הופכת לחומר״, מגזין *פורטפוליו* (1 באפריל 2023)](https://www.prtfl.co.il/archives/179933)[^prtfl-interview]
 
-In 2026, her 70th year culminated in a major solo exhibition at the **Ramat Gan Museum of Israeli Art**, titled **"בנה ביתך / The New Normal"**, curated by Sari Golan[^rgma-ref]. The exhibition examined the erosion of the Israeli domestic sanctuary in the wake of war and political turmoil—a crowning achievement of her artistic career.
+She became an active cooperative member of **[Binyamin Gallery](../art/binyamin-gallery-cooperative.md)** in Tel Aviv[^binyamin-ref], completed international residencies at the **[Cité Internationale des Arts in Paris](../places/paris-cite-studio.md)** (2016) and the **[Bogliasco Foundation in Italy](../travels/bogliasco-italy-residency.md)** (2020)[^cv-ref], and in 2026 opened her landmark 70th-year museum solo exhibition **[*"בנה ביתך / The New Normal"*](../art/solo-exhibition-bene-beitcha.md)** at the **[Ramat Gan Museum of Israeli Art](https://rgma.org.il/)**, curated by Sari Golan[^prtfl-bene].
 
 *Read more: [Solo Exhibition: "בנה ביתך / The New Normal" (2026)](../art/solo-exhibition-bene-beitcha.md) and [Materials: Paper, Papier-Mâché & Cement](../art/materials-paper-and-cement.md).*
 
@@ -138,9 +130,7 @@ In 2026, her 70th year culminated in a major solo exhibition at the **Ramat Gan 
 
 ## 4. Personality, Wit & Sensibility | אישיות, הומור וטמפרמנט
 
-Tami is characterized by a distinctive blend of acute intellect, dry wit, fierce loyalty, and a tender emotional core. She does not indulge in hollow sentimentality; her humor is sharp, observant, and ironic. 
-
-At the same time, she carries an active "architecture of worry"—a protective vigilance for the health and safety of her husband, her sons, her daughter-in-law, and her granddaughters. She feels the political crisis of Israel with visceral intensity, transmuting her anguish over democratic backsliding and political cynicism into monumental installations that challenge the viewer to question what is real and what is mere facade.
+Tami combines analytical precision, dry ironic wit, fierce loyalty, and an active "architecture of worry"—a protective vigilance over the health and safety of her loved ones alongside visceral civic grief over the erosion of Israeli democracy, transmuted into art tempered by subtle studio humor (*״אני באמת אומרת לעצמי לא פעם בסטודיו שאני מספרת לעצמי בדיחות״*, [*פורטפוליו*](https://www.prtfl.co.il/archives/179933))[^prtfl-interview][^inner-life].
 
 *Read more: [Inner Life, Anxieties & Worldview](inner-life-and-worldview.md).*
 
@@ -159,7 +149,7 @@ At the same time, she carries an active "architecture of worry"—a protective v
 ## 6. Related Entries | ראו גם
 
 - **Biographical Context:** [Early Life & Herzliya Roots](early-life-herzliya.md) • [Engineering Career & Workplace Feminism](engineering-and-feminism.md) • [Inner Life & Worldview](inner-life-and-worldview.md)
-- **Family Circle:** [Ahuva & Michael Fried](../family/ahuva-and-michael-fried.md) • [Sister Er'ela Fried](../family/erela-fried.md) • [Husband Gad Sheaffer](../family/gad-sheaffer.md) • [Sons Guy & Tal](../family/sons-guy-and-tal.md) • [Granddaughters Ya'ara & Carmel](../family/granddaughters-yaara-carmel.md) • [Friends Beni & Peri](../family/close-friends-beni-peri.md)
+- **Family Circle:** [Ahuva & Michael Fried](../family/ahuva-and-michael-fried.md) • [Sister Er'ela Sadan](../family/erela-sadan.md) • [Husband Gad Sheaffer](../family/gad-sheaffer.md) • [Sons Guy & Tal](../family/sons-guy-and-tal.md) • [Granddaughters Ya'ara & Carmel](../family/granddaughters-yaara-carmel.md) • [Friends Beni & Peri](../family/close-friends-beni-peri.md)
 - **Lived Places:** [Herzliya Home & Yard](../places/herzliya-home-and-yard.md) • [Haifa: 80 Greenboim St., Denya](../places/haifa-greenboim-80-denya.md) • [Paris Cité Studio](../places/paris-cite-studio.md)
 - **Artistic Work:** [Artist Statement & Philosophy](../art/artist-statement-philosophy.md) • [Materials: Paper & Cement](../art/materials-paper-and-cement.md) • [Exhibition "בנה ביתך"](../art/solo-exhibition-bene-beitcha.md) • [Wiki Master Index](../README.md)
 
@@ -167,13 +157,16 @@ At the same time, she carries an active "architecture of worry"—a protective v
 
 ## 7. Footnotes & Sources | מקורות והערות שוליים
 
-[^birth-date]: Confirmed by family seed notes: born 25/10/1956 (כ"ה בתשרי תשי"ז), 70th birthday on 25/10/2026. *ORIGINAL_REQUEST.md:22*.
-[^cv-ref]: Tamar Sheaffer Official Portfolio, "CV & Education", https://tamarsheaffer.site/about/.
-[^seed-parents]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:23*.
-[^blog-parita]: Gad Sheaffer, "סיפורו של מיכאל פריד ואוניית המעפילים פאריטה", *דרכי עצים*, https://theshingimel.wordpress.com/.
-[^blog-ahuva]: Gad Sheaffer, "לזכרה של אהובה פריד", *דרכי עצים*, 26 November 2013, https://theshingimel.wordpress.com/2013/11/26/.
-[^seed-technion]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:24*.
-[^seed-career]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:25*.
-[^seed-homes]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:24*.
-[^binyamin-ref]: Binyamin Gallery Profile, "Tamar Sheaffer Founding Artist", https://www.binyamin-gallery.com/artist/tamar-sheaffer.
-[^rgma-ref]: Ramat Gan Museum of Israeli Art, "בנה ביתך / The New Normal", Curator: Sari Golan, Assistant Curator: Gili Zeidman, April 30 – December 12, 2026.
+[^birth-date]: תאריך לידה מתועד במקורות המשפחה (25.10.1956, כ"ה בתשרי תשי"ז; יובל ה-70 ב-25.10.2026) — ראו [אינדקס הוויקי ומקורות המערכת](../README.md).
+[^cv-ref]: Tamar Sheaffer, [Official Portfolio — "About & Education"](https://tamarsheaffer.site/about/).
+[^prtfl-interview]: ענבל כהן חמו, [״כשהסביבה הופכת לחומר: תמר שפר בסדנאות האמנים ירושלים״ — מגזין *פורטפוליו* (01.04.2023)](https://www.prtfl.co.il/archives/179933).
+[^blog-ahuva]: גד שפר, [״אהובה״ — לזכרה של אהובה פריד, בלוג *דרכי עצים* (08.06.2013)](https://theshingimel.wordpress.com/2013/06/08/ahuva-fried/).
+[^blog-parita]: גד שפר, [״מיכאל״ — לזכרו של מיכאל פריד ואניית המעפילים פאריטה, בלוג *דרכי עצים* (26.11.2013)](https://theshingimel.wordpress.com/2013/11/26/fried-2/).
+[^seed-parents]: ראו [הוריה של תמי: אהובה ומיכאל פריד](../family/ahuva-and-michael-fried.md), [אחותה אראלה סדן](../family/erela-sadan.md) ו-[בית הילדות בהרצליה](../places/herzliya-home-and-yard.md).
+[^blog-technion]: גד שפר, [״׳הטיול הגדול׳ אחרי צבא״ — בלוג *דרכי עצים* (08.06.2023)](https://theshingimel.wordpress.com/2023/06/08/2/).
+[^seed-career]: ראו [קריירה בהנדסת מערכות ביטחוניות ופמיניזם מקצועי](engineering-and-feminism.md).
+[^seed-homes]: גד שפר, סדרת רשומות הבתים בבלוג *דרכי עצים*: [״27-37: ארלוזורוב 87״ (30.01.2017)](https://theshingimel.wordpress.com/2017/01/30/27-37/), [״38-50, רחוב איינשטיין״ (27.02.2017)](https://theshingimel.wordpress.com/2017/02/27/38-50/) ו-[״אל המנוחה ואל הנחלה״ — גרינבוים 80 (24.05.2017)](https://theshingimel.wordpress.com/2017/05/24/g80/).
+[^blog-granddaughters]: גד שפר, [״מ phenacetin ועד K-pop״ (23.03.2025)](https://theshingimel.wordpress.com/2025/03/23/k-pop/) ו-[״הדורבן שאהב תות״ (16.07.2022)](https://theshingimel.wordpress.com/2022/07/16/strawberry/); ראו גם [הנכדות יערה וכרמל](../family/granddaughters-yaara-carmel.md).
+[^binyamin-ref]: תמר שפר, [עמוד האמנית הרשמי בגלריה בנימין](https://www.binyamin-gallery.com/artist/tamar-sheaffer); ראו גם [גלריה בנימין — גלריה שיתופית](../art/binyamin-gallery-cooperative.md).
+[^prtfl-bene]: ורה פלפול, [״׳בנה ביתך׳ של תמר שפר: הבית שאיבד את ביטחונו״ — מגזין *פורטפוליו* (08.08.2026)](https://www.prtfl.co.il/archives/257256); ראו גם [תערוכת היחיד ״בנה ביתך״ במוזיאון רמת גן](../art/solo-exhibition-bene-beitcha.md).
+[^inner-life]: ראו [עולם פנימי, דאגות ותפיסת עולם](inner-life-and-worldview.md).

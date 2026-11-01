@@ -35,6 +35,13 @@ Apply these rules whenever designing, writing, refactoring, or auditing code in 
 4. **Server (`prototype/serve.py`)**:
    - Threaded HTTP serving, gzip compression, port-collision avoidance, and `/__diag` telemetry collection.
 
+### 2B. 2.5D Depth Topology Laws (Mandatory for Every Existing & New Scene)
+
+Read [`references/depth_topology_principles.md`](references/depth_topology_principles.md) whenever building or modifying spatial scene layers:
+- **Contact Continuity ($C^0$)**: Grounded sculptures/furniture/people and wall-bolted structures (handrails, frames, shelves) MUST match the host surface's world depth $Z_{\text{world}} = Z_k + A_k \cdot d_k$ at every contact anchor ($\Delta Z_{\text{world}} = 0$) via harmonic contact-anchored depth maps (`pinMarginUv = 0.0`), never un-anchored constant-$Z$ billboards.
+- **Occlusion Discontinuity ($C^{-1}$)**: Free silhouettes occluding distant backgrounds MUST sit on separate alpha-matted/cutout layers with outward `EDT`-extrapolated depth (zero rubber-sheeting) over ghost-free LaMa/harmonic-cleaned `layer0` room depth maps.
+- **Verification**: Run `python3 -m unittest tests/test_depth_principles.py` alongside desktop/mobile off-axis visual checks to verify zero wall detachment and zero floor-floating artifacts.
+
 ## 3. Read-Only Safety & Governance Integrity
 
 - Preserve 100% read-only guarantees tested in `tests/test_governance.py` (`TestReadOnlySafetyGuardrails`).

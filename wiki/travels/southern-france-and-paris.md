@@ -18,68 +18,78 @@ sources:
     title: "טיול ארבעת הכוכבים — דרכי עצים"
     ref: "https://theshingimel.wordpress.com/2026/09/28/4star/"
   - type: "blog"
-    title: "חזרנו — דרכי עצים"
-    ref: "https://theshingimel.wordpress.com/2026/09/28/trip/"
+    title: "לישון בתוך רעיון (Cité Radieuse במרסיי) — דרכי עצים"
+    ref: "https://theshingimel.wordpress.com/2026/09/16/%d7%9c%d7%99%d7%a9%d7%95%d7%9f-%d7%91%d7%aa%d7%95%d7%9a-%d7%a8%d7%a2%d7%99%d7%95%d7%9f/"
+  - type: "blog"
+    title: "המזוודה של בנימין (פורטבו) — דרכי עצים"
+    ref: "https://theshingimel.wordpress.com/2026/09/21/%d7%94%d7%9e%d7%96%d7%95%d7%95%d7%93%d7%94-%d7%a9%d7%9c-%d7%91%d7%a0%d7%99%d7%9e%d7%99%d7%9f/"
   - type: "blog"
     title: "ון גוך בארל — דרכי עצים"
     ref: "https://theshingimel.wordpress.com/2026/09/23/%d7%95%d7%9f-%d7%92%d7%95%d7%9a-%d7%91%d7%90%d7%a8%d7%9c/"
   - type: "blog"
+    title: "חזרנו — דרכי עצים"
+    ref: "https://theshingimel.wordpress.com/2026/09/28/trip/"
+  - type: "blog"
     title: "פריז — דרכי עצים"
     ref: "https://theshingimel.wordpress.com/2017/03/08/61/"
-  - type: "user_seed"
-    title: "User Biographical Seeds"
-    ref: "ORIGINAL_REQUEST.md:26, 27"
 verification_status: "verified"
+last_updated: "2026-10-26"
 ---
 
 # Travels: Southern France & Paris
 # מסעות: דרום צרפת ופריז
 
-France holds an exceptional place in Tami Sheaffer's imagination and personal history. It spans two profound milestones: her transformative **six-month artist residency in Paris (2016)** and a joyful, recent **family journey across Southern France (September 2026)** with Gadi and their elder son, **Guy**[^blog-4star].
+France occupies a central axis in Tamar "Tami" Sheaffer's artistic and family life—linking her six-month **2016 artist residency in Paris** with an unforgettable **September 2026 ten-day journey across Southern France and Portbou** alongside [Gadi](../family/gad-sheaffer.md) and their eldest son, **[Guy](../family/sons-guy-and-tal.md)**[^blog-paris][^blog-4star].
 
 ---
 
-## 1. The Paris Residency Milestone (2016)
+## 1. The Paris Residency Milestone (2016) | שהות האמנית בפריז
 
-As detailed in [Paris: Studio 8422 at Cité des Arts](../places/paris-cite-studio.md), Tami's 2016 residency was a golden period of creative freedom. Dwelling on the banks of the Seine in the heart of Le Marais, Tami and Gadi established an intimate rhythm of life:
-- Morning strolls across the Pont Marie into the Latin Quarter.
-- Intensive studio days drawing with graphite and watercolor in Studio 8422.
-- Pilgrimages to architectural icons: Pierre Chareau's *Maison de Verre* and Le Corbusier's *Villa Savoye*.
-- Attending contemporary art salons and building lasting international friendships with resident artists worldwide.
+As chronicled in **[Paris: Studio 8422 at Cité Internationale des Arts](../places/paris-cite-studio.md)**, Tami spent six months in 2016 living and working on the Right Bank of the Seine in Le Marais (*סטודיו 8422, שעל דלתו כתוב Israël*, [״פריז״, *דרכי עצים*](https://theshingimel.wordpress.com/2017/03/08/61/))[^blog-paris]. Immersed in Parisian museums, Le Corbusier's modernist architecture, and daily studio work, she developed spatial drawings and sculptural ideas that informed a decade of subsequent installations[^philosophy][^motifs].
 
 ---
 
-## 2. Southern France: The September 2026 Journey with Guy
+## 2. Southern France & Portbou with Guy (September 2026) | מסע דרום צרפת ופורטבו
 
-In **September 2026**, just weeks prior to Tami's 70th birthday, Gadi organized an extraordinary ten-day road trip across Provence, Occitanie, and the Côte Vermeille. Chronicled extensively on Gadi's blog (*"טיול ארבעת הכוכבים"* and *"חזרנו"*), the journey was marked by deep emotional warmth, art, and architectural exploration[^blog-4star][^blog-trip]:
+In **September 2026**, weeks before Tami's 70th birthday, Tami and Gadi flew to Marseille for a ten-day "star-hub" journey spanning Marseille, Céret, Collioure, Portbou, Arles, the Camargue, Nîmes, Avignon, and Aix-en-Provence[^blog-4star][^blog-trip].
 
-### The Airport Surprise
-Flying into Marseille Provence Airport, Tami was greeted by an unforgettable surprise carefully orchestrated by Gadi: their elder son, **Guy Sheaffer**, suddenly walked up to meet them at the arrival terminal ("פגשנו 'בהפתעה' את בננו גיא בשדה התעופה — הפתעה לזוגתי..."). Having Guy join them for the entire journey turned the trip into a deeply moving celebration of family.
+### The Marseille Airport Surprise | ההפתעה בשדה התעופה במרסיי
+Upon landing in Marseille, Tami was greeted by a surprise orchestrated with eldest son [Guy](../family/sons-guy-and-tal.md), who met them at the airport terminal to travel together:
 
-### Sleeping in Le Corbusier's *Cité Radieuse*
-For their first night in Marseille, Gadi booked an apartment inside Le Corbusier's world-famous **Cité Radieuse (Unité d'Habitation)**[^blog-trip]:
-- Living inside this brutalist icon—with its reinforced concrete pilotis, modular internal streets, communal roof terrace, and brightly painted balconies—was an extraordinary tactile thrill for Tami.
-- From there, the trio explored Marseille's vibrant port, visiting Rudy Ricciotti's lace-like concrete **MUCEM** on the harbor, the historic Le Panier district, and taking a boat excursion along the dramatic limestone sea cliffs of the Calanques.
+> ״לפני שבועיים טסנו למרסיי, שם פגשנו ״בהפתעה״ את בננו גיא בשדה התעופה (הפתעה לזוגתי…) שכרנו רכב בשדה (למה כבר?) ונסענו העירה. למחרת עברנו מלון בתוך העיר לעוד שני לילות (למה עברנו?) וטיילנו בעיר ברגל עם בננו. ואחרי כן עברנו לשלושה לילות למלון קרוב לגבול הספרדי (למה עד לשם?) וחזרנו לפרובנס לדירה בעיר Arles לחמישה לילות (למה שם?) ומשם ישר לשדה וחזרה ארצה.״
+> — גד שפר, [״טיול ארבעת הכוכבים״, בלוג *דרכי עצים* (28 בספטמבר 2026)](https://theshingimel.wordpress.com/2026/09/28/4star/)[^blog-4star]
 
-### The Walter Benjamin Pilgrimage in Portbou
-Base 1 of their journey was established at a seaside hotel near Collioure. From there, they drove across the French-Spanish border into the Catalan town of **Portbou**:
-- They made a solemn pilgrimage to **Dani Karavan's monumental memorial *Passages* (מעברים)**, dedicated to philosopher and cultural critic **Walter Benjamin**, who took his own life there in September 1940 while fleeing Nazi persecution.
-- Karavan's steel corridor slicing through the cliff toward the churning Mediterranean sea below deeply moved Tami, whose own art frequently interrogates Benjamin's concepts of mechanical reproduction, memory, and the urban *flâneur*.
+### Sleeping Inside an Idea: Le Corbusier's *Cité Radieuse* | לישון בתוך רעיון
+On their first night in Marseille, they slept inside Le Corbusier's iconic brutalist *Unité d'Habitation* (*La Cité Radieuse*)—a living dialogue with the modernist principles that had shaped their own home at **[80 Greenboim St. in Denya](../places/haifa-greenboim-80-denya.md)**:
 
-### Arles & The Van Gogh Landscapes
-Base 2 was an apartment across the Rhône River in **Arles**:
-- They explored the Roman amphitheater, Frank Gehry's reflective aluminum tower at the **Luma Arles** arts complex, and the historic sites immortalized by Vincent van Gogh (the Yellow House, the Café Terrace, and the hospital courtyard)[^blog-vangogh].
-- From Arles, they made day trips into the wild wetlands of the Camargue, the Roman antiquities of Nîmes, and the historic cloisters of Avignon.
+> ״יש משהו מעט מוזר בלישון בבניין שתכנן לה קורבוזיה. בדרך כלל מבקרים באדריכלות. מסתכלים עליה, מצלמים אותה, אולי קוראים עליה כמה דברים. כאן אפשר לעשות משהו אחר: להיכנס פנימה, לסגור את הדלת, ולישון שם... ה־Unité d’Habitation במרסיי, או בשמה המקומי La Cité Radieuse, נראית מבחוץ כמו ספינת בטון ענקית שנחתה באמצע העיר. היא ארוכה, גבוהה, מורמת על עמודים, ובנויה בקנה מידה שקשה להתעלם ממנו.״
+> — גד שפר, [״לישון בתוך רעיון״, בלוג *דרכי עצים* (16 בספטמבר 2026)](https://theshingimel.wordpress.com/2026/09/16/%d7%9c%d7%99%d7%a9%d7%95%d7%9f-%d7%91%d7%aa%d7%95%d7%9a-%d7%a8%d7%a2%d7%99%d7%95%d7%9f/)[^blog-corbu-marseille]
 
-The September 2026 French trip stands as a luminous prelude to Tami's 70th birthday—uniting her greatest loves: architectural wonder, contemporary art, Mediterranean landscapes, and her devoted family.
+From Marseille—where they also visited the MUCEM, Le Panier, FRAC, and sailed along the limestone cliffs of the Calanques[^blog-trip]—they continued via Sète to the Catalan foothills of **[Céret](https://theshingimel.wordpress.com/2026/09/20/%d7%97%d7%99%d7%99%d7%9d-%d7%91-ceret/)** ("the Mecca of Cubism")[^blog-ceret] and **[Collioure](https://theshingimel.wordpress.com/2026/09/21/%d7%a7%d7%95%d7%9c%d7%99%d7%95%d7%95%d7%a8/)** (birthplace of Matisse and Derain's Fauvism)[^blog-collioure].
+
+### Fulfilling a Dream at Portbou: Walter Benjamin & Dani Karavan | פורטבו והמזוודה של בנימין
+Crossing the Spanish border to **Portbou**, they fulfilled a long-held dream of visiting **Dani Karavan's *Passages*** memorial at the site of philosopher Walter Benjamin's death in September 1940:
+
+> ״הגשמנו חלום והגענו ל portbou בספרד. מקום מותו של וולטר בנימין. אחד הפרטים המוזרים בסיפור על ימיו האחרונים של וולטר בנימין הוא המזוודה... זה פרט כמעט בלתי נסבל בסיפור: בנימין מת משום שלא יכול היה לעבור גבול, ויום אחד אחר כך הגבול נפתח עבור האנשים שהיו איתו.״
+> — גד שפר, [״המזוודה של בנימין״, בלוג *דרכי עצים* (21 בספטמבר 2026)](https://theshingimel.wordpress.com/2026/09/21/%d7%94%d7%9e%d7%96%d7%95%d7%95%d7%93%d7%94-%d7%a9%d7%9c-%d7%91%d7%a0%d7%99%d7%9e%d7%99%d7%9f/)[^blog-benjamin]
+
+### Arles & Provence | ארל בעקבות ון גוך
+Returning to Provence for five nights in **Arles**, they explored Luma Arles, the Camargue, Nîmes, Avignon, and the city where Van Gogh dreamed of founding a communal Yellow House for artists (*״להפוך את ארל למעין מעבדה לאמנות, ואולי אפילו להתחיל בה חיים מסוג אחר״*, [״ון גוך בארל״, *דרכי עצים*](https://theshingimel.wordpress.com/2026/09/23/%d7%95%d7%9f-%d7%92%d7%95%d7%9a-%d7%91%d7%90%d7%a8%d7%9c/))[^blog-vangogh]—a luminous prelude to Tami's 70th birthday.
 
 ---
 
 ## Footnotes & Sources
 
-[^blog-4star]: Gad Sheaffer, "טיול ארבעת הכוכבים", *דרכי עצים*, 28/09/2026, https://theshingimel.wordpress.com/2026/09/28/4star/
-[^blog-trip]: Gad Sheaffer, "חזרנו", *דרכי עצים*, 28/09/2026, https://theshingimel.wordpress.com/2026/09/28/trip/
-[^blog-vangogh]: Gad Sheaffer, "ון גוך בארל", *דרכי עצים*, 23/09/2026, https://theshingimel.wordpress.com/2026/09/23/%d7%95%d7%9f-%d7%92%d7%95%d7%9a-%d7%91%d7%90%d7%a8%d7%9c/
+[^blog-paris]: גד שפר, [״פריז״ — שישה חודשים בסטודיו 8422 בסיטה דז אר, בלוג *דרכי עצים* (08.03.2017)](https://theshingimel.wordpress.com/2017/03/08/61/).
+[^blog-4star]: גד שפר, [״טיול ארבעת הכוכבים״ — מרסיי, ההפתעה של גיא ותכנון המסע, בלוג *דרכי עצים* (28.09.2026)](https://theshingimel.wordpress.com/2026/09/28/4star/).
+[^blog-trip]: גד שפר, [״חזרנו״ — סיכום עשרת ימי המסע בדרום צרפת, בלוג *דרכי עצים* (28.09.2026)](https://theshingimel.wordpress.com/2026/09/28/trip/).
+[^blog-corbu-marseille]: גד שפר, [״לישון בתוך רעיון״ — לינה ב-La Cité Radieuse של לה קורבוזיה במרסיי, בלוג *דרכי עצים* (16.09.2026)](https://theshingimel.wordpress.com/2026/09/16/%d7%9c%d7%99%d7%a9%d7%95%d7%9f-%d7%91%d7%aa%d7%95%d7%9a-%d7%a8%d7%a2%d7%99%d7%95%d7%9f/).
+[^blog-ceret]: גד שפר, [״חיים ב Ceret״ — מוזיאון סֶרֶה והקוביזם, בלוג *דרכי עצים* (20.09.2026)](https://theshingimel.wordpress.com/2026/09/20/%d7%97%d7%99%d7%99%d7%9d-%d7%91-ceret/).
+[^blog-collioure]: גד שפר, [״קוליוור״ — מאטיס, דרן ושחרור הצבע, בלוג *דרכי עצים* (21.09.2026)](https://theshingimel.wordpress.com/2026/09/21/%d7%a7%d7%95%d7%9c%d7%99%d7%95%d7%95%d7%a8/).
+[^blog-benjamin]: גד שפר, [״המזוודה של בנימין״ — פורטבו ואנדרטת דני קראוון לוולטר בנימין, בלוג *דרכי עצים* (21.09.2026)](https://theshingimel.wordpress.com/2026/09/21/%d7%94%d7%9e%d7%96%d7%95%d7%95%d7%93%d7%94-%d7%a9%d7%9c-%d7%91%d7%a0%d7%99%d7%9e%d7%99%d7%9f/).
+[^blog-vangogh]: גד שפר, [״ון גוך בארל״ — הבית הצהוב והעיר כמעבדה לאמנות, בלוג *דרכי עצים* (23.09.2026)](https://theshingimel.wordpress.com/2026/09/23/%d7%95%d7%9f-%d7%92%d7%95%d7%9a-%d7%91%d7%90%d7%a8%d7%9c/).
+[^philosophy]: ראו [הצהרת האמנית ופילוסופיה אסתטית](../art/artist-statement-philosophy.md).
+[^motifs]: ראו [מוטיבים: קפסולות, פיגומים ומראות מעוותות](../art/motifs-capsules-and-mirrors.md).
 
 ---
 

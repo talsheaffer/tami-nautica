@@ -151,30 +151,48 @@ class TestUltrawideAndRapidTransitionsChrome(unittest.TestCase):
             f"--remote-debugging-port={cdp_port}",
             url
         ]
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        time.sleep(2.5)
+        proc = subprocess.Popen(
+            cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL
+        )
+        try:
+            tabs = None
+            t0 = time.time()
+            while time.time() - t0 < 14.0:
+                try:
+                    with urllib.request.urlopen(f"http://127.0.0.1:{cdp_port}/json", timeout=2) as r:
+                        cand = json.loads(r.read())
+                        if [t for t in cand if "index.html" in t.get("url", "")]:
+                            tabs = cand
+                            break
+                except Exception:
+                    time.sleep(0.25)
 
-        # Connect CDP
-        with urllib.request.urlopen(f"http://127.0.0.1:{cdp_port}/json", timeout=6) as r:
-            tabs = json.loads(r.read())
-        target_tabs = [t for t in tabs if "index.html" in t.get("url", "")]
-        self.assertTrue(target_tabs, "Could not find index.html in CDP tabs")
-        ws_url = target_tabs[0]["webSocketDebuggerUrl"]
+            self.assertIsNotNone(tabs, "CDP /json did not respond within 14s")
+            target_tabs = [t for t in (tabs or []) if "index.html" in t.get("url", "")]
+            self.assertTrue(target_tabs, "Could not find index.html in CDP tabs")
+            ws_url = target_tabs[0]["webSocketDebuggerUrl"]
 
-        parts = ws_url.replace("ws://", "").split("/", 1)
-        host, p = parts[0].split(":")
-        path = "/" + parts[1]
+            parts = ws_url.replace("ws://", "").split("/", 1)
+            host, p = parts[0].split(":")
+            path = "/" + parts[1]
 
-        s = socket.create_connection((host, int(p)), timeout=6)
-        req = (f"GET {path} HTTP/1.1\r\n"
-               f"Host: {host}:{p}\r\n"
-               f"Upgrade: websocket\r\n"
-               f"Connection: Upgrade\r\n"
-               f"Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n"
-               f"Sec-WebSocket-Version: 13\r\n\r\n")
-        s.sendall(req.encode("utf-8"))
-        resp = s.recv(4096)
-        self.assertIn(b"101", resp)
+            s = socket.create_connection((host, int(p)), timeout=8)
+            req = (f"GET {path} HTTP/1.1\r\n"
+                   f"Host: {host}:{p}\r\n"
+                   f"Upgrade: websocket\r\n"
+                   f"Connection: Upgrade\r\n"
+                   f"Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n"
+                   f"Sec-WebSocket-Version: 13\r\n\r\n")
+            s.sendall(req.encode("utf-8"))
+            resp = s.recv(4096)
+            self.assertIn(b"101", resp)
+        except Exception:
+            proc.terminate()
+            try:
+                proc.wait(timeout=3)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+            raise
 
         def send_cdp(method, params=None, msg_id=1):
             msg = json.dumps({"id": msg_id, "method": method, "params": params or {}})
@@ -217,6 +235,23 @@ class TestUltrawideAndRapidTransitionsChrome(unittest.TestCase):
                 if target_id is None or msg.get("id") == target_id:
                     return msg
             return None
+
+        ready_start = time.time()
+        poll_id = 50
+        while time.time() - ready_start < 12.0:
+            poll_id += 1
+            send_cdp(
+                "Runtime.evaluate",
+                {
+                    "expression": "Boolean(window.__SPATIAL_MANAGER__ && window.__SPATIAL_MANAGER__.layersReady)",
+                    "returnByValue": True,
+                },
+                msg_id=poll_id,
+            )
+            r_msg = read_cdp(target_id=poll_id, timeout=4.0)
+            if r_msg and r_msg.get("result", {}).get("result", {}).get("value") is True:
+                break
+            time.sleep(0.2)
 
         return proc, s, send_cdp, read_cdp
 
@@ -278,10 +313,10 @@ class TestUltrawideAndRapidTransitionsChrome(unittest.TestCase):
                 f"Layer 0 scale on ultrawide is {layer0_scale:.3f}, expected >= 1.875"
             )
 
-            # 2. Trigger scene transition to Denya in ultrawide
+            # 2. Trigger scene transition to Bene Beitcha in ultrawide
             trans_js = """
             (() => {
-                window.__SPATIAL_MANAGER__.transitionTo('denya');
+                window.__SPATIAL_MANAGER__.transitionTo('bene_beitcha');
             })()
             """
             send_cdp("Runtime.evaluate", {"expression": trans_js}, msg_id=303)
@@ -306,11 +341,11 @@ class TestUltrawideAndRapidTransitionsChrome(unittest.TestCase):
                 res304 = read_cdp(target_id=304)
                 if res304:
                     val304 = json.loads(res304.get("result", {}).get("result", {}).get("value", "{}"))
-                    if not val304.get("isTransitioning", True) and val304.get("currentScene") == "denya":
+                    if not val304.get("isTransitioning", True) and val304.get("currentScene") == "bene_beitcha":
                         break
                 time.sleep(0.2)
 
-            self.assertEqual(val304.get("currentScene"), "denya")
+            self.assertEqual(val304.get("currentScene"), "bene_beitcha")
             self.assertFalse(val304.get("isTransitioning", True))
             self.assertEqual(val304.get("glError"), 0, f"WebGL error after ultrawide transition: {val304.get('glError')}")
 
@@ -336,10 +371,19 @@ class TestUltrawideAndRapidTransitionsChrome(unittest.TestCase):
             (() => {
                 const errors = [];
                 window.addEventListener('error', (e) => errors.push(e.message));
-                
-                // Fire 20 alternating transition requests with immediate loops
+                const targets = [
+                    'bene_beitcha',
+                    'plan_b_pipe',
+                    'plan_b_pipe_v3',
+                    'wandering_drawing',
+                    'marseille_mirror',
+                    'plan_b_pipe_v1',
+                    'marseille_mirror_v1',
+                    'paper_capsules'
+                ];
+                // Fire 20 rapid consecutive transition requests across all 8 scenes
                 for (let i = 0; i < 20; i++) {
-                    const target = (i % 2 === 0) ? 'denya' : 'herzliya';
+                    const target = targets[i % targets.length];
                     try {
                         window.__SPATIAL_MANAGER__.transitionTo(target);
                     } catch (err) {
@@ -358,10 +402,20 @@ class TestUltrawideAndRapidTransitionsChrome(unittest.TestCase):
             settled_js = """
             (() => {
                 const state = window.__PROTOTYPE_STATE__;
+                const validIds = new Set([
+                    'paper_capsules',
+                    'bene_beitcha',
+                    'plan_b_pipe',
+                    'plan_b_pipe_v3',
+                    'wandering_drawing',
+                    'marseille_mirror',
+                    'plan_b_pipe_v1',
+                    'marseille_mirror_v1'
+                ]);
                 return JSON.stringify({
                     currentScene: state.currentScene,
                     isTransitioning: state.isTransitioning,
-                    validScene: (state.currentScene === 'herzliya' || state.currentScene === 'denya')
+                    validScene: validIds.has(state.currentScene)
                 });
             })()
             """

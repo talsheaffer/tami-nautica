@@ -9,6 +9,9 @@ sources:
   - type: "site"
     title: "Tamar Sheaffer Official Portfolio"
     ref: "https://tamarsheaffer.site/"
+  - type: "site"
+    title: "Binyamin Gallery — תמר שפר"
+    ref: "https://www.binyamin-gallery.com/artist/tamar-sheaffer"
   - type: "museum"
     title: "Ramat Gan Museum Exhibition Archive: בנה ביתך"
     ref: "https://rgma.org.il/"
@@ -20,7 +23,10 @@ verification_status: "verified"
 
 Welcome to the **Art Portal** of the Tamar "Tami" Sheaffer Biographical and Artistic Wiki.
 
-Following a highly successful, decades-long first career as a defense systems engineer at Elbit Systems and Rafael, Tami made the courageous decision to take early retirement and devote her life fully to contemporary visual art. Over the past two decades, she has developed an uncompromising, deeply respected body of installation art, sculpture, and technical drawing that investigates the precarious nature of human shelters, the breakdown of sociopolitical certainties, and the tension between physical mass and existential vulnerability.
+> ״פועלת בפיסול, מיצב ורישום ומחפשת ביטוי ויזואלי להיבטים נטולי הנראות של החיים – מחשבות, תחושות וחוויות.״
+> — מתוך הגדרת יצירתה של תמר שפר, [עמוד האמנית הרשמי בגלריה בנימין](https://www.binyamin-gallery.com/artist/tamar-sheaffer)[^binyamin-artist]
+
+Following a decades-long first career as a [defense systems engineer at Elbit Systems and Rafael](../bio/engineering-and-feminism.md), Tami chose to leave the high-tech industry and devote her life to contemporary visual art[^prtfl-179933]. Over the past two decades, she has forged an uncompromising body of installation art, sculpture, and hybrid technical drawing investigating the fragility of human shelters, the dissolution of binary categories, and the tension between industrial mass and domestic vulnerability[^site-portfolio][^prtfl-257256].
 
 ---
 
@@ -34,7 +40,7 @@ Following a highly successful, decades-long first career as a defense systems en
 |  - Systems logic & subversion      |  - Sisyphean manual labor       |  - Viewpoint dependence     |
 |  - Imaginary architectures         |  - Brown packing paper & pulp   |  - Capsules & enclosures    |
 |  - Simulacra of "the home"         |  - Cast cement & hamra earth    |  - Distorted mirror optics  |
-|  - Existential / civic anxiety     |  - Rulers, stencils & graphite  |  - Architectural conduits   |
+|  - Dissolving binary categories    |  - Rulers, stencils & graphite  |  - Architectural conduits   |
 +------------------------------------+---------------------------------+-----------------------------+
 ```
 
@@ -43,25 +49,35 @@ Following a highly successful, decades-long first career as a defense systems en
 ## Directory of Art Articles
 
 ### 1. [Art Education: HaMidrasha & Haifa University MFA](education-midrasha-haifa.md)
-The brave transition: retiring early from defense engineering to enroll in full-time academic art training at **HaMidrasha School of Art (Beit Berl)** (2005–2009) and completing her Master of Fine Arts at the **University of Haifa** (2009–2011). How her systems engineering background fused with radical conceptual art pedagogy.
+Leaving high-tech for full-time academic art training at **HaMidrasha School of Art (Beit Berl)** (2005–2009) and earning her Master of Fine Arts at the **University of Haifa** (2009–2011), culminating in *צופן* (*Code*) at the Tel Aviv Museum of Art[^site-portfolio][^prtfl-179933].
 
 ### 2. [Artist Statement & Philosophy](artist-statement-philosophy.md)
-The philosophical framework: "imaginary architectures lacking structural logic", mental environments, hybrid cyborg entities, and the foundational principle that *"reality is viewpoint-dependent"*. The deliberate rejection of slick digital perfection in favor of Sisyphean, manual low-tech craft.
+Tami's verbatim Hebrew (*אודות*) and English artist statements: mental landscapes, dissolving dichotomies, hybrid objects, and the principle that *"Reality is not one, I guess, it is viewpoint dependent"*[^binyamin-artist][^site-portfolio].
 
 ### 3. [Materials: Paper, Papier-Mâché & Cement](materials-paper-and-cement.md)
-The material vocabulary: the tactile intimacy of brown packaging paper, paper pulp, and shredded municipal records placed in dramatic tension with heavy cast industrial concrete, metal conduits, and pressed hamra soil.
+The material vocabulary and emotional *"צליל"* ("sound") of materials: brown packing paper, stiffened textiles, and Persian carpets set against cast concrete, iron, and compressed or rolled earth[^prtfl-179933][^erev-rav].
 
 ### 4. [Motifs: Capsules, Scaffolding & Distorted Mirrors](motifs-capsules-and-mirrors.md)
-The visual grammar: protective enclosures that isolate small units of space/time from surrounding chaos; labyrinthine conduit networks; and curved, scratched, or clouded mirrors that distort reflections and question objective perception.
+Protective paper capsules, exposed Haifa *shikun* walls, *Plan B*'s labyrinth of conduits inspired by Etgar Keret's *"צינורות"*, and mirrored optical traps[^binyamin-artist].
 
 ### 5. [Binyamin Gallery Cooperative](binyamin-gallery-cooperative.md)
-The communal anchor: Tami's role as a founding cooperative member of **Binyamin Gallery** (גלריה בנימין) in Tel Aviv. Over a decade of collective curatorial solidarity, mounting experimental solo exhibitions (*"now / (here+there)"*, *"Inviting Darkness"*), and championing independent artist-run culture.
+Over a decade of cooperative solidarity at **[Binyamin Gallery](https://www.binyamin-gallery.com/about)** (גלריה בנימין) in Tel Aviv, including solo shows *"now \ (here+there)"* (2013) and *"להזמין את החושך"* (2021)[^binyamin-artist].
 
 ### 6. [Solo Exhibition: "בנה ביתך / The New Normal" (Ramat Gan Museum, 2026)](solo-exhibition-bene-beitcha.md)
-The crowning milestone of her 70th year: her landmark solo museum exhibition at the **Ramat Gan Museum of Israeli Art**, curated by **Sari Golan**. A massive, haunting installation exploring the physical and psychological disintegration of the Israeli "home" in a post-traumatic era.
+The crowning milestone of her 70th year at the **[Ramat Gan Museum of Israeli Art](https://rgma.org.il/)**, curated by **Sari Golan**, reviewed across *Portfolio*, *Haaretz*, and *Reshet 13*[^prtfl-257256].
 
 ### 7. [Chronological Catalog of Exhibitions](exhibitions-chronology.md)
-The comprehensive, fully annotated catalog of Tami's solo exhibitions, duo presentations, international biennials, and group shows from 2009 to 2026, including curators, venues, and exhibited artworks.
+Complete annotated record of solo exhibitions, duo shows, international residencies, and group exhibitions from 2009 to 2026[^site-portfolio].
+
+---
+
+## Footnotes & Sources
+
+[^binyamin-artist]: תמר שפר, [עמוד האמנית הרשמי בגלריה בנימין (Binyamin Gallery)](https://www.binyamin-gallery.com/artist/tamar-sheaffer).
+[^site-portfolio]: Tamar Sheaffer, [Official Artist Portfolio](https://tamarsheaffer.site/) & [About / CV](https://tamarsheaffer.site/about/).
+[^prtfl-179933]: ענבל כהן חמו, [״כשהסביבה הופכת לחומר: תמר שפר בסדנאות האמנים ירושלים״ — מגזין *פורטפוליו* (01.04.2023)](https://www.prtfl.co.il/archives/179933).
+[^erev-rav]: תמרה אברמוביץ', [״לראות בטון ולהגיע לבכי״ — מגזין *ערב רב* (06.02.2025)](https://www.erev-rav.com/archives/58421).
+[^prtfl-257256]: ורה פלפול, [״׳בנה ביתך׳ של תמר שפר: הבית שאיבד את ביטחונו״ — מגזין *פורטפוליו* (08.08.2026)](https://www.prtfl.co.il/archives/257256).
 
 ---
 

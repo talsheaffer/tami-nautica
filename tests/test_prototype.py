@@ -51,6 +51,9 @@ class TestPrototypeIntegrity(unittest.TestCase):
             PROTOTYPE_DIR / "scene_config.py",
             PROTOTYPE_DIR / "vision_primitives.py",
             PROTOTYPE_DIR / "build_assets.py",
+            PROTOTYPE_DIR / "denya_living_room_scene_builder.py",
+            PROTOTYPE_DIR / "tzofen_tree_scenes_builder.py",
+            PROTOTYPE_DIR / "scroll_humpty_scenes_builder.py",
             PROJECT_ROOT / "assets" / "shaders" / "warped_reflection_transition.glsl"
         ]
         for f in required_files:
@@ -58,13 +61,124 @@ class TestPrototypeIntegrity(unittest.TestCase):
             self.assertGreater(f.stat().st_size, 0, f"Empty file: {f}")
 
     def test_spatial_pipeline_config_roundtrip_ssot(self):
-        """Asserts SpatialPipelineConfig dataclass SSOT round-trips cleanly via JSON."""
-        from prototype.scene_config import SpatialPipelineConfig, default_spatial_pipeline_config
+        """Asserts all typed scene builder SSOT dataclasses round-trip cleanly via JSON."""
+        from prototype.fried_house_scene_builder import (
+            FriedHouseSceneConfig,
+            default_fried_house_scene_config,
+        )
+        from prototype.new_scenes_builder import (
+            NewScenesBundleConfig,
+            default_new_scenes_bundle_config,
+        )
+        from prototype.railing_occluder_scene_builder import (
+            RailingOccluderSceneConfig,
+            build_railing_occluder_manifest_entry,
+            default_railing_occluder_scene_config,
+            verify_railing_occluder_depth_topology,
+        )
+        from prototype.scene_config import (
+            CameraRigConfig,
+            SpatialPipelineConfig,
+            default_spatial_pipeline_config,
+        )
 
         cfg = default_spatial_pipeline_config()
-        serialized = cfg.to_json()
-        restored = SpatialPipelineConfig.from_json(serialized)
-        self.assertEqual(cfg, restored)
+        self.assertEqual(cfg, SpatialPipelineConfig.from_json(cfg.to_json()))
+        self.assertEqual(cfg.camera_rig, CameraRigConfig.from_json(cfg.camera_rig.to_json()))
+
+        manifest_path = PROTOTYPE_DIR / "assets" / "scenes" / "scene_manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            manifest.get("pipeline_config", {}).get("camera_rig"),
+            cfg.camera_rig.to_dict(),
+        )
+
+        new_cfg = default_new_scenes_bundle_config()
+        self.assertEqual(new_cfg, NewScenesBundleConfig.from_json(new_cfg.to_json()))
+        self.assertEqual(len(new_cfg.shelf_portal.portal_cubbies), 9)
+
+        fried_cfg = default_fried_house_scene_config()
+        self.assertEqual(fried_cfg, FriedHouseSceneConfig.from_json(fried_cfg.to_json()))
+
+        yard_occ_cfg = default_railing_occluder_scene_config()
+        self.assertEqual(
+            yard_occ_cfg,
+            RailingOccluderSceneConfig.from_json(yard_occ_cfg.to_json()),
+        )
+        self.assertEqual(yard_occ_cfg.sisters_reveal.portal_target_scene_id, "fried_house_railing")
+        yard_manifest_entry = build_railing_occluder_manifest_entry(yard_occ_cfg)
+        self.assertEqual(len(yard_manifest_entry["portalShelves"]), 1)
+        self.assertEqual(
+            yard_manifest_entry["portalShelves"][0]["targetSceneId"],
+            "fried_house_railing",
+        )
+        yard_topo = verify_railing_occluder_depth_topology(yard_occ_cfg)
+        self.assertGreaterEqual(yard_topo["railing_post_count"], 4.0)
+        self.assertLessEqual(yard_topo["railing_max_contact_dz"], 2.5)
+        self.assertLessEqual(yard_topo["installation_max_contact_dz"], 2.5)
+        self.assertLessEqual(yard_topo["hedge_max_contact_dz"], 2.5)
+        self.assertLessEqual(yard_topo["sisters_shoe_max_dz"], 2.5)
+        self.assertGreater(yard_topo["min_rail_sisters_clearance_z"], 5.0)
+
+        from prototype.denya_living_room_scene_builder import (
+            DenyaLivingRoomBundleConfig,
+            default_denya_living_room_bundle_config,
+        )
+
+        denya_cfg = default_denya_living_room_bundle_config()
+        self.assertEqual(
+            denya_cfg,
+            DenyaLivingRoomBundleConfig.from_json(denya_cfg.to_json()),
+        )
+        self.assertEqual(denya_cfg.dining_scene.scene_id, "denya_living_room")
+        self.assertEqual(denya_cfg.couch_scene.scene_id, "denya_couch_guitar")
+        self.assertEqual(
+            denya_cfg.framed_painting.target_scene_id,
+            "wandering_drawing",
+        )
+        self.assertEqual(
+            denya_cfg.planted_trio.portal_id_to_couch,
+            "portal_denya_to_couch",
+        )
+        self.assertEqual(
+            denya_cfg.couch_scene.return_portal_id,
+            "portal_denya_back_to_dining",
+        )
+
+        from prototype.table_installation_scene_builder import (
+            FriedTableHybridSceneConfig,
+            default_fried_table_hybrid_scene_config,
+        )
+
+        table_hybrid_cfg = default_fried_table_hybrid_scene_config()
+        self.assertEqual(
+            table_hybrid_cfg,
+            FriedTableHybridSceneConfig.from_json(table_hybrid_cfg.to_json()),
+        )
+        self.assertTrue(table_hybrid_cfg.hybrid_installation.mirror_horizontal)
+        self.assertEqual(cfg.camera_rig.portal_occluder_regen_delay_ms, 60000)
+
+        from prototype.tzofen_tree_scenes_builder import (
+            TzofenTreeBundleConfig,
+            default_tzofen_tree_bundle_config,
+        )
+
+        tz_tree_cfg = default_tzofen_tree_bundle_config()
+        self.assertEqual(
+            tz_tree_cfg,
+            TzofenTreeBundleConfig.from_json(tz_tree_cfg.to_json()),
+        )
+
+        from prototype.scroll_humpty_scenes_builder import (
+            ScrollHumptyBundleConfig,
+            default_scroll_humpty_bundle_config,
+        )
+
+        scroll_humpty_cfg = default_scroll_humpty_bundle_config()
+        self.assertEqual(
+            scroll_humpty_cfg,
+            ScrollHumptyBundleConfig.from_json(scroll_humpty_cfg.to_json()),
+        )
 
     def test_prototype_scene_textures_exist_and_valid(self):
         """Asserts all multi-plane, outpainted room, and neural depth textures exist with valid SSOT dimensions."""
@@ -75,45 +189,174 @@ class TestPrototypeIntegrity(unittest.TestCase):
         inner_dims = (cfg.dimensions.width, cfg.dimensions.height)
         expanded_dims = cfg.outpainting.expanded_dimensions(cfg.dimensions)
 
-        expanded_assets = [
-            PROTOTYPE_DIR / "assets" / "scenes" / "scene1_herzliya_bg_inpainted.jpg",
-            PROTOTYPE_DIR / "assets" / "scenes" / "scene1_herzliya_depth.png",
-            PROTOTYPE_DIR / "assets" / "scenes" / "scene2_denya_bg_inpainted.jpg",
-            PROTOTYPE_DIR / "assets" / "scenes" / "scene2_denya_depth.png",
-        ]
-        inner_assets = [
-            PROTOTYPE_DIR / "assets" / "scenes" / "scene1_herzliya_mid.png",
-            PROTOTYPE_DIR / "assets" / "scenes" / "scene1_herzliya_fg.png",
-            PROTOTYPE_DIR / "assets" / "scenes" / "scene2_denya_mid.png",
-            PROTOTYPE_DIR / "assets" / "scenes" / "scene2_denya_fg.png",
-            PROTOTYPE_DIR / "assets" / "scenes" / "scene2_reflections.png",
-        ]
-        for asset in expanded_assets:
-            self.assertTrue(asset.exists(), f"Missing expanded scene asset: {asset}")
-            self.assertGreater(asset.stat().st_size, 1000, f"Asset too small: {asset}")
-            with Image.open(asset) as im:
-                self.assertEqual(
-                    im.size,
-                    expanded_dims,
-                    f"Unexpected expanded dimension for {asset.name}: {im.size} != {expanded_dims}",
+        expected_assets: list[tuple[Path, tuple[int, int]]] = []
+        for spec in cfg.scenes:
+            spec_exp_dims = spec.expected_bg_dimensions(cfg.dimensions, cfg.outpainting)
+            expected_assets.append(
+                (PROTOTYPE_DIR / "assets" / "scenes" / spec.bg_output_filename, spec_exp_dims)
+            )
+            expected_assets.append(
+                (PROTOTYPE_DIR / "assets" / "scenes" / spec.depth_output_filename, spec_exp_dims)
+            )
+            expected_assets.append(
+                (
+                    PROTOTYPE_DIR / "assets" / "scenes" / spec.mid_output_filename,
+                    spec.expected_mid_dimensions(cfg.dimensions),
                 )
-        for asset in inner_assets:
-            self.assertTrue(asset.exists(), f"Missing inner scene asset: {asset}")
+            )
+            fg_asset = PROTOTYPE_DIR / "assets" / "scenes" / spec.fg_output_filename
+            expected_assets.append(
+                (fg_asset, spec.expected_fg_dimensions(cfg.dimensions, cfg.outpainting))
+            )
+            for extra in spec.extra_layers:
+                ex_asset = PROTOTYPE_DIR / "assets" / "scenes" / extra.output_filename
+                expected_assets.append(
+                    (
+                        ex_asset,
+                        spec.expected_extra_layer_dimensions(
+                            extra, cfg.dimensions, cfg.outpainting
+                        ),
+                    )
+                )
+            if spec.reflection_output_filename:
+                expected_assets.append(
+                    (
+                        PROTOTYPE_DIR / "assets" / "scenes" / spec.reflection_output_filename,
+                        spec.expected_reflection_dimensions(cfg.dimensions),
+                    )
+                )
+        for asset, exp_size in expected_assets:
+            self.assertTrue(asset.exists(), f"Missing scene asset: {asset}")
             self.assertGreater(asset.stat().st_size, 1000, f"Asset too small: {asset}")
             with Image.open(asset) as im:
                 self.assertEqual(
                     im.size,
-                    inner_dims,
-                    f"Unexpected inner dimension for {asset.name}: {im.size} != {inner_dims}",
+                    exp_size,
+                    f"Unexpected dimension for {asset.name}: {im.size} != {exp_size}",
                 )
 
         manifest_path = PROTOTYPE_DIR / "assets" / "scenes" / "scene_manifest.json"
         self.assertTrue(manifest_path.exists(), f"Missing SSOT scene manifest: {manifest_path}")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        self.assertIn("herzliya", manifest.get("scenes", {}))
-        self.assertIn("denya", manifest.get("scenes", {}))
-        self.assertEqual(manifest["scenes"]["herzliya"]["bgExpandedWidth"], expanded_dims[0])
-        self.assertEqual(manifest["scenes"]["denya"]["bgExpandedHeight"], expanded_dims[1])
+        manifest_scenes = manifest.get("scenes", {})
+        self.assertEqual(len(cfg.scenes), 8)
+        for spec in cfg.scenes:
+            self.assertIn(spec.scene_id, manifest_scenes)
+            spec_exp_w, spec_exp_h = spec.expected_bg_dimensions(cfg.dimensions, cfg.outpainting)
+            self.assertEqual(manifest_scenes[spec.scene_id]["bgExpandedWidth"], spec_exp_w)
+            self.assertEqual(manifest_scenes[spec.scene_id]["bgExpandedHeight"], spec_exp_h)
+
+        # Verify companion multi-scene builders (`wandering_drawing_1`, `denya_model`, `shelf_portal`, `fried_house_railing`)
+        companion_expected: list[tuple[Path, tuple[int, int]]] = [
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene7_wandering1_bg.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene7_wandering1_bg_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene7_wandering1_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene7_wandering1_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene8_denya_model_bg.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene8_denya_model_bg_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene8_denya_model_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene8_denya_model_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene9_shelf_portal_bg.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene9_shelf_portal_bg_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene9_shelf_portal_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene9_shelf_portal_fg.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_railing.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene_railing_occluder_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene_railing_occluder_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene_railing_occluder_hedge.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene_railing_occluder_hedge_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene_railing_occluder_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene_railing_occluder_railing.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene_railing_occluder_railing_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene_railing_occluder_installation.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene_railing_occluder_installation_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene_railing_occluder_fg.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_dining_bg.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_dining_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_dining_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_dining_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_dining_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_dining_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_dining_couch_people.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_dining_couch_people_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_dining_wandering2_frame.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_dining_wandering2_frame_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_couch_bg.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_couch_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_couch_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_couch_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_couch_fg.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_couch_fg_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_couch_wandering2_frame.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "denya_living_couch_wandering2_frame_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_railing_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_installation.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_installation_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_front_chair.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_front_chair_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene7_wandering1_scroll_foot.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene7_wandering1_scroll_foot_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene7_wandering1_scroll_veil.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_window_shutter.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_window_shutter_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene13_herzliya_canopy_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene13_herzliya_canopy_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene13_herzliya_canopy_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene13_herzliya_canopy_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene13_herzliya_canopy_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene13_herzliya_canopy_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene14_scroll_world_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene14_scroll_world_bg_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene14_scroll_world_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene14_scroll_world_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene14_scroll_world_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene14_scroll_world_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene15_humpty_bundle_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene15_humpty_bundle_bg_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene15_humpty_bundle_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene15_humpty_bundle_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene15_humpty_bundle_fg_depth.png", inner_dims),
+        ]
+        for asset, exp_size in companion_expected:
+            self.assertTrue(asset.exists(), f"Missing companion scene asset: {asset}")
+            with Image.open(asset) as im:
+                self.assertEqual(im.size, exp_size, f"Unexpected dimension for {asset.name}: {im.size}")
+
+        shutter_crop = PROTOTYPE_DIR / "assets" / "scenes" / "scene10_fried_house_window_shutter_crop.png"
+        self.assertTrue(shutter_crop.exists(), f"Missing shutter crop asset: {shutter_crop}")
+
+        for companion_id in (
+            "wandering_drawing_1",
+            "scroll_palm_world",
+            "denya_model",
+            "shelf_portal",
+            "tzofen_brick_table",
+            "humpty_dumpty_bundle",
+            "fried_yard_installation",
+            "fried_house_railing",
+            "fried_table_hybrid",
+            "herzliya_tree_canopy",
+            "denya_living_room",
+            "denya_couch_guitar",
+        ):
+            self.assertIn(companion_id, manifest_scenes)
 
     def test_glsl_transition_shader_syntax_and_findings(self):
         """Validates GLSL transition shader syntax and M4 Reviewer 2 Finding 2 fix."""
@@ -138,6 +381,7 @@ class TestPrototypeIntegrity(unittest.TestCase):
         js_files = [
             PROTOTYPE_DIR / "js" / "app.js",
             PROTOTYPE_DIR / "js" / "scene_manager.js",
+            PROTOTYPE_DIR / "js" / "feedback_overlay.js",
             PROTOTYPE_DIR / "js" / "vendor" / "three.module.js",
             PROTOTYPE_DIR / "tests" / "prototype.spec.js"
         ]
@@ -153,6 +397,67 @@ class TestPrototypeIntegrity(unittest.TestCase):
             )
             self.assertEqual(res.returncode, 0, f"Node syntax error in {js}:\n{res.stderr}")
 
+    def test_gyro_quaternion_and_keyboard_bindings_via_node(self):
+        """Verifies quaternion gyro pitch sign, W3C gimbal-flip immunity, Z-roll immunity, and keyboard elevation SSOT."""
+        node_script = """
+import {
+  computeGyroAnglesFromDeviceEuler,
+  KEYBOARD_NAV_BINDINGS,
+  SCENE_GEOMETRY_SPEC
+} from './prototype/js/scene_manager.js';
+
+const r0 = computeGyroAnglesFromDeviceEuler(40, 60, 0, 0, null, SCENE_GEOMETRY_SPEC);
+const rUp = computeGyroAnglesFromDeviceEuler(40, 72, 0, 0, r0.referenceQuat, SCENE_GEOMETRY_SPEC);
+const rDown = computeGyroAnglesFromDeviceEuler(40, 48, 0, 0, r0.referenceQuat, SCENE_GEOMETRY_SPEC);
+
+const g0 = computeGyroAnglesFromDeviceEuler(25, 85, 5, 0, null, SCENE_GEOMETRY_SPEC);
+const gAcross90 = computeGyroAnglesFromDeviceEuler(25, 96, 5, 0, g0.referenceQuat, SCENE_GEOMETRY_SPEC);
+
+const w0 = computeGyroAnglesFromDeviceEuler(0, 10, 88, 90, null, SCENE_GEOMETRY_SPEC);
+const wGimbalFlip = computeGyroAnglesFromDeviceEuler(180, 170, -88, 90, w0.referenceQuat, SCENE_GEOMETRY_SPEC);
+
+const z0 = computeGyroAnglesFromDeviceEuler(0, 0, 0, 0, null, SCENE_GEOMETRY_SPEC);
+const zPureRoll = computeGyroAnglesFromDeviceEuler(45, 0, 0, 0, z0.referenceQuat, SCENE_GEOMETRY_SPEC);
+
+const l0 = computeGyroAnglesFromDeviceEuler(0, 0, -60, 90, null, SCENE_GEOMETRY_SPEC);
+const lUp = computeGyroAnglesFromDeviceEuler(0, 0, -72, 90, l0.referenceQuat, SCENE_GEOMETRY_SPEC);
+
+console.log(JSON.stringify({
+  rUpPitch: rUp.pitchDeg,
+  rUpYaw: rUp.yawDeg,
+  rDownPitch: rDown.pitchDeg,
+  gAcross90Pitch: gAcross90.pitchDeg,
+  wGimbalFlipPitch: wGimbalFlip.pitchDeg,
+  wGimbalFlipYaw: wGimbalFlip.yawDeg,
+  zPureRollExcursion: zPureRoll.excursionDeg,
+  lUpPitch: lUp.pitchDeg,
+  bindingsUp: KEYBOARD_NAV_BINDINGS.up,
+  bindingsDown: KEYBOARD_NAV_BINDINGS.down,
+  elevSpeed: SCENE_GEOMETRY_SPEC.keyElevationSpeedPerSec
+}));
+"""
+        res = subprocess.run(
+            ["node", "--input-type=module", "-e", node_script],
+            cwd=str(PROJECT_ROOT),
+            capture_output=True,
+            text=True,
+            timeout=10,
+            stdin=subprocess.DEVNULL,
+        )
+        self.assertEqual(res.returncode, 0, f"Node gyro/keyboard test failed:\n{res.stderr}")
+        out = json.loads(res.stdout.strip())
+        self.assertAlmostEqual(out["rUpPitch"], 15.0, places=3)
+        self.assertAlmostEqual(out["rUpYaw"], 0.0, places=3)
+        self.assertAlmostEqual(out["rDownPitch"], -15.0, places=3)
+        self.assertGreater(out["gAcross90Pitch"], 12.0)
+        self.assertAlmostEqual(out["wGimbalFlipPitch"], -5.0, places=3)
+        self.assertAlmostEqual(out["wGimbalFlipYaw"], 0.0, places=3)
+        self.assertLess(out["zPureRollExcursion"], 0.01)
+        self.assertAlmostEqual(out["lUpPitch"], 15.0, places=3)
+        self.assertEqual(out["bindingsUp"], ["KeyE", "PageUp"])
+        self.assertEqual(out["bindingsDown"], ["KeyQ", "PageDown"])
+        self.assertGreater(out["elevSpeed"], 0)
+
     def test_html_rtl_and_accessibility_chrome(self):
         """Validates RTL Hebrew structure, semantic tags, and accessible controls in index.html."""
         html_file = PROTOTYPE_DIR / "index.html"
@@ -162,8 +467,38 @@ class TestPrototypeIntegrity(unittest.TestCase):
         self.assertIn('dir="rtl"', content)
         self.assertIn('lang="he"', content)
         self.assertIn('id="spatial-canvas"', content)
-        self.assertIn('data-scene="herzliya"', content)
-        self.assertIn('data-scene="denya"', content)
+        for scene_id in (
+            "shelf_portal",
+            "paper_capsules",
+            "tzofen_brick_table",
+            "bene_beitcha",
+            "humpty_dumpty_bundle",
+            "denya_model",
+            "denya_living_room",
+            "denya_couch_guitar",
+            "plan_b_pipe",
+            "plan_b_pipe_v3",
+            "wandering_drawing_1",
+            "scroll_palm_world",
+            "wandering_drawing",
+            "fried_yard_installation",
+            "fried_house_railing",
+            "fried_table_hybrid",
+            "herzliya_tree_canopy",
+            "marseille_mirror",
+            "plan_b_pipe_v1",
+            "marseille_mirror_v1",
+        ):
+            self.assertIn(f'data-scene="{scene_id}"', content)
+        self.assertIn('id="spatial-nav-bar"', content)
+        self.assertIn('id="spatial-back-btn"', content)
+        self.assertIn('id="spatial-forward-btn"', content)
+        self.assertIn('id="spatial-breadcrumb-list"', content)
+        self.assertIn('id="spatial-outgoing-portals"', content)
+        self.assertIn('id="portal-return-btn"', content)
+        self.assertIn('id="exhibition-tabs"', content)
+        self.assertIn('class="story-drawings-strip"', content)
+        self.assertIn('rgma_bene_beitcha_scroll_drawing_foot_2026_331d870d.jpg', content)
         self.assertIn('id="info-drawer"', content)
         self.assertIn('תמר שפר', content)
 
@@ -364,7 +699,8 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 frame.extend(masked)
                 s.sendall(bytes(frame))
 
-            def read_cdp(target_id=None, timeout=6.0):
+            def read_cdp(target_id=None, timeout=12.0):
+                s.settimeout(timeout)
                 start = time.time()
                 while time.time() - start < timeout:
                     header = s.recv(2)
@@ -436,7 +772,7 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             self.assertEqual(data["glError"], 0, f"WebGL gl.getError() returned {data['glError']}")
             self.assertEqual(data["dir"], "rtl", "Document direction must be RTL")
             self.assertIsNotNone(data["state"], "window.__PROTOTYPE_STATE__ not exposed")
-            self.assertEqual(data["state"]["currentScene"], "herzliya")
+            self.assertEqual(data["state"]["currentScene"], "paper_capsules")
 
             # 2. Parallax interaction test: excursion across dual extremes
             # Extreme 1: Top-Left (-1.0, 1.0)
@@ -530,6 +866,48 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             self.assertAlmostEqual(dof_data["resetPose"]["z"], 400.0, places=1)
             self.assertAlmostEqual(dof_data["resetPose"]["yawDeg"], 0.0, places=2)
 
+            if not is_mobile:
+                kb_elev_js = """
+                (() => {
+                    const sm = window.__tamiSceneManager || window.__SPATIAL_MANAGER__;
+                    sm.resetCameraPose(true);
+                    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', code: 'KeyE', bubbles: true }));
+                    sm._stepKeyboardNavigation(0.25);
+                    window.dispatchEvent(new KeyboardEvent('keyup', { key: 'e', code: 'KeyE', bubbles: true }));
+                    const upY = sm.poseTarget.y;
+
+                    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'q', code: 'KeyQ', bubbles: true }));
+                    sm._stepKeyboardNavigation(0.55);
+                    window.dispatchEvent(new KeyboardEvent('keyup', { key: 'q', code: 'KeyQ', bubbles: true }));
+                    const downY = sm.poseTarget.y;
+
+                    sm.resetCameraPose(true);
+                    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ק', code: 'KeyE', bubbles: true }));
+                    sm._stepKeyboardNavigation(0.25);
+                    window.dispatchEvent(new KeyboardEvent('keyup', { key: 'ק', code: 'KeyE', bubbles: true }));
+                    const hebrewUpY = sm.poseTarget.y;
+
+                    sm.resetCameraPose(true);
+                    const infoDrawer = document.getElementById('info-drawer');
+                    if (infoDrawer) infoDrawer.classList.add('open');
+                    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', code: 'KeyE', bubbles: true }));
+                    sm._stepKeyboardNavigation(0.25);
+                    const blockedByDrawerY = sm.poseTarget.y;
+                    window.dispatchEvent(new KeyboardEvent('keyup', { key: 'e', code: 'KeyE', bubbles: true }));
+                    if (infoDrawer) infoDrawer.classList.remove('open');
+                    sm.resetCameraPose(true);
+
+                    return JSON.stringify({ upY, downY, hebrewUpY, blockedByDrawerY });
+                })()
+                """
+                send_cdp("Runtime.evaluate", {"expression": kb_elev_js, "returnByValue": True}, msg_id=261)
+                res261 = read_cdp(target_id=261)
+                kb_data = json.loads(res261.get("result", {}).get("result", {}).get("value"))
+                self.assertGreater(kb_data["upY"], 30.0)
+                self.assertLess(kb_data["downY"], -30.0)
+                self.assertGreater(kb_data["hebrewUpY"], 30.0)
+                self.assertAlmostEqual(kb_data["blockedByDrawerY"], 0.0, places=3)
+
             # Check gl.getError() === 0
             gl_err_js = """
             (() => {
@@ -548,7 +926,7 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             (() => {
                 const sm = window.__tamiSceneManager || window.__SPATIAL_MANAGER__;
                 if (sm) {
-                    sm.transitionTo('denya');
+                    sm.transitionTo('bene_beitcha');
                 }
             })()
             """
@@ -577,13 +955,13 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 res = read_cdp(target_id=msg_counter)
                 if res:
                     final_data = json.loads(res.get("result", {}).get("result", {}).get("value", "{}"))
-                    if not final_data.get("isTransitioning", True) and final_data.get("currentScene") == "denya":
+                    if not final_data.get("isTransitioning", True) and final_data.get("currentScene") == "bene_beitcha":
                         trans_done = True
                         break
                 time.sleep(0.2)
 
             self.assertTrue(trans_done, f"Scene transition failed to settle within 10s: {final_data}")
-            self.assertEqual(final_data.get("currentScene"), "denya")
+            self.assertEqual(final_data.get("currentScene"), "bene_beitcha")
             self.assertEqual(final_data.get("glError"), 0, f"WebGL gl.getError() returned {final_data.get('glError')}")
 
             s.close()

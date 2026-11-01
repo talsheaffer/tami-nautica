@@ -15,19 +15,24 @@ sources:
   - type: "press"
     title: "לראות בטון ולהגיע לבכי — תמרה אברמוביץ, ערב רב"
     ref: "https://www.erev-rav.com/archives/58421"
+  - type: "press"
+    title: "פורטפוליו — כשהסביבה הופכת לחומר: ראיון עם תמר שפר"
+    ref: "https://www.prtfl.co.il/archives/179933"
   - type: "site"
     title: "Binyamin Gallery Artwork Catalogs"
     ref: "https://www.binyamin-gallery.com/artist/tamar-sheaffer"
-  - type: "user_seed"
-    title: "User Biographical Seeds"
-    ref: "ORIGINAL_REQUEST.md:29"
 verification_status: "verified"
 ---
 
 # Materials: Paper, Papier-Mâché & Cement
 # חומריות: נייר, עיסת נייר ומלט
 
-A defining hallmark of Tami Sheaffer's sculptural language is her deliberate juxtaposition of contradictory materials: the fragile, porous, biodegradable delicacy of **paper and papier-mâché** placed in visceral tension with the brutalist weight and permanence of **cement, concrete, iron, and earth**[^user-seed].
+A defining hallmark of Tami Sheaffer's sculptural language is her deliberate juxtaposition of contradictory materials: the fragile, porous, tactile intimacy of **paper, papier-mâché, and textiles** placed in visceral tension with the brutalist weight of **cement, concrete, iron, sand, and earth**[^prtfl-materials][^erev-rav].
+
+In her April 2023 interview with Inbal Cohen Hamo in *Portfolio Magazine*, Tami explained that for her, materials possess an emotional timbre—what she calls *"צליל"* ("sound")—and combine into consonant or dissonant chords, directly inspired by Polish-Jewish modernist poet Debora Vogel's *הנשמה שיש לחומרים* (*The Soul That Materials Have*):
+
+> ״אני אוהבת חומרים ונמשכת לחומרים מעולמות שונים. החל מטקסטיל שאני מאוהבת בו, דרך נייר ועד אהבתי הגדולה לחומרים תעשייתיים מעולם הבניה: בטון, חול, גומי, ברזל ועוד. אני מתייחסת לכל הסביבה שלי כאל חומר. מבני תעשייה וכלי עבודה מהפנטים אותי ואני משלבת אלמנטים צורניים שלהם בעבודות, תוך שימוש בחומרים שמשנים את אופיים... יש חומרים שמבחינתי נושאים צליל רך, וכאלה שנושאים צליל קשה, עצוב, חושני וכן הלאה. כשאני מחברת בין החומרים נוצר סוג של אקורד. לפעמים צורם, לפעמים לא. לא יודעת אם הבחנת בזה, אבל היה בתערוכה ספר שירים פתוח. ספרה של דבורה פוגל ״הנשמה שיש לחומרים״. זה זה.״
+> — תמר שפר, בראיון לענבל כהן חמו, [״כשהסביבה הופכת לחומר״, מגזין *פורטפוליו* (1 באפריל 2023)](https://www.prtfl.co.il/archives/179933)[^prtfl-materials]
 
 ---
 
@@ -39,46 +44,54 @@ A defining hallmark of Tami Sheaffer's sculptural language is her deliberate jux
 +------------------------------------+---------------------------------+-----------------------------+
 |  THE FRAGILE & POROUS              |  THE HYBRID CONDUITS            |  THE DENSE & UNYIELDING     |
 |  - Brown kraft packing paper       |  - Industrial cardboard tubes   |  - Cast industrial cement   |
-|  - Molded papier-mâché pulp        |  - Steel electrical conduit     |  - Compressed hamra earth   |
-|  - Shredded municipal records      |  - Plywood partitions           |  - Demolished masonry stone |
-|  - Japanese kozo tissue            |  - Plexiglas & mirror sheet     |  - Metal fittings & clamps  |
+|  - Molded papier-mâché pulp        |  - Stiffened & bound textiles   |  - Compressed hamra earth   |
+|  - Persian & domestic carpets      |  - Plywood partitions           |  - Concrete & masonry block |
+|  - Embroidered linens & shirts     |  - Plexiglas & mirror sheet     |  - Metal fittings & iron    |
 +------------------------------------+---------------------------------+-----------------------------+
 ```
 
 ---
 
-## 1. Paper & Papier-Mâché: Fragility as Sanctuary
+## 1. Paper, Papier-Mâché & Textiles: Fragility as Sanctuary
 
-Paper in Tami's work is never merely a flat substrate for drawing; it is a three-dimensional building block:
-- **Brown Packaging Paper (נייר אריזה חום):** In landmark works such as *"אולי שם יהיה יותר טוב / It Might Be Better There"* (3rd Israeli Paper Biennale, Eretz Israel Museum, 2017), Tami constructed four hollow, cocoon-like human capsules out of raw brown packing paper molded over everyday objects and organic skeletons[^binyamin-paper]. The cheap, mundane wrapping material—ordinarily used to protect fragile objects during shipping—was elevated into an architectural membrane protecting human consciousness.
-- **Papier-Mâché Pulp (עיסת נייר):** In her Denya studio, Tami soaks, shreds, and mixes paper fibers into a malleable paste, hand-layering it over wire armatures to create mutated, organic pods and hybrid cyborg organisms. The resultant forms appear simultaneously ancient, insect-like, and strangely medical.
+Paper and cloth in Tami's studio are never passive flat surfaces; they become structural skins and domestic membranes:
+- **Brown Packaging Paper (נייר אריזה חום):** In *"אולי שם יהיה יותר טוב / It Might Be Better There"* (3rd Israeli Paper Biennale, Eretz Israel Museum, 2017, curated by Anat Gatenio), Tami sculpted four hollow human-scale [capsules](motifs-capsules-and-mirrors.md) out of ordinary brown packing paper molded freehand and over everyday household forms, drawing inspiration from Samuel Beckett's *The Lost Ones* and her [childhood treehouse in Herzliya](../places/herzliya-home-and-yard.md)[^binyamin-archive][^site-paper].
+- **Papier-Mâché & Stiffened Cloth (עיסת נייר ובד מוקשה):** In her [80 Greenboim St. Denya studio](../places/haifa-greenboim-80-denya.md), Tami molds paper pulp and stiffened fabric into uncanny hybrids—such as *"שרוול פינוי אשפה"* (2023), where industrial construction debris chutes normally chained in plastic and iron were recast in softened, stiffened fabric[^prtfl-materials][^site-paper-objects].
 
 ---
 
-## 2. Cement, Concrete & Earth: The Brutalist Weight
+## 2. Cement, Concrete & Earth: Brutalist Weight & Pathos
 
-Counterbalancing her lightweight paper forms is a profound mastery of heavy industrial building materials:
-- **Cast Cement & Mortar (מלט ובטון):** In review article *"לראות בטון ולהגיע לבכי"* (To See Concrete and Come to Tears, *Erev Rav*, Feb 2025), critic Tamara Abramovitch analyzes Tami's extraordinary ability to extract emotional pathos and vulnerability from cast concrete[^erev-rav]. In works like *"Plan B"* (2018), concrete functions as plugs, bases, and heavy barriers that anchor conduit networks to the gallery floor.
-- **Compressed Hamra Earth (אדמת חמרה כבושה):** In *"צופן / Code"* (Tel Aviv Museum, 2011/2012), Tami hand-mixed red loam soil (חמרה) with industrial binders, pressing it into custom steel molds under extreme pressure to produce 200 soil bricks arranged like QR codes across tables[^binyamin-code]. The earth itself became a metaphor for military occupation, urban appropriation, and territorial anxiety.
+Counterbalancing her lightweight paper and textile skins is a deep command of construction materials:
+- **Cast Cement & Concrete (מלט ובטון):** In her February 2025 *Erev Rav* essay *"לראות בטון ולהגיע לבכי"* (*To See Concrete and Come to Tears*), critic Tamara Abramovitch analyzes works such as *"עוגיית אדויל"* (2023)—a hollow concrete square supporting an embroidered cloth napkin, a concrete-and-earth brick, and a cast pastry liner heaped with glossy Advil capsules—linking Tami's assemblage directly to the open volume of Debora Vogel's poetry (murdered in the Lwów Ghetto in 1942) placed at the center of the gallery[^erev-rav]:
+
+> ״אפשר לראות בטון ולהגיע לבכי. והעיר מלאה בחומר אפור, כאוב כמו מישור שדות אינסופי של קוצי לילך, כמו החיים.״
+> — דבורה פוגל, מתוך *הנשמה שיש לחומרים*, כפי שצוטט במאמרה של תמרה אברמוביץ', [״לראות בטון ולהגיע לבכי״, מגזין *ערב רב* (6 בפברואר 2025)](https://www.erev-rav.com/archives/58421)[^erev-rav]
+
+- **Compressed Hamra & Rolled Home Earth (אדמה כבושה ואדמת הבית):** From the 200 hand-pressed *hamra* bricks of [*"צופן"* (*Code*, 2011)](education-midrasha-haifa.md) (*״אדמה כבושה״*)[^binyamin-archive] to *"הגלגול הבא"* (*Next Reincarnation*, Museum for Islamic Art, 2024), soil functions as both existential ground and portable burden[^prtfl-carpets]. Describing *"הגלגול הבא"* in Hebrew, Tami wrote:
+
+> ״הכנות לעזיבה, למקרה הצורך. שטיח מגולגל ובתוכו חפצי בית שניתן לשאת בקלות. בנוסף מגולגלת בשטיח רצועת אדמה שנאספה ליד ביתי והעבודה מונחת על פיסת אדמה מאותו מקום שנראית כאילו היא ממתינה כדי להתגלגל סביב העבודה (הגלגול הבא). אין דבר מופרך מלגלגל אדמה. ממש כמו תקוותי שאצליח לגלגל גם את החלומות, גם את הדבר הבסיסי ביותר שהכל עומד עליו, וגם ללכת בלי ממש ללכת.״
+> — תמר שפר, טקסט העבודה *הגלגול הבא* (2024), [עמוד האמנית הרשמי בגלריה בנימין](https://www.binyamin-gallery.com/artist/tamar-sheaffer)[^binyamin-archive]
 
 ---
 
 ## 3. Graphite, Rulers & Technical Drafting
 
-Drawing is the structural ligament binding Tami's sculptures together:
-- She works primarily with high-density graphite pencils (2B to 6B), supplemented by India ink, charcoal, and delicate watercolor washes.
-- Crucially, her drawings are **partly freehand, partly mechanical**: using draftsman's T-squares, technical rulers, compasses, and architectural plastic stencils[^site-about].
-- The resulting sheets resemble blueprints for impossible machines or building plans for dysfunctional cities—creating an uncanny friction between mathematical precision and emotional instability.
+Drawing binds Tami's sculptural practice to her engineering roots:
+- Working primarily in pencils alongside ink, charcoal, and watercolor on paper, wood, and gallery walls, she combines freehand mark-making with rulers and stencils[^site-about].
+- As she notes in her [official statement](artist-statement-philosophy.md), *"The attempt to create beauty and meaning with what appears to be a technical sketch is of particular interest to me"* ([Official Portfolio](https://tamarsheaffer.site/about/))[^site-about].
 
 ---
 
 ## Footnotes & Sources
 
-[^user-seed]: User Biographical Seeds, *ORIGINAL_REQUEST.md*, line 29.
-[^binyamin-paper]: Tamar Sheaffer, Curatorial description for *אולי שם יהיה יותר טוב*, Binyamin Gallery official archive.
-[^erev-rav]: Tamara Abramovitch, "לראות בטון ולהגיע לבכי", *ערב רב*, 02/2025, https://www.erev-rav.com/archives/58421
-[^binyamin-code]: Tamar Sheaffer, Curatorial description for *צופן*, Binyamin Gallery official archive.
-[^site-about]: Tamar Sheaffer, "About & Statement", https://tamarsheaffer.site/about/
+[^prtfl-materials]: ענבל כהן חמו, [״כשהסביבה הופכת לחומר: תמר שפר בסדנאות האמנים ירושלים״ — מגזין *פורטפוליו* (01.04.2023)](https://www.prtfl.co.il/archives/179933).
+[^erev-rav]: תמרה אברמוביץ', [״לראות בטון ולהגיע לבכי״ — מגזין *ערב רב* (06.02.2025)](https://www.erev-rav.com/archives/58421).
+[^binyamin-archive]: תמר שפר, תיאורי העבודות *אולי שם יהיה יותר טוב* (2017), *צופן* (2011) ו-*הגלגול הבא* (2024), [עמוד האמנית הרשמי בגלריה בנימין](https://www.binyamin-gallery.com/artist/tamar-sheaffer).
+[^site-paper]: Tamar Sheaffer, [*"It Might Be Better There"* Installation Documentation](https://tamarsheaffer.site/it-might-be-better-there/).
+[^site-paper-objects]: Tamar Sheaffer, [*"Paper Objects"*](https://tamarsheaffer.site/paper-objects/) and [*"Cloth & Sand Objects"*](https://tamarsheaffer.site/cloth-and-sand-objects/).
+[^prtfl-carpets]: מיה אור, [״מעל ומתחת לשטיח: ׳גלגולו של קסם המזרח׳ במוזיאון לאמנות האסלאם״ — מגזין *פורטפוליו* (28.08.2024)](https://www.prtfl.co.il/archives/207224).
+[^site-about]: Tamar Sheaffer, [Official Portfolio — "About & Artist Statement"](https://tamarsheaffer.site/about/).
 
 ---
 

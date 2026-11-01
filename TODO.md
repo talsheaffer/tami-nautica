@@ -128,7 +128,7 @@
 
 ### 3.3 Family & Friends Pages (`wiki/family/`)
 - [x] `ahuva-and-michael-fried.md`: Parents Michael (Parita 1939, hands of gold, safety worrier, *Bold and the Beautiful*) & Ahuva (Lubetkin sister, Aliyat Hanoar 1938, kindergarten, yard).
-- [x] `erela-fried.md`: Sister Er'ela; unbreakable bond, telephone laughter, artistic talent, memory (`[Verification needed for family]` dates).
+- [x] `erela-sadan.md`: Sister Er'ela; unbreakable bond, telephone laughter, artistic talent, memory (`[Verification needed for family]` dates).
 - [x] `gad-sheaffer.md`: Husband Gadi; Technion meeting, author of "דרכי עצים", woodworking, travels, intellectual partner.
 - [x] `sons-guy-and-tal.md`: Sons Guy (born Arlozorov, father of granddaughters) and Tal (born Einstein, Montreal/NYC).
 - [x] `granddaughters-yaara-carmel.md`: Cherished granddaughters Ya'ara and Carmel; play, K-pop dances, Haifa boars, swings.

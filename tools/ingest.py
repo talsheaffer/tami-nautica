@@ -571,6 +571,8 @@ def main():
             'id': new_id,
             'filename': target_name,
             'rel_path': rel_path,
+            'display_rel_path': rel_path,
+            'display_rotation_cw_deg': 0,
             'sha256': sha,
             'width': meta['width'],
             'height': meta['height'],
@@ -603,6 +605,7 @@ def main():
                 dest_file = media_dir / disambig_name
                 record['filename'] = disambig_name
                 record['rel_path'] = f"{args.media_dir}/{disambig_name}"
+                record['display_rel_path'] = record['rel_path']
 
             shutil.copy2(cand, dest_file)
             records.append(record)

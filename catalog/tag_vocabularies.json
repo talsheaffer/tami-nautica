@@ -38,13 +38,22 @@
       "regex": "\\b(ahuva|אהובה)\\b"
     },
     {
-      "canonical": "Er'ela Fried",
-      "canonical_he": "אראלה פריד",
+      "canonical": "Er'ela Sadan",
+      "canonical_he": "אראלה סדן",
       "role": "Beloved sister, laughter, humor, creative spirit",
       "aliases": [
-        "erela", "er'ela", "erela fried", "אראלה", "אראלה פריד", "אחותי אראלה"
+        "erela", "er'ela", "erela sadan", "אראלה", "אראלה סדן", "אחותי אראלה"
       ],
       "regex": "\\b(erela|er'ela|אראלה)\\b"
+    },
+    {
+      "canonical": "Ada Wertheimer",
+      "canonical_he": "עדה ורטהיימר",
+      "role": "Cousin and close childhood friend of Tami from the Herzliya years",
+      "aliases": [
+        "ada wertheimer", "wertheimer", "עדה ורטהיימר"
+      ],
+      "regex": "\\b(ada wertheimer|wertheimer|עדה ורטהיימר)\\b"
     },
     {
       "canonical": "Guy Sheaffer",
@@ -107,36 +116,36 @@
       "canonical_he": "הרצליה (בית ההורים והחצר)",
       "significance": "Childhood roots, Michael's workshop, Ahuva's kindergarten yard",
       "aliases": [
-        "herzliya", "הרצליה", "חצר בהרצליה", "בית ההורים", "עץ הילדות", "גן ילדים"
+        "herzliya", "הרצליה", "חצר בהרצליה", "בית ההורים בהרצליה", "בית פריד", "גן הילדים של אהובה"
       ],
-      "regex": "\\b(herzliya|הרצליה|חצר|גן הילדים)\\b"
+      "regex": "(?<!מוזיאון )(?<!רחוב )\\b(?:herzliya|[במהל]?הרצליה(?! פיתוח)|גן הילדים של אהובה|בית פריד|בית ההורים בהרצליה)\\b"
     },
     {
       "canonical": "Haifa: Arlozorov",
       "canonical_he": "חיפה: ארלוזורוב",
       "significance": "First married home in Haifa, where Guy was born",
       "aliases": [
-        "arlozorov", "ארלוזורוב", "ארלוזורוב 87", "הדר הכרמל", "הדר"
+        "arlozorov", "ארלוזורוב", "ארלוזורוב 87", "הדר הכרמל", "בר גיורא"
       ],
-      "regex": "\\b(arlozorov|ארלוזורוב|הדר)\\b"
+      "regex": "\\b(?:arlozorov|[במהל]?ארלוזורוב|הדר הכרמל|בר גיורא)\\b"
     },
     {
       "canonical": "Haifa: Einstein",
       "canonical_he": "חיפה: איינשטיין",
       "significance": "Second Haifa home, where Tal was born",
       "aliases": [
-        "einstein", "איינשטיין", "רחוב איינשטיין", "אחוזה"
+        "einstein", "איינשטיין", "רחוב איינשטיין", "אחוזה חיפה"
       ],
-      "regex": "\\b(einstein|איינשטיין|אחוזה)\\b"
+      "regex": "(?<!אלברט )(?<!שם )\\b(?:einstein|[במהל]?איינשטיין|[במהל]?אינשטיין|אחוזה חיפה)\\b"
     },
     {
       "canonical": "Haifa: Denya (80 Greenboim St & studio)",
       "canonical_he": "חיפה: דניה (גרינבוים 80 והסטודיו)",
       "significance": "Current home and art studio overlooking Mount Carmel",
       "aliases": [
-        "denya", "דניה", "גרינבוים", "גרינבוים 80", "סטודיו בדניה", "סטודיו", "greenboim"
+        "denya", "דניה", "גרינבוים", "גרינבוים 80", "סטודיו בדניה", "g80", "greenboim"
       ],
-      "regex": "\\b(denya|דניה|גרינבוים|greenboim|סטודיו)\\b"
+      "regex": "\\b(?:denya|[במהל]?דניה|[במהל]?גרינבוים|greenboim|g80)\\b"
     },
     {
       "canonical": "Paris (Cité des Arts)",
@@ -204,11 +213,11 @@
     {
       "canonical": "Southern France",
       "canonical_he": "דרום צרפת",
-      "significance": "Recent family travels with Gadi and Guy (Provence, Arles)",
+      "significance": "Recent family travels with Gadi and Guy (Marseille, Provence, Arles)",
       "aliases": [
-        "southern france", "france", "פרובנס", "ארל", "דרום צרפת", "provence", "arles"
+        "southern france", "france", "marseille", "פרובנס", "ארל", "מרסיי", "דרום צרפת", "provence", "arles"
       ],
-      "regex": "\\b(southern france|provence|arles|פרובנס|ארל|דרום צרפת)\\b"
+      "regex": "\\b(southern france|provence|arles|marseille|פרובנס|ארל|מרסיי|דרום צרפת)\\b"
     }
   ],
   "art_motifs": [
@@ -283,6 +292,14 @@
         "simulacra", "simulacrum", "home", "house", "build your home", "בנה ביתך", "סימולקרה", "עקורים", "מחסה"
       ],
       "regex": "\\b(simulacr|home|house|בנה ביתך|סימולקר|עקורים|מחסה)\\b"
+    },
+    {
+      "canonical": "drawings",
+      "canonical_he": "רישום בעיפרון, צבע ודיו",
+      "aliases": [
+        "drawing", "drawings", "pencil", "pencils", "colored pencils", "ink", "aquarelle", "cruising", "roaming", "רישום", "רישומים", "עיפרון", "עפרונות", "דיו", "שיטוט"
+      ],
+      "regex": "\\b(drawing|drawings|pencil|pencils|ink|aquarelle|cruising|roaming|רישום|רישומים|עיפרון|עפרונות|דיו|שיטוט)\\b"
     }
   ]
 }

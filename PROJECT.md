@@ -143,7 +143,7 @@ All wiki pages must reside under `wiki/` and adhere to GitHub-flavored Markdown 
 6. `wiki/bio/inner-life-and-worldview.md` (Existential anxiety, politics, family care)
 7. `wiki/family/index.md` (Family and personal relationships portal)
 8. `wiki/family/ahuva-and-michael-fried.md` (Parents: Ahuva Lubetkin, Michael Parita, kindergarten)
-9. `wiki/family/erela-fried.md` (Sister Er'ela: laughter, creativity, memory)
+9. `wiki/family/erela-sadan.md` (Sister Er'ela: laughter, creativity, memory)
 10. `wiki/family/gad-sheaffer.md` (Husband Gadi: Technion, "דרכי עצים", woodworking)
 11. `wiki/family/sons-guy-and-tal.md` (Sons Guy & Tal: births, life paths, devotion)
 12. `wiki/family/granddaughters-yaara-carmel.md` (Granddaughters Ya'ara & Carmel: joy, games)
@@ -192,6 +192,10 @@ verification_status: "verified|pending_family_review"
   - **Scene 1 (The Herzliya Yard & Workshop):** Multi-plane reconstruction of the sunlit childhood yard, Michael's woodworking bench, and paper armatures.
   - **Scene 2 (The Denya Studio & Distorted Chamber):** Studio overlooking Mount Carmel, heavy cement blocks, tubular conduit pipes, and a distorted mirror reflecting family moments.
 - **Occlusion Handling:** All foreground cutouts must have corresponding LaMa-inpainted background plates to eliminate tearing or black holes during camera translation.
+- **2.5D Depth Topology Principles (Contact Continuity & Occlusion Discontinuity):**
+  - *Contact Continuity ($C^0$)*: Every object physically touching a floor, step, wall, tabletop, or seat must have world depth $Z_{\text{world}} = Z_k + A_k \cdot d_k$ equal to the supporting surface's world depth at its contact locus (via harmonic contact-anchored depth displacement, never detached constant-$Z$ billboards that float or shear off walls/floors under parallax).
+  - *Free-Silhouette Discontinuity ($C^{-1}$)*: Every non-contacting occlusion silhouette must jump discontinuously across separate meshes with outward Euclidean Distance Transform (`EDT`) depth extrapolation (`pinMarginUv = 0.0`) over ghost-free background room depth maps—preventing rubber-sheet boundary deformation.
+  - Enforced programmatically across scenes in `tests/test_depth_principles.py`.
 - **Automated Verification:**
   - Tested via Playwright: `prototype/tests/prototype.spec.js`.
   - Viewports: Desktop `1440x900` and Mobile `390x844`.
@@ -245,7 +249,7 @@ verification_status: "verified|pending_family_review"
 │   ├── family/
 │   │   ├── index.md
 │   │   ├── ahuva-and-michael-fried.md
-│   │   ├── erela-fried.md
+│   │   ├── erela-sadan.md
 │   │   ├── gad-sheaffer.md
 │   │   ├── sons-guy-and-tal.md
 │   │   ├── granddaughters-yaara-carmel.md

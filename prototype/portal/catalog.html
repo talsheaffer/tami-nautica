@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>קטלוג צילומים והעלאת תמונות — תמר (תמי) שפר | פורטל משפחתי</title>
+  <link rel="stylesheet" href="/css/portal.css" />
+  <link rel="stylesheet" href="/css/feedback.css" />
+</head>
+<body>
+  <header class="portal-topbar">
+    <div class="portal-brand">
+      <h1>🖼️ ארכיון צילומים והעלאת תמונות משפחתיות</h1>
+      <span class="portal-secret-chip">🤫 הפתעה ליום הולדת 70 — סודי!</span>
+    </div>
+    <nav class="portal-nav-links" aria-label="ניווט ראשי">
+      <a class="portal-nav-link" href="/">🏛️ סיור מרחבי (3D)</a>
+      <a class="portal-nav-link" href="/wiki">📖 ויקי ביוגרפי (31 ערכים)</a>
+      <a class="portal-nav-link active" href="/catalog">🖼️ קטלוג והעלאת תמונות</a>
+    </nav>
+    <div class="portal-actions" id="portal-beta-actions"></div>
+  </header>
+
+  <main class="catalog-container">
+    <!-- Family Drop-Folder Uploader -->
+    <section class="upload-panel" id="family-upload-panel">
+      <div class="upload-panel-header">
+        <div>
+          <h2>📤 העלאת תמונות מהמשפחה (ישירות ל-drop_folder ולקטלוג)</h2>
+          <p style="font-size:0.86rem;color:#C8C1B8;margin-top:3px;">
+            חסרות לנו במיוחד תמונות של <strong>הבתים והחצרות</strong> (הרצליה, ארלוזורוב 87, איינשטיין 33א, גרינבוים 80 בדניה, פריז) ותמונות משפחה עם מיכאל, אהובה, אראלה, בני ופרי!
+          </p>
+        </div>
+        <span class="portal-stat-pill" id="catalog-count-pill">טוען קטלוג...</span>
+      </div>
+
+      <input
+        type="file"
+        id="upload-file-input"
+        accept="image/*,.heic,.heif"
+        multiple
+        style="display:none;"
+      />
+      <div class="upload-dropzone" id="upload-dropzone" role="button" tabindex="0">
+        <div style="font-size:1.35rem;margin-bottom:4px;">📷 לחצו כאן לבחירת תמונות מהטלפון / מהמחשב או גררו קבצים לכאן</div>
+        <div style="font-size:0.8rem;color:#B4AEA6;">תומך ב-JPG, PNG, WEBP (גוגל פיקסל / אנדרואיד / מחשב) וגם HEIC מאייפון · עד 15 תמונות בכל העלאה</div>
+      </div>
+
+      <div id="upload-preview-strip" class="upload-preview-strip"></div>
+
+      <div id="upload-metadata-fields" class="hidden" style="display:none;flex-direction:column;gap:14px;">
+        <div class="upload-form-grid">
+          <div>
+            <span class="beta-row-label">מי מעלה את התמונות?</span>
+            <div class="beta-chips-row" id="upload-author-chips"></div>
+            <input
+              type="text"
+              id="upload-author-input"
+              class="portal-input"
+              style="margin-top:6px;"
+              placeholder="שם המעלה..."
+            />
+          </div>
+          <div>
+            <span class="beta-row-label">שנה / תקופה משוערת (אופציונלי)</span>
+            <input
+              type="text"
+              id="upload-era-input"
+              class="portal-input"
+              placeholder="למשל: 1986, שנות ה-70, ספטמבר 2026..."
+            />
+          </div>
+        </div>
+
+        <div>
+          <span class="beta-row-label">בית / מקום בצילום (בחרו מהרשימה או הוסיפו מיקום מותאם אישית)</span>
+          <div class="beta-chips-row" id="upload-place-chips"></div>
+          <div class="custom-tag-adder">
+            <input
+              type="text"
+              id="upload-custom-place-input"
+              class="portal-input"
+              placeholder="+ מיקום מותאם אישית (למשל: מרסיי, גן שעשועים בכרמל...)"
+            />
+            <button type="button" class="icon-btn" id="upload-custom-place-add">+ הוסף מיקום</button>
+          </div>
+        </div>
+
+        <div>
+          <span class="beta-row-label">אנשים המופיעים בצילום (בחרו מהרשימה או הוסיפו שם נוסף)</span>
+          <div class="beta-chips-row" id="upload-people-chips"></div>
+          <div class="custom-tag-adder">
+            <input
+              type="text"
+              id="upload-custom-person-input"
+              class="portal-input"
+              placeholder="+ אדם נוסף (למשל: נעמה, רותם...)"
+            />
+            <button type="button" class="icon-btn" id="upload-custom-person-add">+ הוסף אדם</button>
+          </div>
+        </div>
+
+        <div>
+          <span class="beta-row-label">סיפור / כיתוב / הערה על התמונות</span>
+          <textarea
+            id="upload-caption-input"
+            class="portal-input"
+            rows="2"
+            placeholder="ספרו בקצרה מה רואים בתמונה, איזה חדר/חצר זה, או זיכרון קשור..."
+          ></textarea>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div id="upload-status-msg" class="beta-status-msg hidden"></div>
+          <div style="display:flex;gap:10px;margin-right:auto;">
+            <button type="button" class="icon-btn" id="upload-clear-btn">נקה בחירה</button>
+            <button type="button" class="beta-submit-btn" id="upload-submit-btn">
+              ⬆️ העלה ושמור בקטלוג
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Filter Bar -->
+    <section class="portal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="font-size:0.84rem;color:#E6B980;">
+          ✨ <strong>חדש:</strong> סמנו מספר תמונות בכפתור <strong>״☑️ בחר ליצירה״</strong> על כל כרטיס כדי ליצור קולאז׳ משפחתי, להציע מיזוג לסצנה מרחבית אחת, או לכתוב רעיון פתוח!
+        </span>
+      </div>
+      <input
+        type="search"
+        id="catalog-search-input"
+        class="portal-input"
+        placeholder="חיפוש חופשי בקטלוג לפי כותרת, כיתוב, מקום, אדם או שם קובץ..."
+      />
+      <div class="beta-chips-row" id="catalog-filter-chips">
+        <button type="button" class="beta-chip active" data-cat-filter="all">הכל</button>
+        <button type="button" class="beta-chip" data-cat-filter="src:drop_folder_imports">📥 העלאות משפחה</button>
+        <button type="button" class="beta-chip" data-cat-filter="place:Herzliya">🏡 הרצליה</button>
+        <button type="button" class="beta-chip" data-cat-filter="place:Arlozorov">🏢 ארלוזורוב 87</button>
+        <button type="button" class="beta-chip" data-cat-filter="place:Einstein">🌳 איינשטיין 33א</button>
+        <button type="button" class="beta-chip" data-cat-filter="place:Denya">🏛️ דניה (גרינבוים 80)</button>
+        <button type="button" class="beta-chip" data-cat-filter="place:Southern France">🌻 דרום צרפת / מרסיי</button>
+        <button type="button" class="beta-chip" data-cat-filter="place:Paris">🗼 פריז (Cité)</button>
+        <button type="button" class="beta-chip" data-cat-filter="src:wordpress_blog">📰 בלוג דרכי עצים</button>
+        <button type="button" class="beta-chip" data-cat-filter="src:darchei_etzim_pdfs">📕 ספרי דרכי עצים</button>
+        <button type="button" class="beta-chip" data-cat-filter="art">🎨 יצירות ותערוכות</button>
+      </div>
+    </section>
+
+    <!-- Photo Grid -->
+    <section id="catalog-photo-grid" class="photo-grid"></section>
+  </main>
+
+  <!-- Floating Multi-Select Action Bar -->
+  <div id="multi-select-bar" class="multi-select-bar hidden" dir="rtl" aria-live="polite">
+    <div class="multi-select-summary">
+      <span class="multi-select-count" id="multi-select-count-label">נבחרו 0 תמונות</span>
+      <div class="multi-select-thumbs" id="multi-select-thumbs"></div>
+    </div>
+    <div class="multi-select-actions">
+      <button type="button" class="icon-btn" id="multi-select-clear-btn">נקה בחירה</button>
+      <button type="button" class="beta-submit-btn" id="multi-select-open-studio-btn">
+        ✨ צור מהתמונות שנבחרו...
+      </button>
+    </div>
+  </div>
+
+  <!-- Creative Studio Modal (Collage / Fuse into One Scene / Open Verbal Prompt) -->
+  <div id="creative-studio-backdrop" class="portal-modal-backdrop hidden" dir="rtl">
+    <div class="portal-modal studio-modal">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+        <div>
+          <h3 style="color:#E6B980;font-size:1.15rem;">✨ יצירה משותפת מהתמונות שנבחרו</h3>
+          <p id="studio-selected-subtitle" style="font-size:0.8rem;color:#B4AEA6;margin-top:2px;"></p>
+        </div>
+        <button type="button" class="icon-btn" id="studio-modal-close">✕</button>
+      </div>
+
+      <!-- Mode Selector Cards -->
+      <div id="studio-mode-cards" class="studio-mode-cards"></div>
+
+      <!-- Author Row -->
+      <div>
+        <span class="beta-row-label">שם היוצר/ת או המציע/ה</span>
+        <div class="beta-chips-row" id="studio-author-chips"></div>
+        <input
+          type="text"
+          id="studio-author-input"
+          class="portal-input"
+          style="margin-top:6px;"
+          placeholder="למשל: גיא, טל, נעמה, גדי..."
+        />
+      </div>
+
+      <!-- Collage-Specific Controls -->
+      <div id="studio-collage-controls" class="studio-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="beta-row-label" style="margin:0;">סגנון רקע לקולאז׳:</span>
+          <div class="beta-chips-row" id="studio-theme-chips">
+            <button type="button" class="beta-chip active" data-collage-theme="dark">🌑 רקע גלריה כהה</button>
+            <button type="button" class="beta-chip" data-collage-theme="paper">📜 נייר מוזיאלי חם</button>
+          </div>
+        </div>
+        <div>
+          <span class="beta-row-label">כותרת / הקדשה על גבי הקולאז׳ (אופציונלי)</span>
+          <input
+            type="text"
+            id="studio-collage-title-input"
+            class="portal-input"
+            placeholder="למשל: רגעים משפחתיים עם סבתא תמי..."
+          />
+        </div>
+      </div>
+
+      <!-- Prompt / Verbal Description Input (shown for Fuse Scene & Open Prompt, optional note for Collage) -->
+      <div id="studio-prompt-wrap">
+        <span class="beta-row-label" id="studio-prompt-label">תיאור / הוראות ליצירה</span>
+        <textarea
+          id="studio-prompt-input"
+          class="portal-input"
+          rows="3"
+          placeholder=""
+        ></textarea>
+      </div>
+
+      <!-- Live Visual Preview Canvas -->
+      <div class="studio-canvas-wrap">
+        <canvas id="studio-preview-canvas"></canvas>
+      </div>
+
+      <div id="studio-status-msg" class="beta-status-msg hidden"></div>
+
+      <!-- Action Footer -->
+      <div class="studio-footer-actions">
+        <button type="button" class="icon-btn" id="studio-cancel-btn">סגור</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="icon-btn" id="studio-download-collage-btn">
+            ⬇️ הורד קולאז׳ (JPG)
+          </button>
+          <button type="button" class="icon-btn" id="studio-save-catalog-btn">
+            📥 שמור קולאז׳ בקטלוג
+          </button>
+          <button type="button" class="beta-submit-btn" id="studio-submit-proposal-btn">
+            🚀 שלח הצעה למשפחה
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Caption / Tags Modal for Existing Catalog Images -->
+  <div id="edit-meta-backdrop" class="portal-modal-backdrop hidden" dir="rtl">
+    <div class="portal-modal">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="color:#E6B980;">✏️ עריכת כיתוב, סיפור ותיוגים לתמונה</h3>
+        <button type="button" class="icon-btn" id="edit-meta-close">✕</button>
+      </div>
+      <div id="edit-meta-id" style="font-size:0.78rem;color:#9A948C;"></div>
+      <div>
+        <span class="beta-row-label">כותרת</span>
+        <input type="text" id="edit-meta-title" class="portal-input" />
+      </div>
+      <div>
+        <span class="beta-row-label">כיתוב / סיפור / זיהוי</span>
+        <textarea id="edit-meta-caption" class="portal-input" rows="3"></textarea>
+      </div>
+      <div>
+        <span class="beta-row-label">שנה / תקופה</span>
+        <input type="text" id="edit-meta-era" class="portal-input" />
+      </div>
+      <div>
+        <span class="beta-row-label">בית / מקום (כולל אפשרות למיקום מותאם אישית)</span>
+        <div class="beta-chips-row" id="edit-place-chips"></div>
+        <div class="custom-tag-adder">
+          <input
+            type="text"
+            id="edit-custom-place-input"
+            class="portal-input"
+            placeholder="+ מיקום מותאם אישית..."
+          />
+          <button type="button" class="icon-btn" id="edit-custom-place-add">+ הוסף מיקום</button>
+        </div>
+      </div>
+      <div>
+        <span class="beta-row-label">אנשים בתמונה</span>
+        <div class="beta-chips-row" id="edit-people-chips"></div>
+        <div class="custom-tag-adder">
+          <input
+            type="text"
+            id="edit-custom-person-input"
+            class="portal-input"
+            placeholder="+ אדם נוסף..."
+          />
+          <button type="button" class="icon-btn" id="edit-custom-person-add">+ הוסף אדם</button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:6px;">
+        <button type="button" class="icon-btn" id="edit-meta-cancel">ביטול</button>
+        <button type="button" class="beta-submit-btn" id="edit-meta-save">שמור עדכון בקטלוג</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/catalog_app.js"></script>
+</body>
+</html>

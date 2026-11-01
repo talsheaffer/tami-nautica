@@ -80,17 +80,17 @@ test.describe('Tami 70th Spatial Prototype - Automated Headless Verification', (
     await page.goto(TARGET_URL, { waitUntil: 'networkidle' });
 
     const initialScene = await page.evaluate(() => window.__PROTOTYPE_STATE__?.currentScene);
-    expect(initialScene).toBe('herzliya');
+    expect(initialScene).toBe('paper_capsules');
 
-    // Trigger transition to Denya Studio
-    const nextBtn = page.locator('button[data-scene="denya"]');
+    // Trigger transition to Bene Beitcha
+    const nextBtn = page.locator('button[data-scene="bene_beitcha"]');
     await expect(nextBtn).toBeVisible();
     await nextBtn.click();
 
     // Verify transition state and completion
-    await page.waitForFunction(() => window.__PROTOTYPE_STATE__?.currentScene === 'denya', { timeout: 6000 });
+    await page.waitForFunction(() => window.__PROTOTYPE_STATE__?.currentScene === 'bene_beitcha', { timeout: 6000 });
     const finalScene = await page.evaluate(() => window.__PROTOTYPE_STATE__?.currentScene);
-    expect(finalScene).toBe('denya');
+    expect(finalScene).toBe('bene_beitcha');
   });
 
   test('Mobile (390x844) - Touch Parallax & RTL Hebrew Layout Verification', async ({ page }) => {
@@ -108,7 +108,7 @@ test.describe('Tami 70th Spatial Prototype - Automated Headless Verification', (
     // Verify Canvas and state initialization on mobile viewport
     const state = await page.evaluate(() => window.__PROTOTYPE_STATE__);
     expect(state).toBeDefined();
-    expect(state.currentScene).toBe('herzliya');
+    expect(state.currentScene).toBe('paper_capsules');
   });
 
 });

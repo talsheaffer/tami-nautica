@@ -18,52 +18,56 @@ sources:
   - type: "site"
     title: "Tamar Sheaffer Official CV — Residencies"
     ref: "https://tamarsheaffer.site/about/"
-  - type: "user_seed"
-    title: "User Biographical Seeds"
-    ref: "ORIGINAL_REQUEST.md:26"
+  - type: "site"
+    title: "Cité internationale des arts — Official Site"
+    ref: "https://www.citedesartsparis.net/"
 verification_status: "verified"
+last_updated: "2026-10-26"
 ---
 
 # Paris: Studio 8422 at Cité Internationale des Arts
 # סטודיו 8422, סיטה דז אר, פריז
 
-For six transformative months in **2016**, Tami Sheaffer lived and worked at the **Cité Internationale des Arts** in Paris, France. Accompanied by her husband Gadi, this prestigious residency fulfilled Tami's long-held dream of deep, uninterrupted immersion in a major world cultural capital, leaving an indelible imprint on her draftsmanship, spatial philosophy, and international artistic network[^blog-paris].
+For six months in **2016**, Tamar "Tami" Sheaffer lived and worked at the **[Cité internationale des arts](https://www.citedesartsparis.net/)** in Paris, accompanied by her husband [Gadi](../family/gad-sheaffer.md)—fulfilling a long-cherished dream of living and creating for an extended period in a great world metropolis[^blog-paris][^tamar-cv].
+
+> ״באמצע כל קומה בבנין הזה עובר מסדרון ארוך וחשוך, לאורך הבנין, משני צדדיו דלתות. על כל דלת, שם הארץ או המוסד שבבעלותו הסטודיו הנמצא מאחורי הדלת. בקומה הרביעית, בצד הבנין הפונה אל מגרש החניה שמאחורי הבנין, נמצא סטודיו 8422, שעל דלתו כתוב Israël. שם גרנו, זוגתי שתחיה ואני, ששה חדשים נפלאים.״
+> — גד שפר, [״פריז״, בלוג *דרכי עצים* (8 במרץ 2017)](https://theshingimel.wordpress.com/2017/03/08/61/)[^blog-paris]
 
 ---
 
-## The Residency Selection & The Cité
+## Selection & Relocation | הבחירה והיציאה לפריז
 
-The Cité Internationale des Arts is a celebrated foundation on the Right Bank of the River Seine in the historic 4th arrondissement (Le Marais). Established to foster international cross-pollination across the fine arts, music, and humanities, the institution hosts hundreds of creative residents from dozens of countries. In Israel, a dedicated competitive committee appointed by the Ministry of Culture and Sport selects only four artists per year for this prestigious residency. At the end of 2015, Tami Sheaffer was selected as one of these four laureates[^blog-paris].
-
-Renting out their Greenboim home in Haifa to a caretaker tenant, Tami and Gadi relocated to Paris in 2016, with Gadi happily accompanying her on spousal leave ("על תקן של מלווה").
+Situated on the Right Bank of the Seine between the Pont Marie and Pont Louis-Philippe opposite Île Saint-Louis in the 4th arrondissement (Le Marais), the Cité hosts artists, musicians, historians, and sculptors from around the world[^cite-official][^blog-paris]. At the end of 2015, an Israeli Ministry of Culture committee selected Tami as one of four Israeli laureates for the annual residency[^blog-paris][^tamar-cv]. Renting their **[80 Greenboim home in Denya](haifa-greenboim-80-denya.md)** to a caretaker tenant for a symbolic rent, Tami and Gadi set out for Paris—with Gadi happily joining *״על תקן של מלווה״*[^blog-paris].
 
 ---
 
-## The Architecture of Studio 8422
+## The Spartan Geometry of Studio 8422 | הגאומטריה הספרטנית של סטודיו 8422
 
-The studio occupied by Tami and Gadi was **Studio 8422 on the 4th floor**, its doorway bearing the brass plaque marked **Israël**[^blog-paris]. Located between the Pont Marie and Pont Louis-Philippe directly across from Île Saint-Louis, the 1960s modernist complex stood in stark, brutalist contrast to the surrounding 18th-century stone mansions of the Marais.
+Inside the 1960s modernist block (which Parisians regarded *״כאצבע חבושה״* amid 18th- and 19th-century Marais facades), Studio 8422 was austere, compact, and wholly centered on creative work[^blog-paris]:
+- **The 5 × 5 Meter Studio:** Whitewashed walls, a green linoleum floor (*רצפתו לינולאום ירוק*), and a large rear window.
+- **Tiny Kitchenette & IKEA Ingenuity:** A narrow side alcove held a small table and a standing-room-only kitchenette with a mini-fridge and two-burner electric hotplate; Tami and Gadi pushed two single cots together in the studio and bound the mattresses snugly with a double fitted sheet from a Parisian IKEA:
 
-The physical reality of Studio 8422 was monastic, practical, and highly focused:
-- **The Main Creative Space:** A square chamber of approximately 5 × 5 meters, featuring white-washed plaster walls, green linoleum flooring, and a large multi-pane window facing the rear courtyard.
-- **The Living Enclave:** A narrow adjoining vestibule housing a small wooden dining table and access to a miniature kitchenette (mini-fridge, two electric hotplate burners, and a single sink—standing room only for one cook).
-- **Custom Adaptations:** The residency provided two spartan single cots; Tami and Gadi pushed them together and secured the mattresses with a double fitted sheet bought from a suburban Parisian IKEA. To make the sparse quarters functional for six months of living and working, they purchased and donated their own toaster oven, drawer cabinet, and dining ware[^blog-paris].
+> ״הסטודיו היה באמת מאד ספרטני, מאד לא מאובזר. רכשנו מכספנו והשארנו שם דברים כמו תנור אפיה קטן, שידת מגירות, קערות וספלים... אבל מצד שני, הוא ממוקם בפריז. כמו ״טוב אוהל צר על אדמת מולדת מארמון פאר בארצות ניכר״. רק להיפך. לפחות לפרק זמן מוגבל.״
+> — גד שפר, [״פריז״, בלוג *דרכי עצים* (8 במרץ 2017)](https://theshingimel.wordpress.com/2017/03/08/61/)[^blog-paris]
 
 ---
 
-## Daily Rhythms: Flânerie, Museums & Monastic Drafting
+## Daily Rhythms: Le Marais, Architecture & Open Studios | שגרת יצירה ושיטוט
 
-Living in Studio 8422 placed Tami at the epicenter of European cultural history:
-- **Urban Exploration:** Stepping outside the building placed them directly on the Seine embankment. Crossing the Pont Marie led into the Latin Quarter and Saint-Germain; walking north led into the winding alleys and art galleries of the Marais.
-- **Modernist Architecture:** Tami and Gadi made pilgrimages to seminal architectural monuments, notably Pierre Chareau's legendary **Maison de Verre** (Glass House) and Le Corbusier's **Villa Savoye** in Poissy—structures whose interplay of industrial steel, translucent glass blocks, and functional conduits deeply resonated with Tami's spatial sensibilities.
-- **The Artist Community:** In the basement of the Cité, they attended French language courses, chamber concerts in the auditorium, and weekly open-studio evenings with colleagues from Germany, Japan, Scandinavia, and Palestine[^blog-paris].
-
-Inside Studio 8422, free from domestic routines and family responsibilities, Tami worked with ferocious intensity. She filled sketchbooks and large sheets of paper with intricate pencil, ink, and watercolor technical drawings. The visual geometry of Paris—subway tunnels, Haussmannian facades, industrial conduit shafts, and museum vitrines—filtered directly into her drawings, laying the groundwork for her breakthrough 2018 duo exhibition *Plan B* and her 2019 solo exhibition *Low Sun*.
+Stepping out of the Cité placed Tami within walking distance of Notre-Dame, the Latin Quarter across the river, and the galleries of Le Marais[^blog-paris]:
+- **In-House Cultural Life:** French lessons and chamber concerts by fellow residents in the Cité basement, plus intimate open-studio visits with artists from across the globe[^blog-paris].
+- **Architectural & Spatial Resonance:** Visits to modernist landmarks including Le Corbusier's *Villa Savoye* near Paris[^blog-corbu] alongside uninterrupted months of drawing and spatial experimentation that fed directly into her subsequent exhibitions *אולי שם יהיה יותר טוב* (2017), *Plan B* (2018), and *שמש נמוכה / Low Sun* (2019)[^motifs][^philosophy].
 
 ---
 
 ## Footnotes & Sources
 
-[^blog-paris]: Gad Sheaffer, "פריז", *דרכי עצים*, 08/03/2017, https://theshingimel.wordpress.com/2017/03/08/61/
+[^blog-paris]: גד שפר, [״פריז״ — שישה חודשים בסטודיו 8422 בסיטה דז אר, בלוג *דרכי עצים* (08.03.2017)](https://theshingimel.wordpress.com/2017/03/08/61/).
+[^tamar-cv]: תמר שפר, [קורות חיים ושהויות אמן — אתר האמנית הרשמי (`tamarsheaffer.site/about/`)](https://tamarsheaffer.site/about/).
+[^cite-official]: [Cité internationale des arts, Paris — האתר הרשמי](https://www.citedesartsparis.net/).
+[^blog-corbu]: גד שפר, [״מסלולי מגורים״ — וילה סבויה ולה קורבוזיה, בלוג *דרכי עצים* (15.01.2023)](https://theshingimel.wordpress.com/2023/01/15/me-and-corbu/).
+[^motifs]: ראו [מוטיבים: קפסולות, פיגומים ומראות מעוותות](../art/motifs-capsules-and-mirrors.md).
+[^philosophy]: ראו [הצהרת האמנית ופילוסופיה אסתטית](../art/artist-statement-philosophy.md).
 
 ---
 

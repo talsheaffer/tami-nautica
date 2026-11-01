@@ -14,12 +14,12 @@ related_art:
   - "../art/solo-exhibition-bene-beitcha.md"
   - "../art/motifs-capsules-and-mirrors.md"
 sources:
-  - type: "user_seed"
-    title: "Original Request Seeds"
-    ref: "ORIGINAL_REQUEST.md:28-29"
-  - type: "museum"
-    title: "Ramat Gan Museum Catalog 'בנה ביתך'"
-    ref: "Exhibition Text by Sari Golan, 2026"
+  - type: "press"
+    title: "פורטפוליו — ״בנה ביתך״ של תמר שפר: הבית שאיבד את ביטחונו"
+    ref: "https://www.prtfl.co.il/archives/257256"
+  - type: "press"
+    title: "פורטפוליו — כשהסביבה הופכת לחומר: ראיון עם תמר שפר"
+    ref: "https://www.prtfl.co.il/archives/179933"
   - type: "site"
     title: "Tamar Sheaffer Artist Statement"
     ref: "https://tamarsheaffer.site/about/"
@@ -30,69 +30,71 @@ last_updated: "2026-10-26"
 # Inner Life, Anxieties & Worldview
 # עולם פנימי, דאגות ותפיסת עולם
 
-> **Core Motifs:** The Architecture of Worry • Existential & Political Anguish • Stand-Ins & Simulacra • Fierce Familial Care
+> **Core Motifs:** The Architecture of Worry • Existential & Political Anguish • Stand-Ins & Simulacra • Humor as Regulation
 
 ---
 
 ## 1. The Architecture of Worry | ארכיטקטורה של דאגה
 
-Beneath Tami Sheaffer’s dry wit, stoic poise, and structured intellect lies an emotional engine driven by an active, vigilant "architecture of worry"[^seed-worries]. Far from being a passive anxiety, Tami's worrying is an intense expression of love and protective care. 
+Beneath Tami Sheaffer's dry wit, stoic poise, and structured intellect runs an active, vigilant "architecture of worry"[^seed-worries]. Far from passive anxiety, Tami's worrying is an expression of fierce familial devotion.
 
-In many ways, she inherited and transformed the safety anxieties of her father Michael Fried. Where Michael checked the window latches and door locks of their Herzliya home, Tami maintains an active mental radar scanning for any threat that could imperil the well-being of those she holds dear[^seed-worries]:
-- **Health Vigilance:** Constant concern for the health and physical well-being of her husband Gadi, herself, her son Tal and his wife living in North America, her son Guy in Haifa, and her young granddaughters Ya'ara and Carmel.
-- **Geographic Distance:** Experiencing the emotional weight of physical distance during Tal's years in Montreal and New York, tempered by frequent phone calls and trans-Atlantic visits.
+In many ways, she inherited and transformed the protective vigilance of her father [Michael Fried](../family/ahuva-and-michael-fried.md) (*״טיפוס חרדתי״*, [״מיכאל״, *דרכי עצים*](https://theshingimel.wordpress.com/2013/11/26/fried-2/))[^blog-michael]:
+- **Health Vigilance:** Constant attentiveness to the health and well-being of her husband [Gadi](../family/gad-sheaffer.md), herself, her sons [Guy and Tal](../family/sons-guy-and-tal.md) and their families, and her young granddaughters [Ya'ara and Carmel](../family/granddaughters-yaara-carmel.md)[^seed-worries].
+- **Across Oceans:** Feeling the emotional weight whenever loved ones are far abroad—bridged by frequent calls and [trans-Atlantic visits](../travels/montreal-and-new-york.md)[^blog-montreal].
 
 ---
 
 ## 2. Political Anguish & The Disintegration of "The Home" | חרדה קיומית ומשבר הבית הלאומי
 
-Tami is a person of deep civic consciousness. She feels the social, moral, and political trajectory of the State of Israel with profound, visceral pain[^seed-worries]:
-- **Opposition to Political Cynicism:** Deep, unwavering opposition to Benjamin Netanyahu ("Bibi") and his governance, viewing populist polarization, judicial assaults, and corruption as an existential betrayal of the pioneering values upon which Israel was built.
-- **The Crumbling Foundation:** The agonizing sensation that the collective national "home"—built with immense sacrifice by her parents' generation—is cracking at its foundations.
-- **Democratic Dread:** Grief over the loss of solidarity, truth, and rational governance in the public sphere, creating a constant backdrop of socio-political dread.
+Tami experiences the social, moral, and political trajectory of Israel with visceral intensity[^site-statement][^prtfl-interview]:
+- **Collapse of Assumed Order:** In her English artist statement, she writes explicitly of *"a collapse of the political and social order that until recently I used to take for granted"* ([Official Portfolio](https://tamarsheaffer.site/about/))[^site-statement], and in her April 2023 *Portfolio* interview—conducted amidst the 2023 judicial overhaul protests—she noted how *"עם הזמן התחושות הקשות נוכח המציאות המתרקמת פעפעו פנימה"* ([*פורטפוליו*](https://www.prtfl.co.il/archives/179933))[^prtfl-interview].
+- **Opposition to Political Cynicism:** Unwavering opposition to Benjamin Netanyahu's rule, authoritarian populism, and political corruption, experienced as an assault on the democratic and egalitarian ethos built by her parents' generation[^seed-worries].
 
 ---
 
-## 3. Sublimation into Art: Stand-Ins, Mock-Ups & Simulacra | המרה יצירתית: העמדות פנים, דגמים וסימולקרה
+## 3. Sublimation into Art: Stand-Ins, Vitrines & Simulacra | המרה יצירתית: תאי ראיות וסימולקרה
 
-Rather than succumbing to despair, Tami channels this dread directly into her monumental artistic oeuvre. Her art is not decorative escapism; it is a fearless diagnostic examination of precarity[^rgma-statement].
+Rather than retreating into escapism, Tami channels civic and existential dread into her studio at [80 Greenboim St.](../places/haifa-greenboim-80-denya.md)[^erev-rav].
 
 ```
 +---------------------------------------------------------------------------------------------------------+
 |                                    FROM ANXIETY TO ARTISTIC MOTIF                                       |
 +---------------------------------------------------+-----------------------------------------------------+
 |                  INNER EMOTION                    |                   ARTISTIC EXPRESSION               |
-| - Fear that the country's foundations are fake    | - Concrete blocks that are actually hollow paper    |
-| - Anxiety over the loss of protective shelter     | - "Capsules" and chambers that offer no real safety |
-| - Suspicion of political facades & lies           | - Stand-ins, mock-ups, and theatrical simulacra     |
-| - Fractured personal & collective identity        | - Broken, distorted, and blurry mirror reflections  |
-| - Sisyphean burden of keeping the family safe     | - Laborious, low-tech manual pulp-making & tearing  |
+| - Fear that domestic & civic foundations crack    | - Bisected shirts, furniture & sealed glass cases   |
+| - Anxiety over the loss of protective shelter     | - "Capsules" & rolled-earth survival carpets        |
+| - Suspicion of binary slogans & political facades | - Hybrid structures refusing single classification  |
+| - Fractured personal & collective certainty       | - Mirrored labyrinths & partial, threshold views    |
+| - Sisyphean effort to hold daily life together    | - Deliberately manual, low-tech studio labor        |
 +---------------------------------------------------+-----------------------------------------------------+
 ```
 
-In her landmark 2026 solo exhibition at the Ramat Gan Museum of Israeli Art, **"בנה ביתך / The New Normal"** (curated by Sari Golan), this thematic obsession reached its zenith[^rgma-statement]:
-> *"The works confront the disintegration of the private sanctuary within a fractured public space. Domestic rooms appear as theatrical stand-ins, walls are made of delicate paper pulp pretending to be unyielding stone, and conduit pipes lead to nowhere."*
+In her 2026 solo exhibition at the Ramat Gan Museum of Israeli Art, **[*"בנה ביתך / The New Normal"*](../art/solo-exhibition-bene-beitcha.md)** (curated by Sari Golan), critic Vera Pilpoul captured how Tami turns anxiety into form without surrendering to spectacle:
 
-Tami's recurring motifs—distorted mirrors where reflections are fractured or blurred, enclosures that cannot close, and architectural scaffoldings lacking structural logic—reflect her conviction that contemporary reality is inherently viewpoint-dependent and fundamentally unstable.
+> ״האמנות מציעה כאן נחמה, אך לא מפני שהיא מתקנת את הבית. הנחמה מצויה בעצם האפשרות להעניק צורה למה שאין לו עדיין שפה: להפוך חרדה לשפה חזותית חידתית, ובה בעת מוכרת כל כך, גם אם מפורקת. היצירה אינה מחזירה את תחושת הביטחון שאבדה; היא מאפשרת לנו להתבונן באובדן הזה בלי להסיט את המבט.״
+> — ורה פלפול, [״׳בנה ביתך׳ של תמר שפר: הבית שאיבד את ביטחונו״, מגזין *פורטפוליו* (8 באוגוסט 2026)](https://www.prtfl.co.il/archives/257256)[^prtfl-bene]
 
 *Read more: [Solo Exhibition: "בנה ביתך / The New Normal" (2026)](../art/solo-exhibition-bene-beitcha.md) and [Motifs: Capsules & Mirrors](../art/motifs-capsules-and-mirrors.md).*
 
 ---
 
-## 4. Humor as Armor | ההומור כחומת מגן
+## 4. Humor as Armor | ההומור כוויסות וכחומת מגן
 
-If Tami’s anxieties are heavy, her humor is their indispensable counterbalance. She possesses an exceptionally sharp, ironic wit. With a single wry remark or an arched eyebrow, she can puncture pretension, deflate pompous rhetoric, and restore perspective.
+If Tami's anxieties run deep, her dry, observant humor is their indispensable counterweight—whether in her legendary laughing phone calls with her late sister [Er'ela](../family/erela-sadan.md)[^seed-worries] or alone at work in her Denya studio:
 
-This humor was most gloriously manifested in her lifelong telephone conversations with her late sister Er'ela, where existential worries were routinely dissolved in bursts of uncontrollable, joyful laughter.
+> ״הזכרת בתחילת השיחה את ההומור בעבודות. אני באמת אומרת לעצמי לא פעם בסטודיו שאני מספרת לעצמי בדיחות. כנראה שלחלק מהן יש עקבות בעבודות.״
+> — תמר שפר, בראיון לענבל כהן חמו, [״כשהסביבה הופכת לחומר״, מגזין *פורטפוליו* (1 באפריל 2023)](https://www.prtfl.co.il/archives/179933)[^prtfl-interview]
 
-*Read more: [Sister: Er'ela Fried](../family/erela-fried.md).*
+As curator Sari Golan observed regarding *בנה ביתך*, humor is Tami's way of approaching what is too searing to touch directly—regulating terror (*״אינו מבטל את האימה, אלא מווסת אותה״*, [*פורטפוליו*](https://www.prtfl.co.il/archives/257256)) so the viewer can look without flinching[^prtfl-bene].
+
+*Read more: [Sister: Er'ela Sadan](../family/erela-sadan.md).*
 
 ---
 
 ## 5. Family Verification & Open Inquiries | נושאים לבירור משפחתי
 
 > ⚠️ **Verification needed for family:**
-> - [Memories of Tami's participation in civic protests (e.g., Balfour, Kaplan, or early peace movements)]
+> - [Memories of Tami's participation in civic protests (e.g., Haifa/Horev/Kaplan demonstrations)]
 > - [Personal rituals or sayings she uses when comforting family members]
 
 ---
@@ -100,7 +102,7 @@ This humor was most gloriously manifested in her lifelong telephone conversation
 ## 6. Related Entries | ראו גם
 
 - **Biographical Arc:** [Master Biography](tamar-sheaffer.md) • [Engineering Career & Workplace Feminism](engineering-and-feminism.md)
-- **Family Ties:** [Husband Gad Sheaffer](../family/gad-sheaffer.md) • [Sons Guy & Tal](../family/sons-guy-and-tal.md) • [Sister Er'ela Fried](../family/erela-fried.md)
+- **Family Ties:** [Husband Gad Sheaffer](../family/gad-sheaffer.md) • [Sons Guy & Tal](../family/sons-guy-and-tal.md) • [Sister Er'ela Sadan](../family/erela-sadan.md)
 - **Artistic Oeuvre:** [Artist Statement & Philosophy](../art/artist-statement-philosophy.md) • [Motifs: Capsules & Mirrors](../art/motifs-capsules-and-mirrors.md) • [Exhibition "בנה ביתך"](../art/solo-exhibition-bene-beitcha.md)
 - **Studio Sanctuary:** [Haifa: 80 Greenboim St., Denya](../places/haifa-greenboim-80-denya.md)
 
@@ -108,5 +110,10 @@ This humor was most gloriously manifested in her lifelong telephone conversation
 
 ## 7. Footnotes & Sources | מקורות והערות שוליים
 
-[^seed-worries]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:28-29*.
-[^rgma-statement]: Sari Golan, Curatorial Essay for "בנה ביתך / The New Normal", Ramat Gan Museum of Israeli Art, 2026.
+[^seed-worries]: תיעוד ביוגרפי משפחתי — ראו [הביוגרפיה הראשית](tamar-sheaffer.md), [אחותה אראלה סדן](../family/erela-sadan.md) ו-[אינדקס הוויקי](../README.md).
+[^blog-michael]: גד שפר, [״מיכאל״ — בלוג *דרכי עצים* (26.11.2013)](https://theshingimel.wordpress.com/2013/11/26/fried-2/).
+[^blog-montreal]: גד שפר, [״Québécois״ (24.12.2017)](https://theshingimel.wordpress.com/2017/12/24/quebecois/) ו-[״אדום אדום״ (05.10.2018)](https://theshingimel.wordpress.com/2018/10/05/%d7%90%d7%93%d7%95%d7%9d-%d7%90%d7%93%d7%95%d7%9d/); ראו גם [מסעות למונטריאול וניו יורק](../travels/montreal-and-new-york.md).
+[^site-statement]: Tamar Sheaffer, [Official Portfolio — "About & Artist Statement"](https://tamarsheaffer.site/about/).
+[^prtfl-interview]: ענבל כהן חמו, [״כשהסביבה הופכת לחומר: תמר שפר בסדנאות האמנים ירושלים״ — מגזין *פורטפוליו* (01.04.2023)](https://www.prtfl.co.il/archives/179933).
+[^erev-rav]: תמרה אברמוביץ', [״לראות בטון ולהגיע לבכי״ — מגזין *ערב רב* (06.02.2025)](https://www.erev-rav.com/archives/58421).
+[^prtfl-bene]: ורה פלפול (כולל דברי האוצרת שרי גולן), [״׳בנה ביתך׳ של תמר שפר: הבית שאיבד את ביטחונו״ — מגזין *פורטפוליו* (08.08.2026)](https://www.prtfl.co.il/archives/257256).

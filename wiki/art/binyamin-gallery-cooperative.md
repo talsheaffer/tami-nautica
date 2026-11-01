@@ -12,58 +12,68 @@ related_art:
   - "solo-exhibition-bene-beitcha.md"
 sources:
   - type: "site"
-    title: "Binyamin Gallery Official Website"
-    ref: "https://www.binyamin-gallery.com/"
+    title: "Binyamin Gallery — תמר שפר"
+    ref: "https://www.binyamin-gallery.com/artist/tamar-sheaffer"
   - type: "site"
-    title: "Tamar Sheaffer Official Portfolio — Binyamin"
+    title: "Tamar Sheaffer Official Portfolio — About"
     ref: "https://tamarsheaffer.site/about/"
-  - type: "user_seed"
-    title: "User Biographical Seeds"
-    ref: "ORIGINAL_REQUEST.md:16, 26"
+  - type: "blog"
+    title: "דרכי עצים — פלישת חוטפי הגופות (עכשיו / כאן + שם)"
+    ref: "https://theshingimel.wordpress.com/2013/10/12/now-here-there/"
 verification_status: "verified"
 ---
 
 # Binyamin Gallery Cooperative
 # גלריה בנימין — גלריה שיתופית
 
-For well over a decade, **Binyamin Gallery (גלריה בנימין)** has served as Tami Sheaffer's primary artistic home and cooperative community in Tel Aviv. As one of its founding members, Tami has played an active role in sustaining this vital non-profit, artist-run cooperative gallery, using its space to mount ambitious solo installations, curate peer exhibitions, and champion non-commercial artistic freedom[^binyamin-site].
+For well over a decade, **[Binyamin Gallery (גלריה בנימין)](https://www.binyamin-gallery.com/about)** in Kiryat HaMelacha, south Tel Aviv (5 HaMeretz St.), has served as Tami Sheaffer's primary artistic home and cooperative community. As one of its long-standing cooperative members, Tami has played an active role in sustaining this non-profit, artist-run gallery, using its space to mount ambitious solo installations, curate and host peer exhibitions, and champion non-commercial artistic freedom[^binyamin-site][^binyamin-artist].
 
 ---
 
 ## Founding & Cooperative Mission
 
-Binyamin Gallery was founded in 2011 by a passionate collective of contemporary Israeli artists seeking independence from the commercial pressures and gatekeeping of private art dealerships and municipal museums. Operating on a cooperative model where member artists collectively fund the rent, maintain the exhibition hall, and take turns sitting gallery shifts and organizing openings, Binyamin quickly emerged as one of the most vibrant independent art spaces in south Tel Aviv.
+Binyamin Gallery was founded in 2011 by a collective of contemporary Israeli artists seeking independence from the commercial pressures and gatekeeping of private dealerships and municipal institutions[^binyamin-site]. Operating on a cooperative model in which member artists collectively fund the space, maintain the gallery, sit shifts, and shape the curatorial program, Binyamin became one of the vital independent art venues in south Tel Aviv's Kiryat HaMelacha art district.
 
-For Tami, whose primary residence and studio are on Mount Carmel in Haifa, Binyamin Gallery provided an indispensable anchor in the center of the Israeli art scene. It offered a trusted forum of peers—sculptors, painters, photographers, and video artists—who met regularly to critique new works, debate cultural politics, and organize group exhibitions.
+For Tami, whose primary residence and studio are at [80 Greenboim St. on Mount Carmel in Haifa](../places/haifa-greenboim-80-denya.md), Binyamin Gallery provided an indispensable anchor at the heart of the Israeli art field—a trusted forum of sculptors, painters, photographers, and installation artists committed to experimental rigor[^site-about].
 
 ---
 
 ## Key Solo & Group Exhibitions at Binyamin
 
-Tami has presented several of her most daring and acclaimed installations within Binyamin Gallery's walls:
+Tami has presented several of her defining installations within Binyamin Gallery's space:
 
-### 1. *"now / (here+there)"* (2013)
-Curated by esteemed curator **Tali Tamir**, this early solo exhibition tackled the disorientation of contemporary living through layered drawing and architectural interventions that bridged physical presence with mental dislocation[^site-about].
+### 1. *"now \ (here+there)"* — *עכשיו / (כאן + שם)* (2013)
+Curated by **Tali Tamir**, this early solo exhibition tackled the cognitive split between physical presence and networked virtual layers through QR-inspired geometries, layered drawings, and spatial interventions[^site-about][^site-now]. Writing upon the exhibition's opening in October 2013, [Gad Sheaffer](../family/gad-sheaffer.md) captured its central premise in Hebrew:
+
+> ״את התחושה הזו, החוויה הזו של מסך מפוצל שהפך לעולם מפוצל אך אחוד, מנסה תמר שפר להנכיח באמצעות המיצב שלה, עכשיו / (כאן + שם) שיוצג למשך שלושה שבועות ומחצה בגלריה בנימין בתל אביב. את נקודת ההתחלה הרעיונית למיצב אפשר אולי למצוא באותם המקומות שבהם הרבדים הוירטואליים של העולם מקבלים ייצוג חזותי ברובד הפיזי שלו, בצורת QRC או Quick Response Code.״
+> — גד שפר, [״פלישת חוטפי הגופות״, בלוג *דרכי עצים* (12 באוקטובר 2013)](https://theshingimel.wordpress.com/2013/10/12/now-here-there/)[^wp-now-here]
 
 ### 2. *"Disturbed Landscape"* (נוף מופרע, 2014)
-Curated by **Shahar Markus**, a group exhibition where Tami presented early spatial mutations challenging pastoral representations of Israeli landscape.
+Curated by **Shahar Markus**, a group exhibition at Binyamin Gallery in which Tami presented spatial mutations challenging pastoral conventions of the Israeli landscape[^site-about].
 
-### 3. *"Inviting Darkness"* (להזמין את החושך, 2021)
-Curated by **Anat Getanio**, this solo exhibition served as a major creative turning point. In works such as *"מרחב לא מוגן"* (Unprotected Space), Tami presented hybrid furniture-architecture forms: a sage-green plywood structure resembling a mutated wardrobe, an urban shikun, and a Transformer robot, surrounded by domestic relics, bricks, and clocks, confronting the viewer with the illusion of domestic sanctuary during times of national unease[^binyamin-archive].
+### 3. *"Inviting Darkness"* — *להזמין את החושך* (2021)
+Curated by **Anat Gatenio**, this solo exhibition marked a major creative turning point toward domestic-urban hybrids, featuring works such as *מגרה – כרית – אבן* (*Drawer – Pillow – Stone*) and *מרחב לא מוגן* (*Unprotected Space*)[^binyamin-artist][^site-invite]. In her Hebrew artist documentation for *מרחב לא מוגן*, Tami described the sculptural hybrid:
+
+> ״העבודה עוסקת במושג הבית, הפנים השונות שלו, ויחסיו עם המרחב הציבורי. היבריד פיסולי זה כולל אזכורים למרחב ביתי אך גם למרחב שמחוץ לבית, לארון, למפתן בית, לחדר ילדים, או לרובוטריק.״
+> — תמר שפר, טקסט העבודה *מרחב לא מוגן* (2021), [עמוד האמנית הרשמי בגלריה בנימין](https://www.binyamin-gallery.com/artist/tamar-sheaffer)[^binyamin-artist]
 
 ---
 
 ## Solidarity & Community Leadership
 
-Tami's involvement in Binyamin Gallery reflects her deep belief in professional solidarity and cooperative ethics—values that directly mirror her earlier advocacy as an outspoken workplace feminist during her engineering career. In an art world often characterized by competition and commercial speculation, Binyamin stands as a testament to mutual aid, shared resources, and artistic integrity.
+Tami's sustained commitment to Binyamin Gallery reflects her deep belief in professional solidarity and cooperative ethics—values that directly echo her earlier advocacy for gender equity during her [defense engineering career](../bio/engineering-and-feminism.md)[^wiki-feminism]. In an art ecosystem often polarized between commercial galleries and state institutions, Binyamin stands as an enduring model of mutual aid and artistic autonomy, paving the road toward her 2026 museum solo exhibition [*"בנה ביתך"*](solo-exhibition-bene-beitcha.md).
 
 ---
 
 ## Footnotes & Sources
 
-[^binyamin-site]: Binyamin Gallery Official Portal, https://www.binyamin-gallery.com/
-[^site-about]: Tamar Sheaffer Official Portfolio, "Solo Exhibitions", https://tamarsheaffer.site/about/
-[^binyamin-archive]: Tamar Sheaffer, Curatorial documentation for *להזמין את החושך*, Binyamin Gallery official archive, 2021.
+[^binyamin-site]: [גלריה בנימין — אודות הגלריה השיתופית (Binyamin Gallery Official About Page)](https://www.binyamin-gallery.com/about).
+[^binyamin-artist]: תמר שפר, [עמוד האמנית ותיעוד עבודות באתר גלריה בנימין](https://www.binyamin-gallery.com/artist/tamar-sheaffer).
+[^site-about]: Tamar Sheaffer, [Official Portfolio — About & Exhibitions CV](https://tamarsheaffer.site/about/); ראו גם [קטלוג התערוכות הכרונולוגי](exhibitions-chronology.md).
+[^site-now]: Tamar Sheaffer, [*"Now (here+there)"* Installation Documentation](https://tamarsheaffer.site/now-herethere/).
+[^wp-now-here]: גד שפר, [״פלישת חוטפי הגופות״ — בלוג *דרכי עצים* (12.10.2013)](https://theshingimel.wordpress.com/2013/10/12/now-here-there/).
+[^site-invite]: Tamar Sheaffer, [*"Invite The Darkness In"* (*להזמין את החושך*, 2021) Documentation](https://tamarsheaffer.site/invite-the-darkness/).
+[^wiki-feminism]: ראו [Engineering Career & Workplace Feminism](../bio/engineering-and-feminism.md) ו-[Master Biography](../bio/tamar-sheaffer.md).
 
 ---
 

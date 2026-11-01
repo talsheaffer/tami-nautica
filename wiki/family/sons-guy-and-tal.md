@@ -17,12 +17,12 @@ related_places:
 related_art:
   - "../art/solo-exhibition-bene-beitcha.md"
 sources:
-  - type: "user_seed"
-    title: "Original Request Seeds"
-    ref: "ORIGINAL_REQUEST.md:24, 27, 28"
   - type: "blog"
-    title: "דרכי עצים"
-    ref: "https://theshingimel.wordpress.com/"
+    title: "דרכי עצים — ארלוזורוב 87, איינשטיין 33א וטיול ארבעת הכוכבים"
+    ref: "https://theshingimel.wordpress.com/2017/01/30/27-37/"
+  - type: "blog"
+    title: "דרכי עצים — Québécois ואדום אדום (מונטריאול וניו יורק)"
+    ref: "https://theshingimel.wordpress.com/2018/10/05/%d7%90%d7%93%d7%95%d7%9d-%d7%90%d7%93%d7%95%d7%9d/"
 verification_status: "verified"
 last_updated: "2026-10-26"
 ---
@@ -31,15 +31,13 @@ last_updated: "2026-10-26"
 # הבנים: גיא וטל שפר
 
 > **Generations:** Eldest Son Guy (גיא) • Younger Son Tal (טל)  
-> **Key Anchors:** Haifa Upbringing • Arlozorov 87 & Einstein St. • Montreal & New York • Provence Reunion
+> **Key Anchors:** Haifa Upbringing • [Arlozorov 87](../places/haifa-arlozorov-87.md) & [Einstein 33A](../places/haifa-einstein.md) • [Montreal & New York](../travels/montreal-and-new-york.md) • [Marseille & Provence Reunion](../travels/southern-france-and-paris.md)
 
 ---
 
 ## 1. Generational Continuity & Maternal Pride | המשכיות וגאוות אם
 
-Tami and Gadi Sheaffer raised two sons, **Guy (גיא)** and **Tal (טל)**, in Haifa. Both sons carry forward their parents' intellectual curiosity, ethical grounding, and creative spirit[^seed-sons].
-
-As a mother, Tami has been fiercely devoted, attentive, and protective. She supported them through their studies, military service, independent travels, and personal milestones, maintaining a close, open relationship characterized by mutual respect and warm humor.
+Tami and [Gadi Sheaffer](gad-sheaffer.md) raised two sons, **Guy (גיא)** and **Tal (טל)**, across Haifa—first in Hadar HaCarmel, then on the green ridge of Ahuza, and later in Denya[^blog-arlozorov][^blog-einstein]. Both sons carry forward their parents' intellectual curiosity, independent spirit, and dry family humor.
 
 ```
                            [ GAD & TAMAR SHEAFFER ]
@@ -48,20 +46,21 @@ As a mother, Tami has been fiercely devoted, attentive, and protective. She supp
              |                                                 |
              v                                                 v
       [ GUY SHEAFFER (גיא) ]                           [ TAL SHEAFFER (טל) ]
-      - Born at Arlozorov 87, Hadar                    - Born at Einstein St., Ahuza
-      - Lives in Haifa; father of Ya'ara & Carmel      - Lived in Montreal & New York
-      - Travel companion in Southern France            - Initiator & custodian of 70th Gift
+      - Born during Arlozorov 87 years                 - Raised at Einstein 33A; Beit Oren school
+      - Lives in Haifa; father of Ya'ara & Carmel      - Studied & lived in Montreal & New York
+      - Surprise reunion in Marseille (Sept 2026)      - Initiator & custodian of 70th Gift
 ```
 
 ---
 
 ## 2. Guy Sheaffer (גיא) | הבכור: גיא שפר
 
-Guy is Tami and Gadi's firstborn son. He was born while the young family resided in their historic stone apartment at **87 Arlozorov St., Hadar HaCarmel**[^seed-homes]. 
+Guy is Tami and Gadi's firstborn son, born while the young couple lived in their renovated rooftop apartment at **[87 Arlozorov St., Hadar HaCarmel](../places/haifa-arlozorov-87.md)** (*״בדירה הזו, הפכתי אבא״*, [״27-37: ארלוזורוב 87״, *דרכי עצים*](https://theshingimel.wordpress.com/2017/01/30/27-37/))[^blog-arlozorov], before starting elementary school after the move up Mount Carmel to **[33A Einstein St.](../places/haifa-einstein.md)**[^blog-einstein].
 
-Guy grew up with a calm, thoughtful disposition. He established his life in Haifa, close to his parents, and is the proud father of two daughters, **Ya'ara (יערה)** and **Carmel (כרמל)**[^seed-granddaughters]. Seeing Guy as a devoted father has been one of the great joys of Tami's adult life.
+Making his home in Haifa near his parents, Guy is the devoted father of Tami and Gadi's two granddaughters, **[Ya'ara (יערה) and Carmel (כרמל)](granddaughters-yaara-carmel.md)**[^blog-kpop]. In September 2026, on the eve of Tami's 70th birthday, Guy orchestrated an unforgettable airport surprise at the start of his parents' journey to **[Southern France](../travels/southern-france-and-paris.md)**:
 
-Guy has also shared memorable travels with his parents. Most recently, he joined Tami and Gadi on an expansive journey through Provence and Southern France, visiting Arles, Roman antiquities, and modern architectural landmarks[^seed-travels].
+> ״לפני שבועיים טסנו למרסיי, שם פגשנו ״בהפתעה״ את בננו גיא בשדה התעופה (הפתעה לזוגתי…) שכרנו רכב בשדה (למה כבר?) ונסענו העירה. למחרת עברנו מלון בתוך העיר לעוד שני לילות (למה עברנו?) וטיילנו בעיר ברגל עם בננו.״
+> — גד שפר, [״טיול ארבעת הכוכבים״, בלוג *דרכי עצים* (28 בספטמבר 2026)](https://theshingimel.wordpress.com/2026/09/28/4star/)[^blog-4star]
 
 *Read more: [Haifa: 87 Arlozorov St., Hadar](../places/haifa-arlozorov-87.md) and [Southern France & Paris](../travels/southern-france-and-paris.md).*
 
@@ -69,11 +68,14 @@ Guy has also shared memorable travels with his parents. Most recently, he joined
 
 ## 3. Tal Sheaffer (טל) | הצעיר: טל שפר
 
-Tal is Tami and Gadi's younger son, born while the family lived in their leafy second home on **Einstein St. in Ahuza**[^seed-homes]. 
+Tal is Tami and Gadi's younger son, raised in the quiet garden-enclosed apartment at **[33A Einstein St. in Ahuza](../places/haifa-einstein.md)** and educated in an alternative school framework up on Mount Carmel at **Beit Oren**:
 
-Tal pursued an international path, living abroad in Montreal, Canada for two years, and spending significant time in New York. Tami and Gadi traveled to North America to visit Tal, exploring Montreal's neighborhoods and wandering through Manhattan's museums and architectural streets[^seed-travels].
+> ״היה מאד נוח לגדל שני ילדים קטנים בדירה הזו. בניגוד לקודמת, הם יכלו לרדת ללא השגחה לחצר, לשחק על הדשא הגדול שבין הבית האחורי והקדמי או בגן הציבורי מאחורי הבית... את בני הצעיר שלחנו דווקא רחוק – לבית אורן למסגרת אלטרנטיבית.״
+> — גד שפר, [״38-50, רחוב איינשטיין, חיפה״, בלוג *דרכי עצים* (27 בפברואר 2017)](https://theshingimel.wordpress.com/2017/02/27/38-50/)[^blog-einstein]
 
-Tal is the prime initiator and custodian of this comprehensive 70th-birthday archival gift project. Driven by deep love, gratitude, and an acute understanding of his mother’s artistic and personal stature, Tal conceived this non-hollow archive to weave together her lived spaces, family heritage, and tactile art into an enduring celebration of her life.
+Pursuing studies and work in North America—living in **Montreal, Canada** and **New York**—Tal drew Tami and Gadi across the Atlantic for memorable winter and autumn journeys, from `-15°C` Montreal snowstorms in December 2017 to driving together up the Hudson Valley from New York to Montreal in autumn 2018 (*״הדרך לפגישה עם בננו בניו יורק עברה בליסבון, איי קייפ וורדה... שבועיים בניו יורק. ואחרי כן, אמורים היו להיות צבעי השלכת המפורסמים, כאשר נעשה את דרכנו יחד במכונית במעלה נהר ההדסון אל מונטריאול, שם הוא לומד״*, [״אדום אדום״, *דרכי עצים*](https://theshingimel.wordpress.com/2018/10/05/%d7%90%d7%93%d7%95%d7%9d-%d7%90%d7%93%d7%95%d7%9d/))[^blog-adom][^blog-quebecois].
+
+Tal is also the initiator and custodian of this 70th-birthday archival and spatial tribute honoring his mother's life, lived spaces, and [landmark 2026 solo exhibition](../art/solo-exhibition-bene-beitcha.md)[^wiki-readme].
 
 *Read more: [Haifa: Einstein St., Ahuza](../places/haifa-einstein.md) and [Montreal & New York](../travels/montreal-and-new-york.md).*
 
@@ -81,9 +83,7 @@ Tal is the prime initiator and custodian of this comprehensive 70th-birthday arc
 
 ## 4. Maternal Devotion & Distance | אמהות, דאגה ומרחק
 
-Tami's deep maternal instinct is inseparable from her protective vigilance:
-- **Fierce Concern:** She thinks constantly about Guy and Tal’s happiness, professional fulfillment, and health, as well as the well-being of Tal’s wife[^seed-worries].
-- **Bridging the Ocean:** During Tal’s years abroad, she mastered the art of trans-continental mothering, ensuring that distance never eroded intimacy.
+Tami's maternal care is inseparable from her vigilant [inner life](../bio/inner-life-and-worldview.md): thinking constantly of Guy and Tal's well-being, their partners, and her granddaughters, and bridging geographic oceans through steadfast closeness[^inner-worldview].
 
 ---
 
@@ -108,8 +108,11 @@ Tami's deep maternal instinct is inseparable from her protective vigilance:
 
 ## 7. Footnotes & Sources | מקורות והערות שוליים
 
-[^seed-sons]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:24, 27*.
-[^seed-homes]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:24*.
-[^seed-granddaughters]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:27*.
-[^seed-travels]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:27*.
-[^seed-worries]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:28*.
+[^blog-arlozorov]: גד שפר, [״27-37: ארלוזורוב 87 / בר גיורא 1, הדר הכרמל, חיפה״ — בלוג *דרכי עצים* (30.01.2017)](https://theshingimel.wordpress.com/2017/01/30/27-37/).
+[^blog-einstein]: גד שפר, [״38-50, רחוב איינשטיין, חיפה״ — בלוג *דרכי עצים* (27.02.2017)](https://theshingimel.wordpress.com/2017/02/27/38-50/).
+[^blog-kpop]: גד שפר, [״מ phenacetin ועד K-pop״ — בלוג *דרכי עצים* (23.03.2025)](https://theshingimel.wordpress.com/2025/03/23/k-pop/); ראו גם [הנכדות יערה וכרמל](granddaughters-yaara-carmel.md).
+[^blog-4star]: גד שפר, [״טיול ארבעת הכוכבים״ — מרסיי ודרום צרפת, בלוג *דרכי עצים* (28.09.2026)](https://theshingimel.wordpress.com/2026/09/28/4star/).
+[^blog-adom]: גד שפר, [״אדום אדום״ — ניו יורק, ההדסון ומונטריאול, בלוג *דרכי עצים* (05.10.2018)](https://theshingimel.wordpress.com/2018/10/05/%d7%90%d7%93%d7%95%d7%9d-%d7%90%d7%93%d7%95%d7%9d/).
+[^blog-quebecois]: גד שפר, [״Québécois״ — ביקור חורף במונטריאול, בלוג *דרכי עצים* (24.12.2017)](https://theshingimel.wordpress.com/2017/12/24/quebecois/).
+[^wiki-readme]: ראו [אינדקס הוויקי ומקורות המערכת](../README.md) ו-[הביוגרפיה הראשית](../bio/tamar-sheaffer.md).
+[^inner-worldview]: ראו [עולם פנימי, דאגות ותפיסת עולם](../bio/inner-life-and-worldview.md).

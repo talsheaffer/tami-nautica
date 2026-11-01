@@ -123,6 +123,11 @@ media/**/*
 
 drop_folder/incoming/*
 !drop_folder/incoming/.gitkeep
+drop_folder/*.json
+
+# Live Family Beta Feedback Store (Runtime State & Snapshots)
+feedback/*
+!feedback/.gitkeep
 
 prototype/assets/outpaint_sources/*
 !prototype/assets/outpaint_sources/.gitkeep

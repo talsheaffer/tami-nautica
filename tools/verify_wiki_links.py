@@ -8,6 +8,8 @@ and detects orphan pages across the Tamar Sheaffer 70th-Birthday project wiki.
 Standard library only. No external dependencies required.
 """
 
+from __future__ import annotations
+
 import sys
 import os
 import re
@@ -45,7 +47,7 @@ class WikiLinkVerifier:
     def __init__(self, root_dir: str, wiki_dir: str, check_anchors: bool = True,
                  check_orphans: bool = True, strict_orphans: bool = True,
                  check_images: bool = True, check_root_docs: bool = True,
-                 verbose: bool = False):
+                 check_footnotes: bool = True, verbose: bool = False):
         self.root_dir = os.path.abspath(root_dir)
         self.wiki_dir = os.path.abspath(wiki_dir)
         self.check_anchors = check_anchors
@@ -53,14 +55,15 @@ class WikiLinkVerifier:
         self.strict_orphans = strict_orphans
         self.check_images = check_images
         self.check_root_docs = check_root_docs
+        self.check_footnotes = check_footnotes
         self.verbose = verbose
 
-        self.md_files = []          # Relative paths to root_dir
-        self.wiki_files = set()     # Subset of md_files located under wiki_dir
-        self.file_headings = {}     # rel_path -> set of valid anchor slugs
-        self.graph = {}             # rel_path -> set of linked rel_paths
-        self.errors = []
-        self.warnings = []
+        self.md_files: list[str] = []          # Relative paths to root_dir
+        self.wiki_files: set[str] = set()      # Subset of md_files located under wiki_dir
+        self.file_headings: dict[str, set[str]] = {}  # rel_path -> set of valid anchor slugs
+        self.graph: dict[str, set[str]] = {}          # rel_path -> set of linked rel_paths
+        self.errors: list[dict] = []
+        self.warnings: list[dict] = []
 
         self.stats = {
             'total_files_scanned': 0,
@@ -74,6 +77,9 @@ class WikiLinkVerifier:
             'empty_files_count': 0,
             'broken_anchors_count': 0,
             'orphan_pages_count': 0,
+            'footnote_refs_checked': 0,
+            'footnote_defs_checked': 0,
+            'footnote_errors_count': 0,
         }
 
     def collect_files(self):
@@ -417,12 +423,113 @@ class WikiLinkVerifier:
                 else:
                     self.warnings.append(error_item)
 
+    def check_footnote_citations(self) -> None:
+        """Pass 4: Verify wiki footnote references resolve and every footnote has clickable hyperlinks."""
+        if not self.check_footnotes:
+            return
+
+        def_pattern = re.compile(r'^\s*\[\^([^\]]+)\]:\s*(.+)$')
+        ref_pattern = re.compile(r'\[\^([^\]]+)\]')
+        md_link_pattern = re.compile(r'\[([^\]]+)\]\((<[^>]+>|[^)\s]+)\)')
+        html_link_pattern = re.compile(r'<a\s[^>]*href=[\'"]([^\'"]+)[\'"]', re.IGNORECASE)
+
+        for rel_file in sorted(self.wiki_files):
+            abs_file = os.path.join(self.root_dir, rel_file)
+            try:
+                with open(abs_file, 'r', encoding='utf-8', errors='replace') as f:
+                    lines = f.readlines()
+            except Exception:
+                continue
+
+            defs: dict[str, tuple[int, str]] = {}
+            refs: list[tuple[int, str]] = []
+            fence_char: str | None = None
+            last_def_key: str | None = None
+
+            for line_num, line in enumerate(lines, 1):
+                stripped = line.strip()
+                if fence_char is None:
+                    if stripped.startswith('```'):
+                        fence_char = '`'
+                        last_def_key = None
+                        continue
+                    elif stripped.startswith('~~~'):
+                        fence_char = '~'
+                        last_def_key = None
+                        continue
+                else:
+                    if (fence_char == '`' and stripped.startswith('```')) or (
+                        fence_char == '~' and stripped.startswith('~~~')
+                    ):
+                        fence_char = None
+                    continue
+
+                def_match = def_pattern.match(line)
+                if def_match:
+                    key = def_match.group(1).strip()
+                    body = def_match.group(2).strip()
+                    if key in defs:
+                        prev_line, prev_body = defs[key]
+                        defs[key] = (prev_line, f"{prev_body} {body}".strip())
+                    else:
+                        defs[key] = (line_num, body)
+                    last_def_key = key
+                    continue
+
+                if last_def_key is not None and re.match(r'^(?: {2,}|\t+)\S', line):
+                    prev_line, prev_body = defs[last_def_key]
+                    defs[last_def_key] = (prev_line, f"{prev_body} {stripped}".strip())
+                    continue
+                last_def_key = None
+
+                clean_line = re.sub(r'`[^`]*?`', '', line)
+                for ref_key in ref_pattern.findall(clean_line):
+                    refs.append((line_num, ref_key.strip()))
+
+            self.stats['footnote_defs_checked'] += len(defs)
+            self.stats['footnote_refs_checked'] += len(refs)
+
+            referenced_keys = {rk for _, rk in refs}
+            for line_num, rk in refs:
+                if rk not in defs:
+                    self.stats['footnote_errors_count'] += 1
+                    self.errors.append({
+                        'type': 'DANGLING_FOOTNOTE_REF',
+                        'source_file': rel_file,
+                        'line': line_num,
+                        'target': f'[^{rk}]',
+                        'message': f'Footnote reference [^{rk}] has no matching definition in {rel_file}'
+                    })
+
+            for dk, (def_line, def_body) in defs.items():
+                if dk not in referenced_keys:
+                    self.stats['footnote_errors_count'] += 1
+                    self.errors.append({
+                        'type': 'UNUSED_FOOTNOTE_DEF',
+                        'source_file': rel_file,
+                        'line': def_line,
+                        'target': f'[^{dk}]',
+                        'message': f'Footnote definition [^{dk}] is never referenced in {rel_file}'
+                    })
+
+                clean_def = re.sub(r'`[^`]*?`', '', def_body)
+                if not md_link_pattern.search(clean_def) and not html_link_pattern.search(clean_def):
+                    self.stats['footnote_errors_count'] += 1
+                    self.errors.append({
+                        'type': 'UNLINKED_FOOTNOTE_DEF',
+                        'source_file': rel_file,
+                        'line': def_line,
+                        'target': f'[^{dk}]',
+                        'message': f'Footnote definition [^{dk}] must include a clickable hyperlink in {rel_file}'
+                    })
+
     def run(self) -> int:
         """Execute full verification pipeline and return exit code."""
         self.collect_files()
         self.index_headings()
         self.check_links()
         self.check_for_orphans()
+        self.check_footnote_citations()
         return 1 if self.errors else 0
 
 
@@ -459,6 +566,10 @@ def main():
         help="Include root .md files in link checks."
     )
     parser.add_argument(
+        '--check-footnotes', action=argparse.BooleanOptionalAction, default=True,
+        help="Verify footnote references, definitions, and clickable source links in wiki files."
+    )
+    parser.add_argument(
         '--json', action='store_true', dest='json_output',
         help="Output results as structured JSON."
     )
@@ -479,6 +590,7 @@ def main():
         strict_orphans=args.strict_orphans,
         check_images=args.check_images,
         check_root_docs=args.check_root_docs,
+        check_footnotes=args.check_footnotes,
         verbose=args.verbose
     )
 
@@ -509,6 +621,8 @@ def main():
         print(f"Empty Files (0 Bytes):        {verifier.stats['empty_files_count']}")
         print(f"Broken Heading Anchors:       {verifier.stats['broken_anchors_count']}")
         print(f"Orphan / Unreachable Pages:   {verifier.stats['orphan_pages_count']}")
+        print(f"Footnote Refs / Defs Checked: {verifier.stats['footnote_refs_checked']} / {verifier.stats['footnote_defs_checked']}")
+        print(f"Footnote Citation Errors:     {verifier.stats['footnote_errors_count']}")
         print("==================================================")
 
         if verifier.warnings:

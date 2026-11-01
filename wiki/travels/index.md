@@ -10,12 +10,13 @@ people:
   - "Tal Sheaffer"
 sources:
   - type: "blog"
-    title: "רשימת הנסיעות — דרכי עצים"
-    ref: "https://theshingimel.wordpress.com/travels/"
-  - type: "user_seed"
-    title: "User Biographical Seeds"
-    ref: "ORIGINAL_REQUEST.md:27"
+    title: "דרכי עצים — רשימות מסע ושהויות אמן"
+    ref: "https://theshingimel.wordpress.com/"
+  - type: "site"
+    title: "Tamar Sheaffer Official CV — Residencies"
+    ref: "https://tamarsheaffer.site/about/"
 verification_status: "verified"
+last_updated: "2026-10-26"
 ---
 
 # Journeys, Residencies & Family Travels
@@ -23,45 +24,39 @@ verification_status: "verified"
 
 Welcome to the **Travels Portal** of the Tamar "Tami" Sheaffer Biographical and Artistic Wiki.
 
-Throughout their decades together, Tami and Gadi Sheaffer have traveled widely across Israel and the globe. These journeys have never been superficial tourist escapades; they have functioned as intense cultural immersions, architectural field studies, artistic residencies, and cherished opportunities for family reunions abroad with their sons, **Guy** and **Tal**[^user-seed].
+From their ten-month post-Technion world journey out of [Hadar HaCarmel](../places/haifa-arlozorov-87.md)[^blog-bigtrip] to international artist residencies in Paris and Liguria and joyful reunions abroad with their sons **[Guy and Tal](../family/sons-guy-and-tal.md)**, Tami and [Gadi Sheaffer](../family/gad-sheaffer.md)'s travels weave architectural curiosity, contemporary art, and family closeness into a continuous conversation[^tamar-cv][^blog-4star]:
+
+> ״יש משהו מעט מוזר בלישון בבניין שתכנן לה קורבוזיה. בדרך כלל מבקרים באדריכלות. מסתכלים עליה, מצלמים אותה, אולי קוראים עליה כמה דברים. כאן אפשר לעשות משהו אחר: להיכנס פנימה, לסגור את הדלת, ולישון שם.״
+> — גד שפר, [״לישון בתוך רעיון״, בלוג *דרכי עצים* (16 בספטמבר 2026)](https://theshingimel.wordpress.com/2026/09/16/%d7%9c%d7%99%d7%a9%d7%95%d7%9f-%d7%91%d7%aa%d7%95%d7%9a-%d7%a8%d7%a2%d7%99%d7%95%d7%9f/)[^blog-corbu-marseille]
 
 ---
 
-## Geographic Scope & Itineraries
+## Geographic Scope & Itineraries | אופקי מסע
 
 ```
 +----------------------------------------------------------------------------------------------------+
 |                                    TAMI'S INTERNATIONAL ODYSSEY                                    |
 +------------------------------------+---------------------------------+-----------------------------+
-|  NORTH AMERICA                     |  WESTERN EUROPE                 |  THE MEDITERRANEAN          |
-|  - Montreal: Visiting Tal          |  - Paris: Cité des Arts (2016)  |  - Liguria: Bogliasco (2020)|
-|  - NYC: Exhibitions & reunions     |  - Southern France: Arles,      |  - Greece & Aegean islands  |
-|  - Oregon: 1.5-year sabbatical     |    Marseille, Camargue (2026)   |  - Umbria: Rural farmhouse  |
-|  - Hudson River Valley road trips  |  - Portbou: Benjamin memorial   |  - Mediterranean coastlines |
+|  NORTH AMERICA                     |  FRANCE & CATALONIA             |  ITALY & MEDITERRANEAN      |
+|  - Montreal: Visiting Tal (2017+)  |  - Paris: Cité des Arts (2016)  |  - Bogliasco Fellowship     |
+|  - NYC & Yale Art Gallery (2018)   |  - Marseille, Céret, Collioure, |    in Liguria (Jan 2020)    |
+|  - Hudson River Valley drive       |    Arles & Provence (Sept 2026) |  - Genoa, Milan & Bergamo   |
+|  - Early U.S. sabbatical years     |  - Portbou: Benjamin memorial   |    Accademia Carrara        |
 +------------------------------------+---------------------------------+-----------------------------+
 ```
 
 ---
 
-## Directory of Travel Articles
+## Directory of Travel Articles | מאמרי שער המסעות
 
 ### 1. [Montreal & New York: Visiting Tal in North America](montreal-and-new-york.md)
-The transatlantic family bond: visiting younger son **Tal** during his two years living and studying in Montreal, Canada. Extended reunions in New York City, touring world-class museums (MoMA, Whitney, Guggenheim), and driving together up the Hudson River Valley through autumn foliage.
+Transatlantic reunions with younger son **[Tal](../family/sons-guy-and-tal.md)** in Montreal (*״אמריקאי, אבל בצרפתית״*)[^blog-quebecois] and New York—museum days, Yale University Art Gallery, and driving together up the Hudson River Valley in search of autumn foliage[^blog-red].
 
 ### 2. [Southern France & Paris: Modernism, Memory & Surprise](southern-france-and-paris.md)
-The European cultural axis: from her formative 6-month artist residency in Paris (Studio 8422 at the Cité des Arts, 2016) to the unforgettable **September 2026 family journey to Southern France** with Gadi and older son **Guy** (surprising Tami at Marseille airport, staying at Le Corbusier's *Cité Radieuse*, paying homage to Walter Benjamin in Portbou, and exploring Arles and Provence).
+From six months in **[Studio 8422 at the Cité des Arts in Paris](../places/paris-cite-studio.md)** (2016)[^blog-paris] to the **September 2026 journey across Southern France** with [Guy](../family/sons-guy-and-tal.md)—an airport surprise in Marseille, sleeping inside Le Corbusier's *Cité Radieuse*, Cubism and Fauvism in Céret and Collioure, Dani Karavan's Walter Benjamin memorial at Portbou, and five nights in Arles[^blog-4star][^blog-benjamin].
 
 ### 3. [Bogliasco Italy Residency: Ligurian Fellowship](bogliasco-italy-residency.md)
-The Mediterranean fellowship: Tami's prestigious 2020 appointment as a Fellow of the **Bogliasco Foundation** at the Bogliasco Study Center on the Italian Riviera near Genoa. Intensive studio contemplation overlooking the Ligurian Sea, absorbing coastal light and developing her sculptural enclosures.
-
----
-
-## The Dialogue Between Travel and Art
-
-Every journey abroad fed directly into Tami's tactile studio work:
-- **Architectural Pilgrimages:** Touring Le Corbusier's *Cité Radieuse* in Marseille and *Villa Savoye* in Poissy, Pierre Chareau's *Maison de Verre* in Paris, and Dani Karavan's *Passages* memorial to Walter Benjamin in Portbou provided structural grammar for her installations.
-- **Museum Immersions:** Regular visits to international contemporary art institutions broadened her material palette, reinforcing her dedication to low-tech, manual art in opposition to commercial spectacle.
-- **Family Warmth:** Above all, travel has been the setting for deep family laughter, shared meals, and unforgettable adventures with Gadi, Guy, and Tal.
+Tami's January 2020 one-month fellowship at the **[Bogliasco Foundation](https://www.bfny.org/)** between Genoa and Portofino—working in a seaside villa studio overlooking the Ligurian Sea and visiting Genoa, Milan, and Bergamo's Accademia Carrara with Gadi on the eve of the global pandemic[^tamar-cv][^blog-ubermut].
 
 ---
 
@@ -76,4 +71,12 @@ Every journey abroad fed directly into Tami's tactile studio work:
 
 ## Footnotes & Sources
 
-[^user-seed]: Family Biographical Seeds, *ORIGINAL_REQUEST.md:27*.
+[^blog-bigtrip]: גד שפר, [״׳הטיול הגדול׳ אחרי צבא״ — בלוג *דרכי עצים* (08.06.2023)](https://theshingimel.wordpress.com/2023/06/08/2/).
+[^tamar-cv]: תמר שפר, [קורות חיים ושהויות אמן (פריז 2016, בוגליאסקו 2020) — אתר האמנית הרשמי](https://tamarsheaffer.site/about/).
+[^blog-4star]: גד שפר, [״טיול ארבעת הכוכבים״ — מסע ספטמבר 2026 בדרום צרפת עם גיא, בלוג *דרכי עצים* (28.09.2026)](https://theshingimel.wordpress.com/2026/09/28/4star/).
+[^blog-corbu-marseille]: גד שפר, [״לישון בתוך רעיון״ — La Cité Radieuse במרסיי, בלוג *דרכי עצים* (16.09.2026)](https://theshingimel.wordpress.com/2026/09/16/%d7%9c%d7%99%d7%a9%d7%95%d7%9f-%d7%91%d7%aa%d7%95%d7%9a-%d7%a8%d7%a2%d7%99%d7%95%d7%9f/).
+[^blog-quebecois]: גד שפר, [״Québécois״ — מונטריאול, בלוג *דרכי עצים* (24.12.2017)](https://theshingimel.wordpress.com/2017/12/24/quebecois/).
+[^blog-red]: גד שפר, [״אדום אדום״ — ניו יורק, ההדסון ומונטריאול, בלוג *דרכי עצים* (05.10.2018)](https://theshingimel.wordpress.com/2018/10/05/%d7%90%d7%93%d7%95%d7%9d-%d7%90%d7%93%d7%95%d7%9d/).
+[^blog-paris]: גד שפר, [״פריז״ — סטודיו 8422 בסיטה דז אר, בלוג *דרכי עצים* (08.03.2017)](https://theshingimel.wordpress.com/2017/03/08/61/).
+[^blog-benjamin]: גד שפר, [״המזוודה של בנימין״ — פורטבו, בלוג *דרכי עצים* (21.09.2026)](https://theshingimel.wordpress.com/2026/09/21/%d7%94%d7%9e%d7%96%d7%95%d7%95%d7%93%d7%94-%d7%a9%d7%9c-%d7%91%d7%a0%d7%99%d7%9e%d7%99%d7%9f/).
+[^blog-ubermut]: גד שפר, [״איך ניצלתי מהדוב החום״ — שהות האמן בליגוריה, בלוג *דרכי עצים* (22.03.2020)](https://theshingimel.wordpress.com/2020/03/22/ubermut/).

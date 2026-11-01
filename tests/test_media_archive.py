@@ -19,6 +19,8 @@ Usage:
     python3 -m unittest tests/test_media_archive.py
 """
 
+from __future__ import annotations
+
 import os
 import sys
 import json
@@ -36,6 +38,11 @@ except ImportError:
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from scripts.build_catalog import UPRIGHT_DERIVATIVES
+
 MEDIA_DIR = PROJECT_ROOT / "media"
 CATALOG_DIR = PROJECT_ROOT / "catalog"
 
@@ -62,17 +69,33 @@ EXPECTED_SCHEMA_FIELDS = [
 SUPPORTED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".tiff"}
 
 
-def get_all_media_files() -> list:
-    """Finds all physical image files located in MEDIA_DIR."""
+def get_all_media_files() -> list[Path]:
+    """Finds all canonical archival image files located in MEDIA_DIR (excluding upright display derivatives)."""
     if not MEDIA_DIR.exists():
         return []
-    media_files = []
-    for root, _, files in os.walk(MEDIA_DIR):
+    media_files: list[Path] = []
+    for root, dirs, files in os.walk(MEDIA_DIR):
+        if Path(root) == MEDIA_DIR:
+            dirs[:] = [d for d in dirs if d != UPRIGHT_DERIVATIVES.derivatives_subdir]
         for f in files:
             p = Path(root) / f
             if p.suffix.lower() in SUPPORTED_IMAGE_EXTENSIONS:
                 media_files.append(p)
     return sorted(media_files)
+
+
+def get_all_upright_derivative_files() -> list[Path]:
+    """Finds all generated upright display-derivative image files under MEDIA_DIR/<derivatives_subdir>."""
+    derivatives_root = MEDIA_DIR / UPRIGHT_DERIVATIVES.derivatives_subdir
+    if not derivatives_root.exists():
+        return []
+    derivative_files: list[Path] = []
+    for root, _, files in os.walk(derivatives_root):
+        for f in files:
+            p = Path(root) / f
+            if p.suffix.lower() in SUPPORTED_IMAGE_EXTENSIONS:
+                derivative_files.append(p)
+    return sorted(derivative_files)
 
 
 class TestMediaArchiveCompleteness(unittest.TestCase):
@@ -212,12 +235,17 @@ class TestCatalogArtifacts(unittest.TestCase):
             self.assertIsInstance(entry["art_themes"], list)
 
     def test_zero_broken_relative_paths(self):
-        """Every rel_path in catalog.json must exist as a real file on disk."""
+        """Every rel_path and display_rel_path in catalog.json must exist as a real file on disk."""
         broken_paths = []
         for entry in self.catalog_data:
             target = PROJECT_ROOT / entry["rel_path"]
             if not target.exists() or not target.is_file():
                 broken_paths.append((entry["id"], entry["rel_path"]))
+            display_rel = entry.get("display_rel_path")
+            if display_rel is not None:
+                display_target = PROJECT_ROOT / display_rel
+                if not display_target.exists() or not display_target.is_file():
+                    broken_paths.append((entry["id"], display_rel))
 
         self.assertEqual(
             len(broken_paths), 0,
@@ -225,7 +253,7 @@ class TestCatalogArtifacts(unittest.TestCase):
         )
 
     def test_catalog_100_percent_coverage(self):
-        """Every image on disk in media/ must have an entry in the catalog."""
+        """Every archival image in media/ must have a catalog entry, and every upright derivative must be referenced."""
         media_files = get_all_media_files()
         if not media_files:
             self.skipTest("No media files found to test coverage.")
@@ -240,6 +268,22 @@ class TestCatalogArtifacts(unittest.TestCase):
         self.assertEqual(
             len(unindexed), 0,
             f"Found {len(unindexed)} unindexed media files on disk: {unindexed[:5]}"
+        )
+
+        referenced_derivatives = {
+            entry["display_rel_path"]
+            for entry in self.catalog_data
+            if entry.get("display_rel_path") and entry["display_rel_path"] != entry["rel_path"]
+        }
+        orphan_derivatives = []
+        for deriv in get_all_upright_derivative_files():
+            rel = str(deriv.relative_to(PROJECT_ROOT))
+            if rel not in referenced_derivatives:
+                orphan_derivatives.append(rel)
+
+        self.assertEqual(
+            len(orphan_derivatives), 0,
+            f"Found {len(orphan_derivatives)} unreferenced upright derivative files on disk: {orphan_derivatives[:5]}"
         )
 
     def test_catalog_csv_utf8_bom_and_columns(self):

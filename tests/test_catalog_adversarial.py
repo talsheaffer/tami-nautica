@@ -407,8 +407,10 @@ class AdversarialCatalogIntegrityTest(unittest.TestCase):
         )
 
     def test_09_zero_unindexed_files_in_media_dir(self):
-        """Asserts every image on disk in media/ is registered in catalog.json."""
-        catalog_paths = {Path(e["rel_path"]).resolve() for e in self.catalog}
+        """Asserts every image on disk in media/ is registered in catalog.json (archival or upright derivative)."""
+        catalog_paths = {Path(e["rel_path"]).resolve() for e in self.catalog} | {
+            Path(e["display_rel_path"]).resolve() for e in self.catalog
+        }
         media_files = []
         for root, _, files in os.walk(MEDIA_DIR):
             for f in files:
@@ -421,6 +423,27 @@ class AdversarialCatalogIntegrityTest(unittest.TestCase):
             len(unindexed), 0,
             f"Adversarial check failed: {len(unindexed)} unindexed files in media/: {unindexed[:5]}"
         )
+
+    def test_09b_upright_display_derivatives_exist_and_are_rotated(self):
+        """Every display_rel_path exists; rotated entries point at a quarter-turn derivative with swapped dims."""
+        from PIL import Image as _PILImage
+        from scripts.build_catalog import UPRIGHT_DERIVATIVES
+
+        for e in self.catalog:
+            display = PROJECT_ROOT / e["display_rel_path"]
+            self.assertTrue(display.is_file(), f"{e['id']}: missing display file {e['display_rel_path']}")
+            rot = e["display_rotation_cw_deg"]
+            self.assertIn(rot, UPRIGHT_DERIVATIVES.allowed_rotations_cw_deg)
+            if rot == 0:
+                self.assertEqual(e["display_rel_path"], e["rel_path"])
+                continue
+            self.assertIn(f"/{UPRIGHT_DERIVATIVES.derivatives_subdir}/", "/" + e["display_rel_path"])
+            with _PILImage.open(display) as img:
+                expected = (e["height"], e["width"]) if rot in (90, 270) else (e["width"], e["height"])
+                self.assertEqual(img.size, expected, f"{e['id']}: derivative dims {img.size} != {expected}")
+
+        kitchen = next(e for e in self.catalog if e["id"] == "IMG_HERZ_0367")
+        self.assertEqual(kitchen["display_rotation_cw_deg"], 90)
 
     def test_10_zero_sha256_duplicates_in_archive(self):
         """Asserts zero duplicate SHA-256 hashes across catalog entries."""
@@ -517,33 +540,59 @@ class AdversarialCatalogIntegrityTest(unittest.TestCase):
         with open(tag_vocab_path, "r", encoding="utf-8") as f:
             vocab = json.load(f)
 
-        known_people = {item["canonical"] for item in vocab.get("people", [])}
-        known_places = {item["canonical"] for item in vocab.get("places", [])}
-        known_themes = {item["canonical"] for item in vocab.get("art_motifs", [])}
+        known_people = {item["canonical"] for item in vocab.get("people", [])} | {
+            item["canonical_he"] for item in vocab.get("people", []) if item.get("canonical_he")
+        }
+        known_places = {item["canonical"] for item in vocab.get("places", [])} | {
+            item["canonical_he"] for item in vocab.get("places", []) if item.get("canonical_he")
+        }
+        known_themes = {item["canonical"] for item in vocab.get("art_motifs", [])} | {
+            item["canonical_he"] for item in vocab.get("art_motifs", []) if item.get("canonical_he")
+        }
 
         unexpected_people = set()
         unexpected_places = set()
         unexpected_themes = set()
+        malformed_custom_tags = []
 
         for e in self.catalog:
-            for p in e.get("people", []):
-                if p not in known_people:
-                    unexpected_people.add(p)
-            for pl in e.get("places", []):
-                if pl not in known_places:
-                    unexpected_places.add(pl)
+            is_family_customizable = (
+                e.get("source_group") == "drop_folder_imports"
+                or "עודכן על ידי" in str(e.get("confidence_notes") or "")
+            )
+            for tag_field in ("people", "places", "art_themes"):
+                for raw_tag in e.get(tag_field, []):
+                    if (
+                        not isinstance(raw_tag, str)
+                        or not (1 <= len(raw_tag.strip()) <= 80)
+                        or any(ord(ch) < 32 for ch in raw_tag)
+                    ):
+                        malformed_custom_tags.append((e.get("id"), tag_field, raw_tag))
+
+            if not is_family_customizable:
+                for p in e.get("people", []):
+                    if p not in known_people:
+                        unexpected_people.add(p)
+                for pl in e.get("places", []):
+                    if pl not in known_places:
+                        unexpected_places.add(pl)
+
             for th in e.get("art_themes", []):
                 if th not in known_themes:
                     unexpected_themes.add(th)
 
-        # All tags in harvested archive must belong to controlled vocabulary
+        self.assertEqual(
+            len(malformed_custom_tags), 0,
+            f"Found malformed or oversized tags in catalog: {malformed_custom_tags}"
+        )
+        # Automated harvested archive tags must belong to controlled vocabulary
         self.assertEqual(
             len(unexpected_people), 0,
-            f"Found tags outside controlled people vocabulary: {unexpected_people}"
+            f"Found automated tags outside controlled people vocabulary: {unexpected_people}"
         )
         self.assertEqual(
             len(unexpected_places), 0,
-            f"Found tags outside controlled places vocabulary: {unexpected_places}"
+            f"Found automated tags outside controlled places vocabulary: {unexpected_places}"
         )
         self.assertEqual(
             len(unexpected_themes), 0,
