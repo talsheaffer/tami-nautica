@@ -5,6 +5,7 @@
 
 import { SpatialSceneManager, EXHIBITION_GROUPS } from './scene_manager.js';
 import { BetaFeedbackOverlay } from './feedback_overlay.js';
+import { mountBetaFontChipSelector } from './beta_font.js';
 
 export { EXHIBITION_GROUPS };
 
@@ -13,64 +14,83 @@ const EXHIBITION_SCENE_SEQUENCE = Object.freeze(
 );
 
 const PORTAL_SHORT_BADGE_LABELS_HE = Object.freeze({
-  cubby_capsules: '🫧 קפסולות נייר',
-  cubby_plan_b_v3: '🕳️ תמי ויערה',
-  cubby_wandering_1: '✏️ שיטוט 1',
-  cubby_bene_beitcha: '🏛️ בנה ביתך',
-  cubby_plan_b_pipe: '🕳️ צינור Plan B',
-  cubby_wandering_2: '✏️ שיטוט 2',
-  cubby_denya_model: '🏠 דגם דניה',
-  cubby_marseille: '🪞 מרסיי',
-  cubby_fried_house: '🪨 בית פריד',
-  yard_railing_portal: '🏡 תמי ואראלה במעקה',
-  fried_house_window_wandering_1: '✏️ שיטוט 1 בחלון',
-  portal_denya_dining_wandering_2: '✏️ שיטוט 2',
-  portal_denya_couch_wandering_2: '✏️ שיטוט 2',
-  portal_denya_to_couch: '🎸 לספה והגיטרה',
-  portal_denya_back_to_dining: '🍽️ לשולחן האוכל',
-  portal_tzofen_tree_window: '🌳 חלון אל העץ',
-  portal_wandering1_scroll_world: '🌴 לתוך המגילה'
+  cubby_capsules: 'קפסולות נייר',
+  cubby_plan_b_v3: 'תמי ויערה',
+  cubby_wandering_1: 'שיטוט 1',
+  cubby_bene_beitcha: 'בנה ביתך',
+  cubby_plan_b_pipe: 'צינור Plan B',
+  cubby_wandering_2: 'שיטוט 2',
+  cubby_denya_model: 'דגם דניה',
+  cubby_marseille: 'מרסיי',
+  cubby_fried_house: 'בית פריד',
+  yard_railing_portal: 'תמי ואראלה במעקה',
+  fried_house_window_wandering_1: 'שיטוט 1 בחלון',
+  portal_denya_dining_wandering_2: 'שיטוט 2',
+  portal_denya_couch_wandering_2: 'שיטוט 2',
+  portal_denya_to_couch: 'לספה והגיטרה',
+  portal_denya_back_to_dining: 'לשולחן האוכל',
+  portal_tzofen_tree_window: 'חלון אל העץ',
+  portal_wandering1_scroll_world: 'לתוך המגילה',
+  portal_scroll_foot_purim_1966: 'אל פורים 1966',
+  portal_bar_giora_vitrine: 'אל הוויטרינה',
+  portal_paris_table_tami_1958: 'אל תמי 1958'
 });
 
 const SCENE_BREADCRUMB_LABELS_HE = Object.freeze({
-  shelf_portal: '⊞ קיר המדפים',
-  paper_capsules: '🫧 קפסולות נייר',
-  tzofen_brick_table: '🧱 צופן',
-  plan_b_pipe_v3: '🕳️ תמי ויערה',
-  plan_b_pipe: '🕳️ צינור Plan B',
-  bene_beitcha: '🏛️ בנה ביתך',
-  humpty_dumpty_bundle: '🥚 האמפטי דאמפטי',
-  denya_model: '🏠 דגם דניה',
-  denya_living_room: '🍽️ סלון דניה',
-  denya_couch_guitar: '🎸 ספת דניה',
-  wandering_drawing_1: '✏️ שיטוט 1',
-  scroll_palm_world: '🌴 עולם המגילה',
-  wandering_drawing: '✏️ שיטוט 2',
-  fried_yard_installation: '🪨 מיצב בחצר פריד',
-  fried_house_railing: '🏡 בית פריד במעקה',
-  fried_table_hybrid: '🪑 שולחן בבית פריד',
-  herzliya_tree_canopy: '🌳 צמרת העץ',
-  marseille_mirror: '🪞 מרסיי',
-  plan_b_pipe_v1: '🕳️ צינור Plan B v1',
-  marseille_mirror_v1: '🪞 מרסיי v1',
-  herzliya_studio: '🌿 גינת הרצליה v1',
-  carmel_wadi: '🌲 ואדי הכרמל v1'
+  shelf_portal: 'קיר המדפים',
+  paper_capsules: 'קפסולות נייר',
+  tzofen_brick_table: 'צופן',
+  plan_b_pipe_v3: 'תמי ויערה',
+  plan_b_pipe: 'צינור Plan B',
+  bene_beitcha: 'בנה ביתך',
+  bene_beitcha_scroll_foot: 'מגילה וכף רגל',
+  purim_costume_1966: 'תחפושת פורים, 1966',
+  vitrine_keys_pen: 'ויטרינת המפתחות',
+  humpty_dumpty_booth: 'האמפטי דאמפטי בתא',
+  humpty_dumpty_bundle: 'צרור בבד וחבל',
+  denya_model: 'דגם דניה',
+  denya_living_room: 'סלון דניה',
+  denya_couch_guitar: 'ספת דניה',
+  wandering_drawing_1: 'שיטוט 1',
+  scroll_palm_world: 'עולם המגילה',
+  wandering_drawing: 'שיטוט 2',
+  fried_yard_installation: 'מיצב בחצר פריד',
+  fried_house_railing: 'בית פריד במעקה',
+  fried_table_hybrid: 'שולחן בבית פריד',
+  herzliya_lawn_carpet: 'הדשא והשטיח',
+  herzliya_tree_canopy: 'צמרת העץ',
+  bar_giora_bedroom: 'חדר השינה בבר גיורא',
+  paris_cite_white_table: 'סטודיו פריז',
+  toddler_tami_1958: 'תמי הפעוטה, 1958',
+  marseille_mirror: 'מרסיי',
+  plan_b_pipe_v1: 'צינור Plan B v1',
+  marseille_mirror_v1: 'מרסיי v1',
+  herzliya_studio: 'גינת הרצליה v1',
+  carmel_wadi: 'ואדי הכרמל v1'
 });
 
 const DEFAULT_CENTER_HINT_HE =
-  'גרור לסיבוב מבט · גלגל / WASD להליכה · Q/E או PgUp/PgDn לעלייה וירידה בגובה';
+  'גרירה לסיבוב מבט · גלגלת / WASD להליכה · Q/E לגובה';
 const PORTAL_CENTER_HINT_HE =
-  'לחצו על חפצים להסרתם ועל תא פתוח לצלילה פנימה · WASD להליכה · Q/E או PgUp/PgDn לגובה';
+  'לחצו על חפצים להסרתם ועל תא פתוח לצלילה פנימה · WASD / Q/E לניווט';
 const YARD_PORTAL_CENTER_HINT_HE =
-  'לחצו על המיצב לפני המעקה להסרתו ולחשיפת תמי ואראלה · לחצו עליהן למעבר לסצנת המעקה';
+  'לחצו על המיצב להסרתו ולחשיפת תמי ואראלה · לחצו עליהן למעבר לסצנת המעקה';
 const FRIED_RAILING_PORTAL_HINT_HE =
-  'לחצו על תריס העץ החום בשמאל הקיר להסרתו ולחשיפת שער אל ׳שיטוט 1׳ · WASD להליכה';
+  'לחצו על תריס העץ בשמאל הקיר לחשיפת שער אל ׳שיטוט 1׳';
 const DENYA_PORTAL_CENTER_HINT_HE =
-  'לחצו על הספה או על מסגרת ׳שיטוט 2׳ למעבר בין המרחבים · WASD להליכה · Q/E או PgUp/PgDn לגובה';
+  'לחצו על הספה או על מסגרת ׳שיטוט 2׳ למעבר בין המרחבים';
 const WANDERING1_SCROLL_HINT_HE =
-  'ריחפו או לחצו על המגילה שמימין כדי לצלול ברציפות לתוך עולם המגילה · WASD להליכה';
+  'לחצו על המגילה שמימין לצלילה לתוך עולם המגילה';
 const TZOFEN_PORTAL_HINT_HE =
-  'לחצו על מסגרת החלון הלבנה בראש השולחן לצלילה אל צמרת העץ בהרצליה · WASD להליכה';
+  'לחצו על מסגרת החלון הלבנה לצלילה אל צמרת העץ בהרצליה';
+const SCROLL_FOOT_HINT_HE =
+  'לחצו על כף הרגל להסרתה ולהפלת המוט השחור · לחצו על צילום פורים לצלילה פנימה';
+const LAWN_CARPET_HINT_HE =
+  'לחצו על גליל השטיח שעל הדשא כדי לגלגל ולפרוש את שובל האדמה לרוחב הגינה';
+const BEDROOM_VITRINE_HINT_HE =
+  'לחצו על ויטרינת המפתחות שעל הקיר לצלילה פנימה עם סיבוב מצלמה תואם';
+const PARIS_TABLE_HINT_HE =
+  'לחצו על צילום הילדות שעל השולחן הלבן לצלילה אל תמי הפעוטה (1958)';
 
 function escapeHtmlText(raw) {
   return String(raw || '')
@@ -91,7 +111,12 @@ class SpatialApp {
     this.spatialBreadcrumbList = document.getElementById('spatial-breadcrumb-list');
     this.spatialOutgoingPortals = document.getElementById('spatial-outgoing-portals');
     this.bottomDockEl = document.querySelector('.bottom-dock');
+    this.spatialSidebar = document.getElementById('spatial-sidebar');
+    this.sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+    this.sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+    this.betaFontSelectorEl = document.getElementById('beta-font-selector');
     this.centerHint = document.getElementById('center-hint');
+    this._centerHintTimer = null;
     this.infoDrawer = document.getElementById('info-drawer');
     this.infoToggleBtn = document.getElementById('info-toggle-btn');
     this.closeDrawerBtn = document.getElementById('close-drawer-btn');
@@ -109,13 +134,14 @@ class SpatialApp {
     this.sceneBtns = document.querySelectorAll('.scene-btn');
     this._portalBadgeEls = new Map();
     this._portalBadgesHostSceneId = null;
-    this._activeGroupId = 'binyamin_plan_b';
+    this._activeGroupId = 'portal_hub';
     this._navHistory = [];
     this._navHistoryIndex = -1;
     this._suppressHistoryPush = false;
     this.audioContext = null;
     this.isAudioPlaying = false;
 
+    mountBetaFontChipSelector(this.betaFontSelectorEl);
     this.initSceneManager();
     this._buildPortalMicroBadges();
     this.updateActiveSceneUI(this.manager.currentSceneId);
@@ -240,11 +266,13 @@ class SpatialApp {
     const showRestore = this._isScenePortalHost(sceneId) && erasedCount > 0;
     this.restoreOccludersBtn.classList.toggle('hidden', !showRestore);
     if (showRestore) {
-      let label = '↺ השב חפצים למדפים';
+      let label = 'השב חפצים למדפים';
       if (sceneId === 'fried_yard_installation') {
-        label = '↺ השב את המיצב לפני המעקה';
+        label = 'השב את המיצב לפני המעקה';
       } else if (sceneId === 'fried_house_railing') {
-        label = '↺ סגור את תריס העץ בחלון';
+        label = 'סגור את תריס העץ בחלון';
+      } else if (sceneId === 'bene_beitcha_scroll_foot') {
+        label = 'השב את כף הרגל והמוט';
       }
       this.restoreOccludersBtn.textContent = label;
       this.restoreOccludersBtn.setAttribute('aria-label', label);
@@ -326,8 +354,15 @@ class SpatialApp {
 
     const vw = window.innerWidth || 1440;
     const vh = window.innerHeight || 900;
+    let safeMinX = 24;
     let safeMinY = 56;
-    let safeMaxY = vh - 108;
+    let safeMaxY = vh - 24;
+    if (this.spatialSidebar && !this.spatialSidebar.classList.contains('collapsed')) {
+      const sbRect = this.spatialSidebar.getBoundingClientRect();
+      if (sbRect.width > 0) {
+        safeMinX = Math.max(24, sbRect.right + 12);
+      }
+    }
     if (this.topBarEl) {
       const topRect = this.topBarEl.getBoundingClientRect();
       if (topRect.height > 0) {
@@ -375,7 +410,7 @@ class SpatialApp {
       const inSafeViewport =
         proj &&
         proj.visible &&
-        proj.clientX >= 24 &&
+        proj.clientX >= safeMinX &&
         proj.clientX <= vw - 24 &&
         proj.clientY >= safeMinY &&
         proj.clientY <= safeMaxY;
@@ -454,10 +489,18 @@ class SpatialApp {
       btn.classList.toggle('in-active-group', inGroup);
     });
 
-    if (navigateIfOutside && this.manager && !group.sceneIds.includes(this.manager.currentSceneId)) {
-      const primarySceneId = group.sceneIds[0];
-      if (primarySceneId) {
-        this.manager.transitionTo(primarySceneId);
+    if (navigateIfOutside) {
+      const groupHeading = this.spatialSidebar
+        ? this.spatialSidebar.querySelector(`[data-group-heading="${group.id}"]`)
+        : null;
+      if (groupHeading && typeof groupHeading.scrollIntoView === 'function') {
+        groupHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (this.manager && !group.sceneIds.includes(this.manager.currentSceneId)) {
+        const primarySceneId = group.sceneIds[0];
+        if (primarySceneId) {
+          this.manager.transitionTo(primarySceneId);
+        }
       }
     }
   }
@@ -655,7 +698,7 @@ class SpatialApp {
     if (portalStack.length > 0) {
       if (portalStack[0].hostSceneId !== 'shelf_portal') {
         this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
-          label: '⊞ קיר המדפים',
+          label: 'קיר המדפים',
           addSeparator: false,
           onClick: () => {
             this.manager.transitionTo('shelf_portal');
@@ -687,13 +730,13 @@ class SpatialApp {
       });
     } else if (sceneId === 'shelf_portal') {
       this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
-        label: '⊞ קיר המדפים · שער התערוכות',
+        label: 'קיר המדפים',
         addSeparator: false,
         isCurrent: true
       });
     } else {
       this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
-        label: '⊞ קיר המדפים',
+        label: 'קיר המדפים',
         addSeparator: false,
         onClick: () => {
           this.manager.transitionTo('shelf_portal');
@@ -806,20 +849,76 @@ class SpatialApp {
     );
   }
 
+  _setSidebarOpen(isOpen) {
+    if (!this.spatialSidebar) return;
+    const open = Boolean(isOpen);
+    if (
+      !open &&
+      document.activeElement &&
+      this.spatialSidebar.contains(document.activeElement) &&
+      typeof document.activeElement.blur === 'function'
+    ) {
+      document.activeElement.blur();
+    }
+    this.spatialSidebar.classList.toggle('collapsed', !open);
+    document.body.classList.toggle('spatial-sidebar-open', open);
+    if (this.sidebarToggleBtn) {
+      this.sidebarToggleBtn.classList.toggle('active', open);
+      this.sidebarToggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    if (open && typeof window.__sendDiag === 'function') {
+      window.__sendDiag('sidebar_opened', { scene: this.manager ? this.manager.currentSceneId : null });
+    }
+  }
+
   initUIListeners() {
+    // Collapsible Left Sidebar Toggle & Close
+    if (this.sidebarToggleBtn && this.spatialSidebar) {
+      this.sidebarToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const nextOpen = this.spatialSidebar.classList.contains('collapsed');
+        if (nextOpen) {
+          this._setInfoDrawerOpen(false);
+          if (this.feedbackOverlay) {
+            this.feedbackOverlay.closeDrawer();
+          }
+        }
+        this._setSidebarOpen(nextOpen);
+        if (typeof this.sidebarToggleBtn.blur === 'function') {
+          this.sidebarToggleBtn.blur();
+        }
+      });
+    }
+    if (this.sidebarCloseBtn) {
+      this.sidebarCloseBtn.addEventListener('click', () => {
+        this._setSidebarOpen(false);
+      });
+    }
+
     // Spatial History Back / Forward (#29)
     if (this.spatialBackBtn) {
       this.spatialBackBtn.addEventListener('click', () => {
         this.navigateHistory(-1);
+        this.spatialBackBtn.blur();
       });
     }
     if (this.spatialForwardBtn) {
       this.spatialForwardBtn.addEventListener('click', () => {
         this.navigateHistory(1);
+        this.spatialForwardBtn.blur();
       });
     }
 
     window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (this.spatialSidebar && !this.spatialSidebar.classList.contains('collapsed')) {
+          this._setSidebarOpen(false);
+        }
+        if (this.infoDrawer && this.infoDrawer.classList.contains('open')) {
+          this._setInfoDrawerOpen(false);
+        }
+        return;
+      }
       if (!e.altKey || e.metaKey || e.ctrlKey) return;
       const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
       if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
@@ -839,6 +938,7 @@ class SpatialApp {
         if (groupId) {
           this._setActiveExhibitionGroup(groupId, true);
         }
+        tabBtn.blur();
       });
     });
 
@@ -846,11 +946,13 @@ class SpatialApp {
     if (this.exhibitionPrevBtn) {
       this.exhibitionPrevBtn.addEventListener('click', () => {
         this._stepAdjacentScene(-1);
+        this.exhibitionPrevBtn.blur();
       });
     }
     if (this.exhibitionNextBtn) {
       this.exhibitionNextBtn.addEventListener('click', () => {
         this._stepAdjacentScene(1);
+        this.exhibitionNextBtn.blur();
       });
     }
 
@@ -860,6 +962,7 @@ class SpatialApp {
         if (this.manager) {
           this.manager.returnToPortalHub();
         }
+        this.portalReturnBtn.blur();
       });
     }
 
@@ -870,6 +973,10 @@ class SpatialApp {
         if (sceneId && this.manager) {
           this.manager.transitionTo(sceneId);
         }
+        btn.blur();
+        if (window.innerWidth <= 900) {
+          this._setSidebarOpen(false);
+        }
       });
     });
 
@@ -877,10 +984,14 @@ class SpatialApp {
     if (this.infoToggleBtn && this.infoDrawer) {
       this.infoToggleBtn.addEventListener('click', () => {
         const nextOpen = !this.infoDrawer.classList.contains('open');
-        if (nextOpen && this.feedbackOverlay) {
-          this.feedbackOverlay.closeDrawer();
+        if (nextOpen) {
+          this._setSidebarOpen(false);
+          if (this.feedbackOverlay) {
+            this.feedbackOverlay.closeDrawer();
+          }
         }
         this._setInfoDrawerOpen(nextOpen);
+        this.infoToggleBtn.blur();
       });
     }
 
@@ -895,17 +1006,19 @@ class SpatialApp {
       this.fullscreenBtn.addEventListener('click', () => {
         if (!document.fullscreenElement) {
           document.documentElement.requestFullscreen().catch(() => {});
-          this.fullscreenBtn.textContent = '⛶ צא ממסך מלא';
+          this.fullscreenBtn.textContent = 'צא ממסך מלא';
         } else {
           document.exitFullscreen().catch(() => {});
-          this.fullscreenBtn.textContent = '⛶ מסך מלא';
+          this.fullscreenBtn.textContent = 'מסך מלא';
         }
+        this.fullscreenBtn.blur();
       });
     }
 
     // Gyroscope / DeviceOrientation Toggle
     if (this.gyroToggleBtn) {
       this.gyroToggleBtn.addEventListener('click', () => {
+        this.gyroToggleBtn.blur();
         Promise.resolve(this.manager.enableGyroscope()).then((active) => {
           if (
             !active &&
@@ -925,6 +1038,7 @@ class SpatialApp {
     if (this.audioToggleBtn) {
       this.audioToggleBtn.addEventListener('click', () => {
         this.toggleAmbientAudio();
+        this.audioToggleBtn.blur();
       });
     }
 
@@ -934,6 +1048,7 @@ class SpatialApp {
         if (this.manager && typeof this.manager.resetCameraPose === 'function') {
           this.manager.resetCameraPose();
         }
+        this.resetPoseBtn.blur();
       });
     }
 
@@ -951,10 +1066,11 @@ class SpatialApp {
           }
           this._renderSpatialBreadcrumbs(this.manager.currentSceneId);
         }
+        this.restoreOccludersBtn.blur();
       });
     }
 
-    // Dismiss drawer on clicking outside
+    // Dismiss drawer or sidebar on clicking outside
     document.addEventListener('click', (e) => {
       if (this.infoDrawer && this.infoDrawer.classList.contains('open')) {
         if (
@@ -964,13 +1080,30 @@ class SpatialApp {
           this._setInfoDrawerOpen(false);
         }
       }
+      if (this.spatialSidebar && !this.spatialSidebar.classList.contains('collapsed')) {
+        if (
+          !this.spatialSidebar.contains(e.target) &&
+          (!this.sidebarToggleBtn || !this.sidebarToggleBtn.contains(e.target))
+        ) {
+          this._setSidebarOpen(false);
+        }
+      }
     });
   }
 
   _setInfoDrawerOpen(isOpen) {
     if (!this.infoDrawer) return;
-    this.infoDrawer.classList.toggle('open', Boolean(isOpen));
-    document.body.classList.toggle('info-drawer-open', Boolean(isOpen));
+    const open = Boolean(isOpen);
+    if (
+      !open &&
+      document.activeElement &&
+      this.infoDrawer.contains(document.activeElement) &&
+      typeof document.activeElement.blur === 'function'
+    ) {
+      document.activeElement.blur();
+    }
+    this.infoDrawer.classList.toggle('open', open);
+    document.body.classList.toggle('info-drawer-open', open);
   }
 
   updateActiveSceneUI(sceneId) {
@@ -983,8 +1116,13 @@ class SpatialApp {
       const isMatch = btn.getAttribute('data-scene') === sceneId;
       btn.classList.toggle('active', isMatch);
       btn.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
-      if (isMatch && typeof btn.scrollIntoView === 'function') {
-        btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      if (
+        isMatch &&
+        this.spatialSidebar &&
+        !this.spatialSidebar.classList.contains('collapsed') &&
+        typeof btn.scrollIntoView === 'function'
+      ) {
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     });
 
@@ -994,7 +1132,7 @@ class SpatialApp {
         : this.manager && this.manager.enteredViaPortalId && sceneId !== 'shelf_portal'
           ? {
               hostSceneId: 'shelf_portal',
-              buttonLabelHe: '⊞ חזרה לקיר המדפים',
+              buttonLabelHe: 'חזרה לקיר המדפים',
               ariaLabelHe: 'חזרה אל קיר המדפים התלת-ממדי'
             }
           : null;
@@ -1028,9 +1166,24 @@ class SpatialApp {
         this.centerHint.textContent = WANDERING1_SCROLL_HINT_HE;
       } else if (sceneId === 'tzofen_brick_table') {
         this.centerHint.textContent = TZOFEN_PORTAL_HINT_HE;
+      } else if (sceneId === 'bene_beitcha_scroll_foot') {
+        this.centerHint.textContent = SCROLL_FOOT_HINT_HE;
+      } else if (sceneId === 'herzliya_lawn_carpet') {
+        this.centerHint.textContent = LAWN_CARPET_HINT_HE;
+      } else if (sceneId === 'bar_giora_bedroom') {
+        this.centerHint.textContent = BEDROOM_VITRINE_HINT_HE;
+      } else if (sceneId === 'paris_cite_white_table') {
+        this.centerHint.textContent = PARIS_TABLE_HINT_HE;
       } else {
         this.centerHint.textContent = DEFAULT_CENTER_HINT_HE;
       }
+      this.centerHint.classList.remove('hidden');
+      if (this._centerHintTimer) clearTimeout(this._centerHintTimer);
+      this._centerHintTimer = setTimeout(() => {
+        if (this.centerHint) {
+          this.centerHint.classList.add('hidden');
+        }
+      }, 6500);
     }
 
     if (!this._isScenePortalHost(sceneId)) {
@@ -1042,7 +1195,7 @@ class SpatialApp {
     this._recordNavigationHistory(sceneId);
     this._renderSpatialBreadcrumbs(sceneId);
 
-    // Update curatorial drawer highlights across all 20 scene story cards
+    // Update curatorial drawer highlights across all scene story cards
     document.querySelectorAll('.story-card').forEach((card) => {
       const isActiveStory = card.id === `story-${sceneId}`;
       card.classList.toggle('active-story', isActiveStory);

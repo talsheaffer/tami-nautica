@@ -16,6 +16,10 @@ const SPATIAL_SCENE_IDS = new Set([
   'paper_capsules',
   'tzofen_brick_table',
   'bene_beitcha',
+  'bene_beitcha_scroll_foot',
+  'purim_costume_1966',
+  'vitrine_keys_pen',
+  'humpty_dumpty_booth',
   'humpty_dumpty_bundle',
   'denya_model',
   'denya_living_room',
@@ -29,34 +33,46 @@ const SPATIAL_SCENE_IDS = new Set([
   'fried_yard_installation',
   'fried_house_railing',
   'fried_table_hybrid',
+  'herzliya_lawn_carpet',
   'herzliya_tree_canopy',
+  'bar_giora_bedroom',
+  'paris_cite_white_table',
+  'toddler_tami_1958',
   'marseille_mirror',
   'marseille_mirror_v1'
 ]);
 
 const SCENE_LABELS_HE = Object.freeze({
-  shelf_portal: '⊞ קיר המדפים: שער התערוכות (3D)',
-  paper_capsules: '🫧 קפסולות נייר (3D)',
-  tzofen_brick_table: '🧱 צופן: שולחן לבנים וחלון לעץ (3D)',
-  bene_beitcha: '🏛️ ׳בנה ביתך׳ (3D)',
-  humpty_dumpty_bundle: '🥚 האמפטי דאמפטי בצרור (3D)',
-  denya_model: '🏠 דגם בית דניה (3D)',
-  denya_living_room: '🍽️ סלון דניה: שולחן ושערים (3D)',
-  denya_couch_guitar: '🎸 ספת דניה: גיטרה ושיטוט (3D)',
-  plan_b_pipe: '🕳️ צינור Plan B (3D)',
-  plan_b_pipe_v1: '🕳️ צינור Plan B: גרסה 1 (3D)',
-  plan_b_pipe_v3: '🕳️ צינור Plan B: תמי ויערה (3D)',
-  wandering_drawing_1: '✏️ שיטוט ברישום 1 (3D)',
-  scroll_palm_world: '🌴 עולם המגילה: דקל ומוטות בחול (3D)',
-  wandering_drawing: '✏️ שיטוט ברישום 2 (3D)',
-  fried_yard_installation: '🌿 חצר בית פריד: מרחב לא מוגן (3D)',
-  fried_house_railing: '🪨 בית פריד בהרצליה: כרית ואבן (3D)',
-  fried_table_hybrid: '🍽️ שולחן בית פריד: היבריד (3D)',
-  herzliya_tree_canopy: '🌳 צמרת העץ בחצר בהרצליה (3D)',
-  marseille_mirror: '🪞 מרסיי: מתחת למראה (3D)',
-  marseille_mirror_v1: '🪞 מרסיי: גרסה 1 (3D)',
-  wiki: '📖 ויקי ביוגרפי',
-  catalog: '🖼️ קטלוג ותמונות'
+  shelf_portal: 'קיר המדפים: שער התערוכות (3D)',
+  paper_capsules: 'קפסולות נייר (3D)',
+  tzofen_brick_table: 'צופן: שולחן לבנים וחלון לעץ (3D)',
+  bene_beitcha: 'בנה ביתך (3D)',
+  bene_beitcha_scroll_foot: 'מגילה וכף רגל (3D)',
+  purim_costume_1966: 'תחפושת פורים, 1966 (3D)',
+  vitrine_keys_pen: 'ויטרינת המפתחות והעט (3D)',
+  humpty_dumpty_booth: 'האמפטי דאמפטי בתא (3D)',
+  humpty_dumpty_bundle: 'צרור עטוף בבד וחבל (3D)',
+  denya_model: 'דגם בית דניה (3D)',
+  denya_living_room: 'סלון דניה: שולחן ושערים (3D)',
+  denya_couch_guitar: 'ספת דניה: גיטרה ושיטוט (3D)',
+  plan_b_pipe: 'צינור Plan B (3D)',
+  plan_b_pipe_v1: 'צינור Plan B: גרסה 1 (3D)',
+  plan_b_pipe_v3: 'צינור Plan B: תמי ויערה (3D)',
+  wandering_drawing_1: 'שיטוט ברישום 1 (3D)',
+  scroll_palm_world: 'עולם המגילה: דקל ומוטות בחול (3D)',
+  wandering_drawing: 'שיטוט ברישום 2 (3D)',
+  fried_yard_installation: 'חצר בית פריד: מרחב לא מוגן (3D)',
+  fried_house_railing: 'בית פריד בהרצליה: כרית ואבן (3D)',
+  fried_table_hybrid: 'שולחן בית פריד: היבריד (3D)',
+  herzliya_lawn_carpet: 'הדשא בהרצליה: שטיח ואדמה (3D)',
+  herzliya_tree_canopy: 'צמרת העץ בחצר בהרצליה (3D)',
+  bar_giora_bedroom: 'חדר השינה בבר גיורא (3D)',
+  paris_cite_white_table: 'סטודיו פריז: השולחן הלבן (3D)',
+  toddler_tami_1958: 'תמי הפעוטה, 1958 (3D)',
+  marseille_mirror: 'מרסיי: מתחת למראה (3D)',
+  marseille_mirror_v1: 'מרסיי: גרסה 1 (3D)',
+  wiki: 'ויקי ביוגרפי',
+  catalog: 'קטלוג ותמונות'
 });
 
 function formatShortTimestamp(isoStr) {
@@ -82,7 +98,7 @@ function sceneRouteHref(sceneId, targetRef, focusEntryId) {
     if (targetRef) params.set('media', targetRef);
     return `/catalog?${params.toString()}`;
   }
-  if (SPATIAL_SCENE_IDS.has(sceneId) && sceneId !== 'paper_capsules') {
+  if (SPATIAL_SCENE_IDS.has(sceneId) && sceneId !== 'shelf_portal') {
     params.set('scene', sceneId);
   }
   const qs = params.toString();
@@ -93,7 +109,7 @@ export class BetaFeedbackOverlay {
   constructor(sceneManager = null, options = {}) {
     this.sceneManager = sceneManager;
     this.options = options;
-    this.defaultSceneId = options.defaultSceneId || 'paper_capsules';
+    this.defaultSceneId = options.defaultSceneId || 'shelf_portal';
     this.config = null;
     this.entries = [];
     this.selectedEntryId = null;
@@ -199,7 +215,7 @@ export class BetaFeedbackOverlay {
       titleH1.appendChild(tag);
     }
 
-    // Mount Secret Family Portal Switcher Bar in normal Flexbox flow inside .bottom-dock
+    // Mount Secret Family Portal Switcher Bar inside #spatial-sidebar-hub-slot (or fallback)
     if (this.sceneManager && this.config.portal_nav_items && !document.querySelector('.beta-hub-bar')) {
       const hubBar = document.createElement('nav');
       hubBar.className = 'beta-hub-bar';
@@ -210,12 +226,15 @@ export class BetaFeedbackOverlay {
           (item) =>
             `<a class="beta-hub-link ${item.nav_id === 'prototype' ? 'active' : ''}" href="${
               item.href
-            }">${item.icon} ${item.label_he}</a>`
+            }">${item.label_he}</a>`
         )
         .join('');
-      hubBar.innerHTML = `<span class="hub-secret-pill">🤫 הפתעה לתמי</span>${linksHtml}`;
+      hubBar.innerHTML = `<span class="hub-secret-pill">סביבת בטא</span>${linksHtml}`;
+      const sidebarHubSlot = document.querySelector('#spatial-sidebar-hub-slot');
       const bottomDock = document.querySelector('.bottom-dock');
-      if (bottomDock) {
+      if (sidebarHubSlot) {
+        sidebarHubSlot.appendChild(hubBar);
+      } else if (bottomDock) {
         bottomDock.prepend(hubBar);
       } else {
         document.body.appendChild(hubBar);
@@ -231,7 +250,7 @@ export class BetaFeedbackOverlay {
     this.quickPickBtn.type = 'button';
     this.quickPickBtn.className = 'icon-btn beta-action-btn';
     this.quickPickBtn.setAttribute('aria-label', 'סמן רכיב ממשק, טקסט או אלמנט והוסף הערה');
-    this.quickPickBtn.innerHTML = '🎯 <span>סמן והגב</span>';
+    this.quickPickBtn.innerHTML = '<span>סמן והגב</span>';
 
     this.drawerToggleBtn = document.createElement('button');
     this.drawerToggleBtn.id = 'beta-drawer-btn';
@@ -242,7 +261,7 @@ export class BetaFeedbackOverlay {
     this.countBadge.id = 'beta-count-badge';
     this.countBadge.className = 'beta-count-badge';
     this.countBadge.textContent = '0';
-    this.drawerToggleBtn.append('💬 משוב ', this.countBadge);
+    this.drawerToggleBtn.append('משוב ', this.countBadge);
 
     actionsContainer.prepend(this.quickPickBtn, this.drawerToggleBtn);
   }
@@ -655,6 +674,15 @@ export class BetaFeedbackOverlay {
     const infoDrawer = document.getElementById('info-drawer');
     if (infoDrawer) infoDrawer.classList.remove('open');
     document.body.classList.remove('info-drawer-open');
+    const spatialSidebar = document.getElementById('spatial-sidebar');
+    if (spatialSidebar) {
+      spatialSidebar.classList.add('collapsed');
+      const sbToggle = document.getElementById('sidebar-toggle-btn');
+      if (sbToggle) {
+        sbToggle.classList.remove('active');
+        sbToggle.setAttribute('aria-expanded', 'false');
+      }
+    }
     this.focusBar.classList.add('hidden');
     this.drawer.classList.add('open');
     document.body.classList.add('beta-drawer-open');
@@ -662,6 +690,14 @@ export class BetaFeedbackOverlay {
   }
 
   closeDrawer() {
+    if (
+      this.drawer &&
+      document.activeElement &&
+      this.drawer.contains(document.activeElement) &&
+      typeof document.activeElement.blur === 'function'
+    ) {
+      document.activeElement.blur();
+    }
     this.drawer.classList.remove('open');
     document.body.classList.remove('beta-drawer-open');
     if (this.drawerToggleBtn) this.drawerToggleBtn.classList.remove('active');
@@ -1054,6 +1090,9 @@ export class BetaFeedbackOverlay {
       }
 
       this.commentInput.value = '';
+      if (typeof this.commentInput.blur === 'function') {
+        this.commentInput.blur();
+      }
       this.clearHighlightDraft();
       this._showStatus(`תודה ${author}! ההערה (#${data.entry.seq_num}) נשמרה.`, false);
       await this.refreshEntries();

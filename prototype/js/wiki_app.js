@@ -3,6 +3,9 @@
 // integrated with Universal DOM Element Inspector, Clickable Footnote Citations, & Family Beta Feedback.
 
 import { BetaFeedbackOverlay } from './feedback_overlay.js';
+import { applyBetaFont, getSavedBetaFontId, mountPortalHeaderFontPicker } from './beta_font.js';
+
+applyBetaFont(getSavedBetaFontId(), { persist: false, emitDiag: false });
 
 function escapeHtml(raw) {
   return String(raw || '')
@@ -859,5 +862,6 @@ class WikiPortalApp {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  mountPortalHeaderFontPicker(document.getElementById('portal-beta-actions'));
   new WikiPortalApp();
 });

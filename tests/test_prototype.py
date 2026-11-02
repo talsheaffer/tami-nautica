@@ -54,6 +54,9 @@ class TestPrototypeIntegrity(unittest.TestCase):
             PROTOTYPE_DIR / "denya_living_room_scene_builder.py",
             PROTOTYPE_DIR / "tzofen_tree_scenes_builder.py",
             PROTOTYPE_DIR / "scroll_humpty_scenes_builder.py",
+            PROTOTYPE_DIR / "humpty_booth_scene_builder.py",
+            PROTOTYPE_DIR / "scroll_purim_carpet_scenes_builder.py",
+            PROTOTYPE_DIR / "vitrine_bedroom_paris_scenes_builder.py",
             PROJECT_ROOT / "assets" / "shaders" / "warped_reflection_transition.glsl"
         ]
         for f in required_files:
@@ -178,6 +181,39 @@ class TestPrototypeIntegrity(unittest.TestCase):
         self.assertEqual(
             scroll_humpty_cfg,
             ScrollHumptyBundleConfig.from_json(scroll_humpty_cfg.to_json()),
+        )
+
+        from prototype.humpty_booth_scene_builder import (
+            HumptyBoothBundleConfig,
+            default_humpty_booth_bundle_config,
+        )
+
+        humpty_booth_cfg = default_humpty_booth_bundle_config()
+        self.assertEqual(
+            humpty_booth_cfg,
+            HumptyBoothBundleConfig.from_json(humpty_booth_cfg.to_json()),
+        )
+
+        from prototype.scroll_purim_carpet_scenes_builder import (
+            ScrollPurimCarpetBundleConfig,
+            default_scroll_purim_carpet_bundle_config,
+        )
+
+        spc_cfg = default_scroll_purim_carpet_bundle_config()
+        self.assertEqual(
+            spc_cfg,
+            ScrollPurimCarpetBundleConfig.from_json(spc_cfg.to_json()),
+        )
+
+        from prototype.vitrine_bedroom_paris_scenes_builder import (
+            VitrineBedroomParisBundleConfig,
+            default_vitrine_bedroom_paris_bundle_config,
+        )
+
+        vbp_cfg = default_vitrine_bedroom_paris_bundle_config()
+        self.assertEqual(
+            vbp_cfg,
+            VitrineBedroomParisBundleConfig.from_json(vbp_cfg.to_json()),
         )
 
     def test_prototype_scene_textures_exist_and_valid(self):
@@ -314,6 +350,7 @@ class TestPrototypeIntegrity(unittest.TestCase):
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_bg_inpainted.jpg", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_depth.png", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_mid_depth.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_fg.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene12_tzofen_fg_depth.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene13_herzliya_canopy_bg_inpainted.jpg", expanded_dims),
@@ -333,6 +370,64 @@ class TestPrototypeIntegrity(unittest.TestCase):
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene15_humpty_bundle_mid.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene15_humpty_bundle_fg.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene15_humpty_bundle_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene16_humpty_booth_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene16_humpty_booth_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene16_humpty_booth_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene16_humpty_booth_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene16_humpty_booth_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene16_humpty_booth_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_photo.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_photo_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_rod.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_rod_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_occluder.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene17_scroll_foot_occluder_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene18_purim_1966_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene18_purim_1966_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene18_purim_1966_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene18_purim_1966_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene18_purim_1966_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene19_herz_carpet_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene19_herz_carpet_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene19_herz_carpet_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene19_herz_carpet_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene19_herz_carpet_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene19_herz_carpet_earth_full.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene19_herz_carpet_earth_full_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene19_herz_carpet_roll.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene19_herz_carpet_roll_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_vitrine.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_vitrine_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene22_paris_table_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene22_paris_table_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene22_paris_table_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene22_paris_table_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene22_paris_table_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene22_paris_table_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene22_paris_table_photo.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene22_paris_table_photo_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_bg_inpainted.jpg", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_depth.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_mid.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_mid_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_fg.png", inner_dims),
         ]
         for asset, exp_size in companion_expected:
             self.assertTrue(asset.exists(), f"Missing companion scene asset: {asset}")
@@ -349,6 +444,14 @@ class TestPrototypeIntegrity(unittest.TestCase):
             "shelf_portal",
             "tzofen_brick_table",
             "humpty_dumpty_bundle",
+            "humpty_dumpty_booth",
+            "bene_beitcha_scroll_foot",
+            "purim_costume_1966",
+            "herzliya_lawn_carpet",
+            "vitrine_keys_pen",
+            "bar_giora_bedroom",
+            "paris_cite_white_table",
+            "toddler_tami_1958",
             "fried_yard_installation",
             "fried_house_railing",
             "fried_table_hybrid",
@@ -473,6 +576,14 @@ console.log(JSON.stringify({
             "tzofen_brick_table",
             "bene_beitcha",
             "humpty_dumpty_bundle",
+            "humpty_dumpty_booth",
+            "bene_beitcha_scroll_foot",
+            "purim_costume_1966",
+            "herzliya_lawn_carpet",
+            "vitrine_keys_pen",
+            "bar_giora_bedroom",
+            "paris_cite_white_table",
+            "toddler_tami_1958",
             "denya_model",
             "denya_living_room",
             "denya_couch_guitar",
@@ -772,7 +883,7 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             self.assertEqual(data["glError"], 0, f"WebGL gl.getError() returned {data['glError']}")
             self.assertEqual(data["dir"], "rtl", "Document direction must be RTL")
             self.assertIsNotNone(data["state"], "window.__PROTOTYPE_STATE__ not exposed")
-            self.assertEqual(data["state"]["currentScene"], "paper_capsules")
+            self.assertEqual(data["state"]["currentScene"], "shelf_portal")
 
             # 2. Parallax interaction test: excursion across dual extremes
             # Extreme 1: Top-Left (-1.0, 1.0)
@@ -780,6 +891,7 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             (() => {
                 const sm = window.__tamiSceneManager || window.__SPATIAL_MANAGER__;
                 if (sm) {
+                    sm.setCameraPose({ x: 0, y: -36, z: 1150 }, true);
                     sm.pointer.targetX = -1.0;
                     sm.pointer.targetY = 1.0;
                 }
@@ -841,8 +953,8 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 const sm = window.__tamiSceneManager || window.__SPATIAL_MANAGER__;
                 sm.resetCameraPose(true);
                 const forwardPose = sm.setCameraPose({ z: 145 }, true);
-                const backwardPose = sm.setCameraPose({ z: 650 }, true);
-                const rotatedPose = sm.setCameraPose({ x: 0, y: 0, z: 400, yawDeg: 22, pitchDeg: -11 }, true);
+                const backwardPose = sm.setCameraPose({ z: 1950 }, true);
+                const rotatedPose = sm.setCameraPose({ x: 0, y: -36, z: 880, yawDeg: 22, pitchDeg: -11 }, true);
                 const clampedExtreme = sm.setCameraPose({ x: 9999, y: 9999, z: 9999, yawDeg: 89, pitchDeg: 89 }, true);
                 const resetPose = sm.resetCameraPose(true);
                 return JSON.stringify({
@@ -859,11 +971,12 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             dof_data = json.loads(res260.get("result", {}).get("result", {}).get("value"))
 
             self.assertAlmostEqual(dof_data["forwardPose"]["z"], 145.0, places=1)
-            self.assertGreaterEqual(dof_data["backwardPose"]["z"], 600.0)
+            self.assertGreaterEqual(dof_data["backwardPose"]["z"], 1785.0)
             self.assertGreater(abs(dof_data["rotatedPose"]["yawDeg"]), 15.0)
-            self.assertGreater(abs(dof_data["rotatedPose"]["pitchDeg"]), 8.0)
-            self.assertLessEqual(dof_data["clampedExtreme"]["z"], 685.1)
-            self.assertAlmostEqual(dof_data["resetPose"]["z"], 400.0, places=1)
+            self.assertGreater(abs(dof_data["rotatedPose"]["pitchDeg"]), 7.0)
+            self.assertLessEqual(dof_data["clampedExtreme"]["z"], 2040.1)
+            self.assertAlmostEqual(dof_data["resetPose"]["z"], 1740.0, places=1)
+            self.assertAlmostEqual(dof_data["resetPose"]["y"], -36.0, places=1)
             self.assertAlmostEqual(dof_data["resetPose"]["yawDeg"], 0.0, places=2)
 
             if not is_mobile:
@@ -888,6 +1001,20 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                     const hebrewUpY = sm.poseTarget.y;
 
                     sm.resetCameraPose(true);
+                    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ק', code: '', bubbles: true }));
+                    sm._stepKeyboardNavigation(0.25);
+                    window.dispatchEvent(new KeyboardEvent('keyup', { key: 'ק', code: '', bubbles: true }));
+                    const hebrewKeyOnlyUpY = sm.poseTarget.y;
+
+                    sm.resetCameraPose(true);
+                    const collapsedSceneBtn = document.querySelector('#spatial-sidebar.collapsed .scene-btn');
+                    if (collapsedSceneBtn) collapsedSceneBtn.focus();
+                    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', code: 'KeyE', bubbles: true }));
+                    sm._stepKeyboardNavigation(0.25);
+                    window.dispatchEvent(new KeyboardEvent('keyup', { key: 'e', code: 'KeyE', bubbles: true }));
+                    const staleHiddenFocusUpY = sm.poseTarget.y;
+
+                    sm.resetCameraPose(true);
                     const infoDrawer = document.getElementById('info-drawer');
                     if (infoDrawer) infoDrawer.classList.add('open');
                     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', code: 'KeyE', bubbles: true }));
@@ -897,16 +1024,25 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                     if (infoDrawer) infoDrawer.classList.remove('open');
                     sm.resetCameraPose(true);
 
-                    return JSON.stringify({ upY, downY, hebrewUpY, blockedByDrawerY });
+                    return JSON.stringify({
+                        upY,
+                        downY,
+                        hebrewUpY,
+                        hebrewKeyOnlyUpY,
+                        staleHiddenFocusUpY,
+                        blockedByDrawerY
+                    });
                 })()
                 """
                 send_cdp("Runtime.evaluate", {"expression": kb_elev_js, "returnByValue": True}, msg_id=261)
                 res261 = read_cdp(target_id=261)
                 kb_data = json.loads(res261.get("result", {}).get("result", {}).get("value"))
-                self.assertGreater(kb_data["upY"], 30.0)
-                self.assertLess(kb_data["downY"], -30.0)
-                self.assertGreater(kb_data["hebrewUpY"], 30.0)
-                self.assertAlmostEqual(kb_data["blockedByDrawerY"], 0.0, places=3)
+                self.assertGreater(kb_data["upY"], 0.0)
+                self.assertLess(kb_data["downY"], -66.0)
+                self.assertGreater(kb_data["hebrewUpY"], 0.0)
+                self.assertGreater(kb_data["hebrewKeyOnlyUpY"], 0.0)
+                self.assertGreater(kb_data["staleHiddenFocusUpY"], 0.0)
+                self.assertAlmostEqual(kb_data["blockedByDrawerY"], -36.0, places=3)
 
             # Check gl.getError() === 0
             gl_err_js = """

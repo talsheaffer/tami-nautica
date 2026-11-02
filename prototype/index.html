@@ -6,18 +6,27 @@
   <meta name="theme-color" content="#121314">
   <meta name="description" content="מסע מרחבי 2.5D אינטראקטיבי לרגל יום הולדתה ה-70 של האמנית תמר שפר (תמי)">
   <title>תמר שפר @ 70 | ארכיטקטורה של דאגה ושבריריות</title>
+  <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/feedback.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>70</text></svg>">
   <script>
     (function () {
-      var isRemote = location.protocol.indexOf('http') === 0 &&
-        ((location.hostname !== '127.0.0.1' && location.hostname !== 'localhost') ||
-         location.search.indexOf('diag=1') !== -1);
+      try {
+        var savedFont = localStorage.getItem('tami70_beta_font');
+        if (savedFont) {
+          document.documentElement.setAttribute('data-beta-font', savedFont);
+        } else {
+          document.documentElement.setAttribute('data-beta-font', 'ibm_plex');
+        }
+      } catch (e) {}
+
+      var diagEnabled = location.protocol.indexOf('http') === 0;
       var t0 = Date.now();
       var sid = Math.random().toString(36).slice(2, 8);
+      window.__DIAG_SID__ = sid;
       window.__sendDiag = function (event, detail) {
-        if (!isRemote) return;
+        if (!diagEnabled) return;
         var payload = JSON.stringify({
           sid: sid,
           t_ms: Date.now() - t0,
@@ -33,9 +42,10 @@
           }).catch(function () {});
         } catch (e) {}
       };
-      if (!isRemote) return;
+      if (!diagEnabled) return;
       var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
       window.__sendDiag('html_boot', {
+        host: location.hostname,
         ua: navigator.userAgent,
         vw: window.innerWidth,
         vh: window.innerHeight,
@@ -88,17 +98,19 @@
         <h1>
           תמר שפר
           <span class="age-tag">70</span>
-          — ארכיטקטורה של דאגה ושבריריות
         </h1>
-        <p>מסע מרחבי 2.5D בין מיצבי נייר, מלט ורישום | כ״ה בתשרי תשפ״ז</p>
       </div>
 
       <div class="top-actions">
-        <button id="info-toggle-btn" class="icon-btn" aria-label="אודות המרחב והיצירה">
-          ℹ️ אודות וסיפור המרחב
+        <button id="info-toggle-btn" class="icon-btn" type="button" aria-label="אודות המרחב והיצירה">
+          אודות
         </button>
-        <button id="fullscreen-btn" class="icon-btn" aria-label="מסך מלא">
-          ⛶ מסך מלא
+        <button id="fullscreen-btn" class="icon-btn" type="button" aria-label="מסך מלא">
+          מסך מלא
+        </button>
+        <button id="sidebar-toggle-btn" class="icon-btn sidebar-toggle-btn" type="button" aria-expanded="false" aria-controls="spatial-sidebar" aria-label="פתח תפריט ניווט במרחבים">
+          <span class="hamburger-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>מרחבים</span>
         </button>
       </div>
     </header>
@@ -115,134 +127,190 @@
       </div>
       <ol id="spatial-breadcrumb-list" class="spatial-breadcrumb-list"></ol>
       <div id="spatial-outgoing-portals" class="spatial-outgoing-portals hidden" aria-label="שערים מתוך מרחב זה"></div>
+      <button id="portal-return-btn" class="portal-return-btn hidden" type="button" aria-label="חזרה אל קיר המדפים התלת-ממדי">
+        חזרה לקיר המדפים
+      </button>
     </nav>
 
     <!-- Center Interaction Hint -->
     <div id="center-hint" class="center-hint">
-      גרור לסיבוב מבט · גלגל / WASD להליכה · Q/E או PgUp/PgDn לעלייה וירידה בגובה
+      לחצו על חפצים במדפים להסרתם ועל תא פתוח לצלילה פנימה · WASD / Q/E לניווט
     </div>
 
     <!-- 3D Shelf Portal Micro-Badges & Desktop Hover Plaque -->
     <div id="portal-badges-layer" class="portal-badges-layer hidden" aria-label="שערי המדפים התלת-ממדיים"></div>
     <div id="portal-hover-plaque" class="portal-hover-plaque hidden" role="status" aria-live="polite"></div>
 
-    <!-- Bottom Floating Dock: Grouped Exhibition Bar + Compact Scene Navigator -->
-    <footer class="bottom-dock">
-      <!-- Return to 3D Shelf Portal Hub Pill (shown after diving into a cubby) -->
-      <button id="portal-return-btn" class="portal-return-btn hidden" type="button" aria-label="חזרה אל קיר המדפים התלת-ממדי">
-        ⊞ חזרה לקיר המדפים
-      </button>
-
-      <!-- Exhibition Group Bar + Prev/Next Scene Stepper -->
-      <div class="exhibition-tabs-row" role="tablist" aria-label="קבוצות תערוכה ומרחבים">
-        <button id="exhibition-prev-btn" class="exhibition-step-btn" type="button" title="המרחב הקודם" aria-label="המרחב הקודם">
-          ›
-        </button>
-        <div id="exhibition-tabs" class="exhibition-tabs">
-          <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="portal_hub" aria-selected="false">
-            ⊞ קיר המדפים
-          </button>
-          <button class="exhibition-tab-btn active" type="button" role="tab" data-exhibition-group="binyamin_plan_b" aria-selected="true">
-            🕳️ גלריה בנימין · Plan B
-          </button>
-          <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="bene_beitcha_home" aria-selected="false">
-            🏛️ בנה ביתך ודניה
-          </button>
-          <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="wandering_drawings" aria-selected="false">
-            ✏️ שיטוט ברישום
-          </button>
-          <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="family_places" aria-selected="false">
-            🏡 בית פריד ומרסיי
-          </button>
-          <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="archive_versions" aria-selected="false">
-            🗂️ ארכיון v1
-          </button>
+    <!-- Collapsible Minimalist Left Sidebar: Grouped Scene Navigation, Controls & Beta Typography -->
+    <aside id="spatial-sidebar" class="spatial-sidebar collapsed" dir="rtl" aria-label="תפריט ניווט במרחבי התערוכה">
+      <div class="sidebar-header">
+        <span class="sidebar-title">ניווט במרחבים</span>
+        <div class="sidebar-header-actions">
+          <button id="exhibition-prev-btn" class="exhibition-step-btn" type="button" title="המרחב הקודם" aria-label="המרחב הקודם">›</button>
+          <button id="exhibition-next-btn" class="exhibition-step-btn" type="button" title="המרחב הבא" aria-label="המרחב הבא">‹</button>
+          <button id="sidebar-close-btn" class="sidebar-close-btn" type="button" aria-label="סגור תפריט מרחבים">✕</button>
         </div>
-        <button id="exhibition-next-btn" class="exhibition-step-btn" type="button" title="המרחב הבא" aria-label="המרחב הבא">
-          ‹
-        </button>
       </div>
 
-      <!-- Scene Navigation Sub-Pills (Filtered to Active Exhibition Group; All 20 Scene Buttons Preserved in DOM) -->
-      <nav class="scene-pills" data-filtered="true" role="navigation" aria-label="בחירת מרחב בתערוכה">
-        <button class="scene-btn scene-pill" type="button" data-scene="shelf_portal" data-group="portal_hub" aria-pressed="false">
-          ⊞ שער התערוכות: קיר המדפים
-        </button>
-        <button class="scene-btn scene-pill active in-active-group" type="button" data-scene="paper_capsules" data-group="binyamin_plan_b" aria-pressed="true">
-          🫧 קפסולות נייר
-        </button>
-        <button class="scene-btn scene-pill in-active-group" type="button" data-scene="tzofen_brick_table" data-group="binyamin_plan_b" aria-pressed="false">
-          🧱 צופן: שולחן וחלון לעץ
-        </button>
-        <button class="scene-btn scene-pill in-active-group" type="button" data-scene="plan_b_pipe_v3" data-group="binyamin_plan_b" aria-pressed="false">
-          🕳️ Plan B: תמי ויערה
-        </button>
-        <button class="scene-btn scene-pill in-active-group" type="button" data-scene="plan_b_pipe" data-group="binyamin_plan_b" aria-pressed="false">
-          🕳️ צינור Plan B
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="bene_beitcha" data-group="bene_beitcha_home" aria-pressed="false">
-          🏛️ ׳בנה ביתך׳
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="humpty_dumpty_bundle" data-group="bene_beitcha_home" aria-pressed="false">
-          🥚 האמפטי דאמפטי בצרור
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="denya_model" data-group="bene_beitcha_home" aria-pressed="false">
-          🏠 דגם בית דניה
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="denya_living_room" data-group="bene_beitcha_home" aria-pressed="false">
-          🍽️ סלון דניה: שולחן ושערים
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="denya_couch_guitar" data-group="bene_beitcha_home" aria-pressed="false">
-          🎸 ספת דניה: גיטרה ושיטוט
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="wandering_drawing_1" data-group="wandering_drawings" aria-pressed="false">
-          ✏️ שיטוט ברישום 1
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="scroll_palm_world" data-group="wandering_drawings" aria-pressed="false">
-          🌴 עולם המגילה
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="wandering_drawing" data-group="wandering_drawings" aria-pressed="false">
-          ✏️ שיטוט ברישום 2
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="fried_yard_installation" data-group="family_places" aria-pressed="false">
-          🌿 חצר בית פריד: מרחב לא מוגן
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="fried_house_railing" data-group="family_places" aria-pressed="false">
-          🪨 בית פריד: כרית ואבן
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="fried_table_hybrid" data-group="family_places" aria-pressed="false">
-          🍽️ שולחן בית פריד: היבריד
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="herzliya_tree_canopy" data-group="family_places" aria-pressed="false">
-          🌳 צמרת העץ בהרצליה
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="marseille_mirror" data-group="family_places" aria-pressed="false">
-          🪞 מרסיי: מתחת למראה
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe_v1" data-group="archive_versions" aria-pressed="false">
-          🕳️ Plan B (גרסה 1)
-        </button>
-        <button class="scene-btn scene-pill" type="button" data-scene="marseille_mirror_v1" data-group="archive_versions" aria-pressed="false">
-          🪞 מרסיי (גרסה 1)
-        </button>
-      </nav>
+      <div class="sidebar-scroll">
+        <!-- Exhibition Group Filter / Jump Bar -->
+        <div class="sidebar-section">
+          <span class="sidebar-section-label">סדרות</span>
+          <div class="exhibition-tabs-row" role="tablist" aria-label="קבוצות תערוכה ומרחבים">
+            <div id="exhibition-tabs" class="exhibition-tabs">
+              <button class="exhibition-tab-btn active" type="button" role="tab" data-exhibition-group="portal_hub" aria-selected="true">
+                קיר המדפים
+              </button>
+              <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="binyamin_plan_b" aria-selected="false">
+                גלריה בנימין · Plan B
+              </button>
+              <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="bene_beitcha_home" aria-selected="false">
+                בנה ביתך ודניה
+              </button>
+              <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="wandering_drawings" aria-selected="false">
+                שיטוט ברישום
+              </button>
+              <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="family_places" aria-selected="false">
+                בתים, ילדות ומרסיי
+              </button>
+              <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="archive_versions" aria-selected="false">
+                ארכיון v1
+              </button>
+            </div>
+          </div>
+        </div>
 
-      <!-- Auxiliary Controls (Sound, Gyro, Pose Reset & Shelf Occluder Restore) -->
-      <div class="aux-controls">
-        <button id="audio-toggle" class="aux-btn" aria-label="סאונד סביבתי">
-          ♫ צלילי גן ורוח
-        </button>
-        <button id="gyro-toggle" class="aux-btn" aria-label="מצב ג'יירו למובייל">
-          ⟲ מצב הטיה: עכבר / ג׳יירו
-        </button>
-        <button id="reset-pose-btn" class="aux-btn" aria-label="איפוס מיקום וזווית מצלמה">
-          ↺ איפוס מבט
-        </button>
-        <button id="restore-occluders-btn" class="aux-btn hidden" type="button" aria-label="השב חפצים למדפים">
-          ↺ השב חפצים למדפים
-        </button>
+        <!-- Grouped Scene List (Zero Icons/Emojis) -->
+        <div class="sidebar-section">
+          <span class="sidebar-section-label">כל המרחבים</span>
+          <nav class="scene-pills" data-filtered="false" role="navigation" aria-label="בחירת מרחב בתערוכה">
+            <div class="sidebar-group-heading" data-group-heading="portal_hub">שער התערוכות</div>
+            <button class="scene-btn scene-pill active in-active-group" type="button" data-scene="shelf_portal" data-group="portal_hub" aria-pressed="true">
+              קיר המדפים
+            </button>
+
+            <div class="sidebar-group-heading" data-group-heading="binyamin_plan_b">גלריה בנימין · Plan B</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="paper_capsules" data-group="binyamin_plan_b" aria-pressed="false">
+              קפסולות נייר
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="tzofen_brick_table" data-group="binyamin_plan_b" aria-pressed="false">
+              צופן: שולחן וחלון לעץ
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe_v3" data-group="binyamin_plan_b" aria-pressed="false">
+              Plan B: תמי ויערה
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe" data-group="binyamin_plan_b" aria-pressed="false">
+              צינור Plan B
+            </button>
+
+            <div class="sidebar-group-heading" data-group-heading="bene_beitcha_home">בנה ביתך ודניה</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="bene_beitcha" data-group="bene_beitcha_home" aria-pressed="false">
+              בנה ביתך
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="bene_beitcha_scroll_foot" data-group="bene_beitcha_home" aria-pressed="false">
+              מגילה וכף רגל
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="purim_costume_1966" data-group="bene_beitcha_home" aria-pressed="false">
+              תחפושת פורים, 1966
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="vitrine_keys_pen" data-group="bene_beitcha_home" aria-pressed="false">
+              ויטרינת המפתחות והעט
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="humpty_dumpty_booth" data-group="bene_beitcha_home" aria-pressed="false">
+              האמפטי דאמפטי בתא
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="humpty_dumpty_bundle" data-group="bene_beitcha_home" aria-pressed="false">
+              צרור עטוף בבד וחבל
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="denya_model" data-group="bene_beitcha_home" aria-pressed="false">
+              דגם בית דניה
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="denya_living_room" data-group="bene_beitcha_home" aria-pressed="false">
+              סלון דניה: שולחן ושערים
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="denya_couch_guitar" data-group="bene_beitcha_home" aria-pressed="false">
+              ספת דניה: גיטרה ושיטוט
+            </button>
+
+            <div class="sidebar-group-heading" data-group-heading="wandering_drawings">שיטוט ברישום</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="wandering_drawing_1" data-group="wandering_drawings" aria-pressed="false">
+              שיטוט ברישום 1
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="scroll_palm_world" data-group="wandering_drawings" aria-pressed="false">
+              עולם המגילה
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="wandering_drawing" data-group="wandering_drawings" aria-pressed="false">
+              שיטוט ברישום 2
+            </button>
+
+            <div class="sidebar-group-heading" data-group-heading="family_places">בתים, ילדות ומרסיי</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="fried_yard_installation" data-group="family_places" aria-pressed="false">
+              חצר בית פריד: מרחב לא מוגן
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="fried_house_railing" data-group="family_places" aria-pressed="false">
+              בית פריד: כרית ואבן
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="fried_table_hybrid" data-group="family_places" aria-pressed="false">
+              שולחן בית פריד: היבריד
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="herzliya_lawn_carpet" data-group="family_places" aria-pressed="false">
+              הדשא בהרצליה: שטיח ואדמה
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="herzliya_tree_canopy" data-group="family_places" aria-pressed="false">
+              צמרת העץ בהרצליה
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="bar_giora_bedroom" data-group="family_places" aria-pressed="false">
+              חדר השינה בבר גיורא
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="paris_cite_white_table" data-group="family_places" aria-pressed="false">
+              סטודיו פריז: השולחן הלבן
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="toddler_tami_1958" data-group="family_places" aria-pressed="false">
+              תמי הפעוטה, 1958
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="marseille_mirror" data-group="family_places" aria-pressed="false">
+              מרסיי: מתחת למראה
+            </button>
+
+            <div class="sidebar-group-heading" data-group-heading="archive_versions">ארכיון גרסאות</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe_v1" data-group="archive_versions" aria-pressed="false">
+              Plan B (גרסה 1)
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="marseille_mirror_v1" data-group="archive_versions" aria-pressed="false">
+              מרסיי (גרסה 1)
+            </button>
+          </nav>
+        </div>
+
+        <!-- Auxiliary Controls (Sound, Gyro, Pose Reset & Shelf Occluder Restore) -->
+        <div class="sidebar-section">
+          <span class="sidebar-section-label">בקרת מרחב וסאונד</span>
+          <div class="aux-controls">
+            <button id="audio-toggle" class="aux-btn" type="button" aria-label="סאונד סביבתי">
+              צלילי גן ורוח
+            </button>
+            <button id="gyro-toggle" class="aux-btn" type="button" aria-label="מצב ג'יירו למובייל">
+              מצב הטיה: עכבר / ג׳יירו
+            </button>
+            <button id="reset-pose-btn" class="aux-btn" type="button" aria-label="איפוס מיקום וזווית מצלמה">
+              איפוס מבט
+            </button>
+            <button id="restore-occluders-btn" class="aux-btn hidden" type="button" aria-label="השב חפצים למדפים">
+              השב חפצים למדפים
+            </button>
+          </div>
+        </div>
+
+        <!-- Global Beta Typography Switcher (#37) -->
+        <div class="sidebar-section" id="beta-font-section">
+          <span class="sidebar-section-label">גופן תצוגה (בחירה לבטא — חל בכל האתר)</span>
+          <div id="beta-font-selector" class="beta-font-selector" role="group" aria-label="בחירת גופן תצוגה"></div>
+        </div>
+
+        <!-- Family Beta Workspace Links Slot -->
+        <div id="spatial-sidebar-hub-slot" class="sidebar-hub-slot"></div>
       </div>
-    </footer>
+    </aside>
 
   </div>
 
@@ -255,7 +323,7 @@
 
     <div class="drawer-content">
       <!-- Story Card 0: 3D Shelf Portal Hub (Binyamin Gallery Concrete & Paper Compartments) -->
-      <article id="story-shelf_portal" class="story-card">
+      <article id="story-shelf_portal" class="story-card active-story">
         <h3>שער התערוכות — קיר מדפי המלט והנייר (גלריה בנימין)</h3>
         <p>
           קיר התאים המודולרי ממלט ונייר מתערוכתה של תמי בגלריה בנימין הופך כאן לשער ארכיטקטוני חי בין העבודות, הרישומים והבתים שלה. בתוך כל תא חלול נפרש מיניאטורה תלת-ממדית בעומק אמיתי שמגיבה לזווית המבט — לחצו או הקישו על כל תא בקיר כדי לטוס פנימה אל תוך המרחב שבפנים.
@@ -270,7 +338,7 @@
       </article>
 
       <!-- Story Card 1: Suspended Paper Capsules -->
-      <article id="story-paper_capsules" class="story-card active-story">
+      <article id="story-paper_capsules" class="story-card">
         <h3>1. קפסולות נייר תלויות — ״אולי שם יהיה יותר טוב״</h3>
         <p>
           מיצב הקפסולות התלויות מנייר אריזה חום וחוטים בגלריה בנימין, השואב השראה ישירה מבית העץ ומקומות המסתור בחצר הילדות בהרצליה — פקעות חלולות ועדינות המרחפות בחלל הגלריה כמקלט שברירי מן הכאוס שבחוץ.
@@ -314,17 +382,66 @@
         </span>
       </article>
 
-      <!-- Story Card 2a: Humpty Dumpty Embedded in Wrapped Cloth Bundle -->
-      <article id="story-humpty_dumpty_bundle" class="story-card">
-        <h3>האמפטי דאמפטי בצרור הבד והחוטים — שבריריות עטופה</h3>
+      <!-- Story Card 2a-booth: Humpty Dumpty inside Tami's Wooden Booth Installation -->
+      <article id="story-humpty_dumpty_booth" class="story-card">
+        <h3>האמפטי דאמפטי בתא העץ — שולחן המשבצות הוורוד והמאוורר</h3>
         <p>
-          דיאלוג מחויך ופואטי עם פסלי הצרורות העטופים בבד לבן וחוטי קשירה ביצירתה של תמי: בתוך קפלי הכותנה והקשרים העדינים נח האמפטי דאמפטי — סמל השבריריות שאין להשיבה לאחור — כשהוא עטוף ומוגן בחמלה חומרית.
+          דיאלוג מחויך ופואטי עם תאי העץ והמלט החשופים ביצירתה של תמי: בתוך התא האפור המצויד במאוורר קטן יושב האמפטי דאמפטי באפודה כחולה ועניבת פרפר אדומה לצד שולחן עץ קטן ומפה משובצת ורוד-לבן — שבריריות ספרותית שמוצאת לעצמה חדר שקט ומוגן.
+        </p>
+        <blockquote>
+          ״בתוך הקופסה האפורה הפשוטה הופך השולחן הקטן למקלט שבו אפילו השביר מכל יכול לשבת בשלווה.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/wiki?page=art/motifs-capsules-and-mirrors.md" target="_blank" rel="noopener">ויקי: קפסולות, מעטפות ושבריריות</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2a: Wrapped Cloth & Twine Bundle -->
+      <article id="story-humpty_dumpty_bundle" class="story-card">
+        <h3>צרור עטוף בבד וחבל — שבריריות עטופה</h3>
+        <p>
+          פסל צרור עטוף בבד בהיר וקשור בחוטי שפגט בעבודתה של תמי: בתוך קפלי הכותנה והקשרים העדינים נוצר נפח מוגן ודרוך של חמלה חומרית והשגחה.
         </p>
         <blockquote>
           ״הבד הקשור והחוט המהודק אינם מסתירים את השבר האפשרי, אלא בונים סביבו ערסל של השגחה ודאגה.״
         </blockquote>
         <span class="source-tag">
           מקורות: <a href="/wiki?page=art/motifs-capsules-and-mirrors.md" target="_blank" rel="noopener">ויקי: קפסולות, מעטפות ושבריריות</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2-scroll-foot: Bene Beitcha Scroll & Sculpted Foot + Purim 1966 Photo -->
+      <article id="story-bene_beitcha_scroll_foot" class="story-card">
+        <h3>״מגילה וכף רגל״ (בנה ביתך, 2026) — צילום פורים מתחת לכף הרגל המפוסלת</h3>
+        <p>
+          במיצב הרצפה והקיר <em>״מגילה וכף רגל״</em> מתערוכת היחיד במוזיאון רמת גן משתלשלת מגילת רישום ארוכה מן הקיר אל הרצפה, כשבקצה מוט שחור ניצבת כף רגל מפוסלת ומוצמדת אל פינת צילום ילדות של תמי מפורים 1966. לחצו על כף הרגל כדי להעלימה ולהפיל את המוט השחור הצידה — הצילום מתגלה במלואו על גבי המגילה, ולחיצה עליו מובילה אל תוך צילום פורים בתלת-ממד.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_MUSE_0256" target="_blank" rel="noopener">קטלוג העבודות והמשפחה (IMG_MUSE_0256 · IMG_WHAT_0433) ↗</a> |
+          <a href="/wiki?page=art/solo-exhibition-bene-beitcha.md" target="_blank" rel="noopener">ויקי: תערוכת ״בנה ביתך״</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2-purim: Purim 1966 Childhood Costume -->
+      <article id="story-purim_costume_1966" class="story-card">
+        <h3>תמי ועדה בפורים עם סלסלת הקש (~1966)</h3>
+        <p>
+          תמי ואחותה עדה כורעות יחד בגינה בתחפושות פורים ביתיות סביב סלסלת קש קלועה (~1966) — רגע ילדות חם שנחשף מתחת לכף הרגל המפוסלת במיצב <em>״מגילה וכף רגל״</em> ונפתח כאן למרחב תלת-ממדי חי.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WHAT_0433" target="_blank" rel="noopener">קטלוג המשפחה (IMG_WHAT_0433) ↗</a> |
+          <a href="/wiki?page=places/herzliya-home-and-yard.md" target="_blank" rel="noopener">ויקי: הבית והחצר בהרצליה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2-vitrine: Keys & Pen Vitrine -->
+      <article id="story-vitrine_keys_pen" class="story-card">
+        <h3>ויטרינת המפתחות והעט — תא עץ וזכוכית תלוי על הקיר</h3>
+        <p>
+          קופסת עץ וזכוכית אינטימית של תמי שבתוכה תלויים צרור מפתחות ביתיים, עט ופתקים קטנים על ווים זעירים — ארכיאולוגיה שקטה של יומיום, נעילה וזיכרון.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WORD_0211" target="_blank" rel="noopener">קטלוג העבודות (IMG_WORD_0211 · IMG_MUSE_0258) ↗</a>
         </span>
       </article>
 
@@ -579,6 +696,51 @@
         <span class="source-tag">
           מקורות: <a href="/catalog" target="_blank" rel="noopener">קטלוג הצילומים המשפחתי ↗</a> |
           <a href="/wiki?page=art/motifs-capsules-and-mirrors.md" target="_blank" rel="noopener">ויקי: קפסולות, מראות ומקלט</a>
+        </span>
+      </article>
+
+      <!-- Story Card 6a: Herzliya Lawn + Unrolling Carpet & Earth Installation -->
+      <article id="story-herzliya_lawn_carpet" class="story-card">
+        <h3>הדשא בהרצליה — השטיח המגולגל ושובל האדמה</h3>
+        <p>
+          על מדשאת חצר הילדות בהרצליה מונח השטיח המגולגל ממיצבה של תמי בגלריה בנימין כשמאחוריו נמשך שובל אדמה כהה אל מחוץ לפריים. לחצו על גליל השטיח כדי לגלגל אותו לאורך הדשא משמאל לימין ולפרוש את שובל האדמה החומרי לרוחב הגינה כולה.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_HERZ_0399" target="_blank" rel="noopener">קטלוג המשפחה והיצירה (IMG_HERZ_0399 · IMG_BINY_0009) ↗</a> |
+          <a href="/wiki?page=places/herzliya-home-and-yard.md" target="_blank" rel="noopener">ויקי: הבית והחצר בהרצליה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 6b: Bar Giora Bedroom + Tilted Wall Vitrine -->
+      <article id="story-bar_giora_bedroom" class="story-card">
+        <h3>חדר השינה בבר גיורא — ויטרינת המפתחות באור החלון</h3>
+        <p>
+          בחדר השינה המואר באור החלון הימני תלויה מתחת לציור הממוסגר ויטרינת המפתחות והעט של תמי כשהיא מוטה בזווית ההולמת את כיוון הצל הטבעי של החדר. לחצו על הוויטרינה שעל הקיר כדי לטוס פנימה תוך סיבוב הדרגתי של המצלמה עד להתיישרות מול תא הזכוכית.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_MUSE_0258" target="_blank" rel="noopener">קטלוג המשפחה והיצירה (IMG_MUSE_0258 · IMG_WORD_0211) ↗</a>
+        </span>
+      </article>
+
+      <!-- Story Card 6c: Paris Cité Studio White Table + Toddler Tami Photo -->
+      <article id="story-paris_cite_white_table" class="story-card">
+        <h3>סטודיו הסיטה בפריז — צילום ילדות על השולחן הלבן</h3>
+        <p>
+          חלל העבודה הבהיר בשהות האמן בסיטה דז אר בפריז: על משטח השולחן הלבן מונח בפרספקטיבה צילום ילדות של תמי הפעוטה מ-1958 — לחצו על הצילום שעל השולחן כדי לצלול פנימה אל תוך זיכרון הילדות.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WORD_0153" target="_blank" rel="noopener">קטלוג היצירה והמשפחה (IMG_WORD_0153 · IMG_WHAT_0424) ↗</a>
+        </span>
+      </article>
+
+      <!-- Story Card 6d: Toddler Tami 1958 -->
+      <article id="story-toddler_tami_1958" class="story-card">
+        <h3>תמי הפעוטה בחצר (1958)</h3>
+        <p>
+          מבט קרוב ותלת-ממדי אל צילום הילדות המוקדם של תמי הפעוטה משנת 1958, הנפתח מתוך השולחן הלבן בסטודיו בפריז.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WHAT_0424" target="_blank" rel="noopener">קטלוג המשפחה (IMG_WHAT_0424) ↗</a>
         </span>
       </article>
 

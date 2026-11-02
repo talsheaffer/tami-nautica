@@ -81,6 +81,14 @@ BORE_SIGHT_REQUIRED_SCENES: tuple[str, ...] = (
     "tzofen_brick_table",
     "bene_beitcha",
     "humpty_dumpty_bundle",
+    "humpty_dumpty_booth",
+    "bene_beitcha_scroll_foot",
+    "purim_costume_1966",
+    "herzliya_lawn_carpet",
+    "vitrine_keys_pen",
+    "bar_giora_bedroom",
+    "paris_cite_white_table",
+    "toddler_tami_1958",
     "denya_model",
     "denya_living_room",
     "denya_couch_guitar",
@@ -687,19 +695,37 @@ class TestLiveSceneDepthTopologyGate(unittest.TestCase):
             )
 
     def test_new_scenes_tzofen_tree_scroll_and_humpty_contact_continuity(self) -> None:
+        from prototype.humpty_booth_scene_builder import default_humpty_booth_bundle_config
         from prototype.scroll_humpty_scenes_builder import default_scroll_humpty_bundle_config
+        from prototype.scroll_purim_carpet_scenes_builder import default_scroll_purim_carpet_bundle_config
         from prototype.tzofen_tree_scenes_builder import default_tzofen_tree_bundle_config
+        from prototype.vitrine_bedroom_paris_scenes_builder import default_vitrine_bedroom_paris_bundle_config
 
         tz_bundle = default_tzofen_tree_bundle_config()
         sh_bundle = default_scroll_humpty_bundle_config()
+        hb_bundle = default_humpty_booth_bundle_config()
+        spc_bundle = default_scroll_purim_carpet_bundle_config()
+        vbp_bundle = default_vitrine_bedroom_paris_bundle_config()
 
         checks = [
-            ("tzofen_brick_table", "fg", "fgZ", "fgDepthAmplitude", "fgDepthTexture", "fgTexture", tz_bundle.tzofen.fg_contact_solve),
+            ("tzofen_brick_table", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", tz_bundle.tzofen.mid_contact_solve),
             ("herzliya_tree_canopy", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", tz_bundle.tree_canopy.mid_contact_solve),
             ("herzliya_tree_canopy", "fg", "fgZ", "fgDepthAmplitude", "fgDepthTexture", "fgTexture", tz_bundle.tree_canopy.fg_contact_solve),
             ("scroll_palm_world", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", sh_bundle.scroll_palm_world.mid_depth_solve),
             ("scroll_palm_world", "fg", "fgZ", "fgDepthAmplitude", "fgDepthTexture", "fgTexture", sh_bundle.scroll_palm_world.fg_depth_solve),
             ("humpty_dumpty_bundle", "fg", "fgZ", "fgDepthAmplitude", "fgDepthTexture", "fgTexture", sh_bundle.humpty_dumpty_bundle.fg_depth_solve),
+            ("humpty_dumpty_booth", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", hb_bundle.scene.mid_depth_solve),
+            ("humpty_dumpty_booth", "fg", "fgZ", "fgDepthAmplitude", "fgDepthTexture", "fgTexture", hb_bundle.scene.fg_depth_solve),
+            ("bene_beitcha_scroll_foot", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", spc_bundle.bene_beitcha_scroll_foot.mid_depth_solve),
+            ("purim_costume_1966", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", spc_bundle.purim_costume_1966.mid_depth_solve),
+            ("herzliya_lawn_carpet", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", spc_bundle.herzliya_lawn_carpet.mid_depth_solve),
+            ("vitrine_keys_pen", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", vbp_bundle.vitrine_keys_pen.mid_depth_solve),
+            ("vitrine_keys_pen", "fg", "fgZ", "fgDepthAmplitude", "fgDepthTexture", "fgTexture", vbp_bundle.vitrine_keys_pen.fg_depth_solve),
+            ("bar_giora_bedroom", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", vbp_bundle.bar_giora_bedroom.mid_depth_solve),
+            ("bar_giora_bedroom", "fg", "fgZ", "fgDepthAmplitude", "fgDepthTexture", "fgTexture", vbp_bundle.bar_giora_bedroom.fg_depth_solve),
+            ("paris_cite_white_table", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", vbp_bundle.paris_cite_white_table.mid_depth_solve),
+            ("paris_cite_white_table", "fg", "fgZ", "fgDepthAmplitude", "fgDepthTexture", "fgTexture", vbp_bundle.paris_cite_white_table.fg_depth_solve),
+            ("toddler_tami_1958", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", vbp_bundle.toddler_tami_1958.mid_depth_solve),
         ]
         for scene_key, layer_name, z_prop, amp_prop, d_prop, c_prop, solve_cfg in checks:
             block = _extract_js_scene_block(self.js_source, scene_key)
@@ -728,6 +754,35 @@ class TestLiveSceneDepthTopologyGate(unittest.TestCase):
                 THRESHOLDS.max_live_contact_p95_dz_world,
                 f"{scene_key}.{layer_name} floats off host surface (p95 |ΔZ| = {p95_dz:.2f})!",
             )
+
+        # Verify tzofen_brick_table.fg (380 terracotta mud bricks) rests C0 on mid steel tabletop!
+        tz_block = _extract_js_scene_block(self.js_source, "tzofen_brick_table")
+        tz_mid_z = _parse_float_prop(tz_block, "midZ", -340.0)
+        tz_mid_amp = _parse_float_prop(tz_block, "midDepthAmplitude", 200.0)
+        tz_fg_z = _parse_float_prop(tz_block, "fgZ", -340.0)
+        tz_fg_amp = _parse_float_prop(tz_block, "fgDepthAmplitude", 200.0)
+        tz_mid_d_path = _parse_asset_prop(tz_block, "midDepthTexture")
+        tz_fg_c_path = _parse_asset_prop(tz_block, "fgTexture")
+        tz_fg_d_path = _parse_asset_prop(tz_block, "fgDepthTexture")
+        assert tz_mid_d_path is not None and tz_fg_c_path is not None and tz_fg_d_path is not None
+        tz_mid_d = np.asarray(Image.open(tz_mid_d_path).convert("L"))
+        tz_fg_rgba = np.asarray(Image.open(tz_fg_c_path).convert("RGBA"))
+        tz_fg_d = np.asarray(Image.open(tz_fg_d_path).convert("L"))
+        tz_fg_contact = extract_contact_anchor_mask(
+            tz_fg_rgba[:, :, 3] >= tz_bundle.tzofen.fg_contact_solve.alpha_threshold_u8,
+            tz_bundle.tzofen.fg_contact_solve,
+        )
+        self.assertTrue(bool(np.any(tz_fg_contact)))
+        tz_table_z = compute_world_z_map(tz_mid_d, tz_mid_z, tz_mid_amp, 0.0)
+        tz_bricks_z = compute_world_z_map(tz_fg_d, tz_fg_z, tz_fg_amp, 0.0)
+        tz_bricks_p95_dz = float(
+            np.percentile(np.abs(tz_bricks_z[tz_fg_contact] - tz_table_z[tz_fg_contact]), 95.0)
+        )
+        self.assertLessEqual(
+            tz_bricks_p95_dz,
+            THRESHOLDS.max_live_contact_p95_dz_world,
+            f"tzofen_brick_table.fg bricks float off steel tabletop (p95 |ΔZ| = {tz_bricks_p95_dz:.2f})!",
+        )
 
 
 if __name__ == "__main__":

@@ -113,6 +113,9 @@ export function describeUiElement(el) {
   const infoDrawer = target.closest('#info-drawer');
   if (infoDrawer && !infoDrawer.classList.contains('open')) return null;
 
+  const spatialSidebar = target.closest('#spatial-sidebar');
+  if (spatialSidebar && spatialSidebar.classList.contains('collapsed')) return null;
+
   const cs = window.getComputedStyle(target);
   if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity || '1') < 0.05) {
     return null;

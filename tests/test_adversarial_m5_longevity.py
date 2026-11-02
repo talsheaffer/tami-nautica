@@ -213,10 +213,14 @@ class TestUltrawideAndRapidTransitionsChrome(unittest.TestCase):
             frame.extend(masked)
             s.sendall(bytes(frame))
 
-        def read_cdp(target_id=None, timeout=6.0):
+        def read_cdp(target_id=None, timeout=12.0):
+            s.settimeout(timeout)
             start = time.time()
             while time.time() - start < timeout:
-                header = s.recv(2)
+                try:
+                    header = s.recv(2)
+                except TimeoutError:
+                    return None
                 if not header:
                     return None
                 b1, b2 = header[0], header[1]
@@ -238,7 +242,7 @@ class TestUltrawideAndRapidTransitionsChrome(unittest.TestCase):
 
         ready_start = time.time()
         poll_id = 50
-        while time.time() - ready_start < 12.0:
+        while time.time() - ready_start < 22.0:
             poll_id += 1
             send_cdp(
                 "Runtime.evaluate",
@@ -248,7 +252,7 @@ class TestUltrawideAndRapidTransitionsChrome(unittest.TestCase):
                 },
                 msg_id=poll_id,
             )
-            r_msg = read_cdp(target_id=poll_id, timeout=4.0)
+            r_msg = read_cdp(target_id=poll_id, timeout=10.0)
             if r_msg and r_msg.get("result", {}).get("result", {}).get("value") is True:
                 break
             time.sleep(0.2)

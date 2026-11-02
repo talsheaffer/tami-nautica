@@ -67,8 +67,16 @@ class TestBetaConfigSSOT(unittest.TestCase):
         for new_scene in (
             "scroll_palm_world",
             "humpty_dumpty_bundle",
+            "humpty_dumpty_booth",
             "tzofen_brick_table",
             "herzliya_tree_canopy",
+            "bene_beitcha_scroll_foot",
+            "purim_costume_1966",
+            "vitrine_keys_pen",
+            "herzliya_lawn_carpet",
+            "bar_giora_bedroom",
+            "paris_cite_white_table",
+            "toddler_tami_1958",
         ):
             self.assertIn(new_scene, restored.valid_scene_ids)
 
@@ -610,8 +618,14 @@ class TestBetaFeedbackHttpAndChromeE2E(unittest.TestCase):
                 const gyroOn = await sm.enableGyroscope();
                 const gyroOff = await sm.enableGyroscope();
 
-                // 2. Verify UI Element Box-Selection over #gyro-toggle
+                // 2. Verify UI Element Box-Selection over #gyro-toggle (inside collapsible #spatial-sidebar)
+                const sidebarEl = document.getElementById('spatial-sidebar');
+                if (sidebarEl) {
+                    sidebarEl.style.transition = 'none';
+                    document.getElementById('sidebar-toggle-btn').click();
+                }
                 const gyroBtn = document.getElementById('gyro-toggle');
+                gyroBtn.scrollIntoView({ block: 'center', behavior: 'instant' });
                 const gr = gyroBtn.getBoundingClientRect();
                 bf.startHighlightMode();
                 bf._updateLiveHoverInspector(gr.left + gr.width / 2, gr.top + gr.height / 2);
@@ -620,6 +634,9 @@ class TestBetaFeedbackHttpAndChromeE2E(unittest.TestCase):
                 bf.authorInput.value = 'טל';
                 bf.commentInput.value = 'בדיקת סימון כפתור ג׳יירו בממשק';
                 await bf.submitFeedbackEntry();
+                if (sidebarEl && !sidebarEl.classList.contains('collapsed')) {
+                    document.getElementById('sidebar-close-btn').click();
+                }
 
                 // 3. Verify 3D Spatial Region Highlight + Pin Reprojection
                 sm.setCameraPose({ x: 40, y: 10, z: 360, yawDeg: -8, pitchDeg: 3 }, true);

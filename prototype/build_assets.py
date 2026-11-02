@@ -1858,6 +1858,12 @@ def run_pipeline(
                 *spec.fg_overlays,
                 *spec.mid_overlays,
                 *(ov for el in spec.extra_layers for ov in el.overlays),
+                *(
+                    item.overlay
+                    for el in spec.extra_layers
+                    if el.ceiling_mirror_reflection is not None
+                    for item in el.ceiling_mirror_reflection.items
+                ),
             ]
             if any(o.extraction_mode == "sam_crop" for o in all_overlays):
                 need_sam = True

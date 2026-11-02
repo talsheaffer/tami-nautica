@@ -1062,9 +1062,9 @@ def default_scroll_humpty_bundle_config() -> ScrollHumptyBundleConfig:
 
     humpty_spec = HumptyDumptyBundleSceneSpec(
         scene_id="humpty_dumpty_bundle",
-        title_he="המפטי דמפטי בצרור הבד והחוטים — פסל עטוף על משטח הגלריה",
-        short_label_he="המפטי דמפטי בצרור",
-        icon="🥚",
+        title_he="צרור עטוף בבד וחבל — פסל על משטח הגלריה",
+        short_label_he="צרור עטוף בבד וחבל",
+        icon="",
         asset_prefix="scene15_humpty_bundle",
         source_relpath="prototype/assets/sources/humpty_dumpty_bundle_clean.png",
         source_scale=1.12,

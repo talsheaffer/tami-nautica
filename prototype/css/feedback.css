@@ -9,8 +9,6 @@
   --text-primary: #F4EFEA;
   --text-secondary: #A9A29A;
   --panel-border: rgba(244, 239, 234, 0.14);
-  --font-heading: 'Heebo', 'Assistant', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-body: 'Heebo', 'Assistant', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
 .beta-pill-tag {
@@ -24,23 +22,22 @@
   letter-spacing: 0.5px;
 }
 
-/* Secret Family Workspace Switcher Pill Bar (in-flow inside .bottom-dock) */
+/* Secret Family Workspace Switcher Pill Bar */
 .beta-hub-bar {
   position: relative;
   z-index: 16;
   background: rgba(18, 20, 24, 0.88);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(196, 155, 113, 0.42);
-  border-radius: 999px;
-  padding: 5px 8px;
+  border: 1px solid rgba(196, 155, 113, 0.36);
+  border-radius: 12px;
+  padding: 6px 8px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 5px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.52);
   pointer-events: auto;
-  max-width: calc(100vw - 24px);
-  overflow-x: auto;
+  max-width: 100%;
 }
 
 .beta-hub-bar .hub-secret-pill {

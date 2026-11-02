@@ -11,21 +11,30 @@ export const EXHIBITION_GROUPS = Object.freeze([
   Object.freeze({
     id: 'portal_hub',
     titleHe: 'שער התערוכות (קיר המדפים)',
-    shortTabHe: '⊞ קיר המדפים',
+    shortTabHe: 'קיר המדפים',
     sceneIds: Object.freeze(['shelf_portal'])
   }),
   Object.freeze({
     id: 'binyamin_plan_b',
     titleHe: 'גלריה בנימין · אולי שם יהיה יותר טוב / Plan B',
-    shortTabHe: '🕳️ גלריה בנימין · Plan B',
-    sceneIds: Object.freeze(['paper_capsules', 'tzofen_brick_table', 'plan_b_pipe_v3', 'plan_b_pipe'])
+    shortTabHe: 'גלריה בנימין · Plan B',
+    sceneIds: Object.freeze([
+      'paper_capsules',
+      'tzofen_brick_table',
+      'plan_b_pipe_v3',
+      'plan_b_pipe'
+    ])
   }),
   Object.freeze({
     id: 'bene_beitcha_home',
     titleHe: 'בנה ביתך ודגם דניה · בית וארכיטקטורה',
-    shortTabHe: '🏛️ בנה ביתך ודניה',
+    shortTabHe: 'בנה ביתך ודניה',
     sceneIds: Object.freeze([
       'bene_beitcha',
+      'bene_beitcha_scroll_foot',
+      'purim_costume_1966',
+      'vitrine_keys_pen',
+      'humpty_dumpty_booth',
       'humpty_dumpty_bundle',
       'denya_model',
       'denya_living_room',
@@ -34,26 +43,34 @@ export const EXHIBITION_GROUPS = Object.freeze([
   }),
   Object.freeze({
     id: 'wandering_drawings',
-    titleHe: 'שיטוט ברישום · רישומים על נייר וקיר',
-    shortTabHe: '✏️ שיטוט ברישום',
-    sceneIds: Object.freeze(['wandering_drawing_1', 'scroll_palm_world', 'wandering_drawing'])
+    titleHe: 'שיטוט ברישום · רישומים על נייר',
+    shortTabHe: 'שיטוט ברישום',
+    sceneIds: Object.freeze([
+      'wandering_drawing_1',
+      'scroll_palm_world',
+      'wandering_drawing'
+    ])
   }),
   Object.freeze({
     id: 'family_places',
-    titleHe: 'בית פריד בהרצליה ומרסיי · משפחה וזיכרון',
-    shortTabHe: '🏡 בית פריד ומרסיי',
+    titleHe: 'בתים, ילדות ומרסיי · משפחה וזיכרון',
+    shortTabHe: 'בתים, ילדות ומרסיי',
     sceneIds: Object.freeze([
       'fried_yard_installation',
       'fried_house_railing',
       'fried_table_hybrid',
+      'herzliya_lawn_carpet',
       'herzliya_tree_canopy',
+      'bar_giora_bedroom',
+      'paris_cite_white_table',
+      'toddler_tami_1958',
       'marseille_mirror'
     ])
   }),
   Object.freeze({
     id: 'archive_versions',
     titleHe: 'ארכיון גרסאות (v1)',
-    shortTabHe: '🗂️ ארכיון v1',
+    shortTabHe: 'ארכיון v1',
     sceneIds: Object.freeze(['plan_b_pipe_v1', 'marseille_mirror_v1'])
   })
 ]);
@@ -62,7 +79,7 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'cubby_wandering_1',
     targetSceneId: 'wandering_drawing_1',
-    labelHe: '✏️ שיטוט 1 · רישום משולב על נייר',
+    labelHe: 'שיטוט 1 · רישום משולב על נייר',
     innerBoxPx: Object.freeze([459.73, 56.52, 551.16, 161.88]),
     worldZ: -284.0,
     recessDepth: 160.0,
@@ -77,7 +94,7 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'cubby_capsules',
     targetSceneId: 'paper_capsules',
-    labelHe: '🫧 קפסולות נייר · אולי שם יהיה יותר טוב',
+    labelHe: 'קפסולות נייר · אולי שם יהיה יותר טוב',
     innerBoxPx: Object.freeze([763.55, 55.37, 857.86, 161.88]),
     worldZ: -284.0,
     recessDepth: 160.0,
@@ -92,7 +109,7 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'cubby_wandering_2',
     targetSceneId: 'wandering_drawing',
-    labelHe: '✏️ שיטוט 2 · איים מרחפים',
+    labelHe: 'שיטוט 2 · איים מרחפים',
     innerBoxPx: Object.freeze([531.08, 168.86, 625.39, 267.88]),
     worldZ: -284.0,
     recessDepth: 160.0,
@@ -107,7 +124,7 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'cubby_bene_beitcha',
     targetSceneId: 'bene_beitcha',
-    labelHe: '🏛️ בנה ביתך · מוזיאון רמת גן',
+    labelHe: 'בנה ביתך · מוזיאון רמת גן',
     innerBoxPx: Object.freeze([835.48, 168.28, 929.79, 267.88]),
     worldZ: -284.0,
     recessDepth: 160.0,
@@ -122,7 +139,7 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'cubby_fried_house',
     targetSceneId: 'fried_house_railing',
-    labelHe: '🪨 בית פריד · כרית ואבן על הרמפה',
+    labelHe: 'בית פריד · כרית ואבן על הרמפה',
     innerBoxPx: Object.freeze([611.06, 275.43, 703.65, 367.54]),
     worldZ: -284.0,
     recessDepth: 160.0,
@@ -137,7 +154,7 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'cubby_denya_model',
     targetSceneId: 'denya_model',
-    labelHe: '🏠 דגם בית דניה · קרטון ועץ',
+    labelHe: 'דגם בית דניה · קרטון ועץ',
     innerBoxPx: Object.freeze([762.4, 274.86, 857.86, 367.54]),
     worldZ: -284.0,
     recessDepth: 160.0,
@@ -152,7 +169,7 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'cubby_plan_b_pipe',
     targetSceneId: 'plan_b_pipe',
-    labelHe: '🕳️ צינור Plan B · מלט ונייר',
+    labelHe: 'צינור Plan B · מלט ונייר',
     innerBoxPx: Object.freeze([838.36, 431.55, 930.94, 521.36]),
     worldZ: -284.0,
     recessDepth: 160.0
@@ -160,7 +177,7 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'cubby_plan_b_v3',
     targetSceneId: 'plan_b_pipe_v3',
-    labelHe: '🕳️ Plan B · תמי ויערה באור הדיפוזי',
+    labelHe: 'Plan B · תמי ויערה באור הדיפוזי',
     innerBoxPx: Object.freeze([716.94, 532.37, 902.75, 642.91]),
     worldZ: -284.0,
     recessDepth: 160.0,
@@ -175,7 +192,7 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'cubby_marseille',
     targetSceneId: 'marseille_mirror',
-    labelHe: '🪞 מרסיי · מתחת לתקרת המראה',
+    labelHe: 'מרסיי · מתחת לתקרת המראה',
     innerBoxPx: Object.freeze([716.94, 721.33, 902.75, 836.48]),
     worldZ: -284.0,
     recessDepth: 160.0,
@@ -193,8 +210,8 @@ const DEFAULT_YARD_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'yard_railing_portal',
     targetSceneId: 'fried_house_railing',
-    labelHe: '🏡 תמי שפר ואראלה סדן על המעקה הירוק בבית פריד',
-    shortBadgeHe: '🏡 תמי ואראלה במעקה',
+    labelHe: 'תמי שפר ואראלה סדן על המעקה הירוק בבית פריד',
+    shortBadgeHe: 'תמי ואראלה במעקה',
     showMicroBadge: false,
     innerBoxPx: Object.freeze([515.0, 468.0, 705.0, 788.0]),
     worldZ: -303.44,
@@ -225,8 +242,8 @@ const DEFAULT_DENYA_LIVING_PORTAL_SHELVES = Object.freeze([
     id: 'portal_denya_dining_wandering_2',
     targetSceneId: 'wandering_drawing',
     portalMode: 'aperture',
-    labelHe: '✏️ ׳שיטוט 2׳ על קיר הסלון · איים מרחפים',
-    shortBadgeHe: '✏️ שיטוט 2',
+    labelHe: '׳שיטוט 2׳ על קיר הסלון · איים מרחפים',
+    shortBadgeHe: 'שיטוט 2',
     innerBoxPx: Object.freeze([626.26, 221.46, 685.93, 258.65]),
     worldZ: -379.39,
     recessDepth: 96.0,
@@ -240,8 +257,8 @@ const DEFAULT_DENYA_LIVING_PORTAL_SHELVES = Object.freeze([
     id: 'portal_denya_to_couch',
     targetSceneId: 'denya_couch_guitar',
     portalMode: 'crossfade',
-    labelHe: '🎸 ספת הסלון בדניה · טל, יערה וכרמל עם הגיטרה',
-    shortBadgeHe: '🎸 לספה והגיטרה',
+    labelHe: 'ספת הסלון בדניה · טל, יערה וכרמל עם הגיטרה',
+    shortBadgeHe: 'לספה והגיטרה',
     innerBoxPx: Object.freeze([435.0, 266.0, 815.0, 422.0]),
     worldZ: -378.93,
     recessDepth: 0.0,
@@ -259,8 +276,8 @@ const DEFAULT_DENYA_COUCH_PORTAL_SHELVES = Object.freeze([
     id: 'portal_denya_couch_wandering_2',
     targetSceneId: 'wandering_drawing',
     portalMode: 'aperture',
-    labelHe: '✏️ ׳שיטוט 2׳ על קיר הסלון · איים מרחפים',
-    shortBadgeHe: '✏️ שיטוט 2',
+    labelHe: '׳שיטוט 2׳ על קיר הסלון · איים מרחפים',
+    shortBadgeHe: 'שיטוט 2',
     innerBoxPx: Object.freeze([623.0, 163.0, 749.0, 237.0]),
     worldZ: -340.0,
     recessDepth: 96.0,
@@ -274,8 +291,8 @@ const DEFAULT_DENYA_COUCH_PORTAL_SHELVES = Object.freeze([
     id: 'portal_denya_back_to_dining',
     targetSceneId: 'denya_living_room',
     portalMode: 'reverse_transition',
-    labelHe: '🍽️ מבט משולחן האוכל · תמי, גדי והמשפחה',
-    shortBadgeHe: '🍽️ לשולחן האוכל',
+    labelHe: 'מבט משולחן האוכל · תמי, גדי והמשפחה',
+    shortBadgeHe: 'לשולחן האוכל',
     innerBoxPx: Object.freeze([540.0, 580.0, 760.0, 648.0]),
     worldZ: -305.12,
     recessDepth: 0.0,
@@ -292,8 +309,8 @@ const DEFAULT_FRIED_HOUSE_PORTAL_SHELVES = Object.freeze([
     id: 'fried_house_window_wandering_1',
     targetSceneId: 'wandering_drawing_1',
     portalMode: 'aperture',
-    labelHe: '🪟 חלון העץ בבית פריד · שער אל ׳שיטוט ברישום 1׳',
-    shortBadgeHe: '✏️ שיטוט 1 בחלון',
+    labelHe: 'חלון העץ בבית פריד · שער אל ׳שיטוט ברישום 1׳',
+    shortBadgeHe: 'שיטוט 1 בחלון',
     innerBoxPx: Object.freeze([-203.0, 219.0, 125.0, 446.0]),
     worldZ: -221.06,
     recessDepth: 118.0,
@@ -320,8 +337,8 @@ const DEFAULT_WANDERING1_PORTAL_SHELVES = Object.freeze([
     id: 'portal_wandering1_scroll_world',
     targetSceneId: 'scroll_palm_world',
     portalMode: 'aperture',
-    labelHe: '🌴 עולם הדקל והמוטות בתוך המגילה · ׳מגילה וכף רגל׳',
-    shortBadgeHe: '🌴 לתוך המגילה',
+    labelHe: 'עולם הדקל והמוטות בתוך המגילה · ׳מגילה וכף רגל׳',
+    shortBadgeHe: 'לתוך המגילה',
     innerBoxPx: Object.freeze([1070.0, 408.0, 1258.0, 734.0]),
     worldZ: -80.0,
     recessDepth: 135.0,
@@ -346,15 +363,95 @@ const DEFAULT_TZOFEN_PORTAL_SHELVES = Object.freeze([
     id: 'portal_tzofen_tree_window',
     targetSceneId: 'herzliya_tree_canopy',
     portalMode: 'aperture',
-    labelHe: '🌳 מסגרת החלון הלבנה ב׳צופן׳ · שער אל צמרת העץ בהרצליה',
-    shortBadgeHe: '🌳 חלון אל העץ',
+    labelHe: 'מסגרת החלון הלבנה ב׳צופן׳ · שער אל צמרת העץ בהרצליה',
+    shortBadgeHe: 'חלון אל העץ',
     innerBoxPx: Object.freeze([975.0, 146.0, 1126.0, 250.0]),
-    worldZ: -289.36,
+    worldZ: -262.5,
     recessDepth: 115.0,
     embedDiorama: true,
     showFrame: false,
     restFrameOpacity: 0.0,
     frameRenderOrder: 5.8
+  })
+]);
+
+const DEFAULT_SCROLL_FOOT_PORTAL_SHELVES = Object.freeze([
+  Object.freeze({
+    id: 'portal_scroll_foot_purim_1966',
+    targetSceneId: 'purim_costume_1966',
+    portalMode: 'crossfade',
+    labelHe: 'תמי ועדה מחופשות בפורים (~1966) · לחצו על התצלום להיכנס לגינה',
+    shortBadgeHe: 'אל פורים 1966',
+    showMicroBadge: false,
+    innerBoxPx: Object.freeze([706.0, 774.0, 883.0, 939.0]),
+    worldZ: -300.82,
+    recessDepth: 0.0,
+    embedDiorama: false,
+    showFrame: false,
+    restFrameOpacity: 0.0,
+    frameRenderOrder: 6.8,
+    occluder: Object.freeze({
+      texture: 'assets/scenes/scene17_scroll_foot_occluder.png',
+      depthTexture: 'assets/scenes/scene17_scroll_foot_occluder_depth.png',
+      worldZ: -350.0,
+      depthAmplitude: 165.0,
+      pinMarginUv: 0.0,
+      segmentsX: 192,
+      segmentsY: 128,
+      renderOrder: 7.8,
+      fullInnerCanvas: true,
+      alphaHitThreshold: 24,
+      innerBoxPx: Object.freeze([794.0, 757.0, 845.0, 818.0]),
+      labelHe: 'כף הרגל המפוסלת המצמידה את פינת התצלום',
+      coverageRatio: 0.6416,
+      locksPortal: true,
+      companionFall: Object.freeze({
+        extraLayerId: 'scroll_black_rod',
+        pivotInnerPx: Object.freeze([836.8, 791.0]),
+        pivotWorldZ: -308.588,
+        fallAngleDeg: -95.0,
+        shiftWorldX: 0.0,
+        shiftWorldY: 0.0
+      })
+    })
+  })
+]);
+
+const DEFAULT_BAR_GIORA_PORTAL_SHELVES = Object.freeze([
+  Object.freeze({
+    id: 'portal_bar_giora_vitrine',
+    targetSceneId: 'vitrine_keys_pen',
+    portalMode: 'crossfade',
+    labelHe: 'תיבת הוויטרינה מ׳בנה ביתך׳ · לחצו להתקרבות וסיבוב אל תוך הוויטרינה',
+    shortBadgeHe: 'אל הוויטרינה',
+    showMicroBadge: false,
+    innerBoxPx: Object.freeze([492.0, 361.0, 618.0, 487.0]),
+    worldZ: -325.98,
+    recessDepth: 0.0,
+    embedDiorama: false,
+    showFrame: false,
+    restFrameOpacity: 0.0,
+    frameRenderOrder: 5.8,
+    rotationDeg: -130.0,
+    flightRollDeg: -130.0
+  })
+]);
+
+const DEFAULT_PARIS_TABLE_PORTAL_SHELVES = Object.freeze([
+  Object.freeze({
+    id: 'portal_paris_table_tami_1958',
+    targetSceneId: 'toddler_tami_1958',
+    portalMode: 'crossfade',
+    labelHe: 'תמי הפעוטה (1958) · לחצו על התצלום שעל השולחן הלבן להתקרבות',
+    shortBadgeHe: 'אל תמי 1958',
+    showMicroBadge: false,
+    innerBoxPx: Object.freeze([420.0, 353.0, 667.0, 390.0]),
+    worldZ: -302.12,
+    recessDepth: 0.0,
+    embedDiorama: false,
+    showFrame: false,
+    restFrameOpacity: 0.0,
+    frameRenderOrder: 6.8
   })
 ]);
 
@@ -446,6 +543,8 @@ export const SCENE_GEOMETRY_SPEC = Object.freeze({
   portalFrameBevelOffsetZ: -0.6,
   portalBaseRenderOrder: 2,
   shelfFgRenderOrder: 15,
+  portalDioramaSegmentsX: 48,
+  portalDioramaSegmentsY: 32,
   portalDustRenderOrder: 13.5,
   portalOccluderDefaultAlphaHit: 24,
   touchSyntheticMouseGuardMs: 2500,
@@ -460,7 +559,10 @@ export const SCENE_GEOMETRY_SPEC = Object.freeze({
   denyaCouchPortalShelves: DEFAULT_DENYA_COUCH_PORTAL_SHELVES,
   friedHousePortalShelves: DEFAULT_FRIED_HOUSE_PORTAL_SHELVES,
   wandering1PortalShelves: DEFAULT_WANDERING1_PORTAL_SHELVES,
-  tzofenPortalShelves: DEFAULT_TZOFEN_PORTAL_SHELVES
+  tzofenPortalShelves: DEFAULT_TZOFEN_PORTAL_SHELVES,
+  scrollFootPortalShelves: DEFAULT_SCROLL_FOOT_PORTAL_SHELVES,
+  barGioraPortalShelves: DEFAULT_BAR_GIORA_PORTAL_SHELVES,
+  parisTablePortalShelves: DEFAULT_PARIS_TABLE_PORTAL_SHELVES
 });
 
 /**
@@ -724,11 +826,14 @@ uniform float uOpacity;
 uniform float uAlphaCutout;
 uniform vec3 uClearColor;
 uniform float uFadeToClear;
+uniform float uClipUvMinX;
+uniform float uClipUvMaxX;
 varying vec2 vUv;
 #include <clipping_planes_pars_fragment>
 
 void main() {
     #include <clipping_planes_fragment>
+    if (vUv.x < uClipUvMinX || vUv.x > uClipUvMaxX) { discard; }
     vec4 texel = texture2D(uColorMap, vUv);
     if (uAlphaCutout > 0.0 && texel.a < uAlphaCutout) { discard; }
     vec3 rgb = (uFadeToClear > 0.0) ? mix(texel.rgb, uClearColor, uFadeToClear) : texel.rgb;
@@ -989,7 +1094,8 @@ function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
       y: candY,
       z: clampedZ,
       yawDeg: candYawDeg,
-      pitchDeg: candPitchDeg
+      pitchDeg: candPitchDeg,
+      rollDeg: typeof rawPose.rollDeg === 'number' ? rawPose.rollDeg : 0
     };
   }
 
@@ -1082,7 +1188,8 @@ function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
     y: refY + (candY - refY) * loV,
     z: clampedZ,
     yawDeg: finalYawDeg,
-    pitchDeg: candPitchDeg * loV
+    pitchDeg: candPitchDeg * loV,
+    rollDeg: typeof rawPose.rollDeg === 'number' ? rawPose.rollDeg : 0
   };
 }
 
@@ -1113,7 +1220,7 @@ export class SpatialSceneManager {
     this.onPortalUnlock =
       typeof options.onPortalUnlock === 'function' ? options.onPortalUnlock : () => {};
 
-    const assetVer = 'v=neural31';
+    const assetVer = 'v=neural34';
     this._assetVer = assetVer;
     this.sceneConfigs = {
       shelf_portal: {
@@ -1600,7 +1707,7 @@ export class SpatialSceneManager {
       },
       humpty_dumpty_bundle: {
         id: 'humpty_dumpty_bundle',
-        title: 'האמפטי דאמפטי בצרור הבד והחוטים — פסל עטוף על משטח הגלריה',
+        title: 'צרור עטוף בבד וחבל — פסל עטוף על משטח הגלריה',
         bgTexture: `assets/scenes/scene15_humpty_bundle_bg_inpainted.jpg?${assetVer}`,
         depthTexture: `assets/scenes/scene15_humpty_bundle_bg_depth.png?${assetVer}`,
         midTexture: `assets/scenes/scene15_humpty_bundle_mid.png?${assetVer}`,
@@ -1636,15 +1743,68 @@ export class SpatialSceneManager {
         particleCount: 55,
         hasReflection: false
       },
+      humpty_dumpty_booth: {
+        id: 'humpty_dumpty_booth',
+        title: 'המפטי דמפטי בתא האפור — סעודת יחיד בסטודיו',
+        bgTexture: `assets/scenes/scene16_humpty_booth_bg_inpainted.jpg?${assetVer}`,
+        depthTexture: `assets/scenes/scene16_humpty_booth_depth.png?${assetVer}`,
+        midTexture: `assets/scenes/scene16_humpty_booth_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene16_humpty_booth_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 175.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 224,
+        midSegmentsY: 150,
+        midDepthTest: false,
+        midDepthWrite: false,
+        fgTexture: `assets/scenes/scene16_humpty_booth_fg.png?${assetVer}`,
+        fgDepthTexture: `assets/scenes/scene16_humpty_booth_fg_depth.png?${assetVer}`,
+        fgDepthAmplitude: 195.0,
+        fgPinMarginUv: 0.0,
+        fgSegmentsX: 224,
+        fgSegmentsY: 150,
+        fgDepthTest: false,
+        fgDepthWrite: false,
+        fgExpanded: false,
+        fgBleedEdges: { top: true, bottom: true, guardMinZ: 210.0 },
+        boreSightAtRest: true,
+        bgZ: -350.0,
+        midZ: -350.0,
+        fgZ: -350.0,
+        minInnerScale: 1.94,
+        bgSegmentsX: 224,
+        bgSegmentsY: 150,
+        roomDepthAmplitude: 145.0,
+        initialCameraY: -6.0,
+        initialCameraZ: 525.0,
+        minCameraZ: -90.0,
+        maxCameraZ: 685.0,
+        maxYawDeg: 22.0,
+        maxPitchDeg: 15.0,
+        maxStrafeX: 125.0,
+        maxStrafeY: 78.0,
+        dollySpeedMult: 1.32,
+        midRenderOrder: 6,
+        fgRenderOrder: 8,
+        particleColor: 0xE2D7C5,
+        particleCount: 55,
+        hasReflection: false
+      },
       tzofen_brick_table: {
         id: 'tzofen_brick_table',
         title: '׳צופן׳ (2011) — שולחן הברזל ו-380 לבני הבוץ עם חלון אל צמרת העץ',
         bgTexture: `assets/scenes/scene12_tzofen_bg_inpainted.jpg?${assetVer}`,
         depthTexture: `assets/scenes/scene12_tzofen_depth.png?${assetVer}`,
         midTexture: `assets/scenes/scene12_tzofen_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene12_tzofen_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 200.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 224,
+        midSegmentsY: 150,
+        midDepthTest: false,
+        midDepthWrite: false,
         fgTexture: `assets/scenes/scene12_tzofen_fg.png?${assetVer}`,
         fgDepthTexture: `assets/scenes/scene12_tzofen_fg_depth.png?${assetVer}`,
-        fgDepthAmplitude: 175.0,
+        fgDepthAmplitude: 230.0,
         fgPinMarginUv: 0.0,
         fgSegmentsX: 224,
         fgSegmentsY: 150,
@@ -1652,13 +1812,13 @@ export class SpatialSceneManager {
         fgDepthWrite: false,
         fgExpanded: false,
         boreSightAtRest: true,
-        bgZ: -350.0,
-        midZ: -260.0,
-        fgZ: -350.0,
+        bgZ: -340.0,
+        midZ: -340.0,
+        fgZ: -340.0,
         minInnerScale: 1.88,
         bgSegmentsX: 224,
         bgSegmentsY: 150,
-        roomDepthAmplitude: 128.0,
+        roomDepthAmplitude: 155.0,
         initialCameraY: 52.0,
         initialCameraZ: 755.0,
         minCameraZ: -85.0,
@@ -1719,6 +1879,423 @@ export class SpatialSceneManager {
         fgRenderOrder: 3,
         particleColor: 0xDDE8C6,
         particleCount: 70,
+        hasReflection: false
+      },
+      bene_beitcha_scroll_foot: {
+        id: 'bene_beitcha_scroll_foot',
+        title: 'מגילה וכף רגל — תצלום פורים מוצמד מתחת לכף הרגל (׳בנה ביתך׳, 2026)',
+        bgTexture: `assets/scenes/scene17_scroll_foot_bg_inpainted.jpg?${assetVer}`,
+        depthTexture: `assets/scenes/scene17_scroll_foot_depth.png?${assetVer}`,
+        midTexture: `assets/scenes/scene17_scroll_foot_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene17_scroll_foot_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 165.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 224,
+        midSegmentsY: 150,
+        midDepthTest: false,
+        midDepthWrite: false,
+        fgTexture: `assets/scenes/scene17_scroll_foot_fg.png?${assetVer}`,
+        fgExpanded: false,
+        boreSightAtRest: true,
+        bgZ: -350.0,
+        midZ: -350.0,
+        fgZ: -180.0,
+        minInnerScale: 1.94,
+        bgSegmentsX: 224,
+        bgSegmentsY: 150,
+        roomDepthAmplitude: 118.0,
+        initialCameraY: -8.0,
+        initialCameraZ: 535.0,
+        minCameraZ: -90.0,
+        maxCameraZ: 695.0,
+        maxYawDeg: 23.0,
+        maxPitchDeg: 16.0,
+        maxStrafeX: 135.0,
+        maxStrafeY: 85.0,
+        dollySpeedMult: 1.30,
+        midRenderOrder: 6,
+        fgRenderOrder: 9,
+        extraLayers: [
+          {
+            id: 'pinned_purim_photo',
+            labelHe: 'תצלום פורים הישן (תמי ועדה, ~1966) מוצמד מתחת לכף הרגל',
+            texture: `assets/scenes/scene17_scroll_foot_photo.png?${assetVer}`,
+            depthTexture: `assets/scenes/scene17_scroll_foot_photo_depth.png?${assetVer}`,
+            zPos: -350.0,
+            depthAmplitude: 165.0,
+            pinMarginUv: 0.0,
+            segmentsX: 192,
+            segmentsY: 128,
+            renderOrder: 6.5,
+            expanded: false,
+            baseOpacity: 1.0,
+            excursionBoost: 0.0,
+            depthTest: false,
+            depthWrite: false
+          },
+          {
+            id: 'scroll_black_rod',
+            labelHe: 'המוט השחור הנטוי על המגילה',
+            texture: `assets/scenes/scene17_scroll_foot_rod.png?${assetVer}`,
+            depthTexture: `assets/scenes/scene17_scroll_foot_rod_depth.png?${assetVer}`,
+            zPos: -350.0,
+            depthAmplitude: 165.0,
+            pinMarginUv: 0.0,
+            segmentsX: 192,
+            segmentsY: 128,
+            renderOrder: 7.2,
+            expanded: false,
+            baseOpacity: 1.0,
+            excursionBoost: 0.0,
+            depthTest: false,
+            depthWrite: false
+          }
+        ],
+        particleColor: 0xE4DDD2,
+        particleCount: 52,
+        hasReflection: false,
+        portalShelves: []
+      },
+      purim_costume_1966: {
+        id: 'purim_costume_1966',
+        title: 'תמי ועדה בפורים עם סלסלת הקש (~1966)',
+        bgTexture: `assets/scenes/scene18_purim_1966_bg_inpainted.jpg?${assetVer}`,
+        depthTexture: `assets/scenes/scene18_purim_1966_depth.png?${assetVer}`,
+        midTexture: `assets/scenes/scene18_purim_1966_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene18_purim_1966_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 165.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 224,
+        midSegmentsY: 150,
+        midDepthTest: false,
+        midDepthWrite: false,
+        fgTexture: `assets/scenes/scene18_purim_1966_fg.png?${assetVer}`,
+        fgExpanded: false,
+        boreSightAtRest: true,
+        bgZ: -350.0,
+        midZ: -350.0,
+        fgZ: -180.0,
+        minInnerScale: 1.94,
+        bgSegmentsX: 224,
+        bgSegmentsY: 150,
+        roomDepthAmplitude: 108.0,
+        initialCameraY: -4.0,
+        initialCameraZ: 530.0,
+        minCameraZ: -85.0,
+        maxCameraZ: 690.0,
+        maxYawDeg: 22.0,
+        maxPitchDeg: 15.5,
+        maxStrafeX: 130.0,
+        maxStrafeY: 82.0,
+        dollySpeedMult: 1.30,
+        midRenderOrder: 6,
+        fgRenderOrder: 8,
+        particleColor: 0xEAD8BE,
+        particleCount: 58,
+        hasReflection: false
+      },
+      herzliya_lawn_carpet: {
+        id: 'herzliya_lawn_carpet',
+        title: 'דשא הרצליה ו׳הגלגול הבא׳ — טל וגיא מול שטיח האדמה המתגלגל',
+        bgTexture: `assets/scenes/scene19_herz_carpet_bg_inpainted.jpg?${assetVer}`,
+        depthTexture: `assets/scenes/scene19_herz_carpet_depth.png?${assetVer}`,
+        midTexture: `assets/scenes/scene19_herz_carpet_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene19_herz_carpet_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 165.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 224,
+        midSegmentsY: 150,
+        midDepthTest: false,
+        midDepthWrite: false,
+        fgTexture: `assets/scenes/scene19_herz_carpet_fg.png?${assetVer}`,
+        fgExpanded: false,
+        boreSightAtRest: true,
+        bgZ: -350.0,
+        midZ: -350.0,
+        fgZ: -180.0,
+        minInnerScale: 1.94,
+        bgSegmentsX: 224,
+        bgSegmentsY: 150,
+        roomDepthAmplitude: 114.0,
+        initialCameraY: -6.0,
+        initialCameraZ: 535.0,
+        portraitInitialYawDeg: 21.5,
+        minCameraZ: -85.0,
+        maxCameraZ: 695.0,
+        maxYawDeg: 26.0,
+        maxPitchDeg: 16.0,
+        maxStrafeX: 135.0,
+        maxStrafeY: 85.0,
+        dollySpeedMult: 1.30,
+        midRenderOrder: 6,
+        fgRenderOrder: 8,
+        carpetUnrollRig: {
+          trailLayerId: 'carpet_earth_trail',
+          rollLayerId: 'carpet_roll',
+          clipUvMinX: 0.0,
+          initialClipUvMaxX: 0.156667,
+          unrolledClipUvMaxX: 0.876667,
+          rollShiftInnerPxX: 1080.0,
+          rollShiftInnerPxY: 0.0,
+          rollShiftWorldZ: 0.0,
+          durationMs: 1450
+        },
+        extraLayers: [
+          {
+            id: 'carpet_earth_trail',
+            labelHe: 'שובל האדמה המתמשך על הדשא — ׳הגלגול הבא׳',
+            texture: `assets/scenes/scene19_herz_carpet_earth_full.png?${assetVer}`,
+            depthTexture: `assets/scenes/scene19_herz_carpet_earth_full_depth.png?${assetVer}`,
+            zPos: -350.0,
+            depthAmplitude: 165.0,
+            pinMarginUv: 0.0,
+            segmentsX: 224,
+            segmentsY: 150,
+            renderOrder: 7.2,
+            expanded: false,
+            baseOpacity: 1.0,
+            excursionBoost: 0.0,
+            depthTest: false,
+            depthWrite: false,
+            clipUvMinX: 0.0,
+            clipUvMaxX: 0.156667
+          },
+          {
+            id: 'carpet_roll',
+            labelHe: 'גליל השטיח והאדמה — לחצו לגלגול על הדשא',
+            texture: `assets/scenes/scene19_herz_carpet_roll.png?${assetVer}`,
+            depthTexture: `assets/scenes/scene19_herz_carpet_roll_depth.png?${assetVer}`,
+            zPos: -350.0,
+            depthAmplitude: 165.0,
+            pinMarginUv: 0.0,
+            segmentsX: 224,
+            segmentsY: 150,
+            renderOrder: 7.6,
+            expanded: false,
+            baseOpacity: 1.0,
+            excursionBoost: 0.0,
+            depthTest: false,
+            depthWrite: false
+          }
+        ],
+        particleColor: 0xE8DFC2,
+        particleCount: 60,
+        hasReflection: false
+      },
+      vitrine_keys_pen: {
+        id: 'vitrine_keys_pen',
+        title: 'תיבת הוויטרינה — מדף ורוד, עט וצרור מפתחות (׳בנה ביתך׳, 2026)',
+        bgTexture: `assets/scenes/scene20_vitrine_bg_inpainted.jpg?${assetVer}`,
+        depthTexture: `assets/scenes/scene20_vitrine_depth.png?${assetVer}`,
+        midTexture: `assets/scenes/scene20_vitrine_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene20_vitrine_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 175.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 224,
+        midSegmentsY: 150,
+        midDepthTest: false,
+        midDepthWrite: false,
+        fgTexture: `assets/scenes/scene20_vitrine_fg.png?${assetVer}`,
+        fgDepthTexture: `assets/scenes/scene20_vitrine_fg_depth.png?${assetVer}`,
+        fgDepthAmplitude: 195.0,
+        fgPinMarginUv: 0.0,
+        fgSegmentsX: 224,
+        fgSegmentsY: 150,
+        fgDepthTest: false,
+        fgDepthWrite: false,
+        fgExpanded: false,
+        boreSightAtRest: true,
+        bgZ: -350.0,
+        midZ: -350.0,
+        fgZ: -350.0,
+        minInnerScale: 1.94,
+        bgSegmentsX: 224,
+        bgSegmentsY: 150,
+        roomDepthAmplitude: 96.0,
+        initialCameraY: -4.0,
+        initialCameraZ: 525.0,
+        minCameraZ: -85.0,
+        maxCameraZ: 685.0,
+        maxYawDeg: 22.0,
+        maxPitchDeg: 15.5,
+        maxStrafeX: 125.0,
+        maxStrafeY: 80.0,
+        dollySpeedMult: 1.30,
+        midRenderOrder: 6,
+        fgRenderOrder: 8,
+        particleColor: 0xDFD5C5,
+        particleCount: 55,
+        hasReflection: false
+      },
+      bar_giora_bedroom: {
+        id: 'bar_giora_bedroom',
+        title: 'חדר השינה בבר גיורא (חיפה) — וויטרינת המפתחות והעט תלויה מתחת לציור',
+        bgTexture: `assets/scenes/scene21_bar_giora_bg_inpainted.jpg?${assetVer}`,
+        depthTexture: `assets/scenes/scene21_bar_giora_depth.png?${assetVer}`,
+        midTexture: `assets/scenes/scene21_bar_giora_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene21_bar_giora_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 175.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 224,
+        midSegmentsY: 150,
+        midDepthTest: false,
+        midDepthWrite: false,
+        fgTexture: `assets/scenes/scene21_bar_giora_fg.png?${assetVer}`,
+        fgDepthTexture: `assets/scenes/scene21_bar_giora_fg_depth.png?${assetVer}`,
+        fgDepthAmplitude: 195.0,
+        fgPinMarginUv: 0.0,
+        fgSegmentsX: 224,
+        fgSegmentsY: 150,
+        fgDepthTest: false,
+        fgDepthWrite: false,
+        fgExpanded: false,
+        fgBleedEdges: { left: true, right: true, top: true, bottom: true, guardMinZ: 210.0 },
+        boreSightAtRest: true,
+        bgZ: -350.0,
+        midZ: -350.0,
+        fgZ: -350.0,
+        minInnerScale: 2.12,
+        bgSegmentsX: 224,
+        bgSegmentsY: 150,
+        roomDepthAmplitude: 118.0,
+        initialCameraY: 0.0,
+        initialCameraZ: 470.0,
+        portraitInitialYawDeg: 7.5,
+        minCameraZ: -110.0,
+        maxCameraZ: 635.0,
+        maxYawDeg: 19.0,
+        maxPitchDeg: 14.0,
+        maxStrafeX: 72.0,
+        maxStrafeY: 48.0,
+        dollySpeedMult: 1.28,
+        midRenderOrder: 6,
+        fgRenderOrder: 8,
+        extraLayers: [
+          {
+            id: 'mounted_wall_vitrine',
+            labelHe: 'תיבת הוויטרינה התלויה על קיר החדר (מסובבת 130° להתאמת אור החלון)',
+            texture: `assets/scenes/scene21_bar_giora_vitrine.png?${assetVer}`,
+            depthTexture: `assets/scenes/scene21_bar_giora_vitrine_depth.png?${assetVer}`,
+            zPos: -350.0,
+            depthAmplitude: 175.0,
+            pinMarginUv: 0.0,
+            segmentsX: 224,
+            segmentsY: 150,
+            renderOrder: 5.5,
+            expanded: false,
+            baseOpacity: 1.0,
+            excursionBoost: 0.0,
+            depthTest: false,
+            depthWrite: false
+          }
+        ],
+        particleColor: 0xEAE0CF,
+        particleCount: 55,
+        hasReflection: false,
+        portalShelves: []
+      },
+      paris_cite_white_table: {
+        id: 'paris_cite_white_table',
+        title: 'הסטודיו ב-Cité des Arts בפריז — תצלום תמי מ-1958 על השולחן הלבן',
+        bgTexture: `assets/scenes/scene22_paris_table_bg_inpainted.jpg?${assetVer}`,
+        depthTexture: `assets/scenes/scene22_paris_table_depth.png?${assetVer}`,
+        midTexture: `assets/scenes/scene22_paris_table_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene22_paris_table_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 185.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 224,
+        midSegmentsY: 150,
+        midDepthTest: false,
+        midDepthWrite: false,
+        fgTexture: `assets/scenes/scene22_paris_table_fg.png?${assetVer}`,
+        fgDepthTexture: `assets/scenes/scene22_paris_table_fg_depth.png?${assetVer}`,
+        fgDepthAmplitude: 195.0,
+        fgPinMarginUv: 0.0,
+        fgSegmentsX: 224,
+        fgSegmentsY: 150,
+        fgDepthTest: false,
+        fgDepthWrite: false,
+        fgExpanded: false,
+        boreSightAtRest: true,
+        bgZ: -350.0,
+        midZ: -350.0,
+        fgZ: -350.0,
+        minInnerScale: 1.94,
+        bgSegmentsX: 224,
+        bgSegmentsY: 150,
+        roomDepthAmplitude: 118.0,
+        initialCameraY: -4.0,
+        initialCameraZ: 525.0,
+        portraitInitialYawDeg: 7.5,
+        minCameraZ: -85.0,
+        maxCameraZ: 685.0,
+        maxYawDeg: 22.0,
+        maxPitchDeg: 15.5,
+        maxStrafeX: 125.0,
+        maxStrafeY: 80.0,
+        dollySpeedMult: 1.30,
+        midRenderOrder: 6,
+        fgRenderOrder: 8,
+        extraLayers: [
+          {
+            id: 'placed_1958_photo',
+            labelHe: 'תצלום תמי הפעוטה מ-1958 מונח על השולחן הלבן — לחצו להתקרבות',
+            texture: `assets/scenes/scene22_paris_table_photo.png?${assetVer}`,
+            depthTexture: `assets/scenes/scene22_paris_table_photo_depth.png?${assetVer}`,
+            zPos: -350.0,
+            depthAmplitude: 185.0,
+            pinMarginUv: 0.0,
+            segmentsX: 224,
+            segmentsY: 150,
+            renderOrder: 6.5,
+            expanded: false,
+            baseOpacity: 1.0,
+            excursionBoost: 0.0,
+            depthTest: false,
+            depthWrite: false
+          }
+        ],
+        particleColor: 0xE3E6E8,
+        particleCount: 55,
+        hasReflection: false,
+        portalShelves: []
+      },
+      toddler_tami_1958: {
+        id: 'toddler_tami_1958',
+        title: 'תמי הפעוטה עומדת (1958) — מבט מקרוב מתוך התצלום המשפחתי',
+        bgTexture: `assets/scenes/scene23_tami_1958_bg_inpainted.jpg?${assetVer}`,
+        depthTexture: `assets/scenes/scene23_tami_1958_depth.png?${assetVer}`,
+        midTexture: `assets/scenes/scene23_tami_1958_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene23_tami_1958_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 165.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 224,
+        midSegmentsY: 150,
+        midDepthTest: false,
+        midDepthWrite: false,
+        fgTexture: `assets/scenes/scene23_tami_1958_fg.png?${assetVer}`,
+        fgExpanded: false,
+        boreSightAtRest: true,
+        bgZ: -350.0,
+        midZ: -350.0,
+        fgZ: -180.0,
+        minInnerScale: 1.94,
+        bgSegmentsX: 224,
+        bgSegmentsY: 150,
+        roomDepthAmplitude: 104.0,
+        initialCameraY: -4.0,
+        initialCameraZ: 530.0,
+        minCameraZ: -85.0,
+        maxCameraZ: 690.0,
+        maxYawDeg: 22.0,
+        maxPitchDeg: 15.5,
+        maxStrafeX: 130.0,
+        maxStrafeY: 82.0,
+        dollySpeedMult: 1.30,
+        midRenderOrder: 6,
+        fgRenderOrder: 8,
+        particleColor: 0xE6DFD5,
+        particleCount: 52,
         hasReflection: false
       },
       wandering_drawing: {
@@ -2180,6 +2757,30 @@ export class SpatialSceneManager {
       rawTzofenPortals,
       'tzofen_brick_table'
     );
+    const rawScrollFootPortals =
+      Array.isArray(options.scrollFootPortalShelves) && options.scrollFootPortalShelves.length > 0
+        ? options.scrollFootPortalShelves
+        : SCENE_GEOMETRY_SPEC.scrollFootPortalShelves;
+    this.sceneConfigs.bene_beitcha_scroll_foot.portalShelves = this._normalizePortalShelfSpecs(
+      rawScrollFootPortals,
+      'bene_beitcha_scroll_foot'
+    );
+    const rawBarGioraPortals =
+      Array.isArray(options.barGioraPortalShelves) && options.barGioraPortalShelves.length > 0
+        ? options.barGioraPortalShelves
+        : SCENE_GEOMETRY_SPEC.barGioraPortalShelves;
+    this.sceneConfigs.bar_giora_bedroom.portalShelves = this._normalizePortalShelfSpecs(
+      rawBarGioraPortals,
+      'bar_giora_bedroom'
+    );
+    const rawParisTablePortals =
+      Array.isArray(options.parisTablePortalShelves) && options.parisTablePortalShelves.length > 0
+        ? options.parisTablePortalShelves
+        : SCENE_GEOMETRY_SPEC.parisTablePortalShelves;
+    this.sceneConfigs.paris_cite_white_table.portalShelves = this._normalizePortalShelfSpecs(
+      rawParisTablePortals,
+      'paris_cite_white_table'
+    );
     this.sceneOrder = Object.keys(this.sceneConfigs);
 
     let requestedScene = options.initialSceneId || null;
@@ -2190,7 +2791,7 @@ export class SpatialSceneManager {
       }
     }
     this.currentSceneId =
-      requestedScene && this.sceneConfigs[requestedScene] ? requestedScene : 'paper_capsules';
+      requestedScene && this.sceneConfigs[requestedScene] ? requestedScene : 'shelf_portal';
     this.targetSceneId = null;
     this._pendingTransitionSceneId = null;
 
@@ -2303,7 +2904,13 @@ export class SpatialSceneManager {
 
     this._lastDiagTouchTs = 0;
     this._lastDiagGyroTs = 0;
+    this._lastDiagKbBlockedTs = 0;
+    this._lastDiagKbDownTs = 0;
+    this._lastDiagKbMoveTs = 0;
+    this._lastDiagKbClampTs = 0;
     this._lastTouchEndMs = 0;
+    this._carpetUnrollStates = new Map();
+    this._hoveredCarpetSceneId = null;
 
     // Collaborative Beta Highlighting, 3D Raycasting & Frame Projection Hooks
     this.interactionCaptureActive = false;
@@ -2318,6 +2925,20 @@ export class SpatialSceneManager {
       }
     };
 
+    const blurActiveUiControlOnCanvasInteraction = () => {
+      if (typeof document === 'undefined') return;
+      const activeEl = document.activeElement;
+      if (
+        activeEl &&
+        activeEl !== document.body &&
+        activeEl !== document.documentElement &&
+        activeEl !== this.canvas &&
+        typeof activeEl.blur === 'function'
+      ) {
+        activeEl.blur();
+      }
+    };
+
     const isInteractiveTarget = (target) => {
       if (this.interactionCaptureActive) return true;
       if (!target || typeof target.closest !== 'function') return false;
@@ -2327,6 +2948,7 @@ export class SpatialSceneManager {
         target.closest('textarea') ||
         target.closest('select') ||
         target.closest('a') ||
+        target.closest('#spatial-sidebar') ||
         target.closest('#info-drawer') ||
         target.closest('#beta-drawer') ||
         target.closest('#spatial-nav-bar') ||
@@ -2419,6 +3041,7 @@ export class SpatialSceneManager {
       }
       if (isInteractiveTarget(e.target) || this._portalFlight) return;
       if (e.button !== 0 && e.button !== 2) return;
+      blurActiveUiControlOnCanvasInteraction();
       this._isMouseDragging = true;
       this._mouseDragMode = (e.button === 2 || e.shiftKey) ? 'strafe' : 'look';
       this._mouseDownX = e.clientX;
@@ -2514,9 +3137,20 @@ export class SpatialSceneManager {
           return;
         }
       }
+      if (wasClick && this._raycastCarpetUnrollAtClient(e.clientX, e.clientY)) {
+        this.toggleCarpetUnroll(this.currentSceneId);
+        hideCenterHint();
+        if (this.canvas) {
+          this.canvas.style.cursor = 'pointer';
+        }
+        return;
+      }
 
       if (this.canvas) {
-        this.canvas.style.cursor = this.hoveredPortalId ? 'pointer' : 'grab';
+        this.canvas.style.cursor =
+          this.hoveredPortalId || this._hoveredCarpetSceneId === this.currentSceneId
+            ? 'pointer'
+            : 'grab';
       }
     };
 
@@ -2564,6 +3198,7 @@ export class SpatialSceneManager {
 
     this._onTouchStart = (e) => {
       if (isInteractiveTarget(e.target) || this._portalFlight) return;
+      blurActiveUiControlOnCanvasInteraction();
       if (!this._isTouching && this.gyroActive) {
         this._foldActiveGyroIntoPose();
       }
@@ -2726,6 +3361,17 @@ export class SpatialSceneManager {
               return;
             }
           }
+          if (
+            !this.interactionCaptureActive &&
+            !this.isTransitioning &&
+            !this._portalFlight &&
+            this._raycastCarpetUnrollAtClient(this._touchStartX, this._touchStartY)
+          ) {
+            this._lastSingleTapMs = 0;
+            hideCenterHint();
+            this.toggleCarpetUnroll(this.currentSceneId);
+            return;
+          }
           if (nowPerf - this._lastSingleTapMs < 300) {
             this.resetCameraPose();
             this._lastSingleTapMs = 0;
@@ -2738,7 +3384,7 @@ export class SpatialSceneManager {
 
     const resolveKeyCode = (e) => {
       if (!e) return '';
-      if (typeof e.code === 'string' && e.code.length > 0) {
+      if (typeof e.code === 'string' && e.code.length > 0 && e.code !== 'Unidentified') {
         return e.code;
       }
       const lower = typeof e.key === 'string' ? e.key.toLowerCase() : '';
@@ -2751,6 +3397,14 @@ export class SpatialSceneManager {
         q: 'KeyQ',
         r: 'KeyR',
         f: 'KeyF',
+        "'": 'KeyW',
+        'ש': 'KeyA',
+        'ד': 'KeyS',
+        'ג': 'KeyD',
+        'ק': 'KeyE',
+        '/': 'KeyQ',
+        'ר': 'KeyR',
+        'כ': 'KeyF',
         arrowup: 'ArrowUp',
         arrowdown: 'ArrowDown',
         arrowleft: 'ArrowLeft',
@@ -2857,26 +3511,86 @@ export class SpatialSceneManager {
       if (e.altKey) {
         return;
       }
-      const activeEl = document.activeElement;
-      const activeTag = activeEl && activeEl.tagName ? activeEl.tagName.toUpperCase() : '';
-      const openModalOrDrawer =
-        typeof document !== 'undefined' &&
-        Boolean(
-          document.querySelector(
-            '#info-drawer.open, #beta-drawer.open, #beta-lightbox:not(.hidden)'
-          )
-        );
+      const code = resolveKeyCode(e);
+      const isNavOrControlKey =
+        KEYBOARD_NAV_CODES.has(code) ||
+        code === 'KeyR' ||
+        code === 'KeyF' ||
+        code === 'Space';
+
+      let activeEl = typeof document !== 'undefined' ? document.activeElement : null;
+      let activeTag = activeEl && activeEl.tagName ? activeEl.tagName.toUpperCase() : '';
       if (
-        this.interactionCaptureActive ||
-        openModalOrDrawer ||
+        activeEl &&
+        activeTag !== 'BODY' &&
+        activeTag !== 'HTML' &&
+        typeof activeEl.blur === 'function'
+      ) {
+        const insideClosedContainer =
+          typeof activeEl.closest === 'function' &&
+          Boolean(
+            activeEl.closest(
+              '#beta-drawer:not(.open), #info-drawer:not(.open), #beta-lightbox.hidden, #spatial-sidebar.collapsed'
+            )
+          );
+        const detachedOrHidden =
+          activeEl.isConnected === false ||
+          (typeof activeEl.getClientRects === 'function' &&
+            activeEl.getClientRects().length === 0);
+        if (insideClosedContainer || detachedOrHidden) {
+          const staleId = activeEl.id || '';
+          const staleTag = activeTag;
+          activeEl.blur();
+          activeEl = typeof document !== 'undefined' ? document.activeElement : null;
+          activeTag = activeEl && activeEl.tagName ? activeEl.tagName.toUpperCase() : '';
+          if (window.__sendDiag && isNavOrControlKey) {
+            window.__sendDiag('keyboard_stale_focus_recovered', {
+              code,
+              key: e.key,
+              staleTag,
+              staleId,
+              reason: insideClosedContainer ? 'closed_drawer_or_sidebar' : 'hidden_element',
+              scene: this.currentSceneId
+            });
+          }
+        }
+      }
+
+      const openModalOrDrawerEl =
+        typeof document !== 'undefined'
+          ? document.querySelector(
+              '#info-drawer.open, #beta-drawer.open, #beta-lightbox:not(.hidden)'
+            )
+          : null;
+      const openModalOrDrawer = Boolean(openModalOrDrawerEl);
+      const textInputFocused =
         activeTag === 'INPUT' ||
         activeTag === 'TEXTAREA' ||
         activeTag === 'SELECT' ||
-        (activeEl && activeEl.isContentEditable)
-      ) {
+        Boolean(activeEl && activeEl.isContentEditable);
+
+      if (this.interactionCaptureActive || openModalOrDrawer || textInputFocused) {
+        if (window.__sendDiag && isNavOrControlKey) {
+          const now = Date.now();
+          if (now - this._lastDiagKbBlockedTs > 1000) {
+            this._lastDiagKbBlockedTs = now;
+            window.__sendDiag('keyboard_nav_blocked', {
+              code,
+              key: e.key,
+              reason: this.interactionCaptureActive
+                ? 'interaction_capture'
+                : openModalOrDrawer
+                  ? `open_modal:${openModalOrDrawerEl.id || 'modal'}`
+                  : 'text_input_focused',
+              activeTag,
+              activeId: (activeEl && activeEl.id) || '',
+              scene: this.currentSceneId
+            });
+          }
+        }
         return;
       }
-      const code = resolveKeyCode(e);
+
       if (e.key >= '1' && e.key <= '9') {
         const sceneIdx = Number(e.key) - 1;
         if (this.sceneOrder[sceneIdx]) {
@@ -2913,8 +3627,39 @@ export class SpatialSceneManager {
         ) {
           e.preventDefault();
         }
+        if (this._portalFlight || !this.layersReady) {
+          if (window.__sendDiag) {
+            const now = Date.now();
+            if (now - this._lastDiagKbBlockedTs > 1000) {
+              this._lastDiagKbBlockedTs = now;
+              window.__sendDiag('keyboard_nav_blocked', {
+                code,
+                key: e.key,
+                reason: !this.layersReady ? 'layers_not_ready' : 'portal_flight_active',
+                scene: this.currentSceneId
+              });
+            }
+          }
+          return;
+        }
+        const wasAlreadyHeld = this._keysHeld.has(code);
         this._keysHeld.add(code);
         hideCenterHint();
+        if (!wasAlreadyHeld && !e.repeat && window.__sendDiag) {
+          const now = Date.now();
+          if (now - this._lastDiagKbDownTs > 800) {
+            this._lastDiagKbDownTs = now;
+            window.__sendDiag('keyboard_nav_keydown', {
+              code,
+              key: e.key,
+              scene: this.currentSceneId,
+              isTransitioning: this.isTransitioning,
+              pendingScene: this._pendingTransitionSceneId,
+              keysHeld: Array.from(this._keysHeld),
+              z: Math.round(this.poseTarget.z)
+            });
+          }
+        }
       }
     };
 
@@ -2939,7 +3684,7 @@ export class SpatialSceneManager {
         y: this.poseCurrent.y,
         z: this.poseCurrent.z
       },
-      cameraRotationDeg: { yaw: 0, pitch: 0 },
+      cameraRotationDeg: { yaw: 0, pitch: 0, roll: 0 },
       gyroActive: this.gyroActive,
       gyroPermissionState: this.gyroPermissionState,
       layersReady: false,
@@ -3031,14 +3776,14 @@ export class SpatialSceneManager {
           const rawTex = String(spec.occluder.texture);
           const versionedTex = rawTex.includes('?')
             ? rawTex
-            : `${rawTex}?${this._assetVer || 'v=neural31'}`;
+            : `${rawTex}?${this._assetVer || 'v=neural32'}`;
           const rawDepthTex = spec.occluder.depthTexture
             ? String(spec.occluder.depthTexture)
             : null;
           const versionedDepthTex = rawDepthTex
             ? rawDepthTex.includes('?')
               ? rawDepthTex
-              : `${rawDepthTex}?${this._assetVer || 'v=neural31'}`
+              : `${rawDepthTex}?${this._assetVer || 'v=neural32'}`
             : null;
           const occWorldZ =
             typeof spec.occluder.worldZ === 'number'
@@ -3092,7 +3837,32 @@ export class SpatialSceneManager {
             labelHe: spec.occluder.labelHe || 'חפץ על המדף',
             coverageRatio:
               typeof spec.occluder.coverageRatio === 'number' ? spec.occluder.coverageRatio : 0.35,
-            locksPortal: spec.occluder.locksPortal !== false
+            locksPortal: spec.occluder.locksPortal !== false,
+            companionFall:
+              spec.occluder.companionFall && typeof spec.occluder.companionFall === 'object'
+                ? {
+                    extraLayerId: String(spec.occluder.companionFall.extraLayerId || ''),
+                    pivotInnerPx: Array.isArray(spec.occluder.companionFall.pivotInnerPx)
+                      ? [...spec.occluder.companionFall.pivotInnerPx]
+                      : [750, 500],
+                    pivotWorldZ:
+                      typeof spec.occluder.companionFall.pivotWorldZ === 'number'
+                        ? spec.occluder.companionFall.pivotWorldZ
+                        : null,
+                    fallAngleDeg:
+                      typeof spec.occluder.companionFall.fallAngleDeg === 'number'
+                        ? spec.occluder.companionFall.fallAngleDeg
+                        : -78.0,
+                    shiftWorldX:
+                      typeof spec.occluder.companionFall.shiftWorldX === 'number'
+                        ? spec.occluder.companionFall.shiftWorldX
+                        : 0.0,
+                    shiftWorldY:
+                      typeof spec.occluder.companionFall.shiftWorldY === 'number'
+                        ? spec.occluder.companionFall.shiftWorldY
+                        : 0.0
+                  }
+                : null
           };
         }
         let veil = null;
@@ -3100,7 +3870,7 @@ export class SpatialSceneManager {
           const rawVeilTex = String(spec.veil.texture);
           const versionedVeilTex = rawVeilTex.includes('?')
             ? rawVeilTex
-            : `${rawVeilTex}?${this._assetVer || 'v=neural31'}`;
+            : `${rawVeilTex}?${this._assetVer || 'v=neural32'}`;
           veil = {
             texture: versionedVeilTex,
             worldZ:
@@ -3152,6 +3922,9 @@ export class SpatialSceneManager {
                 : 6.5,
           fadeStartProgress:
             typeof spec.fadeStartProgress === 'number' ? spec.fadeStartProgress : undefined,
+          rotationDeg: typeof spec.rotationDeg === 'number' ? spec.rotationDeg : 0.0,
+          dioramaRollDeg: typeof spec.dioramaRollDeg === 'number' ? spec.dioramaRollDeg : 0.0,
+          flightRollDeg: typeof spec.flightRollDeg === 'number' ? spec.flightRollDeg : 0.0,
           innerBoxPx: Array.isArray(spec.innerBoxPx) ? [...spec.innerBoxPx] : null,
           worldX: Number(geom.worldX.toFixed(3)),
           worldY: Number(geom.worldY.toFixed(3)),
@@ -3176,12 +3949,18 @@ export class SpatialSceneManager {
 
   _getSceneRestPose(sceneId) {
     const cfg = this.sceneConfigs && sceneId ? this.sceneConfigs[sceneId] : null;
+    const isPortrait = this.width / Math.max(1, this.height) < 1.0;
+    const yawDeg =
+      isPortrait && cfg && typeof cfg.portraitInitialYawDeg === 'number'
+        ? cfg.portraitInitialYawDeg
+        : 0;
     return {
       x: 0,
       y: cfg && typeof cfg.initialCameraY === 'number' ? cfg.initialCameraY : 0,
       z: cfg && typeof cfg.initialCameraZ === 'number' ? cfg.initialCameraZ : this.baseCameraZ,
-      yawDeg: 0,
-      pitchDeg: 0
+      yawDeg,
+      pitchDeg: 0,
+      rollDeg: 0
     };
   }
 
@@ -3315,7 +4094,11 @@ export class SpatialSceneManager {
       z: typeof partialPose.z === 'number' ? partialPose.z : this.poseTarget.z,
       yawDeg: typeof partialPose.yawDeg === 'number' ? partialPose.yawDeg : this.poseTarget.yawDeg,
       pitchDeg:
-        typeof partialPose.pitchDeg === 'number' ? partialPose.pitchDeg : this.poseTarget.pitchDeg
+        typeof partialPose.pitchDeg === 'number' ? partialPose.pitchDeg : this.poseTarget.pitchDeg,
+      rollDeg:
+        typeof partialPose.rollDeg === 'number'
+          ? partialPose.rollDeg
+          : this.poseTarget.rollDeg || 0
     };
     const clamped = this._clampPose(merged);
     this.poseTarget.x = clamped.x;
@@ -3323,6 +4106,7 @@ export class SpatialSceneManager {
     this.poseTarget.z = clamped.z;
     this.poseTarget.yawDeg = clamped.yawDeg;
     this.poseTarget.pitchDeg = clamped.pitchDeg;
+    this.poseTarget.rollDeg = clamped.rollDeg || 0;
 
     if (immediate) {
       this.poseCurrent.x = clamped.x;
@@ -3330,6 +4114,7 @@ export class SpatialSceneManager {
       this.poseCurrent.z = clamped.z;
       this.poseCurrent.yawDeg = clamped.yawDeg;
       this.poseCurrent.pitchDeg = clamped.pitchDeg;
+      this.poseCurrent.rollDeg = clamped.rollDeg || 0;
       this._hoverNorm.x = 0;
       this._hoverNorm.y = 0;
       this._hoverNorm.targetX = 0;
@@ -3627,7 +4412,9 @@ export class SpatialSceneManager {
           uOpacity: { value: 1.0 },
           uAlphaCutout: { value: 0.0 },
           uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
-          uFadeToClear: { value: 0.0 }
+          uFadeToClear: { value: 0.0 },
+          uClipUvMinX: { value: 0.0 },
+          uClipUvMaxX: { value: 1.0 }
         },
         clipping: false,
         depthWrite: true,
@@ -3681,7 +4468,9 @@ export class SpatialSceneManager {
             uOpacity: { value: 1.0 },
             uAlphaCutout: { value: midAlphaCutout },
             uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
-            uFadeToClear: { value: 0.0 }
+            uFadeToClear: { value: 0.0 },
+            uClipUvMinX: { value: 0.0 },
+            uClipUvMaxX: { value: 1.0 }
           },
           clipping: false,
           transparent: midAlphaCutout <= 0.0,
@@ -3747,7 +4536,9 @@ export class SpatialSceneManager {
             uOpacity: { value: 1.0 },
             uAlphaCutout: { value: fgAlphaCutout },
             uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
-            uFadeToClear: { value: 0.0 }
+            uFadeToClear: { value: 0.0 },
+            uClipUvMinX: { value: 0.0 },
+            uClipUvMaxX: { value: 1.0 }
           },
           clipping: false,
           transparent: fgAlphaCutout <= 0.0,
@@ -3826,6 +4617,8 @@ export class SpatialSceneManager {
 
           const baseOpacity = typeof elCfg.baseOpacity === 'number' ? elCfg.baseOpacity : 1.0;
           const alphaCutout = typeof elCfg.alphaCutout === 'number' ? elCfg.alphaCutout : 0.0;
+          const clipUvMinX = typeof elCfg.clipUvMinX === 'number' ? elCfg.clipUvMinX : 0.0;
+          const clipUvMaxX = typeof elCfg.clipUvMaxX === 'number' ? elCfg.clipUvMaxX : 1.0;
           const pinMarginUv =
             typeof elCfg.pinMarginUv === 'number'
               ? elCfg.pinMarginUv
@@ -3853,7 +4646,9 @@ export class SpatialSceneManager {
                 uOpacity: { value: baseOpacity },
                 uAlphaCutout: { value: alphaCutout },
                 uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
-                uFadeToClear: { value: 0.0 }
+                uFadeToClear: { value: 0.0 },
+                uClipUvMinX: { value: clipUvMinX },
+                uClipUvMaxX: { value: clipUvMaxX }
               },
               clipping: false,
               transparent: alphaCutout <= 0.0,
@@ -4099,7 +4894,7 @@ export class SpatialSceneManager {
     if (typeof location !== 'undefined' && location.protocol === 'file:') {
       return;
     }
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    await new Promise((resolve) => setTimeout(resolve, 2800));
     if (this._disposed) return;
 
     let manifestSceneIds = null;
@@ -4185,7 +4980,7 @@ export class SpatialSceneManager {
         } catch (_) {
           // Scene assets still synthesizing offline; leave loadPromise=null for on-demand retry
         }
-        await new Promise((resolve) => setTimeout(resolve, 140));
+        await new Promise((resolve) => setTimeout(resolve, 320));
       }
     }
   }
@@ -4365,7 +5160,9 @@ export class SpatialSceneManager {
               uOpacity: { value: 1.0 },
               uAlphaCutout: { value: 0.0 },
               uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
-              uFadeToClear: { value: 0.0 }
+              uFadeToClear: { value: 0.0 },
+              uClipUvMinX: { value: 0.0 },
+              uClipUvMaxX: { value: 1.0 }
             },
             clipping: true,
             clippingPlanes: clipPlanes,
@@ -4373,8 +5170,16 @@ export class SpatialSceneManager {
             depthTest: true,
             depthFunc: THREE.AlwaysDepth
           });
+          const dioSegX = SCENE_GEOMETRY_SPEC.portalDioramaSegmentsX;
+          const dioSegY = SCENE_GEOMETRY_SPEC.portalDioramaSegmentsY;
+          const dioBgGeo = this._getSharedPlaneGeo(
+            SCENE_GEOMETRY_SPEC.bgBaseWidth,
+            SCENE_GEOMETRY_SPEC.bgBaseHeight,
+            dioSegX,
+            dioSegY
+          );
           ownedResources.push(bgMat);
-          bgMesh = new THREE.Mesh(targetObj.layer0.geometry, bgMat);
+          bgMesh = new THREE.Mesh(dioBgGeo, bgMat);
           bgMesh.renderOrder = baseOrder;
           dioramaGroup.add(bgMesh);
 
@@ -4412,7 +5217,9 @@ export class SpatialSceneManager {
                 uOpacity: { value: 1.0 },
                 uAlphaCutout: { value: targetObj.midAlphaCutout },
                 uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
-                uFadeToClear: { value: 0.0 }
+                uFadeToClear: { value: 0.0 },
+                uClipUvMinX: { value: 0.0 },
+                uClipUvMaxX: { value: 1.0 }
               },
               clipping: true,
               clippingPlanes: clipPlanes,
@@ -4432,7 +5239,21 @@ export class SpatialSceneManager {
             });
           }
           ownedResources.push(midMat);
-          midMesh = new THREE.Mesh(targetObj.layer1.geometry, midMat);
+          const dioMidGeo =
+            targetObj.hasMidDepthRelief && targetObj.midDepthTex
+              ? this._getSharedPlaneGeo(
+                  SCENE_GEOMETRY_SPEC.midBaseWidth,
+                  SCENE_GEOMETRY_SPEC.midBaseHeight,
+                  dioSegX,
+                  dioSegY
+                )
+              : this._getSharedPlaneGeo(
+                  SCENE_GEOMETRY_SPEC.midBaseWidth,
+                  SCENE_GEOMETRY_SPEC.midBaseHeight,
+                  1,
+                  1
+                );
+          midMesh = new THREE.Mesh(dioMidGeo, midMat);
           midMesh.renderOrder = baseOrder + targetMidOrder;
           dioramaGroup.add(midMesh);
 
@@ -4453,7 +5274,9 @@ export class SpatialSceneManager {
                     uOpacity: { value: extra.baseOpacity },
                     uAlphaCutout: { value: extra.alphaCutout },
                     uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
-                    uFadeToClear: { value: 0.0 }
+                    uFadeToClear: { value: 0.0 },
+                    uClipUvMinX: { value: 0.0 },
+                    uClipUvMaxX: { value: 1.0 }
                   },
                   clipping: true,
                   clippingPlanes: clipPlanes,
@@ -4474,7 +5297,17 @@ export class SpatialSceneManager {
                 });
               }
               ownedResources.push(exMat);
-              const exMesh = new THREE.Mesh(extra.mesh.geometry, exMat);
+              const exW = extra.expanded
+                ? SCENE_GEOMETRY_SPEC.bgBaseWidth
+                : SCENE_GEOMETRY_SPEC.midBaseWidth;
+              const exH = extra.expanded
+                ? SCENE_GEOMETRY_SPEC.bgBaseHeight
+                : SCENE_GEOMETRY_SPEC.midBaseHeight;
+              const dioExGeo =
+                extra.hasDepthRelief && extra.depthTex
+                  ? this._getSharedPlaneGeo(exW, exH, dioSegX, dioSegY)
+                  : this._getSharedPlaneGeo(exW, exH, 1, 1);
+              const exMesh = new THREE.Mesh(dioExGeo, exMat);
               exMesh.renderOrder = baseOrder + extra.renderOrder;
               dioramaGroup.add(exMesh);
               extraMeshes.push({ sourceExtra: extra, mesh: exMesh, mat: exMat });
@@ -4495,7 +5328,9 @@ export class SpatialSceneManager {
                 uOpacity: { value: 1.0 },
                 uAlphaCutout: { value: targetObj.fgAlphaCutout },
                 uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
-                uFadeToClear: { value: 0.0 }
+                uFadeToClear: { value: 0.0 },
+                uClipUvMinX: { value: 0.0 },
+                uClipUvMaxX: { value: 1.0 }
               },
               clipping: true,
               clippingPlanes: clipPlanes,
@@ -4515,7 +5350,17 @@ export class SpatialSceneManager {
             });
           }
           ownedResources.push(fgMat);
-          fgMesh = new THREE.Mesh(targetObj.layer2.geometry, fgMat);
+          const fgW = targetCfg.fgExpanded
+            ? SCENE_GEOMETRY_SPEC.bgBaseWidth
+            : SCENE_GEOMETRY_SPEC.fgBaseWidth;
+          const fgH = targetCfg.fgExpanded
+            ? SCENE_GEOMETRY_SPEC.bgBaseHeight
+            : SCENE_GEOMETRY_SPEC.fgBaseHeight;
+          const dioFgGeo =
+            targetObj.hasFgDepthRelief && targetObj.fgDepthTex
+              ? this._getSharedPlaneGeo(fgW, fgH, dioSegX, dioSegY)
+              : this._getSharedPlaneGeo(fgW, fgH, 1, 1);
+          fgMesh = new THREE.Mesh(dioFgGeo, fgMat);
           fgMesh.renderOrder = baseOrder + targetFgOrder;
           dioramaGroup.add(fgMesh);
 
@@ -4611,7 +5456,9 @@ export class SpatialSceneManager {
                 uOpacity: { value: isErased ? 0.0 : 1.0 },
                 uAlphaCutout: { value: 0.0 },
                 uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
-                uFadeToClear: { value: 0.0 }
+                uFadeToClear: { value: 0.0 },
+                uClipUvMinX: { value: 0.0 },
+                uClipUvMaxX: { value: 1.0 }
               },
               clipping: false,
               transparent: true,
@@ -4838,10 +5685,14 @@ export class SpatialSceneManager {
         const fitCamY = geom.worldY;
         const fitCamZ = geom.worldZ + geom.fitZ;
 
+        const rollRad = THREE.MathUtils.degToRad(geom.dioramaRollDeg || 0.0);
+        const cosR = Math.cos(rollRad);
+        const sinR = Math.sin(rollRad);
         inst.dioramaGroup.scale.setScalar(lambdaP);
+        inst.dioramaGroup.rotation.set(0, 0, rollRad);
         inst.dioramaGroup.position.set(
-          fitCamX - lambdaP * targetRest.x,
-          fitCamY - lambdaP * targetRest.y,
+          fitCamX - lambdaP * (targetRest.x * cosR - targetRest.y * sinR),
+          fitCamY - lambdaP * (targetRest.x * sinR + targetRest.y * cosR),
           fitCamZ - lambdaP * targetRest.z
         );
         if (inst.dustMat && targetObj.layer3 && targetObj.layer3.material) {
@@ -4858,6 +5709,7 @@ export class SpatialSceneManager {
           geom.worldY,
           geom.worldZ + SCENE_GEOMETRY_SPEC.portalFrameBevelOffsetZ
         );
+        inst.frameLine.rotation.set(0, 0, THREE.MathUtils.degToRad(geom.rotationDeg || 0.0));
         inst.frameLine.scale.set(geom.width, geom.height, 1.0);
       }
 
@@ -4967,6 +5819,48 @@ export class SpatialSceneManager {
       inst.occluderMat.opacity = effOpacity;
     }
     inst.occluderMesh.visible = effOpacity > 0.005;
+
+    const cf = inst.spec && inst.spec.occluder && inst.spec.occluder.companionFall;
+    if (cf && cf.extraLayerId && hostObj && Array.isArray(hostObj.extraLayers)) {
+      const compExtra = hostObj.extraLayers.find((el) => el && el.id === cf.extraLayerId);
+      if (compExtra && compExtra.mesh && typeof compExtra.planeWorldW === 'number') {
+        const fallT = liftT;
+        const theta = THREE.MathUtils.degToRad((cf.fallAngleDeg || 0.0) * fallT);
+        const pivPx = Array.isArray(cf.pivotInnerPx) ? cf.pivotInnerPx : [750, 500];
+        let localOffX =
+          (pivPx[0] / SCENE_GEOMETRY_SPEC.innerFrameWidthPx - 0.5) * compExtra.planeWorldW;
+        let localOffY =
+          (0.5 - pivPx[1] / SCENE_GEOMETRY_SPEC.innerFrameHeightPx) * compExtra.planeWorldH;
+        const meshBaseZ = compExtra.basePosZ !== undefined ? compExtra.basePosZ : compExtra.zPos;
+        if (
+          typeof cf.pivotWorldZ === 'number' &&
+          compExtra.mesh.material &&
+          compExtra.mesh.material.uniforms &&
+          compExtra.mesh.material.uniforms.uDistBg
+        ) {
+          const uDistBg = Math.max(1.0, compExtra.mesh.material.uniforms.uDistBg.value);
+          const uOptWorldY =
+            (compExtra.mesh.material.uniforms.uOpticalCenterLocalY.value || 0.0) *
+            (compExtra.baseScale || 1.0);
+          const zDisp = cf.pivotWorldZ - meshBaseZ;
+          const rayScale = (uDistBg - zDisp) / uDistBg;
+          localOffX *= rayScale;
+          localOffY = uOptWorldY + (localOffY - uOptWorldY) * rayScale;
+        }
+        const pivX = (compExtra.basePosX || 0) + localOffX;
+        const pivY = (compExtra.basePosY || 0) + localOffY;
+        const dx = -localOffX;
+        const dy = -localOffY;
+        const cosT = Math.cos(theta);
+        const sinT = Math.sin(theta);
+        compExtra.mesh.position.set(
+          pivX + (dx * cosT - dy * sinT) + (cf.shiftWorldX || 0) * fallT,
+          pivY + (dx * sinT + dy * cosT) + (cf.shiftWorldY || 0) * fallT,
+          meshBaseZ
+        );
+        compExtra.mesh.rotation.set(0, 0, theta);
+      }
+    }
   }
 
   _stepPortalOccluderAnimations(nowMs) {
@@ -5009,11 +5903,20 @@ export class SpatialSceneManager {
       const halfW = s.width * 0.5;
       const halfH = s.height * 0.5;
       const wz = s.worldZ;
+      const rotRad = THREE.MathUtils.degToRad(s.rotationDeg || 0.0);
+      const cosA = Math.cos(rotRad);
+      const sinA = Math.sin(rotRad);
+      const rotCorner = (lx, ly) =>
+        new THREE.Vector3(
+          s.worldX + lx * cosA - ly * sinA,
+          s.worldY + lx * sinA + ly * cosA,
+          wz
+        );
 
-      const tl = new THREE.Vector3(s.worldX - halfW, s.worldY + halfH, wz);
-      const tr = new THREE.Vector3(s.worldX + halfW, s.worldY + halfH, wz);
-      const br = new THREE.Vector3(s.worldX + halfW, s.worldY - halfH, wz);
-      const bl = new THREE.Vector3(s.worldX - halfW, s.worldY - halfH, wz);
+      const tl = rotCorner(-halfW, +halfH);
+      const tr = rotCorner(+halfW, +halfH);
+      const br = rotCorner(+halfW, -halfH);
+      const bl = rotCorner(-halfW, -halfH);
 
       const center = new THREE.Vector3(s.worldX, s.worldY, wz);
       const rayIntoCubby = center.clone().sub(camPos);
@@ -5102,16 +6005,223 @@ export class SpatialSceneManager {
       }
       const hitPt = this._intersectPlaneZ(clientX, clientY, s.worldZ);
       if (!hitPt) continue;
-      const dx = Math.abs(hitPt[0] - s.worldX);
-      const dy = Math.abs(hitPt[1] - s.worldY);
-      if (dx <= s.width * 0.5 && dy <= s.height * 0.5) {
+      const rawDx = hitPt[0] - s.worldX;
+      const rawDy = hitPt[1] - s.worldY;
+      const rotRad = -THREE.MathUtils.degToRad(s.rotationDeg || 0.0);
+      const localX = rawDx * Math.cos(rotRad) - rawDy * Math.sin(rotRad);
+      const localY = rawDx * Math.sin(rotRad) + rawDy * Math.cos(rotRad);
+      if (Math.abs(localX) <= s.width * 0.5 && Math.abs(localY) <= s.height * 0.5) {
         return s;
       }
     }
     return null;
   }
 
+  _getCarpetUnrollState(sceneId) {
+    const cfg = this.sceneConfigs && sceneId ? this.sceneConfigs[sceneId] : null;
+    if (!cfg || !cfg.carpetUnrollRig) return null;
+    let st = this._carpetUnrollStates.get(sceneId);
+    if (!st) {
+      st = {
+        progress: 0.0,
+        target: 0.0,
+        animStartMs: 0.0,
+        animFrom: 0.0,
+        durationMs:
+          typeof cfg.carpetUnrollRig.durationMs === 'number'
+            ? cfg.carpetUnrollRig.durationMs
+            : 1450
+      };
+      this._carpetUnrollStates.set(sceneId, st);
+    }
+    return st;
+  }
+
+  getCarpetUnrollProgress(sceneId = this.currentSceneId) {
+    const st = this._getCarpetUnrollState(sceneId);
+    return st ? st.progress : 0.0;
+  }
+
+  toggleCarpetUnroll(sceneId = this.currentSceneId, forceUnrolled = null) {
+    const st = this._getCarpetUnrollState(sceneId);
+    if (!st) return false;
+    const nextTarget =
+      typeof forceUnrolled === 'boolean' ? (forceUnrolled ? 1.0 : 0.0) : st.target > 0.5 ? 0.0 : 1.0;
+    st.animFrom = st.progress;
+    st.target = nextTarget;
+    st.animStartMs = performance.now();
+    if (window.__sendDiag) {
+      window.__sendDiag('carpet_unroll_toggled', {
+        scene: sceneId,
+        unrolled: nextTarget > 0.5
+      });
+    }
+    return nextTarget > 0.5;
+  }
+
+  _resolveCarpetMeshRecord(sceneId, layerId) {
+    const obj = this.sceneObjects && sceneId ? this.sceneObjects[sceneId] : null;
+    if (!obj || !layerId) return null;
+    if (layerId === 'foreground' && obj.layer2) {
+      return {
+        mesh: obj.layer2,
+        tex: obj.fgTex,
+        basePosX: obj.fgBasePosX || 0,
+        basePosY: obj.fgBasePosY || 0,
+        basePosZ: obj.sceneFgZ,
+        planeWorldW: obj.fgPlaneWorldW || SCENE_GEOMETRY_SPEC.fgBaseWidth,
+        planeWorldH: obj.fgPlaneWorldH || SCENE_GEOMETRY_SPEC.fgBaseHeight
+      };
+    }
+    if (layerId === 'midground' && obj.layer1) {
+      return {
+        mesh: obj.layer1,
+        tex: obj.midTex,
+        basePosX: obj.midBasePosX || 0,
+        basePosY: obj.midBasePosY || 0,
+        basePosZ: obj.sceneMidZ,
+        planeWorldW: obj.midPlaneWorldW || SCENE_GEOMETRY_SPEC.midBaseWidth,
+        planeWorldH: obj.midPlaneWorldH || SCENE_GEOMETRY_SPEC.midBaseHeight
+      };
+    }
+    if (Array.isArray(obj.extraLayers)) {
+      const extra = obj.extraLayers.find((el) => el && el.id === layerId);
+      if (extra && extra.mesh) {
+        return {
+          mesh: extra.mesh,
+          tex: extra.tex,
+          basePosX: extra.basePosX || 0,
+          basePosY: extra.basePosY || 0,
+          basePosZ: extra.basePosZ !== undefined ? extra.basePosZ : extra.zPos,
+          planeWorldW: extra.planeWorldW || SCENE_GEOMETRY_SPEC.fgBaseWidth,
+          planeWorldH: extra.planeWorldH || SCENE_GEOMETRY_SPEC.fgBaseHeight
+        };
+      }
+    }
+    return null;
+  }
+
+  _applyCarpetUnrollTransform(sceneId) {
+    const cfg = this.sceneConfigs && sceneId ? this.sceneConfigs[sceneId] : null;
+    if (!cfg || !cfg.carpetUnrollRig) return;
+    const st = this._getCarpetUnrollState(sceneId);
+    if (!st) return;
+    const rig = cfg.carpetUnrollRig;
+    const u = THREE.MathUtils.clamp(st.progress, 0.0, 1.0);
+
+    const trailRec = this._resolveCarpetMeshRecord(sceneId, rig.trailLayerId);
+    if (
+      trailRec &&
+      trailRec.mesh &&
+      trailRec.mesh.material &&
+      trailRec.mesh.material.uniforms &&
+      trailRec.mesh.material.uniforms.uClipUvMaxX
+    ) {
+      const initMax = typeof rig.initialClipUvMaxX === 'number' ? rig.initialClipUvMaxX : 0.25;
+      const fullMax = typeof rig.unrolledClipUvMaxX === 'number' ? rig.unrolledClipUvMaxX : 1.0;
+      const minX = typeof rig.clipUvMinX === 'number' ? rig.clipUvMinX : 0.0;
+      trailRec.mesh.material.uniforms.uClipUvMinX.value = minX;
+      trailRec.mesh.material.uniforms.uClipUvMaxX.value = THREE.MathUtils.lerp(initMax, fullMax, u);
+    }
+
+    const rollRec = this._resolveCarpetMeshRecord(sceneId, rig.rollLayerId);
+    if (rollRec && rollRec.mesh) {
+      const shiftPxX = typeof rig.rollShiftInnerPxX === 'number' ? rig.rollShiftInnerPxX : 0.0;
+      const shiftPxY = typeof rig.rollShiftInnerPxY === 'number' ? rig.rollShiftInnerPxY : 0.0;
+      const shiftZ = typeof rig.rollShiftWorldZ === 'number' ? rig.rollShiftWorldZ : 0.0;
+      const worldDx = (shiftPxX / SCENE_GEOMETRY_SPEC.innerFrameWidthPx) * rollRec.planeWorldW * u;
+      const worldDy = -(shiftPxY / SCENE_GEOMETRY_SPEC.innerFrameHeightPx) * rollRec.planeWorldH * u;
+      rollRec.mesh.position.set(
+        rollRec.basePosX + worldDx,
+        rollRec.basePosY + worldDy,
+        rollRec.basePosZ + shiftZ * u
+      );
+    }
+  }
+
+  _stepCarpetUnrollAnimations(nowMs) {
+    for (const [sceneId, st] of this._carpetUnrollStates.entries()) {
+      if (Math.abs(st.progress - st.target) < 1e-4) {
+        if (st.progress !== st.target) {
+          st.progress = st.target;
+          this._applyCarpetUnrollTransform(sceneId);
+        }
+        continue;
+      }
+      const rawT = THREE.MathUtils.clamp(
+        (nowMs - st.animStartMs) / Math.max(1.0, st.durationMs),
+        0.0,
+        1.0
+      );
+      const ease = rawT * rawT * (3.0 - 2.0 * rawT);
+      st.progress = THREE.MathUtils.lerp(st.animFrom, st.target, ease);
+      this._applyCarpetUnrollTransform(sceneId);
+    }
+  }
+
+  _raycastCarpetUnrollAtClient(clientX, clientY) {
+    const cfg = this.sceneConfigs && this.sceneConfigs[this.currentSceneId];
+    if (!cfg || !cfg.carpetUnrollRig || !this.canvas || !this.camera) return false;
+    const rig = cfg.carpetUnrollRig;
+    const st = this._getCarpetUnrollState(this.currentSceneId);
+    const u = st ? st.progress : 0.0;
+    const initMax = typeof rig.initialClipUvMaxX === 'number' ? rig.initialClipUvMaxX : 0.25;
+    const fullMax = typeof rig.unrolledClipUvMaxX === 'number' ? rig.unrolledClipUvMaxX : 1.0;
+    const minUvX = typeof rig.clipUvMinX === 'number' ? rig.clipUvMinX : 0.0;
+    const maxUvX = THREE.MathUtils.lerp(initMax, fullMax, u);
+
+    const rect = this.canvas.getBoundingClientRect();
+    const normX = THREE.MathUtils.clamp((clientX - rect.left) / Math.max(1, rect.width), 0, 1);
+    const normY = THREE.MathUtils.clamp((clientY - rect.top) / Math.max(1, rect.height), 0, 1);
+    const ndc = new THREE.Vector2(normX * 2 - 1, -(normY * 2 - 1));
+    this.camera.updateMatrixWorld();
+    this._raycaster.setFromCamera(ndc, this.camera);
+
+    const rollRec = this._resolveCarpetMeshRecord(this.currentSceneId, rig.rollLayerId);
+    const trailRec = this._resolveCarpetMeshRecord(this.currentSceneId, rig.trailLayerId);
+    const candidates = [
+      rollRec ? { rec: rollRec, clipped: false } : null,
+      trailRec ? { rec: trailRec, clipped: true } : null
+    ].filter(Boolean);
+
+    for (const { rec, clipped } of candidates) {
+      if (!rec.mesh || !rec.mesh.visible || !rec.tex) continue;
+      const hits = this._raycaster.intersectObject(rec.mesh, false);
+      if (hits.length > 0 && hits[0].uv) {
+        const uvX = hits[0].uv.x;
+        const uvY = hits[0].uv.y;
+        if (clipped && (uvX < minUvX || uvX > maxUvX)) continue;
+        const sampler = this._getTextureSampler(rec.tex, 512);
+        if (sampler) {
+          const sample = sampler.sampleAtUv(uvX, uvY);
+          if (sample.a >= 24) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   _updatePortalHoverState(clientX, clientY, targetEl = null) {
+    const overUi =
+      targetEl &&
+      typeof targetEl.closest === 'function' &&
+      (targetEl.closest('.bottom-dock') ||
+        targetEl.closest('.top-bar') ||
+        targetEl.closest('#spatial-sidebar') ||
+        targetEl.closest('#spatial-nav-bar') ||
+        targetEl.closest('#info-drawer') ||
+        targetEl.closest('#beta-drawer'));
+
+    const carpetHovered =
+      !overUi &&
+      !this.interactionCaptureActive &&
+      !this.isTransitioning &&
+      !this._portalFlight &&
+      this._raycastCarpetUnrollAtClient(clientX, clientY);
+    this._hoveredCarpetSceneId = carpetHovered ? this.currentSceneId : null;
+
     if (
       !this.hasPortalShelves(this.currentSceneId) ||
       this.interactionCaptureActive ||
@@ -5131,17 +6241,12 @@ export class SpatialSceneManager {
         }
         this.onPortalHover(null, clientX, clientY);
       }
+      if (this.canvas && !this._isMouseDragging) {
+        this.canvas.style.cursor = carpetHovered ? 'pointer' : 'grab';
+      }
       return;
     }
 
-    const overUi =
-      targetEl &&
-      typeof targetEl.closest === 'function' &&
-      (targetEl.closest('.bottom-dock') ||
-        targetEl.closest('.top-bar') ||
-        targetEl.closest('#spatial-nav-bar') ||
-        targetEl.closest('#info-drawer') ||
-        targetEl.closest('#beta-drawer'));
     const hitSpec = overUi ? null : this._raycastPortalShelfAtClient(clientX, clientY);
     const nextHoverId = hitSpec ? hitSpec.id : null;
 
@@ -5168,9 +6273,9 @@ export class SpatialSceneManager {
           this._prewarmSceneGpuResources(hitSpec.targetSceneId);
         }
       }
-      if (this.canvas && !this._isMouseDragging) {
-        this.canvas.style.cursor = hitSpec ? 'pointer' : 'grab';
-      }
+    }
+    if (this.canvas && !this._isMouseDragging) {
+      this.canvas.style.cursor = hitSpec || carpetHovered ? 'pointer' : 'grab';
     }
     this.onPortalHover(hitSpec, clientX, clientY);
   }
@@ -5642,7 +6747,15 @@ export class SpatialSceneManager {
       throw new Error(`Cannot prewarm GPU resources for scene "${sceneId}" before its textures load`);
     }
     if (obj.gpuPrewarmed) return;
-    const textures = [obj.bgTex, obj.depthTex, obj.midTex, obj.fgTex, obj.refTex];
+    const textures = [
+      obj.bgTex,
+      obj.depthTex,
+      obj.midTex,
+      obj.midDepthTex,
+      obj.fgTex,
+      obj.fgDepthTex,
+      obj.refTex
+    ];
     for (const extra of obj.extraLayers || []) {
       textures.push(extra.tex, extra.depthTex);
     }
@@ -5679,6 +6792,7 @@ export class SpatialSceneManager {
 
     const hostSceneId = spec.hostSceneId || this.currentSceneId;
     const embedDiorama = spec.embedDiorama !== false;
+    const flightRollDeg = typeof spec.flightRollDeg === 'number' ? spec.flightRollDeg : 0.0;
     const targetRest = this._getSceneRestPose(spec.targetSceneId);
     const toPose = embedDiorama
       ? {
@@ -5686,21 +6800,26 @@ export class SpatialSceneManager {
           y: spec.worldY,
           z: spec.worldZ + spec.fitZ,
           yawDeg: targetRest.yawDeg,
-          pitchDeg: targetRest.pitchDeg
+          pitchDeg: targetRest.pitchDeg,
+          rollDeg: flightRollDeg
         }
-      : this._clampPoseForScene(hostSceneId, {
-          x:
-            this.camera.position.x +
-            (spec.worldX - this.camera.position.x) *
-              SCENE_GEOMETRY_SPEC.directPortalApproachTrackXFactor,
-          y:
-            this.camera.position.y +
-            (spec.worldY - this.camera.position.y) *
-              SCENE_GEOMETRY_SPEC.directPortalApproachTrackYFactor,
-          z: this.camera.position.z - SCENE_GEOMETRY_SPEC.directPortalApproachDollyZ,
-          yawDeg: targetRest.yawDeg,
-          pitchDeg: targetRest.pitchDeg
-        });
+      : {
+          ...this._clampPoseForScene(hostSceneId, {
+            x:
+              this.camera.position.x +
+              (spec.worldX - this.camera.position.x) *
+                SCENE_GEOMETRY_SPEC.directPortalApproachTrackXFactor,
+            y:
+              this.camera.position.y +
+              (spec.worldY - this.camera.position.y) *
+                SCENE_GEOMETRY_SPEC.directPortalApproachTrackYFactor,
+            z: this.camera.position.z - SCENE_GEOMETRY_SPEC.directPortalApproachDollyZ,
+            yawDeg: targetRest.yawDeg,
+            pitchDeg: targetRest.pitchDeg,
+            rollDeg: flightRollDeg
+          }),
+          rollDeg: flightRollDeg
+        };
 
     const flightInst = this._portalInstances.find((p) => p.spec.id === spec.id);
     if (flightInst && flightInst.spec.veil) {
@@ -5713,6 +6832,7 @@ export class SpatialSceneManager {
       hostSceneId,
       targetSceneId: spec.targetSceneId,
       embedDiorama,
+      flightRollDeg,
       startTimeMs: performance.now(),
       durationMs: this._rigSpec.portalFlightDurationMs,
       fromPose: {
@@ -5720,7 +6840,8 @@ export class SpatialSceneManager {
         y: this.camera.position.y,
         z: this.camera.position.z,
         yawDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.yaw,
-        pitchDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.pitch
+        pitchDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.pitch,
+        rollDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.roll || 0
       },
       toPose
     };
@@ -5778,12 +6899,19 @@ export class SpatialSceneManager {
       spec.worldZ + SCENE_GEOMETRY_SPEC.cameraNearPlane + 3.0,
       fitCamZ + lambdaP * (this.camera.position.z - childRest.z)
     );
+    const flightRollDeg = typeof spec.flightRollDeg === 'number' ? spec.flightRollDeg : 0.0;
+    const rollRad = THREE.MathUtils.degToRad(spec.dioramaRollDeg || 0.0);
+    const cosR = Math.cos(rollRad);
+    const sinR = Math.sin(rollRad);
+    const dxChild = this.camera.position.x - childRest.x;
+    const dyChild = this.camera.position.y - childRest.y;
     const fromPose = {
-      x: fitCamX + lambdaP * (this.camera.position.x - childRest.x),
-      y: fitCamY + lambdaP * (this.camera.position.y - childRest.y),
+      x: fitCamX + lambdaP * (dxChild * cosR - dyChild * sinR),
+      y: fitCamY + lambdaP * (dxChild * sinR + dyChild * cosR),
       z: mappedFromZ,
       yawDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.yaw,
-      pitchDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.pitch
+      pitchDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.pitch,
+      rollDeg: flightRollDeg
     };
     const hostRest = this._getSceneRestPose(returnHost);
 
@@ -5810,6 +6938,7 @@ export class SpatialSceneManager {
       hostSceneId: returnHost,
       targetSceneId: spec.targetSceneId,
       embedDiorama: true,
+      flightRollDeg,
       startTimeMs: performance.now(),
       durationMs: this._rigSpec.portalFlightDurationMs,
       fromPose,
@@ -5833,48 +6962,69 @@ export class SpatialSceneManager {
     if (hostSceneId === 'fried_yard_installation') {
       return {
         hostSceneId,
-        buttonLabelHe: '🌿 חזרה לחצר ולמיצב',
+        buttonLabelHe: '← חזרה לחצר ולמיצב',
         ariaLabelHe: 'חזרה אל חצר בית פריד והמיצב ׳מרחב לא מוגן 7׳'
       };
     }
     if (hostSceneId === 'fried_house_railing') {
       return {
         hostSceneId,
-        buttonLabelHe: '🏡 חזרה למעקה בבית פריד',
+        buttonLabelHe: '← חזרה למעקה בבית פריד',
         ariaLabelHe: 'חזרה אל המעקה בבית פריד בהרצליה'
       };
     }
     if (hostSceneId === 'denya_living_room') {
       return {
         hostSceneId,
-        buttonLabelHe: '🏠 חזרה לסלון בית דניה',
+        buttonLabelHe: '← חזרה לסלון בית דניה',
         ariaLabelHe: 'חזרה אל סלון בית דניה בחיפה'
       };
     }
     if (hostSceneId === 'denya_couch_guitar') {
       return {
         hostSceneId,
-        buttonLabelHe: '🎸 חזרה לספה והגיטרה בדניה',
+        buttonLabelHe: '← חזרה לספה והגיטרה בדניה',
         ariaLabelHe: 'חזרה אל הספה והגיטרה בסלון בית דניה'
       };
     }
     if (hostSceneId === 'wandering_drawing_1') {
       return {
         hostSceneId,
-        buttonLabelHe: '✏️ חזרה החוצה ל׳שיטוט 1׳',
+        buttonLabelHe: '← חזרה החוצה ל׳שיטוט 1׳',
         ariaLabelHe: 'חזרה מן המגילה אל מרחב ׳שיטוט ברישום 1׳'
       };
     }
     if (hostSceneId === 'tzofen_brick_table') {
       return {
         hostSceneId,
-        buttonLabelHe: '🧱 חזרה אל ׳צופן׳ והשולחן',
+        buttonLabelHe: '← חזרה אל ׳צופן׳ והשולחן',
         ariaLabelHe: 'חזרה מצמרת העץ דרך החלון אל המיצב ׳צופן׳'
+      };
+    }
+    if (hostSceneId === 'bene_beitcha_scroll_foot') {
+      return {
+        hostSceneId,
+        buttonLabelHe: '← חזרה ל׳מגילה וכף רגל׳',
+        ariaLabelHe: 'חזרה אל מיצב המגילה וכף הרגל בבנה ביתך'
+      };
+    }
+    if (hostSceneId === 'bar_giora_bedroom') {
+      return {
+        hostSceneId,
+        buttonLabelHe: '← חזרה לחדר בבר גיורא',
+        ariaLabelHe: 'חזרה אל חדר השינה בבר גיורא בחיפה'
+      };
+    }
+    if (hostSceneId === 'paris_cite_white_table') {
+      return {
+        hostSceneId,
+        buttonLabelHe: '← חזרה לסטודיו בפריז',
+        ariaLabelHe: 'חזרה אל השולחן הלבן בסטודיו Cité des Arts בפריז'
       };
     }
     return {
       hostSceneId,
-      buttonLabelHe: '⊞ חזרה לקיר המדפים',
+      buttonLabelHe: '← חזרה לקיר המדפים',
       ariaLabelHe: 'חזרה אל קיר המדפים התלת-ממדי'
     };
   }
@@ -5991,8 +7141,13 @@ export class SpatialSceneManager {
       if (obj.layer1) {
         const midRatio = (boreZ - obj.sceneMidZ) / boreDistBg;
         const midScale = (innerWorldWidthAtBg * midRatio) / SCENE_GEOMETRY_SPEC.midBaseWidth;
+        const midCenterY = boreY * (1.0 - midRatio);
+        obj.midBasePosX = 0;
+        obj.midBasePosY = midCenterY;
+        obj.midPlaneWorldW = SCENE_GEOMETRY_SPEC.midBaseWidth * midScale;
+        obj.midPlaneWorldH = SCENE_GEOMETRY_SPEC.midBaseHeight * midScale;
         obj.layer1.scale.set(midScale, midScale, 1.0);
-        obj.layer1.position.set(0, boreY * (1.0 - midRatio), obj.sceneMidZ);
+        obj.layer1.position.set(0, midCenterY, obj.sceneMidZ);
         if (obj.layer1.material && obj.layer1.material.uniforms) {
           obj.layer1.material.uniforms.uDistBg.value = Math.max(1.0, boreZ - obj.sceneMidZ);
           obj.layer1.material.uniforms.uOpticalCenterLocalY.value =
@@ -6006,6 +7161,10 @@ export class SpatialSceneManager {
         const fgScale =
           ((innerWorldWidthAtBg * fgRatio) / SCENE_GEOMETRY_SPEC.fgBaseWidth) * fgExpMult;
         const fgCenterY = boreY * (1.0 - fgRatio);
+        obj.fgBasePosX = 0;
+        obj.fgBasePosY = fgCenterY;
+        obj.fgPlaneWorldW = SCENE_GEOMETRY_SPEC.fgBaseWidth * fgScale;
+        obj.fgPlaneWorldH = SCENE_GEOMETRY_SPEC.fgBaseHeight * fgScale;
         obj.layer2.scale.set(fgScale, fgScale, 1.0);
         obj.layer2.position.set(0, fgCenterY, obj.sceneFgZ);
         if (obj.layer2.material && obj.layer2.material.uniforms) {
@@ -6045,14 +7204,25 @@ export class SpatialSceneManager {
           const exExpMult = extra.expanded ? SCENE_GEOMETRY_SPEC.bgExpansionFactor : 1.0;
           const exScale =
             ((innerWorldWidthAtBg * exRatio) / SCENE_GEOMETRY_SPEC.fgBaseWidth) * exExpMult;
+          const exCenterY = boreY * (1.0 - exRatio);
+          extra.basePosX = 0;
+          extra.basePosY = exCenterY;
+          extra.basePosZ = extra.zPos;
+          extra.baseScale = exScale;
+          extra.planeWorldW = SCENE_GEOMETRY_SPEC.fgBaseWidth * exScale;
+          extra.planeWorldH = SCENE_GEOMETRY_SPEC.fgBaseHeight * exScale;
           extra.mesh.scale.set(exScale, exScale, 1.0);
-          extra.mesh.position.set(0, boreY * (1.0 - exRatio), extra.zPos);
+          extra.mesh.position.set(0, exCenterY, extra.zPos);
+          extra.mesh.rotation.set(0, 0, 0);
           if (extra.mesh.material && extra.mesh.material.uniforms) {
             extra.mesh.material.uniforms.uDistBg.value = Math.max(1.0, boreZ - extra.zPos);
             extra.mesh.material.uniforms.uOpticalCenterLocalY.value =
               (boreY * exRatio) / Math.max(1e-5, exScale);
           }
         }
+      }
+      if (cfg.carpetUnrollRig) {
+        this._applyCarpetUnrollTransform(key);
       }
     }
 
@@ -6399,24 +7569,70 @@ export class SpatialSceneManager {
 
     const yawRad = THREE.MathUtils.degToRad(this.poseTarget.yawDeg + this._gyroYawDeg);
     const dollyVec = this._computeTunnelBoreDollyDelta(forward, yawRad);
+    const prevX = this.poseTarget.x;
+    const prevY = this.poseTarget.y;
+    const prevZ = this.poseTarget.z;
     const nextClamped = this._clampPose({
       x: this.poseTarget.x + dollyVec.dx + Math.cos(yawRad) * right,
       y: this.poseTarget.y + dollyVec.dy + up,
       z: this.poseTarget.z + dollyVec.dz - Math.sin(yawRad) * right,
       yawDeg: this.poseTarget.yawDeg,
-      pitchDeg: this.poseTarget.pitchDeg
+      pitchDeg: this.poseTarget.pitchDeg,
+      rollDeg: this.poseTarget.rollDeg || 0
     });
+    const actualMove = Math.hypot(
+      nextClamped.x - prevX,
+      nextClamped.y - prevY,
+      nextClamped.z - prevZ
+    );
     this.poseTarget.x = nextClamped.x;
     this.poseTarget.y = nextClamped.y;
     this.poseTarget.z = nextClamped.z;
+
+    if (window.__sendDiag) {
+      const now = Date.now();
+      if (actualMove < 0.05) {
+        if (now - this._lastDiagKbClampTs > 1500) {
+          this._lastDiagKbClampTs = now;
+          window.__sendDiag('keyboard_clamp_saturated', {
+            keys: Array.from(this._keysHeld),
+            scene: this.currentSceneId,
+            pose: {
+              x: Math.round(this.poseTarget.x),
+              y: Math.round(this.poseTarget.y),
+              z: Math.round(this.poseTarget.z),
+              yaw: Number(this.poseTarget.yawDeg.toFixed(1)),
+              pitch: Number(this.poseTarget.pitchDeg.toFixed(1))
+            },
+            desired: {
+              forward: Number(forward.toFixed(2)),
+              right: Number(right.toFixed(2)),
+              up: Number(up.toFixed(2))
+            }
+          });
+        }
+      } else if (now - this._lastDiagKbMoveTs > 1500) {
+        this._lastDiagKbMoveTs = now;
+        window.__sendDiag('keyboard_nav_move', {
+          keys: Array.from(this._keysHeld),
+          scene: this.currentSceneId,
+          pose: {
+            x: Math.round(this.poseTarget.x),
+            y: Math.round(this.poseTarget.y),
+            z: Math.round(this.poseTarget.z)
+          }
+        });
+      }
+    }
   }
 
   _applyPoseToCameraObject(pose) {
+    const rollDeg = typeof pose.rollDeg === 'number' ? pose.rollDeg : 0;
     this.camera.position.set(pose.x, pose.y, pose.z);
     this.camera.rotation.set(
       THREE.MathUtils.degToRad(pose.pitchDeg),
       THREE.MathUtils.degToRad(pose.yawDeg),
-      0
+      THREE.MathUtils.degToRad(rollDeg)
     );
     this.camera.updateMatrixWorld();
 
@@ -6425,6 +7641,7 @@ export class SpatialSceneManager {
     window.__PROTOTYPE_STATE__.cameraPosition.z = this.camera.position.z;
     window.__PROTOTYPE_STATE__.cameraRotationDeg.yaw = pose.yawDeg;
     window.__PROTOTYPE_STATE__.cameraRotationDeg.pitch = pose.pitchDeg;
+    window.__PROTOTYPE_STATE__.cameraRotationDeg.roll = rollDeg;
   }
 
   _syncCameraTransform() {
@@ -6456,7 +7673,8 @@ export class SpatialSceneManager {
         this.poseCurrent.pitchDeg +
         gyroPitch +
         this._hoverNorm.y * SCENE_GEOMETRY_SPEC.hoverAmbientPitchDeg +
-        this.pointer.y * SCENE_GEOMETRY_SPEC.pointerExcursionPitchDeg
+        this.pointer.y * SCENE_GEOMETRY_SPEC.pointerExcursionPitchDeg,
+      rollDeg: this.poseCurrent.rollDeg || 0
     });
 
     this._applyPoseToCameraObject(combinedPose);
@@ -6564,6 +7782,7 @@ export class SpatialSceneManager {
     this._lastFrameTimeMs = nowMs;
 
     this._stepPortalOccluderAnimations(nowMs);
+    this._stepCarpetUnrollAnimations(nowMs);
 
     if (this.gyroActive) {
       const gyroAlpha = 1.0 - Math.exp(-dtSec * this._rigSpec.gyroSmoothingRate);
@@ -6588,7 +7807,8 @@ export class SpatialSceneManager {
         y: THREE.MathUtils.lerp(flight.fromPose.y, flight.toPose.y, ease),
         z: THREE.MathUtils.lerp(flight.fromPose.z, flight.toPose.z, ease),
         yawDeg: THREE.MathUtils.lerp(flight.fromPose.yawDeg, flight.toPose.yawDeg, ease),
-        pitchDeg: THREE.MathUtils.lerp(flight.fromPose.pitchDeg, flight.toPose.pitchDeg, ease)
+        pitchDeg: THREE.MathUtils.lerp(flight.fromPose.pitchDeg, flight.toPose.pitchDeg, ease),
+        rollDeg: THREE.MathUtils.lerp(flight.fromPose.rollDeg || 0, flight.toPose.rollDeg || 0, ease)
       };
       this._applyPoseToCameraObject(flightPose);
 
@@ -6726,13 +7946,18 @@ export class SpatialSceneManager {
           this.renderer.render(this.sceneObjects[flight.hostSceneId].scene, this.camera);
 
           const targetRest = this._getSceneRestPose(flight.targetSceneId);
-          const inPose = this._clampPoseForScene(flight.targetSceneId, {
-            x: targetRest.x,
-            y: targetRest.y,
-            z: targetRest.z + SCENE_GEOMETRY_SPEC.transitionGlideInOffsetZ * (1.0 - ease),
-            yawDeg: targetRest.yawDeg,
-            pitchDeg: targetRest.pitchDeg
-          });
+          const inRollDeg = -(flight.flightRollDeg || 0.0) * (1.0 - ease);
+          const inPose = {
+            ...this._clampPoseForScene(flight.targetSceneId, {
+              x: targetRest.x,
+              y: targetRest.y,
+              z: targetRest.z + SCENE_GEOMETRY_SPEC.transitionGlideInOffsetZ * (1.0 - ease),
+              yawDeg: targetRest.yawDeg,
+              pitchDeg: targetRest.pitchDeg,
+              rollDeg: inRollDeg
+            }),
+            rollDeg: inRollDeg
+          };
           this._applyPoseToCameraObject(inPose);
           this._updateScenePlaneVisibilitiesAndOpacities(flight.targetSceneId);
           if (this._sceneNeedsLocalClipping(flight.targetSceneId)) {
@@ -6802,6 +8027,9 @@ export class SpatialSceneManager {
     this.poseCurrent.yawDeg += (this.poseTarget.yawDeg - this.poseCurrent.yawDeg) * poseDamping;
     this.poseCurrent.pitchDeg +=
       (this.poseTarget.pitchDeg - this.poseCurrent.pitchDeg) * poseDamping;
+    this.poseCurrent.rollDeg =
+      (this.poseCurrent.rollDeg || 0) +
+      ((this.poseTarget.rollDeg || 0) - (this.poseCurrent.rollDeg || 0)) * poseDamping;
 
     this._syncCameraTransform();
 

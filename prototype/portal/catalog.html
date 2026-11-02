@@ -4,19 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>קטלוג צילומים והעלאת תמונות — תמר (תמי) שפר | פורטל משפחתי</title>
+  <link rel="stylesheet" href="/css/fonts.css" />
   <link rel="stylesheet" href="/css/portal.css" />
   <link rel="stylesheet" href="/css/feedback.css" />
 </head>
 <body>
   <header class="portal-topbar">
     <div class="portal-brand">
-      <h1>🖼️ ארכיון צילומים והעלאת תמונות משפחתיות</h1>
-      <span class="portal-secret-chip">🤫 הפתעה ליום הולדת 70 — סודי!</span>
+      <h1>ארכיון צילומים והעלאת תמונות משפחתיות</h1>
+      <span class="portal-secret-chip">הפתעה ליום הולדת 70 — סודי</span>
     </div>
     <nav class="portal-nav-links" aria-label="ניווט ראשי">
-      <a class="portal-nav-link" href="/">🏛️ סיור מרחבי (3D)</a>
-      <a class="portal-nav-link" href="/wiki">📖 ויקי ביוגרפי (31 ערכים)</a>
-      <a class="portal-nav-link active" href="/catalog">🖼️ קטלוג והעלאת תמונות</a>
+      <a class="portal-nav-link" href="/">סיור מרחבי (3D)</a>
+      <a class="portal-nav-link" href="/wiki">ויקי ביוגרפי (31 ערכים)</a>
+      <a class="portal-nav-link active" href="/catalog">קטלוג והעלאת תמונות</a>
     </nav>
     <div class="portal-actions" id="portal-beta-actions"></div>
   </header>
@@ -135,18 +136,27 @@
         class="portal-input"
         placeholder="חיפוש חופשי בקטלוג לפי כותרת, כיתוב, מקום, אדם או שם קובץ..."
       />
-      <div class="beta-chips-row" id="catalog-filter-chips">
-        <button type="button" class="beta-chip active" data-cat-filter="all">הכל</button>
-        <button type="button" class="beta-chip" data-cat-filter="src:drop_folder_imports">📥 העלאות משפחה</button>
-        <button type="button" class="beta-chip" data-cat-filter="place:Herzliya">🏡 הרצליה</button>
-        <button type="button" class="beta-chip" data-cat-filter="place:Arlozorov">🏢 ארלוזורוב 87</button>
-        <button type="button" class="beta-chip" data-cat-filter="place:Einstein">🌳 איינשטיין 33א</button>
-        <button type="button" class="beta-chip" data-cat-filter="place:Denya">🏛️ דניה (גרינבוים 80)</button>
-        <button type="button" class="beta-chip" data-cat-filter="place:Southern France">🌻 דרום צרפת / מרסיי</button>
-        <button type="button" class="beta-chip" data-cat-filter="place:Paris">🗼 פריז (Cité)</button>
-        <button type="button" class="beta-chip" data-cat-filter="src:wordpress_blog">📰 בלוג דרכי עצים</button>
-        <button type="button" class="beta-chip" data-cat-filter="src:darchei_etzim_pdfs">📕 ספרי דרכי עצים</button>
-        <button type="button" class="beta-chip" data-cat-filter="art">🎨 יצירות ותערוכות</button>
+      <div class="catalog-filter-section">
+        <span class="catalog-filter-row-label">מקום / מקור:</span>
+        <div class="beta-chips-row" id="catalog-filter-chips">
+          <button type="button" class="beta-chip active" data-cat-filter="all">הכל</button>
+          <button type="button" class="beta-chip" data-cat-filter="src:drop_folder_imports">העלאות משפחה</button>
+          <button type="button" class="beta-chip" data-cat-filter="place:Herzliya">הרצליה</button>
+          <button type="button" class="beta-chip" data-cat-filter="place:Arlozorov">ארלוזורוב 87</button>
+          <button type="button" class="beta-chip" data-cat-filter="place:Einstein">איינשטיין 33א</button>
+          <button type="button" class="beta-chip" data-cat-filter="place:Denya">דניה (גרינבוים 80)</button>
+          <button type="button" class="beta-chip" data-cat-filter="place:Southern France">דרום צרפת / מרסיי</button>
+          <button type="button" class="beta-chip" data-cat-filter="place:Paris">פריז (Cité)</button>
+          <button type="button" class="beta-chip" data-cat-filter="src:wordpress_blog">בלוג דרכי עצים</button>
+          <button type="button" class="beta-chip" data-cat-filter="src:darchei_etzim_pdfs">ספרי דרכי עצים</button>
+          <button type="button" class="beta-chip" data-cat-filter="art">יצירות ותערוכות</button>
+        </div>
+      </div>
+      <div class="catalog-filter-section" id="catalog-people-filter-wrap">
+        <span class="catalog-filter-row-label">סינון לפי אנשים:</span>
+        <div class="beta-chips-row" id="catalog-people-filter-chips" role="group" aria-label="סינון לפי אנשים">
+          <button type="button" class="beta-chip active" data-person-filter="__all__">כל האנשים</button>
+        </div>
       </div>
     </section>
 

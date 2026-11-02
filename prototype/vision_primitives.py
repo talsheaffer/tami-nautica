@@ -2729,8 +2729,10 @@ def build_ceiling_mirror_reflection_layer(
     L'Ombrière du Vieux-Port stainless-steel pavilion):
     - Maps each floating artwork's direct center p_direct toward mirror-normal vanishing point c_vp
       via p_refl = c_vp + rho * (p_direct - c_vp), with rho = h / (2 - h).
-    - Vertically flips each scaled element across the horizontal ceiling mirror plane and modulates
-      brightness/coolness according to local sunlit vs shaded mirror illumination.
+    - Because the camera looks upward along the mirror normal (+Z), transverse (X, Y) axes lie
+      parallel to the horizontal mirror plane and are NOT inverted—only optical depth Z reflects,
+      preserving each element's upright (X, Y) orientation while modulating brightness/coolness
+      according to local sunlit vs shaded mirror illumination.
     """
     refl_layer = Image.new("RGBA", (canvas_width, canvas_height), (0, 0, 0, 0))
     mirror_np = np.asarray(
@@ -2770,12 +2772,12 @@ def build_ceiling_mirror_reflection_layer(
         rh = max(14, int(round(direct_patch.height * rho)))
 
         scaled = direct_patch.resize((rw, rh), Image.Resampling.LANCZOS)
-        flipped = ImageOps.flip(scaled)
+        reflected = scaled
         blur_sigma = fe_cfg.mirror_blur_base_sigma + fe_cfg.mirror_blur_dist_gain * (1.0 - h_norm)
         if blur_sigma > 0.15:
-            flipped = flipped.filter(ImageFilter.GaussianBlur(radius=blur_sigma))
+            reflected = reflected.filter(ImageFilter.GaussianBlur(radius=blur_sigma))
 
-        arr = np.asarray(flipped, dtype=np.float32).copy()
+        arr = np.asarray(reflected, dtype=np.float32).copy()
         rgb = arr[:, :, :3]
         alpha = arr[:, :, 3] / 255.0
 

@@ -168,30 +168,20 @@ class DiningRoomBackgroundConfig:
     table_protect_min_component_px: int
     table_items_max_pinhole_px: int
     table_items_min_component_px: int
+    table_protect_alpha_u8: int
+    table_items_alpha_u8: int
     table_wall_min_rgb_exclude: float
-    table_boundary_erode_px: int
-    table_items_dilate_px: int
-    table_heal_roi_native_xyxy: tuple[int, int, int, int]
-    table_heal_lama_dilate_px: int
-    table_heal_lama_blur_sigma: float
-    table_heal_feather_px: float
-    table_cutout_occluder_alpha_u8: int
+    table_hole_fill_max_y_native: int
+    cutout_alpha_threshold_u8: int
     emp_table_suppress_boxes_inner: tuple[BoundingBoxPrompt, ...]
-    extra_occlusion_boxes_native: tuple[BoundingBoxPrompt, ...]
     occlusion_dilate_inner_px: int
     lowfreq_harmonize_sigma: float
-    keep_word_feather_px: float
-    missing_lama_dilate_px: int
-    missing_lama_blur_sigma: float
-    missing_blend_feather_px: float
-    doorway_heal_inner_xyxy: tuple[int, int, int, int]
-    doorway_dark_luma_max: float
-    doorway_lama_dilate_px: int
-    doorway_lama_blur_sigma: float
-    doorway_blend_feather_px: float
-    study_floor_heal_inner_xyxy: tuple[int, int, int, int]
-    study_floor_dark_luma_max: float
-    inner_core_inset_px: int
+    side_margin_seam_width_px: int
+    occ_lama_dilate_px: int
+    occ_lama_blur_sigma: float
+    occ_interior_feather_px: float
+    occ_table_guard_dist_px: float
+    bottom_scaffold_exclude_boxes_inner: tuple[BoundingBoxPrompt, ...]
     scaffold_smooth_sigma: float
     left_floor_anchor_x: float
     left_floor_anchor_y: float
@@ -217,7 +207,6 @@ class DiningRoomBackgroundConfig:
     lama_outpaint_blur_ds_sigma: float
     lama_band_fade_start_px: float
     lama_band_fade_span_px: float
-    inner_seam_feather_px: float
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -231,32 +220,24 @@ class DiningRoomBackgroundConfig:
             "table_protect_min_component_px": self.table_protect_min_component_px,
             "table_items_max_pinhole_px": self.table_items_max_pinhole_px,
             "table_items_min_component_px": self.table_items_min_component_px,
+            "table_protect_alpha_u8": self.table_protect_alpha_u8,
+            "table_items_alpha_u8": self.table_items_alpha_u8,
             "table_wall_min_rgb_exclude": self.table_wall_min_rgb_exclude,
-            "table_boundary_erode_px": self.table_boundary_erode_px,
-            "table_items_dilate_px": self.table_items_dilate_px,
-            "table_heal_roi_native_xyxy": list(self.table_heal_roi_native_xyxy),
-            "table_heal_lama_dilate_px": self.table_heal_lama_dilate_px,
-            "table_heal_lama_blur_sigma": self.table_heal_lama_blur_sigma,
-            "table_heal_feather_px": self.table_heal_feather_px,
-            "table_cutout_occluder_alpha_u8": self.table_cutout_occluder_alpha_u8,
+            "table_hole_fill_max_y_native": self.table_hole_fill_max_y_native,
+            "cutout_alpha_threshold_u8": self.cutout_alpha_threshold_u8,
             "emp_table_suppress_boxes_inner": [
                 b.to_dict() for b in self.emp_table_suppress_boxes_inner
             ],
-            "extra_occlusion_boxes_native": [b.to_dict() for b in self.extra_occlusion_boxes_native],
             "occlusion_dilate_inner_px": self.occlusion_dilate_inner_px,
             "lowfreq_harmonize_sigma": self.lowfreq_harmonize_sigma,
-            "keep_word_feather_px": self.keep_word_feather_px,
-            "missing_lama_dilate_px": self.missing_lama_dilate_px,
-            "missing_lama_blur_sigma": self.missing_lama_blur_sigma,
-            "missing_blend_feather_px": self.missing_blend_feather_px,
-            "doorway_heal_inner_xyxy": list(self.doorway_heal_inner_xyxy),
-            "doorway_dark_luma_max": self.doorway_dark_luma_max,
-            "doorway_lama_dilate_px": self.doorway_lama_dilate_px,
-            "doorway_lama_blur_sigma": self.doorway_lama_blur_sigma,
-            "doorway_blend_feather_px": self.doorway_blend_feather_px,
-            "study_floor_heal_inner_xyxy": list(self.study_floor_heal_inner_xyxy),
-            "study_floor_dark_luma_max": self.study_floor_dark_luma_max,
-            "inner_core_inset_px": self.inner_core_inset_px,
+            "side_margin_seam_width_px": self.side_margin_seam_width_px,
+            "occ_lama_dilate_px": self.occ_lama_dilate_px,
+            "occ_lama_blur_sigma": self.occ_lama_blur_sigma,
+            "occ_interior_feather_px": self.occ_interior_feather_px,
+            "occ_table_guard_dist_px": self.occ_table_guard_dist_px,
+            "bottom_scaffold_exclude_boxes_inner": [
+                b.to_dict() for b in self.bottom_scaffold_exclude_boxes_inner
+            ],
             "scaffold_smooth_sigma": self.scaffold_smooth_sigma,
             "left_floor_anchor_x": self.left_floor_anchor_x,
             "left_floor_anchor_y": self.left_floor_anchor_y,
@@ -282,7 +263,6 @@ class DiningRoomBackgroundConfig:
             "lama_outpaint_blur_ds_sigma": self.lama_outpaint_blur_ds_sigma,
             "lama_band_fade_start_px": self.lama_band_fade_start_px,
             "lama_band_fade_span_px": self.lama_band_fade_span_px,
-            "inner_seam_feather_px": self.inner_seam_feather_px,
         }
 
     @classmethod
@@ -290,9 +270,6 @@ class DiningRoomBackgroundConfig:
         isw = data["inner_scaled_wh"]
         tpl = data["template_inner_xyxy"]
         ssr = data["scale_search_range_step"]
-        thr = data["table_heal_roi_native_xyxy"]
-        dhy = data["doorway_heal_inner_xyxy"]
-        sfh = data["study_floor_heal_inner_xyxy"]
         wgp = data["wall_grain_patch_inner_xyxy"]
         tgp = data["terrazzo_grain_patch_inner_xyxy"]
         lds = data["lama_outpaint_downsample_wh"]
@@ -311,34 +288,25 @@ class DiningRoomBackgroundConfig:
             table_protect_min_component_px=int(data["table_protect_min_component_px"]),
             table_items_max_pinhole_px=int(data["table_items_max_pinhole_px"]),
             table_items_min_component_px=int(data["table_items_min_component_px"]),
+            table_protect_alpha_u8=int(data["table_protect_alpha_u8"]),
+            table_items_alpha_u8=int(data["table_items_alpha_u8"]),
             table_wall_min_rgb_exclude=float(data["table_wall_min_rgb_exclude"]),
-            table_boundary_erode_px=int(data["table_boundary_erode_px"]),
-            table_items_dilate_px=int(data["table_items_dilate_px"]),
-            table_heal_roi_native_xyxy=(int(thr[0]), int(thr[1]), int(thr[2]), int(thr[3])),
-            table_heal_lama_dilate_px=int(data["table_heal_lama_dilate_px"]),
-            table_heal_lama_blur_sigma=float(data["table_heal_lama_blur_sigma"]),
-            table_heal_feather_px=float(data["table_heal_feather_px"]),
-            table_cutout_occluder_alpha_u8=int(data["table_cutout_occluder_alpha_u8"]),
+            table_hole_fill_max_y_native=int(data["table_hole_fill_max_y_native"]),
+            cutout_alpha_threshold_u8=int(data["cutout_alpha_threshold_u8"]),
             emp_table_suppress_boxes_inner=tuple(
                 BoundingBoxPrompt.from_dict(b) for b in data["emp_table_suppress_boxes_inner"]
             ),
-            extra_occlusion_boxes_native=tuple(
-                BoundingBoxPrompt.from_dict(b) for b in data["extra_occlusion_boxes_native"]
-            ),
             occlusion_dilate_inner_px=int(data["occlusion_dilate_inner_px"]),
             lowfreq_harmonize_sigma=float(data["lowfreq_harmonize_sigma"]),
-            keep_word_feather_px=float(data["keep_word_feather_px"]),
-            missing_lama_dilate_px=int(data["missing_lama_dilate_px"]),
-            missing_lama_blur_sigma=float(data["missing_lama_blur_sigma"]),
-            missing_blend_feather_px=float(data["missing_blend_feather_px"]),
-            doorway_heal_inner_xyxy=(int(dhy[0]), int(dhy[1]), int(dhy[2]), int(dhy[3])),
-            doorway_dark_luma_max=float(data["doorway_dark_luma_max"]),
-            doorway_lama_dilate_px=int(data["doorway_lama_dilate_px"]),
-            doorway_lama_blur_sigma=float(data["doorway_lama_blur_sigma"]),
-            doorway_blend_feather_px=float(data["doorway_blend_feather_px"]),
-            study_floor_heal_inner_xyxy=(int(sfh[0]), int(sfh[1]), int(sfh[2]), int(sfh[3])),
-            study_floor_dark_luma_max=float(data["study_floor_dark_luma_max"]),
-            inner_core_inset_px=int(data["inner_core_inset_px"]),
+            side_margin_seam_width_px=int(data["side_margin_seam_width_px"]),
+            occ_lama_dilate_px=int(data["occ_lama_dilate_px"]),
+            occ_lama_blur_sigma=float(data["occ_lama_blur_sigma"]),
+            occ_interior_feather_px=float(data["occ_interior_feather_px"]),
+            occ_table_guard_dist_px=float(data["occ_table_guard_dist_px"]),
+            bottom_scaffold_exclude_boxes_inner=tuple(
+                BoundingBoxPrompt.from_dict(b)
+                for b in data["bottom_scaffold_exclude_boxes_inner"]
+            ),
             scaffold_smooth_sigma=float(data["scaffold_smooth_sigma"]),
             left_floor_anchor_x=float(data["left_floor_anchor_x"]),
             left_floor_anchor_y=float(data["left_floor_anchor_y"]),
@@ -364,7 +332,6 @@ class DiningRoomBackgroundConfig:
             lama_outpaint_blur_ds_sigma=float(data["lama_outpaint_blur_ds_sigma"]),
             lama_band_fade_start_px=float(data["lama_band_fade_start_px"]),
             lama_band_fade_span_px=float(data["lama_band_fade_span_px"]),
-            inner_seam_feather_px=float(data["inner_seam_feather_px"]),
         )
 
 
@@ -691,7 +658,6 @@ class FriedTableHybridSceneConfig:
     dining_catalog_id: str
     dining_source_relpath: str
     outpaint_raw_relpath: str
-    base_inner_outpaint_relpath: str
     lama_inner_output_filename: str
     bg_output_filename: str
     depth_output_filename: str
@@ -753,7 +719,6 @@ class FriedTableHybridSceneConfig:
             "dining_catalog_id": self.dining_catalog_id,
             "dining_source_relpath": self.dining_source_relpath,
             "outpaint_raw_relpath": self.outpaint_raw_relpath,
-            "base_inner_outpaint_relpath": self.base_inner_outpaint_relpath,
             "lama_inner_output_filename": self.lama_inner_output_filename,
             "bg_output_filename": self.bg_output_filename,
             "depth_output_filename": self.depth_output_filename,
@@ -817,7 +782,6 @@ class FriedTableHybridSceneConfig:
             dining_catalog_id=str(data["dining_catalog_id"]),
             dining_source_relpath=str(data["dining_source_relpath"]),
             outpaint_raw_relpath=str(data["outpaint_raw_relpath"]),
-            base_inner_outpaint_relpath=str(data["base_inner_outpaint_relpath"]),
             lama_inner_output_filename=str(data["lama_inner_output_filename"]),
             bg_output_filename=str(data["bg_output_filename"]),
             depth_output_filename=str(data["depth_output_filename"]),
@@ -893,7 +857,6 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
         dining_catalog_id="IMG_WORD_0200",
         dining_source_relpath="media/wordpress_blog/wp_wide_img_0293_e24e32b8.jpg",
         outpaint_raw_relpath="prototype/assets/outpaint_sources/scene11_fried_table_hybrid_outpaint_raw.jpg",
-        base_inner_outpaint_relpath="prototype/assets/outpaint_sources/scene11_fried_table_hybrid_base_1500x1000.jpg",
         lama_inner_output_filename="scene11_fried_table_hybrid_lama_inner.jpg",
         bg_output_filename="scene11_fried_table_hybrid_bg_inpainted.jpg",
         depth_output_filename="scene11_fried_table_hybrid_depth.png",
@@ -1064,37 +1027,28 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
             table_protect_min_component_px=400,
             table_items_max_pinhole_px=8000,
             table_items_min_component_px=200,
+            table_protect_alpha_u8=96,
+            table_items_alpha_u8=64,
             table_wall_min_rgb_exclude=180.0,
-            table_boundary_erode_px=7,
-            table_items_dilate_px=6,
-            table_heal_roi_native_xyxy=(420, 610, 1020, 920),
-            table_heal_lama_dilate_px=5,
-            table_heal_lama_blur_sigma=1.5,
-            table_heal_feather_px=5.0,
-            table_cutout_occluder_alpha_u8=64,
+            table_hole_fill_max_y_native=1090,
+            cutout_alpha_threshold_u8=8,
             emp_table_suppress_boxes_inner=(
                 BoundingBoxPrompt(x0=205, y0=678, x1=254, y1=786),
                 BoundingBoxPrompt(x0=225, y0=785, x1=860, y1=1000),
-                BoundingBoxPrompt(x0=815, y0=540, x1=905, y1=845),
+                BoundingBoxPrompt(x0=815, y0=535, x1=985, y1=855),
             ),
-            extra_occlusion_boxes_native=(
-                BoundingBoxPrompt(x0=1450, y0=975, x1=1600, y1=1200),
-                BoundingBoxPrompt(x0=1260, y0=470, x1=1360, y1=1180),
-            ),
-            occlusion_dilate_inner_px=29,
+            occlusion_dilate_inner_px=15,
             lowfreq_harmonize_sigma=48.0,
-            keep_word_feather_px=22.0,
-            missing_lama_dilate_px=14,
-            missing_lama_blur_sigma=3.0,
-            missing_blend_feather_px=16.0,
-            doorway_heal_inner_xyxy=(878, 530, 972, 748),
-            doorway_dark_luma_max=135.0,
-            doorway_lama_dilate_px=14,
-            doorway_lama_blur_sigma=2.5,
-            doorway_blend_feather_px=14.0,
-            study_floor_heal_inner_xyxy=(1003, 584, 1098, 768),
-            study_floor_dark_luma_max=68.0,
-            inner_core_inset_px=24,
+            side_margin_seam_width_px=12,
+            occ_lama_dilate_px=10,
+            occ_lama_blur_sigma=2.0,
+            occ_interior_feather_px=4.0,
+            occ_table_guard_dist_px=4.0,
+            bottom_scaffold_exclude_boxes_inner=(
+                BoundingBoxPrompt(x0=190, y0=905, x1=860, y1=1000),
+                BoundingBoxPrompt(x0=1275, y0=810, x1=1500, y1=1000),
+                BoundingBoxPrompt(x0=1385, y0=0, x1=1500, y1=460),
+            ),
             scaffold_smooth_sigma=42.0,
             left_floor_anchor_x=680.0,
             left_floor_anchor_y=1335.0,
@@ -1120,14 +1074,13 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
             lama_outpaint_blur_ds_sigma=1.5,
             lama_band_fade_start_px=275.0,
             lama_band_fade_span_px=95.0,
-            inner_seam_feather_px=24.0,
         ),
         michael_mid=DiningFamilyLayerConfig(
             layer_id="michael_mid",
             label_he="סבא מיכאל פריד והנכד מצד שמאל של השולחן",
             sam_prompts=(
                 SamPointGroupPrompt(
-                    box=BoundingBoxPrompt(x0=250, y0=342, x1=515, y1=685),
+                    box=BoundingBoxPrompt(x0=250, y0=356, x1=515, y1=685),
                     points_xy=(
                         (395.0, 368.0),
                         (395.0, 425.0),
@@ -1135,9 +1088,9 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
                         (465.0, 478.0),
                         (295.0, 560.0),
                         (500.0, 585.0),
-                        (395.0, 332.0),
-                        (335.0, 336.0),
-                        (455.0, 336.0),
+                        (395.0, 348.0),
+                        (335.0, 348.0),
+                        (455.0, 348.0),
                     ),
                     point_labels=(1, 1, 1, 1, 1, 1, 0, 0, 0),
                 ),
@@ -1165,18 +1118,18 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
                 ),
             ),
             sam_exclude_boxes=(
-                BoundingBoxPrompt(x0=0, y0=0, x1=1600, y1=342),
+                BoundingBoxPrompt(x0=0, y0=0, x1=1600, y1=356),
                 BoundingBoxPrompt(x0=0, y0=0, x1=186, y1=1200),
                 BoundingBoxPrompt(x0=578, y0=0, x1=1600, y1=1200),
                 BoundingBoxPrompt(x0=0, y0=872, x1=1600, y1=1200),
             ),
             oriented_matte_boxes=(
                 OrientedMatteBoxSpec(
-                    box=BoundingBoxPrompt(x0=340, y0=342, x1=468, y1=468),
+                    box=BoundingBoxPrompt(x0=340, y0=356, x1=468, y1=468),
                     upright_angle_deg=0.0,
                     taper_margin_px=14,
                     sam_core_erode_px=4,
-                    exclude_boxes=(BoundingBoxPrompt(x0=0, y0=0, x1=1600, y1=344),),
+                    exclude_boxes=(BoundingBoxPrompt(x0=0, y0=0, x1=1600, y1=356),),
                 ),
                 OrientedMatteBoxSpec(
                     box=BoundingBoxPrompt(x0=340, y0=485, x1=475, y1=635),
@@ -1188,7 +1141,7 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
             support_dilate_px=30,
             max_pinhole_fill_px=8000,
             min_major_component_px=5000,
-            top_clear_y=342,
+            top_clear_y=356,
         ),
         ahuva_fg=DiningFamilyLayerConfig(
             layer_id="ahuva_fg",
@@ -1790,19 +1743,19 @@ def _mirror_tile_highpass_grain(
     return np.tile(tile_hv, (reps_y, reps_x, 1))[:th, :tw].astype(np.float32)
 
 
-def _heal_tabletop_items_preserving_table_boundaries(
+def _extract_unoccluded_table_mask_native(
     word_rgb: Image.Image,
     mid_a: np.ndarray,
     fg_a: np.ndarray,
     chair_a: np.ndarray,
     bg_cfg: DiningRoomBackgroundConfig,
     sam_extractor: SamBoxMaskExtractor,
-    lama_inpainter: LamaOcclusionInpainter,
-) -> tuple[Image.Image, np.ndarray]:
+) -> np.ndarray:
     """
-    Segments the authentic dining table + paisley runner + wooden legs on `word_rgb` (`1600x1200`)
-    and heals ONLY the interior tabletop book & yellow folder (`>= table_boundary_erode_px` inside
-    every outer table/leg boundary) via neural `LaMa`, returning `(word_healed_rgb, unoccluded_table_native)`.
+    Segments the entire visible dining table (red tablecloth, green paisley runner, white book,
+    yellow document folder, crimson skirt, and dark wooden legs) on `word_rgb` (`1600x1200`)
+    outside the people/front-chair cutouts `(mid_a <= 8) & (fg_a <= 8) & (chair_a <= 8)` so
+    100% of the unoccluded dining table remains untouched original `IMG_WORD_0200`.
     """
     word_np = np.asarray(word_rgb, dtype=np.uint8)
     prot_u8 = sam_extractor.segment_point_groups(
@@ -1820,52 +1773,20 @@ def _heal_tabletop_items_preserving_table_boundaries(
         bg_cfg.table_items_min_component_px,
     )
 
-    wall_bright = (word_np.min(axis=2) > bg_cfg.table_wall_min_rgb_exclude) & (items_u8 < 64)
-    prot_bool = ((prot_u8 >= 96) | (items_u8 >= 64)) & (~wall_bright)
-    prot_bool[:1090, :] = ndi.binary_fill_holes(prot_bool[:1090, :])
+    wall_bright = (word_np.min(axis=2) > bg_cfg.table_wall_min_rgb_exclude) & (
+        items_u8 < bg_cfg.table_items_alpha_u8
+    )
+    prot_bool = (
+        (prot_u8 >= bg_cfg.table_protect_alpha_u8) | (items_u8 >= bg_cfg.table_items_alpha_u8)
+    ) & (~wall_bright)
+    fill_max_y = min(prot_bool.shape[0], bg_cfg.table_hole_fill_max_y_native)
+    prot_bool[:fill_max_y, :] = ndi.binary_fill_holes(prot_bool[:fill_max_y, :])
 
-    er_r = max(1, int(bg_cfg.table_boundary_erode_px))
-    k_er = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * er_r + 1, 2 * er_r + 1))
-    interior_safe = cv2.erode(prot_bool.astype(np.uint8), k_er, iterations=1) > 0
-
-    dil_r = max(1, int(bg_cfg.table_items_dilate_px))
-    k_it = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * dil_r + 1, 2 * dil_r + 1))
-    items_dil = cv2.dilate((items_u8 >= 64).astype(np.uint8), k_it, iterations=1) > 0
-    heal_mask_full = items_dil & interior_safe
-
-    out_np = word_np.copy()
-    if np.any(heal_mask_full):
-        rx0, ry0, rx1, ry1 = bg_cfg.table_heal_roi_native_xyxy
-        roi_img = word_rgb.crop((rx0, ry0, rx1, ry1))
-        roi_mask_u8 = (heal_mask_full[ry0:ry1, rx0:rx1].astype(np.uint8)) * 255
-        healed_roi = lama_inpainter.inpaint_background(
-            roi_img,
-            roi_mask_u8,
-            dilation_radius_px=bg_cfg.table_heal_lama_dilate_px,
-            mask_blur_sigma=bg_cfg.table_heal_lama_blur_sigma,
-        )
-        dist_in_safe = ndi.distance_transform_edt(interior_safe[ry0:ry1, rx0:rx1]).astype(
-            np.float32
-        )
-        dist_out_heal = ndi.distance_transform_edt(~heal_mask_full[ry0:ry1, rx0:rx1]).astype(
-            np.float32
-        )
-        f_px = max(1.0, bg_cfg.table_heal_feather_px)
-        w_heal = np.clip(1.0 - dist_out_heal / f_px, 0.0, 1.0) * np.clip(
-            dist_in_safe / max(1.0, f_px * 0.8), 0.0, 1.0
-        )
-        w_heal = (w_heal * w_heal * (3.0 - 2.0 * w_heal))[:, :, None]
-        orig_roi_f = word_np[ry0:ry1, rx0:rx1].astype(np.float32)
-        heal_roi_f = np.asarray(healed_roi, dtype=np.float32)
-        out_np[ry0:ry1, rx0:rx1] = np.clip(
-            np.round((1.0 - w_heal) * orig_roi_f + w_heal * heal_roi_f), 0, 255
-        ).astype(np.uint8)
-
-    occ_thr = bg_cfg.table_cutout_occluder_alpha_u8
+    occ_thr = bg_cfg.cutout_alpha_threshold_u8
     unoccluded_table_native = (
         prot_bool & (mid_a <= occ_thr) & (fg_a <= occ_thr) & (chair_a <= occ_thr)
     )
-    return Image.fromarray(out_np, mode="RGB"), unoccluded_table_native
+    return unoccluded_table_native
 
 
 def build_dining_room_background_plates(
@@ -1877,48 +1798,48 @@ def build_dining_room_background_plates(
     cfg: FriedTableHybridSceneConfig,
     sam_extractor: SamBoxMaskExtractor,
     lama_inpainter: LamaOcclusionInpainter,
-) -> tuple[Image.Image, Image.Image, Image.Image, float]:
+) -> tuple[Image.Image, Image.Image, float]:
     """
     Synthesizes:
-      1) `base_inner_rgb` (1500x1000) & `lama_inner_rgb` (1500x1000): authentic unoccluded
-         `IMG_WORD_0200` with 100% intact dining-table & wooden-leg boundaries, interior-only
-         tabletop book/folder healing, and neural `LaMa` FFC healing across occluded strips and
-         the open hallway doorway.
-      2) `expanded_bg_rgb` (2700x1800): wide-angle dining-room continuation with zero border seam,
-         pure plaster/terrazzo micro-grain, and neural `LaMa` FFC architectural continuation.
+      1) `lama_inner_rgb` (1500x1000): 100% untouched original `IMG_WORD_0200` on every
+         unoccluded pixel inside `[:sh_in, inner_x0 : inner_x0 + sw_in]` (preserving the entire
+         visible dining table, red tablecloth, paisley runner, book, yellow folder, wooden legs,
+         doorway, and room walls), healing ONLY the occluded strips strictly behind
+         `(mid_a > 8) | (fg_a > 8) | (chair_a > 8)` (and narrow outer side strips outside
+         `[inner_x0 : inner_x0 + sw_in]`) via neural `LaMa` FFC with clean non-table room context.
+      2) `expanded_bg_rgb` (2700x1800): wide-angle dining-room continuation synthesized strictly
+         outside the `1500x1000` inner frame with zero floor leg/tablecloth smearing.
     """
     bg_cfg = cfg.room_background
     iw, ih = cfg.dimensions.width, cfg.dimensions.height
     sw_in, sh_in = bg_cfg.inner_scaled_wh
+    x0 = bg_cfg.inner_x0
+    x1 = x0 + sw_in
 
-    word_healed_rgb, unoccluded_table_native = _heal_tabletop_items_preserving_table_boundaries(
+    unoccluded_table_native = _extract_unoccluded_table_mask_native(
         word_rgb=word_rgb,
         mid_a=mid_a,
         fg_a=fg_a,
         chair_a=chair_a,
         bg_cfg=bg_cfg,
         sam_extractor=sam_extractor,
-        lama_inpainter=lama_inpainter,
     )
-    word_scaled = word_healed_rgb.resize((sw_in, sh_in), Image.Resampling.LANCZOS)
+    word_scaled = word_rgb.resize((sw_in, sh_in), Image.Resampling.LANCZOS)
     word_scaled_np = np.asarray(word_scaled, dtype=np.float32)
 
     aligned_emp, emp_valid, reg_corr = _register_empty_room_to_inner(
-        word_scaled_rgb=word_rgb.resize((sw_in, sh_in), Image.Resampling.LANCZOS),
+        word_scaled_rgb=word_scaled,
         empty_room_rgb=raw_outpaint_rgb,
         bg_cfg=bg_cfg,
         dims=cfg.dimensions,
         min_registration_corr=cfg.min_registration_corr,
     )
-    # Suppress `outpaint_raw`'s misaligned bottom skirt/legs and right table bulge so they never double-edge
     emp_valid = emp_valid.copy()
     for sbox in bg_cfg.emp_table_suppress_boxes_inner:
         emp_valid[sbox.y0 : sbox.y1, sbox.x0 : sbox.x1] = False
 
-    occ_native = ((mid_a > 8) | (fg_a > 8) | (chair_a > 8)).astype(np.uint8) * 255
-    for box in bg_cfg.extra_occlusion_boxes_native:
-        occ_native[box.y0 : box.y1, box.x0 : box.x1] = 255
-
+    occ_thr = bg_cfg.cutout_alpha_threshold_u8
+    occ_native = ((mid_a > occ_thr) | (fg_a > occ_thr) | (chair_a > occ_thr)).astype(np.uint8) * 255
     occ_scaled = cv2.resize(occ_native, (sw_in, sh_in), interpolation=cv2.INTER_NEAREST)
     k_dil = bg_cfg.occlusion_dilate_inner_px
     if k_dil % 2 == 0:
@@ -1937,16 +1858,19 @@ def build_dining_room_background_plates(
     )
     occ_scaled[unoccluded_table_scaled] = 0
 
+    word_frame_mask = np.zeros((ih, iw), dtype=bool)
+    word_frame_mask[:sh_in, x0:x1] = True
     word_canvas = np.zeros((ih, iw, 3), dtype=np.float32)
     word_valid = np.zeros((ih, iw), dtype=bool)
     unoccluded_table_inner = np.zeros((ih, iw), dtype=bool)
-    word_canvas[:sh_in, bg_cfg.inner_x0 : bg_cfg.inner_x0 + sw_in] = word_scaled_np
-    word_valid[:sh_in, bg_cfg.inner_x0 : bg_cfg.inner_x0 + sw_in] = occ_scaled == 0
-    unoccluded_table_inner[:sh_in, bg_cfg.inner_x0 : bg_cfg.inner_x0 + sw_in] = (
-        unoccluded_table_scaled
-    )
+    word_canvas[:sh_in, x0:x1] = word_scaled_np
+    word_valid[:sh_in, x0:x1] = occ_scaled == 0
+    unoccluded_table_inner[:sh_in, x0:x1] = unoccluded_table_scaled
 
-    static_overlap = word_valid & emp_valid
+    occ_inner = word_frame_mask & (~word_valid)
+    non_table_room_valid = word_valid & (~unoccluded_table_inner)
+
+    static_overlap = non_table_room_valid & emp_valid
     diff = np.zeros((ih, iw, 3), dtype=np.float32)
     w_ov = static_overlap.astype(np.float32)
     diff[static_overlap] = word_canvas[static_overlap] - aligned_emp[static_overlap]
@@ -1955,109 +1879,98 @@ def build_dining_room_background_plates(
     den_blur = np.maximum(1e-4, ndi.gaussian_filter(w_ov, sigma=sig))[:, :, None]
     emp_harmonized = np.clip(aligned_emp + (num_blur / den_blur), 0.0, 255.0)
 
-    dist_to_invalid = cv2.distanceTransform(word_valid.astype(np.uint8), cv2.DIST_L2, 5)
-    w_keep = np.clip(dist_to_invalid / bg_cfg.keep_word_feather_px, 0.0, 1.0)
-    w_keep = (w_keep * w_keep * (3.0 - 2.0 * w_keep))[:, :, None]
-    w_keep[unoccluded_table_inner, :] = 1.0
+    idx_non_table = ndi.distance_transform_edt(
+        ~non_table_room_valid, return_distances=False, return_indices=True
+    )
+    nearest_room_rgb = word_canvas[idx_non_table[0], idx_non_table[1]]
 
-    inner_comp = np.where(
-        emp_valid[:, :, None],
-        w_keep * word_canvas + (1.0 - w_keep) * emp_harmonized,
-        word_canvas,
+    # Build temporary LaMa context seed with 100% of the red tablecloth replaced by clean room/floor
+    # so LaMa never smears crimson cloth onto the wall behind Michael or floor behind Ahuva/chair.
+    room_seed_inner = np.where(emp_valid[:, :, None], emp_harmonized, nearest_room_rgb)
+    room_seed_inner[non_table_room_valid] = word_canvas[non_table_room_valid]
+    room_seed_inner[unoccluded_table_inner] = nearest_room_rgb[unoccluded_table_inner]
+
+    seam_w = bg_cfg.side_margin_seam_width_px
+    side_seam_mask = np.zeros((ih, iw), dtype=bool)
+    side_seam_mask[:, max(0, x0 - seam_w) : x0] = True
+    side_seam_mask[:, x1 : min(iw, x1 + seam_w)] = True
+    outer_missing = (~word_frame_mask) & ((~emp_valid) | side_seam_mask)
+    lama_hole_inner = occ_inner | outer_missing
+
+    seed_inner_img = Image.fromarray(
+        np.clip(np.round(room_seed_inner), 0, 255).astype(np.uint8), mode="RGB"
+    )
+    healed_inner_img = lama_inpainter.inpaint_background(
+        seed_inner_img,
+        (lama_hole_inner.astype(np.uint8)) * 255,
+        dilation_radius_px=bg_cfg.occ_lama_dilate_px,
+        mask_blur_sigma=bg_cfg.occ_lama_blur_sigma,
+    )
+    healed_inner_np = np.asarray(healed_inner_img, dtype=np.float32)
+
+    # Assemble `inner_comp`:
+    # - Every unoccluded pixel inside `[0:sh_in, x0:x1]` (`word_valid == True`, including 100% of
+    #   `unoccluded_table_inner`) stays 100% untouched original `word_canvas`.
+    # - Inside `occ_inner`, feather strictly INSIDE `occ_inner` away from non-table room boundaries
+    #   (while using 100% `healed_inner_np` adjacent to `unoccluded_table_inner` so zero double-edge).
+    inner_comp = np.where(word_frame_mask[:, :, None], word_canvas, emp_harmonized)
+    inner_comp[outer_missing] = healed_inner_np[outer_missing]
+
+    dist_inside_occ = cv2.distanceTransform(occ_inner.astype(np.uint8), cv2.DIST_L2, 5)
+    dist_to_table = cv2.distanceTransform((~unoccluded_table_inner).astype(np.uint8), cv2.DIST_L2, 5)
+    w_occ = np.clip(dist_inside_occ / max(1.0, bg_cfg.occ_interior_feather_px), 0.0, 1.0)
+    w_occ = w_occ * w_occ * (3.0 - 2.0 * w_occ)
+    near_table = occ_inner & (dist_to_table <= bg_cfg.occ_table_guard_dist_px)
+    w_occ[near_table] = 1.0
+    w_occ[~occ_inner] = 0.0
+    w_occ_3 = w_occ[:, :, None]
+    inner_comp = (1.0 - w_occ_3) * inner_comp + w_occ_3 * healed_inner_np
+
+    # Smooth narrow seam strictly outside `word_frame_mask` into `emp_harmonized`
+    outer_only = ~word_frame_mask
+    dist_from_outer_miss = cv2.distanceTransform((~outer_missing).astype(np.uint8), cv2.DIST_L2, 5)
+    w_outer_heal = np.clip(1.0 - dist_from_outer_miss / max(1.0, float(seam_w)), 0.0, 1.0)
+    w_outer_heal = w_outer_heal * w_outer_heal * (3.0 - 2.0 * w_outer_heal)
+    w_outer_heal[~outer_only] = 0.0
+    w_outer_heal[outer_missing] = 1.0
+    inner_comp = (
+        (1.0 - w_outer_heal[:, :, None]) * inner_comp
+        + w_outer_heal[:, :, None] * healed_inner_np
     )
 
-    missing_inner = (~word_valid) & (~emp_valid)
-    if np.any(missing_inner):
-        miss_u8 = (missing_inner.astype(np.uint8)) * 255
-        nearest_idx = ndi.distance_transform_edt(
-            missing_inner, return_distances=False, return_indices=True
-        )
-        non_table_hole = missing_inner | unoccluded_table_inner
-        nearest_non_table_idx = ndi.distance_transform_edt(
-            non_table_hole, return_distances=False, return_indices=True
-        )
-        seeded = inner_comp.copy()
-        seeded[missing_inner] = inner_comp[
-            nearest_idx[0][missing_inner], nearest_idx[1][missing_inner]
-        ]
-        upper_left_wall_miss = missing_inner & (
-            (np.arange(ih)[:, None] < 786) & (np.arange(iw)[None, :] < 260)
-        )
-        if np.any(upper_left_wall_miss):
-            seeded[upper_left_wall_miss] = inner_comp[
-                nearest_non_table_idx[0][upper_left_wall_miss],
-                nearest_non_table_idx[1][upper_left_wall_miss],
-            ]
-        seeded_img = Image.fromarray(np.clip(np.round(seeded), 0, 255).astype(np.uint8), mode="RGB")
-        healed_img = lama_inpainter.inpaint_background(
-            seeded_img,
-            miss_u8,
-            dilation_radius_px=bg_cfg.missing_lama_dilate_px,
-            mask_blur_sigma=bg_cfg.missing_lama_blur_sigma,
-        )
-        healed_np = np.asarray(healed_img, dtype=np.float32)
-        dist_miss = cv2.distanceTransform((~missing_inner).astype(np.uint8), cv2.DIST_L2, 5)
-        feather_px = np.where(
-            unoccluded_table_inner, 3.0, float(bg_cfg.missing_blend_feather_px)
-        )
-        w_val = np.clip(dist_miss / feather_px, 0.0, 1.0)
-        w_val = (w_val * w_val * (3.0 - 2.0 * w_val))[:, :, None]
-        inner_comp = w_val * inner_comp + (1.0 - w_val) * healed_np
-
-    # Heal dark residual shadow blobs inside the open hallway/study doorway via full-res neural LaMa FFC
-    dx0, dy0, dx1, dy1 = bg_cfg.doorway_heal_inner_xyxy
-    fx0, fy0, fx1, fy1 = bg_cfg.study_floor_heal_inner_xyxy
-    full_luma = (
-        0.299 * inner_comp[:, :, 0]
-        + 0.587 * inner_comp[:, :, 1]
-        + 0.114 * inner_comp[:, :, 2]
-    )
-    door_dark = np.zeros((ih, iw), dtype=bool)
-    door_dark[dy0:dy1, dx0:dx1] = full_luma[dy0:dy1, dx0:dx1] < bg_cfg.doorway_dark_luma_max
-    door_dark[fy0:fy1, fx0:fx1] = full_luma[fy0:fy1, fx0:fx1] < bg_cfg.study_floor_dark_luma_max
-    if np.any(door_dark):
-        door_mask_u8 = (door_dark.astype(np.uint8)) * 255
-        base_for_door = Image.fromarray(
-            np.clip(np.round(inner_comp), 0, 255).astype(np.uint8), mode="RGB"
-        )
-        door_healed_img = lama_inpainter.inpaint_background(
-            base_for_door,
-            door_mask_u8,
-            dilation_radius_px=bg_cfg.doorway_lama_dilate_px,
-            mask_blur_sigma=bg_cfg.doorway_lama_blur_sigma,
-        )
-        door_healed_np = np.asarray(door_healed_img, dtype=np.float32)
-        # Clip healing strictly inside the doorway/study boxes so doorframe & cabinet stay razor-sharp
-        door_box_mask = np.zeros((ih, iw), dtype=bool)
-        door_box_mask[dy0:dy1, dx0:dx1] = True
-        door_box_mask[fy0:fy1, fx0:fx1] = True
-        door_active = cv2.dilate(
-            door_mask_u8, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (21, 21))
-        ) > 0
-        door_target = door_active & door_box_mask
-        dist_out_door = cv2.distanceTransform((~door_target).astype(np.uint8), cv2.DIST_L2, 5)
-        w_keep_door = np.clip(dist_out_door / bg_cfg.doorway_blend_feather_px, 0.0, 1.0)
-        w_keep_door = (w_keep_door * w_keep_door * (3.0 - 2.0 * w_keep_door))[:, :, None]
-        inner_comp = w_keep_door * inner_comp + (1.0 - w_keep_door) * door_healed_np
-
+    # Guarantee exact pixel identity on every unoccluded pixel inside `[0:sh_in, x0:x1]`
+    word_scaled_u8 = np.asarray(word_scaled, dtype=np.uint8)
     inner_u8 = np.clip(np.round(inner_comp), 0, 255).astype(np.uint8)
+    inner_view = inner_u8[:sh_in, x0:x1]
+    keep_exact = occ_scaled == 0
+    inner_view[keep_exact] = word_scaled_u8[keep_exact]
     clean_inner_img = Image.fromarray(inner_u8, mode="RGB")
     inner_np = inner_u8.astype(np.float32)
 
-    # Synthesize 2700x1800 wide-angle surround with zero black border and pure micro-grain
+    # Synthesize 2700x1800 wide-angle surround STRICTLY outside the 1500x1000 inner frame
     exp_w = int(round(iw * cfg.outpainting.expansion_factor))
     exp_h = int(round(ih * cfg.outpainting.expansion_factor))
     px = (exp_w - iw) // 2
     py = (exp_h - ih) // 2
 
-    inset = bg_cfg.inner_core_inset_px
-    core_mask = np.zeros((exp_h, exp_w), dtype=bool)
-    core_mask[py + inset : py + ih - inset, px + inset : px + iw - inset] = True
-    hole_mask = ~core_mask
+    full_inner_box = np.zeros((exp_h, exp_w), dtype=bool)
+    full_inner_box[py : py + ih, px : px + iw] = True
+    hole_mask = ~full_inner_box
+
+    # Exclude bottom-edge dark wooden table legs & corner bag from the EDT scaffold source ONLY
+    # so floor extrapolation into y >= py + ih stays pure beige terrazzo without vertical leg streaks.
+    scaffold_src_inner = np.ones((ih, iw), dtype=bool)
+    scaffold_src_inner &= ~unoccluded_table_inner
+    for ebox in bg_cfg.bottom_scaffold_exclude_boxes_inner:
+        scaffold_src_inner[ebox.y0 : ebox.y1, ebox.x0 : ebox.x1] = False
+    scaffold_src_exp = np.zeros((exp_h, exp_w), dtype=bool)
+    scaffold_src_exp[py : py + ih, px : px + iw] = scaffold_src_inner
 
     inner_placed = np.zeros((exp_h, exp_w, 3), dtype=np.float32)
     inner_placed[py : py + ih, px : px + iw] = inner_np
-    idx_edt = ndi.distance_transform_edt(hole_mask, return_distances=False, return_indices=True)
+    idx_edt = ndi.distance_transform_edt(
+        ~scaffold_src_exp, return_distances=False, return_indices=True
+    )
     scaffold = inner_placed[idx_edt[0], idx_edt[1]]
     scaffold_smooth = ndi.gaussian_filter(
         scaffold, sigma=(bg_cfg.scaffold_smooth_sigma, bg_cfg.scaffold_smooth_sigma, 0.0)
@@ -2093,17 +2006,29 @@ def build_dining_room_background_plates(
         + (1.0 - floor_w) * wall_hp * bg_cfg.wall_grain_seed_weight
         + floor_w * terrazzo_hp * bg_cfg.terrazzo_grain_seed_weight
     )
-    # Populate full 2700x1800 canvas without ANY black zero pixels outside [py:py+ih, px:px+iw]
-    full_inner_box = np.zeros((exp_h, exp_w), dtype=bool)
-    full_inner_box[py : py + ih, px : px + iw] = True
-    seeded_2700 = np.where(full_inner_box[:, :, None], inner_placed, np.clip(outer_seed, 0.0, 255.0))
+    # In the LaMa seed ONLY, also suppress the bottom-edge wooden table leg tip inside `[py+ih-40:py+ih]`
+    # so LaMa's 2x-downsampled collar never bleeds dark leg wood across the bottom floor border.
+    lama_inner_seed = inner_np.copy()
+    leg_bottom_guard = unoccluded_table_inner.copy()
+    leg_bottom_guard[: ih - 60, :] = False
+    idx_inner_room = ndi.distance_transform_edt(
+        leg_bottom_guard, return_distances=False, return_indices=True
+    )
+    lama_inner_seed[leg_bottom_guard] = lama_inner_seed[
+        idx_inner_room[0][leg_bottom_guard], idx_inner_room[1][leg_bottom_guard]
+    ]
+    lama_seed_placed = np.zeros((exp_h, exp_w, 3), dtype=np.float32)
+    lama_seed_placed[py : py + ih, px : px + iw] = lama_inner_seed
+    seeded_2700 = np.where(
+        full_inner_box[:, :, None], lama_seed_placed, np.clip(outer_seed, 0.0, 255.0)
+    )
 
     ds_w, ds_h = bg_cfg.lama_outpaint_downsample_wh
     seed_ds = Image.fromarray(np.clip(np.round(seeded_2700), 0, 255).astype(np.uint8)).resize(
         (ds_w, ds_h), Image.Resampling.LANCZOS
     )
-    dist_from_core = cv2.distanceTransform(hole_mask.astype(np.uint8), cv2.DIST_L2, 5)
-    collar_hole = (hole_mask & (dist_from_core <= bg_cfg.lama_collar_max_dist_px)).astype(
+    dist_from_inner = cv2.distanceTransform(hole_mask.astype(np.uint8), cv2.DIST_L2, 5)
+    collar_hole = (hole_mask & (dist_from_inner <= bg_cfg.lama_collar_max_dist_px)).astype(
         np.uint8
     ) * 255
     mask_ds = cv2.resize(collar_hole, (ds_w, ds_h), interpolation=cv2.INTER_NEAREST)
@@ -2125,23 +2050,18 @@ def build_dining_room_background_plates(
     )
 
     w_lama_band = 1.0 - np.clip(
-        (dist_from_core - bg_cfg.lama_band_fade_start_px) / bg_cfg.lama_band_fade_span_px,
+        (dist_from_inner - bg_cfg.lama_band_fade_start_px) / bg_cfg.lama_band_fade_span_px,
         0.0,
         1.0,
     )
     w_lama_band = (w_lama_band * w_lama_band * (3.0 - 2.0 * w_lama_band))[:, :, None]
     outer_final = w_lama_band * lama_2700 + (1.0 - w_lama_band) * np.clip(outer_seed, 0.0, 255.0)
 
-    # Feather strictly INSIDE [py:py+ih, px:px+iw] so outside [py:py+ih, px:px+iw] w_inner == 0.0
-    dist_inside_inner = cv2.distanceTransform(full_inner_box.astype(np.uint8), cv2.DIST_L2, 5)
-    w_inner = np.clip(dist_inside_inner / bg_cfg.inner_seam_feather_px, 0.0, 1.0)
-    w_inner = (w_inner * w_inner * (3.0 - 2.0 * w_inner))[:, :, None]
-    final_2700 = w_inner * inner_placed + (1.0 - w_inner) * outer_final
-
-    expanded_bg_img = Image.fromarray(
-        np.clip(np.round(final_2700), 0, 255).astype(np.uint8), mode="RGB"
-    )
-    return clean_inner_img, clean_inner_img.copy(), expanded_bg_img, reg_corr
+    # Keep the entire 1500x1000 inner frame 100% untouched (`full_inner_box == True`)
+    final_2700 = np.clip(np.round(outer_final), 0, 255).astype(np.uint8)
+    final_2700[py : py + ih, px : px + iw] = inner_u8
+    expanded_bg_img = Image.fromarray(final_2700, mode="RGB")
+    return clean_inner_img, expanded_bg_img, reg_corr
 
 
 def extract_hybrid_installation_cutout(
@@ -2780,7 +2700,7 @@ def build_fried_table_hybrid_scene(
     print(
         f"[{scene_cfg.scene_id}] Synthesizing 1500x1000 & 2700x1800 dining room background plates..."
     )
-    base_inner_rgb, lama_inner_rgb, expanded_bg_rgb, reg_corr = build_dining_room_background_plates(
+    lama_inner_rgb, expanded_bg_rgb, reg_corr = build_dining_room_background_plates(
         word_rgb=word_rgb,
         raw_outpaint_rgb=raw_outpaint_rgb,
         mid_a=mid_a,
@@ -2833,12 +2753,6 @@ def build_fried_table_hybrid_scene(
             f"p95|ΔZ_contact|={rep.p95_abs_contact_dz_world:.3f}, "
             f"max|ΔZ_rim|={rep.max_abs_rim_jump_world:.3f}, passed={rep.all_passed}"
         )
-
-    base_inner_path = project_root / scene_cfg.base_inner_outpaint_relpath
-    base_inner_path.parent.mkdir(parents=True, exist_ok=True)
-    base_inner_rgb.save(
-        base_inner_path, format="JPEG", quality=scene_cfg.inpainting.jpeg_quality, optimize=True
-    )
 
     lama_inner_rgb.save(
         output_dir / scene_cfg.lama_inner_output_filename,

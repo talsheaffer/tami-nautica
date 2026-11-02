@@ -80,9 +80,12 @@ test.describe('Tami 70th Spatial Prototype - Automated Headless Verification', (
     await page.goto(TARGET_URL, { waitUntil: 'networkidle' });
 
     const initialScene = await page.evaluate(() => window.__PROTOTYPE_STATE__?.currentScene);
-    expect(initialScene).toBe('paper_capsules');
+    expect(initialScene).toBe('shelf_portal');
 
-    // Trigger transition to Bene Beitcha
+    // Open minimalist collapsible left sidebar and trigger transition to Bene Beitcha
+    const sidebarToggle = page.locator('#sidebar-toggle-btn');
+    await expect(sidebarToggle).toBeVisible();
+    await sidebarToggle.click();
     const nextBtn = page.locator('button[data-scene="bene_beitcha"]');
     await expect(nextBtn).toBeVisible();
     await nextBtn.click();
@@ -108,7 +111,7 @@ test.describe('Tami 70th Spatial Prototype - Automated Headless Verification', (
     // Verify Canvas and state initialization on mobile viewport
     const state = await page.evaluate(() => window.__PROTOTYPE_STATE__);
     expect(state).toBeDefined();
-    expect(state.currentScene).toBe('paper_capsules');
+    expect(state.currentScene).toBe('shelf_portal');
   });
 
 });

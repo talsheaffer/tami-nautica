@@ -12,9 +12,67 @@
 body {
   background: #121316;
   color: #F4EFEA;
-  font-family: 'Heebo', 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-family: var(--font-body, 'IBM Plex Sans Hebrew', 'Heebo', 'Assistant', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif);
   line-height: 1.6;
   min-height: 100vh;
+}
+
+.portal-font-picker-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(24, 26, 31, 0.88);
+  border: 1px solid rgba(244, 239, 234, 0.16);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  color: #C8C1B8;
+}
+
+.portal-font-picker-label {
+  font-weight: 600;
+  color: #E6B980;
+}
+
+.portal-font-picker-select {
+  background: transparent;
+  border: none;
+  color: #F4EFEA;
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.portal-font-picker-select option {
+  background: #181a20;
+  color: #F4EFEA;
+}
+
+.catalog-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.catalog-filter-row-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #B4AEA6;
+  letter-spacing: 0.2px;
+}
+
+.photo-tag.person-filterable {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.photo-tag.person-filterable:hover,
+.photo-tag.person-filterable.active-person {
+  border-color: rgba(196, 155, 113, 0.75);
+  background: rgba(196, 155, 113, 0.22);
+  color: #F8E3C4;
 }
 
 .icon-btn {

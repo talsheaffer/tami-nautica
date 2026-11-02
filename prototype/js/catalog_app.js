@@ -4,8 +4,27 @@
 
 import { BetaFeedbackOverlay } from './feedback_overlay.js';
 import { renderCollageToCanvas } from './collage_renderer.js';
+import { applyBetaFont, getSavedBetaFontId, mountPortalHeaderFontPicker } from './beta_font.js';
+
+applyBetaFont(getSavedBetaFontId(), { persist: false, emitDiag: false });
 
 const AUTHOR_STORAGE_KEY = 'tami70_beta_author';
+
+const PERSON_LABELS_HE = Object.freeze({
+  "Tamar 'Tami' Sheaffer": 'תמי (תמר שפר)',
+  'Gad Sheaffer': 'גדי שפר',
+  'Guy Sheaffer': 'גיא שפר',
+  'Tal Sheaffer': 'טל שפר',
+  "Ya'ara": 'יערה',
+  Carmel: 'כרמל',
+  'Michael Fried': 'מיכאל פריד',
+  'Ahuva Fried': 'אהובה פריד',
+  "Er'ela Sadan": 'אראלה סדן',
+  'Ada Wertheimer': 'עדה ורטהיימר',
+  'Naama': 'נעמה',
+  'Beni': 'בני',
+  'Peri': 'פרי'
+});
 
 const SOURCE_LABELS_HE = Object.freeze({
   drop_folder_imports: '📥 העלאת משפחה',
@@ -46,6 +65,8 @@ class CatalogPortalApp {
     this.items = [];
     this.pendingFiles = [];
     this.activeFilter = 'all';
+    this.selectedPeopleFilters = new Set();
+    this._personLabelMap = new Map(Object.entries(PERSON_LABELS_HE));
     this.searchQuery = '';
     this.editingItem = null;
 
@@ -75,6 +96,7 @@ class CatalogPortalApp {
     this.uploadClearBtn = document.getElementById('upload-clear-btn');
 
     this.searchInput = document.getElementById('catalog-search-input');
+    this.peopleFilterChipsEl = document.getElementById('catalog-people-filter-chips');
     this.gridEl = document.getElementById('catalog-photo-grid');
 
     this.multiSelectBar = document.getElementById('multi-select-bar');
@@ -113,7 +135,12 @@ class CatalogPortalApp {
 
     this.feedbackOverlay = new BetaFeedbackOverlay(null, {
       defaultSceneId: 'catalog',
-      getTargetRef: () => this.activeFilter,
+      getTargetRef: () => {
+        if (this.selectedPeopleFilters.size > 0) {
+          return `${this.activeFilter}|people:${Array.from(this.selectedPeopleFilters).join(',')}`;
+        }
+        return this.activeFilter;
+      },
       onNavigateTargetRef: async (targetRef) => {
         if (targetRef && targetRef.startsWith('IMG_')) {
           this.focusMediaCard(targetRef);
@@ -171,11 +198,20 @@ class CatalogPortalApp {
 
     const placePresets = (cfg.uploads && cfg.uploads.place_presets) || [];
     const peoplePresets = (cfg.uploads && cfg.uploads.people_presets) || [];
+    for (const p of peoplePresets) {
+      if (p && p.canonical && p.label_he) {
+        const cleanLabel = String(p.label_he).replace(/^[^\p{L}\p{N}]+\s*/u, '').trim();
+        if (cleanLabel) {
+          this._personLabelMap.set(p.canonical, cleanLabel);
+        }
+      }
+    }
 
     this._renderMultiSelectChips(this.uploadPlaceChips, placePresets);
     this._renderMultiSelectChips(this.uploadPeopleChips, peoplePresets);
     this._renderMultiSelectChips(this.editPlaceChips, placePresets);
     this._renderMultiSelectChips(this.editPeopleChips, peoplePresets);
+    this._renderPeopleFilterBar();
     this._renderStudioModeCards();
   }
 
@@ -857,11 +893,88 @@ class CatalogPortalApp {
     const archiveItems = rawItems.filter((it) => it.source_group !== 'drop_folder_imports');
     this.items = [...familyUploads, ...archiveItems];
     this.countPillEl.textContent = `סה״כ בקטלוג: ${this.items.length} תמונות מאומתות`;
+    this._renderPeopleFilterBar();
     this.renderGrid();
     this.renderMultiSelectBar();
   }
 
+  _getPersonDisplayLabel(canonical) {
+    return this._personLabelMap.get(canonical) || PERSON_LABELS_HE[canonical] || canonical;
+  }
+
+  _togglePersonFilter(personCanonical) {
+    if (!personCanonical || personCanonical === '__all__') {
+      this.selectedPeopleFilters.clear();
+    } else if (this.selectedPeopleFilters.has(personCanonical)) {
+      this.selectedPeopleFilters.delete(personCanonical);
+    } else {
+      this.selectedPeopleFilters.add(personCanonical);
+    }
+    this._syncPeopleFilterActiveStates();
+    this.renderGrid();
+  }
+
+  _syncPeopleFilterActiveStates() {
+    if (!this.peopleFilterChipsEl) return;
+    const isAll = this.selectedPeopleFilters.size === 0;
+    this.peopleFilterChipsEl.querySelectorAll('button[data-person-filter]').forEach((btn) => {
+      const key = btn.getAttribute('data-person-filter') || '';
+      const active = key === '__all__' ? isAll : this.selectedPeopleFilters.has(key);
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  _renderPeopleFilterBar() {
+    if (!this.peopleFilterChipsEl) return;
+    const counts = new Map();
+    for (const item of this.items) {
+      for (const p of item.people || []) {
+        if (!p) continue;
+        counts.set(p, (counts.get(p) || 0) + 1);
+      }
+    }
+    // Prune any selected filter no longer present
+    for (const sel of Array.from(this.selectedPeopleFilters)) {
+      if (!counts.has(sel)) {
+        this.selectedPeopleFilters.delete(sel);
+      }
+    }
+    const sortedPeople = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+    const isAll = this.selectedPeopleFilters.size === 0;
+
+    let html = `<button type="button" class="beta-chip${
+      isAll ? ' active' : ''
+    }" data-person-filter="__all__" aria-pressed="${isAll ? 'true' : 'false'}">כל האנשים</button>`;
+
+    for (const [canonical, cnt] of sortedPeople) {
+      const active = this.selectedPeopleFilters.has(canonical);
+      const label = this._getPersonDisplayLabel(canonical);
+      html += `<button type="button" class="beta-chip${
+        active ? ' active' : ''
+      }" data-person-filter="${escapeHtml(canonical)}" aria-pressed="${
+        active ? 'true' : 'false'
+      }">${escapeHtml(label)} (${cnt})</button>`;
+    }
+
+    this.peopleFilterChipsEl.innerHTML = html;
+    this.peopleFilterChipsEl.querySelectorAll('button[data-person-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-person-filter') || '__all__';
+        this._togglePersonFilter(key);
+      });
+    });
+  }
+
   _matchesFilter(item) {
+    if (this.selectedPeopleFilters.size > 0) {
+      const itemPeople = new Set(item.people || []);
+      for (const reqPerson of this.selectedPeopleFilters) {
+        if (!itemPeople.has(reqPerson)) {
+          return false;
+        }
+      }
+    }
     if (this.activeFilter === 'all') return true;
     if (this.activeFilter.startsWith('src:')) {
       return item.source_group === this.activeFilter.slice(4);
@@ -915,10 +1028,18 @@ class CatalogPortalApp {
       card.setAttribute('data-feedback-label', `${item.id} — ${item.title}`);
 
       const placeTags = (item.places || [])
-        .map((p) => `<span class="photo-tag place">📍 ${escapeHtml(p)}</span>`)
+        .map((p) => `<span class="photo-tag place">${escapeHtml(p)}</span>`)
         .join('');
       const peopleTags = (item.people || [])
-        .map((p) => `<span class="photo-tag">👤 ${escapeHtml(p)}</span>`)
+        .map((p) => {
+          const isSelectedPerson = this.selectedPeopleFilters.has(p);
+          const disp = this._getPersonDisplayLabel(p);
+          return `<button type="button" class="photo-tag person-filterable${
+            isSelectedPerson ? ' active-person' : ''
+          }" data-card-person="${escapeHtml(p)}" title="סנן לפי ${escapeHtml(disp)}">${escapeHtml(
+            disp
+          )}</button>`;
+        })
         .join('');
 
       card.innerHTML = `
@@ -964,6 +1085,16 @@ class CatalogPortalApp {
         );
       });
 
+      card.querySelectorAll('[data-card-person]').forEach((pBtn) => {
+        pBtn.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          const personKey = pBtn.getAttribute('data-card-person');
+          if (personKey) {
+            this._togglePersonFilter(personKey);
+          }
+        });
+      });
+
       card.querySelector('.edit-meta-btn').addEventListener('click', () => {
         this.openEditModal(item);
       });
@@ -986,6 +1117,8 @@ class CatalogPortalApp {
 
   focusMediaCard(mediaId) {
     this.activeFilter = 'all';
+    this.selectedPeopleFilters.clear();
+    this._syncPeopleFilterActiveStates();
     this.searchQuery = '';
     this.searchInput.value = '';
     this.renderGrid();
@@ -1041,5 +1174,6 @@ class CatalogPortalApp {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  mountPortalHeaderFontPicker(document.getElementById('portal-beta-actions'));
   new CatalogPortalApp();
 });
