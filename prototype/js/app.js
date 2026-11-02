@@ -1,13 +1,31 @@
 // prototype/js/app.js
-// Main application entry point for Tamar "Tami" Sheaffer 70th Birthday 2.5D Spatial Prototype
+// Main application entry point for Tami-Nautica (תמי-נאוטיקה) — Tamar "Tami" Sheaffer @ 70 2.5D Spatial Prototype
 // Manages Exhibition Group navigation, 3D Shelf Portal micro-badges & hover plaques,
-// curatorial drawer state, and procedural Web Audio ambient soundscape.
+// rotating warm Hebrew loading screen, curatorial drawer state, and procedural Web Audio ambient soundscape.
 
 import { SpatialSceneManager, EXHIBITION_GROUPS } from './scene_manager.js';
 import { BetaFeedbackOverlay } from './feedback_overlay.js';
 import { mountBetaFontChipSelector } from './beta_font.js';
 
 export { EXHIBITION_GROUPS };
+
+export const LOADING_SCREEN_SPEC = Object.freeze({
+  brandTitleHe: 'תמי-נאוטיקה',
+  brandTitleEn: 'Tami-Nautica',
+  messagesHe: Object.freeze([
+    'טוען מרחבים...',
+    'משחק עם יערה וכרמל...',
+    'דואג לעתיד המדינה...',
+    'מגייס את גדי לשיפצורים אחרונים...'
+  ]),
+  rotationIntervalMs: 2200,
+  minFirstLineDisplayMs: 700,
+  switchHalfFadeMs: 220,
+  minHumanDisplayMs: 7400,
+  mobileCompactViewportMaxPx: 560,
+  mobileMaxFullBreadcrumbs: 4,
+  sessionCycleStorageKey: 'tami_loading_cycle_offset'
+});
 
 const EXHIBITION_SCENE_SEQUENCE = Object.freeze(
   EXHIBITION_GROUPS.flatMap((group) => group.sceneIds)
@@ -104,6 +122,16 @@ class SpatialApp {
   constructor() {
     this.canvas = document.getElementById('spatial-canvas');
     this.loadingOverlay = document.getElementById('loading-overlay');
+    this.loadingStatusTextEl =
+      document.getElementById('loading-status-text') ||
+      (this.loadingOverlay ? this.loadingOverlay.querySelector('.loading-text') : null);
+    this.loadingSkipHintEl = document.getElementById('loading-skip-hint');
+    this._loadingFirstTimer = null;
+    this._loadingRotationTimer = null;
+    this._loadingSwitchTimer = null;
+    this._loadingHoldTimer = null;
+    this._loadingDismissed = false;
+    this._onSkipLoadingEarly = null;
     this.topBarEl = document.querySelector('.top-bar');
     this.spatialNavBar = document.getElementById('spatial-nav-bar');
     this.spatialBackBtn = document.getElementById('spatial-back-btn');
@@ -141,6 +169,11 @@ class SpatialApp {
     this.audioContext = null;
     this.isAudioPlaying = false;
 
+    if (typeof window !== 'undefined') {
+      window.__tamiApp = this;
+    }
+
+    this._initLoadingScreenRotation();
     mountBetaFontChipSelector(this.betaFontSelectorEl);
     this.initSceneManager();
     this._buildPortalMicroBadges();
@@ -149,12 +182,144 @@ class SpatialApp {
     this.initUIListeners();
   }
 
+  _shouldHoldLoadingForReading() {
+    if (typeof window === 'undefined' || !window.location) return false;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('fastLoad') === '1') return false;
+    if (params.get('showLoading') === '1') return true;
+    const isWebdriver = typeof navigator !== 'undefined' && navigator.webdriver === true;
+    const ua = typeof navigator !== 'undefined' ? String(navigator.userAgent || '') : '';
+    const isAutomatedHeadless = isWebdriver || ua.includes('HeadlessChrome');
+    return !isAutomatedHeadless;
+  }
+
+  _buildLoadingMessageSequence() {
+    const all = LOADING_SCREEN_SPEC.messagesHe;
+    if (all.length <= 1) return [...all];
+    const warmTail = all.slice(1);
+    let offset = 0;
+    try {
+      const raw = sessionStorage.getItem(LOADING_SCREEN_SPEC.sessionCycleStorageKey);
+      const parsed = raw !== null ? Number.parseInt(raw, 10) : 0;
+      if (Number.isFinite(parsed) && parsed >= 0) {
+        offset = parsed % warmTail.length;
+      }
+      sessionStorage.setItem(
+        LOADING_SCREEN_SPEC.sessionCycleStorageKey,
+        String((offset + 1) % warmTail.length)
+      );
+    } catch (_err) {
+      offset = 0;
+    }
+    const rotatedTail = warmTail.map((_, i) => warmTail[(i + offset) % warmTail.length]);
+    return [all[0], ...rotatedTail];
+  }
+
+  _advanceLoadingScreenLine() {
+    if (this._loadingDismissed || !this.loadingStatusTextEl) return;
+    this._loadingSeqIdx = (this._loadingSeqIdx + 1) % this._loadingSequence.length;
+    const nextText = this._loadingSequence[this._loadingSeqIdx];
+    this.loadingStatusTextEl.classList.add('is-switching');
+    if (this._loadingSwitchTimer) {
+      clearTimeout(this._loadingSwitchTimer);
+    }
+    this._loadingSwitchTimer = setTimeout(() => {
+      this._loadingSwitchTimer = null;
+      if (this._loadingDismissed || !this.loadingStatusTextEl) return;
+      this.loadingStatusTextEl.textContent = nextText;
+      this.loadingStatusTextEl.classList.remove('is-switching');
+    }, LOADING_SCREEN_SPEC.switchHalfFadeMs);
+  }
+
+  _initLoadingScreenRotation() {
+    if (!this.loadingOverlay || !this.loadingStatusTextEl) return;
+    this._loadingSequence = this._buildLoadingMessageSequence();
+    this._loadingSeqIdx = 0;
+    this.loadingStatusTextEl.textContent = this._loadingSequence[0];
+
+    const navElapsedMs = typeof performance !== 'undefined' ? performance.now() : 0;
+    const firstDelayMs = Math.max(
+      LOADING_SCREEN_SPEC.minFirstLineDisplayMs,
+      LOADING_SCREEN_SPEC.rotationIntervalMs - navElapsedMs
+    );
+    this._loadingFirstTimer = setTimeout(() => {
+      this._loadingFirstTimer = null;
+      this._advanceLoadingScreenLine();
+      if (!this._loadingDismissed) {
+        this._loadingRotationTimer = setInterval(() => {
+          this._advanceLoadingScreenLine();
+        }, LOADING_SCREEN_SPEC.rotationIntervalMs);
+      }
+    }, firstDelayMs);
+  }
+
+  _dismissLoadingOverlayNow() {
+    if (this._loadingDismissed) return;
+    this._loadingDismissed = true;
+    if (this._loadingFirstTimer) {
+      clearTimeout(this._loadingFirstTimer);
+      this._loadingFirstTimer = null;
+    }
+    if (this._loadingRotationTimer) {
+      clearInterval(this._loadingRotationTimer);
+      this._loadingRotationTimer = null;
+    }
+    if (this._loadingSwitchTimer) {
+      clearTimeout(this._loadingSwitchTimer);
+      this._loadingSwitchTimer = null;
+    }
+    if (this._loadingHoldTimer) {
+      clearTimeout(this._loadingHoldTimer);
+      this._loadingHoldTimer = null;
+    }
+    if (this._onSkipLoadingEarly && this.loadingOverlay) {
+      this.loadingOverlay.removeEventListener('click', this._onSkipLoadingEarly);
+      this.loadingOverlay.removeEventListener('touchstart', this._onSkipLoadingEarly);
+      window.removeEventListener('keydown', this._onSkipLoadingEarly);
+      this._onSkipLoadingEarly = null;
+    }
+    if (this.loadingOverlay) {
+      this.loadingOverlay.classList.remove('ready-to-skip');
+      this.loadingOverlay.classList.add('hidden');
+    }
+  }
+
+  _handleLayersReady() {
+    if (this._loadingDismissed) return;
+    if (!this._shouldHoldLoadingForReading()) {
+      this._dismissLoadingOverlayNow();
+      return;
+    }
+    const navElapsedMs = typeof performance !== 'undefined' ? performance.now() : 0;
+    const remainingMs = LOADING_SCREEN_SPEC.minHumanDisplayMs - navElapsedMs;
+    if (remainingMs <= 0) {
+      this._dismissLoadingOverlayNow();
+      return;
+    }
+    if (this.loadingSkipHintEl) {
+      this.loadingSkipHintEl.classList.remove('hidden');
+    }
+    if (this.loadingOverlay) {
+      this.loadingOverlay.classList.add('ready-to-skip');
+      this._onSkipLoadingEarly = () => {
+        this._dismissLoadingOverlayNow();
+      };
+      this.loadingOverlay.addEventListener('click', this._onSkipLoadingEarly, { once: true });
+      this.loadingOverlay.addEventListener('touchstart', this._onSkipLoadingEarly, {
+        once: true,
+        passive: true
+      });
+      window.addEventListener('keydown', this._onSkipLoadingEarly, { once: true });
+    }
+    this._loadingHoldTimer = setTimeout(() => {
+      this._dismissLoadingOverlayNow();
+    }, remainingMs);
+  }
+
   initSceneManager() {
     this.manager = new SpatialSceneManager(this.canvas, {
       onReady: () => {
-        if (this.loadingOverlay) {
-          this.loadingOverlay.classList.add('hidden');
-        }
+        this._handleLayersReady();
       },
       onSceneChange: (sceneId) => {
         this.updateActiveSceneUI(sceneId);
@@ -640,35 +805,102 @@ class SpatialApp {
     this.manager.transitionTo(targetEntry.sceneId, { preservePortalStack: true });
   }
 
-  _appendBreadcrumbItem(listEl, { label, onClick, isCurrent = false, addSeparator = false }) {
+  _appendBreadcrumbItem(
+    listEl,
+    { label, title = '', onClick = null, isCurrent = false, addSeparator = false }
+  ) {
     if (addSeparator) {
-      const sepLi = document.createElement('li');
-      sepLi.className = 'spatial-crumb-item';
-      sepLi.setAttribute('aria-hidden', 'true');
       const sepSpan = document.createElement('span');
       sepSpan.className = 'spatial-crumb-sep';
+      sepSpan.setAttribute('aria-hidden', 'true');
       sepSpan.textContent = '‹';
-      sepLi.appendChild(sepSpan);
-      listEl.appendChild(sepLi);
+      listEl.appendChild(sepSpan);
     }
 
-    const li = document.createElement('li');
-    li.className = 'spatial-crumb-item';
+    const itemWrap = document.createElement('span');
+    itemWrap.className = 'spatial-crumb-item';
+    itemWrap.setAttribute('role', 'listitem');
     if (isCurrent) {
-      const curSpan = document.createElement('span');
-      curSpan.className = 'spatial-crumb-current';
-      curSpan.setAttribute('aria-current', 'page');
-      curSpan.textContent = label;
-      li.appendChild(curSpan);
+      const curBtn = document.createElement('button');
+      curBtn.type = 'button';
+      curBtn.className = 'spatial-crumb-current';
+      curBtn.setAttribute('aria-current', 'page');
+      curBtn.tabIndex = -1;
+      curBtn.textContent = label;
+      if (title) curBtn.title = title;
+      itemWrap.appendChild(curBtn);
     } else {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'spatial-crumb-btn';
       btn.textContent = label;
-      btn.addEventListener('click', onClick);
-      li.appendChild(btn);
+      if (title) btn.title = title;
+      if (typeof onClick === 'function') {
+        btn.addEventListener('click', onClick);
+      }
+      itemWrap.appendChild(btn);
     }
-    listEl.appendChild(li);
+    listEl.appendChild(itemWrap);
+  }
+
+  _populateBreadcrumbElements(items) {
+    if (!this.spatialBreadcrumbList) return;
+    this.spatialBreadcrumbList.innerHTML = '';
+    items.forEach((item, idx) => {
+      this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
+        ...item,
+        addSeparator: idx > 0
+      });
+    });
+  }
+
+  _fitBreadcrumbsToCompactViewport(fullItems) {
+    const listEl = this.spatialBreadcrumbList;
+    if (!listEl || fullItems.length < 3) return;
+    const isCompactMobile =
+      typeof window !== 'undefined' &&
+      window.innerWidth <= LOADING_SCREEN_SPEC.mobileCompactViewportMaxPx;
+    if (!isCompactMobile) return;
+    if (listEl.clientWidth <= 0) return;
+
+    if (
+      fullItems.length > LOADING_SCREEN_SPEC.mobileMaxFullBreadcrumbs ||
+      listEl.scrollWidth > listEl.clientWidth + 2
+    ) {
+      const collapsedFromIdx = fullItems.length - 3;
+      const hiddenLabels = fullItems
+        .slice(1, fullItems.length - 2)
+        .map((c) => c.label)
+        .join(' ‹ ');
+      const fourItemView =
+        fullItems.length >= 4
+          ? [
+              fullItems[0],
+              {
+                label: '…',
+                title: hiddenLabels ? `חזרה אל ${hiddenLabels}` : 'מרחבי ביניים',
+                onClick: fullItems[collapsedFromIdx].onClick
+              },
+              fullItems[fullItems.length - 2],
+              fullItems[fullItems.length - 1]
+            ]
+          : fullItems;
+      this._populateBreadcrumbElements(fourItemView);
+
+      if (listEl.scrollWidth > listEl.clientWidth + 2 && fullItems.length >= 3) {
+        const parentItem = fullItems[fullItems.length - 2];
+        const threeItemView = [
+          fullItems[0],
+          {
+            label: '…',
+            title: `חזרה אל ${parentItem.label}`,
+            onClick: parentItem.onClick
+          },
+          fullItems[fullItems.length - 1]
+        ];
+        this._populateBreadcrumbElements(threeItemView);
+      }
+    }
   }
 
   _scrollCurrentBreadcrumbIntoView() {
@@ -689,29 +921,26 @@ class SpatialApp {
 
   _renderSpatialBreadcrumbs(sceneId) {
     if (!this.spatialBreadcrumbList || !this.manager) return;
-    this.spatialBreadcrumbList.innerHTML = '';
 
     const portalStack = this._getCurrentPortalStackSnapshot();
     const matchedGroup = this._findGroupForScene(sceneId);
-    let hasItems = false;
+    const currentLabel = this._getSceneShortLabelHe(sceneId);
+    const crumbItems = [];
 
     if (portalStack.length > 0) {
       if (portalStack[0].hostSceneId !== 'shelf_portal') {
-        this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
+        crumbItems.push({
           label: 'קיר המדפים',
-          addSeparator: false,
           onClick: () => {
             this.manager.transitionTo('shelf_portal');
           }
         });
-        hasItems = true;
       }
 
       portalStack.forEach((entry, idx) => {
         const hostLabel = this._getSceneShortLabelHe(entry.hostSceneId);
-        this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
+        crumbItems.push({
           label: hostLabel,
-          addSeparator: hasItems,
           onClick: () => {
             if (typeof this.manager.returnToPortalAncestor === 'function') {
               this.manager.returnToPortalAncestor(idx);
@@ -720,55 +949,52 @@ class SpatialApp {
             }
           }
         });
-        hasItems = true;
       });
 
-      this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
-        label: this._getSceneShortLabelHe(sceneId),
-        addSeparator: hasItems,
+      crumbItems.push({
+        label: currentLabel,
         isCurrent: true
       });
     } else if (sceneId === 'shelf_portal') {
-      this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
+      crumbItems.push({
         label: 'קיר המדפים',
-        addSeparator: false,
         isCurrent: true
       });
     } else {
-      this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
+      crumbItems.push({
         label: 'קיר המדפים',
-        addSeparator: false,
         onClick: () => {
           this.manager.transitionTo('shelf_portal');
         }
       });
-      hasItems = true;
 
       if (matchedGroup && matchedGroup.id !== 'portal_hub') {
         const primaryGroupScene = matchedGroup.sceneIds[0];
-        this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
-          label: matchedGroup.shortTabHe || matchedGroup.titleHe || matchedGroup.id,
-          addSeparator: true,
-          onClick: () => {
-            if (primaryGroupScene && primaryGroupScene !== sceneId) {
+        const groupLabel = matchedGroup.shortTabHe || matchedGroup.titleHe || matchedGroup.id;
+        if (primaryGroupScene && primaryGroupScene !== sceneId && groupLabel !== currentLabel) {
+          crumbItems.push({
+            label: groupLabel,
+            onClick: () => {
               this.manager.transitionTo(primaryGroupScene);
-            } else {
-              this._setActiveExhibitionGroup(matchedGroup.id, false);
             }
-          }
-        });
+          });
+        }
       }
 
-      this._appendBreadcrumbItem(this.spatialBreadcrumbList, {
-        label: this._getSceneShortLabelHe(sceneId),
-        addSeparator: true,
+      crumbItems.push({
+        label: currentLabel,
         isCurrent: true
       });
     }
 
+    this._populateBreadcrumbElements(crumbItems);
+    this._fitBreadcrumbsToCompactViewport(crumbItems);
     this._scrollCurrentBreadcrumbIntoView();
     if (typeof requestAnimationFrame === 'function') {
-      requestAnimationFrame(() => this._scrollCurrentBreadcrumbIntoView());
+      requestAnimationFrame(() => {
+        this._fitBreadcrumbsToCompactViewport(crumbItems);
+        this._scrollCurrentBreadcrumbIntoView();
+      });
     }
 
     // Outgoing portals from current scene + sibling scenes in the same series (#29)
@@ -908,6 +1134,12 @@ class SpatialApp {
         this.spatialForwardBtn.blur();
       });
     }
+
+    window.addEventListener('resize', () => {
+      if (this.manager && this.manager.currentSceneId) {
+        this._renderSpatialBreadcrumbs(this.manager.currentSceneId);
+      }
+    });
 
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -1278,7 +1510,13 @@ class SpatialApp {
   }
 }
 
-// Bootstrap on DOMContentLoaded
-window.addEventListener('DOMContentLoaded', () => {
-  new SpatialApp();
-});
+// Bootstrap on DOMContentLoaded (safe when imported in Node unit tests or after readyState interactive)
+if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', () => {
+      new SpatialApp();
+    });
+  } else {
+    new SpatialApp();
+  }
+}

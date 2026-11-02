@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#121314">
-  <meta name="description" content="מסע מרחבי 2.5D אינטראקטיבי לרגל יום הולדתה ה-70 של האמנית תמר שפר (תמי)">
-  <title>תמר שפר @ 70 | ארכיטקטורה של דאגה ושבריריות</title>
+  <meta name="description" content="תמי-נאוטיקה (Tami-Nautica) — מסע מרחבי 2.5D אינטראקטיבי לרגל יום הולדתה ה-70 של האמנית תמר שפר (תמי)">
+  <title>תמי-נאוטיקה · Tami-Nautica | מסע במרחבי היצירה והזיכרון של תמר שפר @ 70</title>
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/feedback.css">
@@ -80,8 +80,13 @@
 
   <!-- Loading Screen Overlay -->
   <div id="loading-overlay">
+    <div class="loading-brand" aria-hidden="true">
+      <span class="loading-brand-he">תמי-נאוטיקה <span class="age-tag">70</span></span>
+      <span class="loading-brand-en">Tami-Nautica · תמר שפר</span>
+    </div>
     <div class="spinner"></div>
-    <div class="loading-text">טוען מרחבים רב-שכבתיים...</div>
+    <div id="loading-status-text" class="loading-text" role="status" aria-live="polite">טוען מרחבים...</div>
+    <div id="loading-skip-hint" class="loading-skip-hint hidden">המרחב מוכן · לחצו לכניסה</div>
   </div>
 
   <!-- WebGL Canvas Container -->
@@ -96,9 +101,10 @@
     <header class="top-bar">
       <div class="title-badge">
         <h1>
-          תמר שפר
+          תמי-נאוטיקה
           <span class="age-tag">70</span>
         </h1>
+        <p>תמר שפר · מסע במרחבי יצירה וזיכרון</p>
       </div>
 
       <div class="top-actions">
@@ -116,16 +122,18 @@
     </header>
 
     <!-- Spatial Breadcrumbs, Back/Forward History & Nested Scene Portals Bar (#29) -->
-    <nav id="spatial-nav-bar" class="spatial-nav-bar" aria-label="מסלול ניווט ופירורי לחם במרחב">
-      <div class="spatial-history-btns">
-        <button id="spatial-back-btn" class="spatial-hist-btn" type="button" disabled title="חזרה למרחב הקודם בהיסטוריה" aria-label="חזרה למרחב הקודם בהיסטוריה">
-          › חזור
-        </button>
-        <button id="spatial-forward-btn" class="spatial-hist-btn" type="button" disabled title="קדימה למרחב הבא בהיסטוריה" aria-label="קדימה למרחב הבא בהיסטוריה">
-          קדימה ‹
-        </button>
+    <nav id="spatial-nav-bar" class="spatial-nav-bar" aria-label="מסלול ניווט בתמי-נאוטיקה">
+      <div class="spatial-nav-primary-row">
+        <div class="spatial-history-btns">
+          <button id="spatial-back-btn" class="spatial-hist-btn" type="button" disabled title="חזרה למרחב הקודם בהיסטוריה" aria-label="חזרה למרחב הקודם בהיסטוריה">
+            › חזור
+          </button>
+          <button id="spatial-forward-btn" class="spatial-hist-btn" type="button" disabled title="קדימה למרחב הבא בהיסטוריה" aria-label="קדימה למרחב הבא בהיסטוריה">
+            קדימה ‹
+          </button>
+        </div>
+        <div id="spatial-breadcrumb-list" class="spatial-breadcrumb-list" role="list"></div>
       </div>
-      <ol id="spatial-breadcrumb-list" class="spatial-breadcrumb-list"></ol>
       <div id="spatial-outgoing-portals" class="spatial-outgoing-portals hidden" aria-label="שערים מתוך מרחב זה"></div>
       <button id="portal-return-btn" class="portal-return-btn hidden" type="button" aria-label="חזרה אל קיר המדפים התלת-ממדי">
         חזרה לקיר המדפים
@@ -144,7 +152,7 @@
     <!-- Collapsible Minimalist Left Sidebar: Grouped Scene Navigation, Controls & Beta Typography -->
     <aside id="spatial-sidebar" class="spatial-sidebar collapsed" dir="rtl" aria-label="תפריט ניווט במרחבי התערוכה">
       <div class="sidebar-header">
-        <span class="sidebar-title">ניווט במרחבים</span>
+        <span class="sidebar-title">תמי-נאוטיקה · מרחבים</span>
         <div class="sidebar-header-actions">
           <button id="exhibition-prev-btn" class="exhibition-step-btn" type="button" title="המרחב הקודם" aria-label="המרחב הקודם">›</button>
           <button id="exhibition-next-btn" class="exhibition-step-btn" type="button" title="המרחב הבא" aria-label="המרחב הבא">‹</button>

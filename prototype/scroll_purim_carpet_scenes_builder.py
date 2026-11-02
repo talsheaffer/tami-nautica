@@ -187,7 +187,6 @@ class ScrollFootSceneSpec:
     quilt_overlap_px: int
     wall_grain_box_plate: tuple[int, int, int, int]
     floor_grain_box_plate: tuple[int, int, int, int]
-    plate_feather_collar_px: int
     scroll_ambient_shadow_strength: float
     scroll_ambient_shadow_sigma_px: float
     scroll_catenary_peak_y_px: float
@@ -248,7 +247,6 @@ class ScrollFootSceneSpec:
             "quilt_overlap_px": self.quilt_overlap_px,
             "wall_grain_box_plate": list(self.wall_grain_box_plate),
             "floor_grain_box_plate": list(self.floor_grain_box_plate),
-            "plate_feather_collar_px": self.plate_feather_collar_px,
             "scroll_ambient_shadow_strength": self.scroll_ambient_shadow_strength,
             "scroll_ambient_shadow_sigma_px": self.scroll_ambient_shadow_sigma_px,
             "scroll_catenary_peak_y_px": self.scroll_catenary_peak_y_px,
@@ -322,7 +320,6 @@ class ScrollFootSceneSpec:
             quilt_overlap_px=int(data["quilt_overlap_px"]),
             wall_grain_box_plate=(int(wgb[0]), int(wgb[1]), int(wgb[2]), int(wgb[3])),
             floor_grain_box_plate=(int(fgb[0]), int(fgb[1]), int(fgb[2]), int(fgb[3])),
-            plate_feather_collar_px=int(data["plate_feather_collar_px"]),
             scroll_ambient_shadow_strength=float(data["scroll_ambient_shadow_strength"]),
             scroll_ambient_shadow_sigma_px=float(data["scroll_ambient_shadow_sigma_px"]),
             scroll_catenary_peak_y_px=float(data["scroll_catenary_peak_y_px"]),
@@ -369,10 +366,11 @@ class PurimCostumeSceneSpec:
     min_component_area_px: int
     bg_inpaint_dilation_px: int
     bg_inpaint_blur_sigma: float
-    collar_heal_half_width_px: int
-    quilt_patch_w: int
-    quilt_patch_h: int
-    quilt_overlap_px: int
+    mirror_inset_px: int
+    glare_dehaze_width_px: int
+    glare_dehaze_y_center_px: float
+    glare_dehaze_y_scale_px: float
+    glare_dehaze_strength: float
     bg_jpeg_quality: int
     room_depth_clean: RoomDepthCleanConfig
     mid_depth_solve: ContactAnchoredLayerDepthConfig
@@ -397,10 +395,11 @@ class PurimCostumeSceneSpec:
             "min_component_area_px": self.min_component_area_px,
             "bg_inpaint_dilation_px": self.bg_inpaint_dilation_px,
             "bg_inpaint_blur_sigma": self.bg_inpaint_blur_sigma,
-            "collar_heal_half_width_px": self.collar_heal_half_width_px,
-            "quilt_patch_w": self.quilt_patch_w,
-            "quilt_patch_h": self.quilt_patch_h,
-            "quilt_overlap_px": self.quilt_overlap_px,
+            "mirror_inset_px": self.mirror_inset_px,
+            "glare_dehaze_width_px": self.glare_dehaze_width_px,
+            "glare_dehaze_y_center_px": self.glare_dehaze_y_center_px,
+            "glare_dehaze_y_scale_px": self.glare_dehaze_y_scale_px,
+            "glare_dehaze_strength": self.glare_dehaze_strength,
             "bg_jpeg_quality": self.bg_jpeg_quality,
             "room_depth_clean": self.room_depth_clean.to_dict(),
             "mid_depth_solve": self.mid_depth_solve.to_dict(),
@@ -431,10 +430,11 @@ class PurimCostumeSceneSpec:
             min_component_area_px=int(data["min_component_area_px"]),
             bg_inpaint_dilation_px=int(data["bg_inpaint_dilation_px"]),
             bg_inpaint_blur_sigma=float(data["bg_inpaint_blur_sigma"]),
-            collar_heal_half_width_px=int(data["collar_heal_half_width_px"]),
-            quilt_patch_w=int(data["quilt_patch_w"]),
-            quilt_patch_h=int(data["quilt_patch_h"]),
-            quilt_overlap_px=int(data["quilt_overlap_px"]),
+            mirror_inset_px=int(data["mirror_inset_px"]),
+            glare_dehaze_width_px=int(data["glare_dehaze_width_px"]),
+            glare_dehaze_y_center_px=float(data["glare_dehaze_y_center_px"]),
+            glare_dehaze_y_scale_px=float(data["glare_dehaze_y_scale_px"]),
+            glare_dehaze_strength=float(data["glare_dehaze_strength"]),
             bg_jpeg_quality=int(data["bg_jpeg_quality"]),
             room_depth_clean=RoomDepthCleanConfig.from_dict(data["room_depth_clean"]),
             mid_depth_solve=ContactAnchoredLayerDepthConfig.from_dict(data["mid_depth_solve"]),
@@ -460,10 +460,6 @@ class HerzliyaCarpetSceneSpec:
     hose_heal_box_inner: tuple[int, int, int, int]
     bg_inpaint_dilation_px: int
     bg_inpaint_blur_sigma: float
-    collar_heal_half_width_px: int
-    quilt_patch_w: int
-    quilt_patch_h: int
-    quilt_overlap_px: int
     bg_jpeg_quality: int
     carpet_sam_prompts: tuple[SamPointGroupPrompt, ...]
     earth_sam_prompts: tuple[SamPointGroupPrompt, ...]
@@ -505,10 +501,6 @@ class HerzliyaCarpetSceneSpec:
             "hose_heal_box_inner": list(self.hose_heal_box_inner),
             "bg_inpaint_dilation_px": self.bg_inpaint_dilation_px,
             "bg_inpaint_blur_sigma": self.bg_inpaint_blur_sigma,
-            "collar_heal_half_width_px": self.collar_heal_half_width_px,
-            "quilt_patch_w": self.quilt_patch_w,
-            "quilt_patch_h": self.quilt_patch_h,
-            "quilt_overlap_px": self.quilt_overlap_px,
             "bg_jpeg_quality": self.bg_jpeg_quality,
             "carpet_sam_prompts": [p.to_dict() for p in self.carpet_sam_prompts],
             "earth_sam_prompts": [p.to_dict() for p in self.earth_sam_prompts],
@@ -555,10 +547,6 @@ class HerzliyaCarpetSceneSpec:
             hose_heal_box_inner=(int(hhb[0]), int(hhb[1]), int(hhb[2]), int(hhb[3])),
             bg_inpaint_dilation_px=int(data["bg_inpaint_dilation_px"]),
             bg_inpaint_blur_sigma=float(data["bg_inpaint_blur_sigma"]),
-            collar_heal_half_width_px=int(data["collar_heal_half_width_px"]),
-            quilt_patch_w=int(data["quilt_patch_w"]),
-            quilt_patch_h=int(data["quilt_patch_h"]),
-            quilt_overlap_px=int(data["quilt_overlap_px"]),
             bg_jpeg_quality=int(data["bg_jpeg_quality"]),
             carpet_sam_prompts=tuple(SamPointGroupPrompt.from_dict(p) for p in data["carpet_sam_prompts"]),
             earth_sam_prompts=tuple(SamPointGroupPrompt.from_dict(p) for p in data["earth_sam_prompts"]),
@@ -914,241 +902,81 @@ def _min_error_vertical_cut_mask(
     return w_right[:, :, None]
 
 
-def _min_error_horizontal_cut_mask(
-    top_ov_f32: np.ndarray, bot_ov_f32: np.ndarray, feather_px: float = 4.0
-) -> np.ndarray:
-    """
-    Efros-Freeman dynamic-programming minimum-error horizontal seam mask in `[0, 1]`,
-    where `0.0` selects `top_ov_f32` and `1.0` selects `bot_ov_f32` (`shape = (H, W, 1)`).
-    """
-    trans_mask = _min_error_vertical_cut_mask(
-        np.transpose(top_ov_f32, (1, 0, 2)),
-        np.transpose(bot_ov_f32, (1, 0, 2)),
-        feather_px=feather_px,
-    )
-    return np.transpose(trans_mask, (1, 0, 2))
-
-
-def _expand_plate_reflect_and_heal_collar_2700(
-    core_rgb_u8: np.ndarray,
+def _mirror_reflect_rect_to_canvas(
+    core_arr: np.ndarray,
     target_wh: tuple[int, int],
     dest_xy: tuple[int, int],
-    collar_band_px: int,
-    lama_inpainter: LamaOcclusionInpainter,
-) -> Image.Image:
+) -> np.ndarray:
     """
-    Expands a clean native-resolution plate `core_rgb_u8` (`ph x pw`) placed at `dest_xy = (dx, dy)`
-    onto `target_wh = (tw, th)` via `cv2.BORDER_REFLECT_101` + neural LaMa seam healing along all
-    4 boundary collars, strictly preserving 100% native crisp pixels inside the core interior.
+    Expands an authentic rectangular plate or depth map `core_arr` (`ch x cw [x C]`)
+    placed at `dest_xy = (dx, dy)` onto `target_wh = (tw, th)` using exact analytic
+    optical mirror reflection (`cv2.BORDER_REFLECT_101`, period `2 * (N - 1)`),
+    preserving 100% crisp native pixels inside the core and $C^0$ continuity across
+    every mirror fold line without synthetic outpainting or collar blurring.
     """
     tw, th = target_wh
-    ph, pw, _ = core_rgb_u8.shape
-    dx, dy = dest_xy
-    pad_left = max(0, dx)
-    pad_top = max(0, dy)
-    pad_right = max(0, tw - (dx + pw))
-    pad_bot = max(0, th - (dy + ph))
+    ch, cw = core_arr.shape[:2]
+    if cw < 2 or ch < 2:
+        raise ValueError(f"core_arr must be at least 2x2 for mirror reflection, got {(cw, ch)}.")
+    dx, dy = int(dest_xy[0]), int(dest_xy[1])
+    qx = np.arange(tw, dtype=np.int64) - dx
+    px = 2 * (cw - 1)
+    rx = np.mod(qx, px)
+    ix = np.where(rx < cw, rx, px - rx)
 
-    seeded_u8 = cv2.copyMakeBorder(
-        core_rgb_u8,
-        pad_top,
-        pad_bot,
-        pad_left,
-        pad_right,
-        borderType=cv2.BORDER_REFLECT_101,
-    )
-    seeded_u8 = seeded_u8[:th, :tw, :]
-
-    band = max(16, int(collar_band_px))
-    seam_mask = np.zeros((th, tw), dtype=np.uint8)
-    if pad_top > 8:
-        seam_mask[
-            max(0, pad_top - band) : min(th, pad_top + band),
-            max(0, pad_left - band) : min(tw, pad_left + pw + band),
-        ] = 255
-    if pad_bot > 8:
-        yb = pad_top + ph
-        seam_mask[
-            max(0, yb - band) : min(th, yb + band),
-            max(0, pad_left - band) : min(tw, pad_left + pw + band),
-        ] = 255
-    if pad_left > 8:
-        seam_mask[
-            max(0, pad_top - band) : min(th, pad_top + ph + band),
-            max(0, pad_left - band) : min(tw, pad_left + band),
-        ] = 255
-    if pad_right > 8:
-        xr = pad_left + pw
-        seam_mask[
-            max(0, pad_top - band) : min(th, pad_top + ph + band),
-            max(0, xr - band) : min(tw, xr + band),
-        ] = 255
-
-    if not np.any(seam_mask):
-        return Image.fromarray(seeded_u8, mode="RGB")
-
-    half_w, half_h = tw // 2, th // 2
-    small_img = Image.fromarray(seeded_u8, mode="RGB").resize(
-        (half_w, half_h), Image.Resampling.LANCZOS
-    )
-    small_mask = np.asarray(
-        Image.fromarray(seam_mask, mode="L").resize((half_w, half_h), Image.Resampling.NEAREST),
-        dtype=np.uint8,
-    )
-    healed_small = lama_inpainter.inpaint_background(
-        small_img,
-        small_mask,
-        dilation_radius_px=8,
-        mask_blur_sigma=2.0,
-    )
-    healed_exp_f = np.asarray(
-        healed_small.resize((tw, th), Image.Resampling.LANCZOS), dtype=np.float32
-    )
-
-    seam_soft = np.clip(
-        ndi.gaussian_filter(seam_mask.astype(np.float32) / 255.0, sigma=18.0) * 1.15,
-        0.0,
-        1.0,
-    )[:, :, None]
-    out_f = seam_soft * healed_exp_f + (1.0 - seam_soft) * seeded_u8.astype(np.float32)
-
-    margin = min(36, pw // 10, ph // 10)
-    core_lock = _cosine_feather_2d(
-        height=ph,
-        width=pw,
-        left_px=margin if pad_left > 8 else 0,
-        top_px=margin if pad_top > 8 else 0,
-        right_px=margin if pad_right > 8 else 0,
-        bottom_px=margin if pad_bot > 8 else 0,
-        elliptical=False,
-    )[:, :, None]
-    roi = out_f[pad_top : pad_top + ph, pad_left : pad_left + pw]
-    out_f[pad_top : pad_top + ph, pad_left : pad_left + pw] = (
-        core_lock * core_rgb_u8.astype(np.float32) + (1.0 - core_lock) * roi
-    )
-    return Image.fromarray(np.clip(np.rint(out_f), 0, 255).astype(np.uint8), mode="RGB")
+    qy = np.arange(th, dtype=np.int64) - dy
+    py = 2 * (ch - 1)
+    ry = np.mod(qy, py)
+    iy = np.where(ry < ch, ry, py - ry)
+    return np.ascontiguousarray(core_arr[np.ix_(iy, ix)])
 
 
-def _extend_purim_garden_to_2700(
+def _clean_and_dehaze_purim_garden_core(
     clean_full_garden_np: np.ndarray,
-    target_wh: tuple[int, int],
-    full_dest_xy: tuple[int, int],
-    inner_offset_xy: tuple[int, int],
-    inner_wh: tuple[int, int],
-    collar_band_px: int,
-    lama_inpainter: LamaOcclusionInpainter,
-) -> Image.Image:
+    spec: PurimCostumeSceneSpec,
+) -> np.ndarray:
     """
-    Extends the rectified `1008 x 1400` 1966 garden plate cleanly across `1500 px` inner width
-    using ONLY crisp, un-inpainted vintage foliage strips from opposite garden edges (zero mirror
-    symmetry inside `1500x1000`, zero sampling of the center figure hole, Efros-Freeman minimum-error
-    vertical cuts + native-resolution LaMa seam healing), then expands `1500 x 1380` -> `2700 x 1800`.
+    Crops `spec.mirror_inset_px` inside the rectified `1008 x 1400` 1966 garden plate
+    to exclude raw paper-edge specks and gently dehazes the lower-left phone-flash glare
+    against the clean right garden edge so mirror folds have uniform vintage illumination.
     """
     rh, rw, _ = clean_full_garden_np.shape
-    inset = 20
+    inset = spec.mirror_inset_px
     core_f = clean_full_garden_np[inset : rh - inset, inset : rw - inset].astype(np.float32)
     ch, cw, _ = core_f.shape
 
-    def _reinhard_row_transfer(donor: np.ndarray, ref_edge: np.ndarray, sigma_y: float = 42.0) -> np.ndarray:
-        ref_mu = ndi.gaussian_filter(np.mean(ref_edge, axis=1, keepdims=True), sigma=(sigma_y, 0.0, 0.0))
-        don_mu = ndi.gaussian_filter(np.mean(donor, axis=1, keepdims=True), sigma=(sigma_y, 0.0, 0.0))
-        ref_var = ndi.gaussian_filter(
-            np.mean((ref_edge - ref_mu) ** 2, axis=1, keepdims=True), sigma=(sigma_y, 0.0, 0.0)
-        )
-        don_var = ndi.gaussian_filter(
-            np.mean((donor - don_mu) ** 2, axis=1, keepdims=True), sigma=(sigma_y, 0.0, 0.0)
-        )
-        scale_std = np.clip(np.sqrt((ref_var + 16.0) / (don_var + 16.0)), 0.72, 1.48)
-        return np.clip((donor - don_mu) * scale_std + ref_mu, 0.0, 255.0)
+    dh_w = min(spec.glare_dehaze_width_px, cw // 3)
+    ref_w = min(150, cw // 4)
+    ref_edge = core_f[:, cw - ref_w - 4 : cw - 4]
+    donor = core_f[:, :dh_w]
+    sigma_y = 56.0
+    ref_mu = ndi.gaussian_filter(np.mean(ref_edge, axis=1, keepdims=True), sigma=(sigma_y, 0.0, 0.0))
+    don_mu = ndi.gaussian_filter(np.mean(donor, axis=1, keepdims=True), sigma=(sigma_y, 0.0, 0.0))
+    ref_var = ndi.gaussian_filter(
+        np.mean((ref_edge - ref_mu) ** 2, axis=1, keepdims=True), sigma=(sigma_y, 0.0, 0.0)
+    )
+    don_var = ndi.gaussian_filter(
+        np.mean((donor - don_mu) ** 2, axis=1, keepdims=True), sigma=(sigma_y, 0.0, 0.0)
+    )
+    scale_std = np.clip(np.sqrt((ref_var + 16.0) / (don_var + 16.0)), 0.72, 1.48)
+    dehazed_left = np.clip((donor - don_mu) * scale_std + ref_mu, 0.0, 255.0)
 
-    # Gently dehaze the milky phone-flash reflection along the lower-left margin (`x < 215, y > 420`)
-    # of the physical 1966 glossy print while preserving 100% crisp flower & grass micro-texture:
-    clean_right_ref = core_f[:, cw - 154 : cw - 4]
-    dehazed_left = _reinhard_row_transfer(core_f[:, :220], clean_right_ref, sigma_y=56.0)
-    wx_haze = (0.5 + 0.5 * np.cos(np.pi * np.clip(np.arange(220, dtype=np.float32) / 220.0, 0.0, 1.0)))[
-        None, :, None
-    ]
+    wx_haze = (
+        0.5 + 0.5 * np.cos(np.pi * np.clip(np.arange(dh_w, dtype=np.float32) / float(dh_w), 0.0, 1.0))
+    )[None, :, None]
     wy_haze = (
-        0.5 * (1.0 + np.tanh((np.arange(ch, dtype=np.float32) - 440.0) / 95.0))
+        0.5
+        * (
+            1.0
+            + np.tanh(
+                (np.arange(ch, dtype=np.float32) - spec.glare_dehaze_y_center_px)
+                / spec.glare_dehaze_y_scale_px
+            )
+        )
     )[:, None, None]
-    w_dehaze = 0.82 * wx_haze * wy_haze
-    core_f[:, :220] = (1.0 - w_dehaze) * core_f[:, :220] + w_dehaze * dehazed_left
-
-    ox_in, _ = inner_offset_xy
-    iw, _ = inner_wh
-    fx_exp, fy_exp = full_dest_xy
-    x_core_in = (fx_exp - ox_in) + inset  # 246 + 20 = 266
-    left_wing_w = x_core_in
-    right_wing_w = iw - (x_core_in + cw)  # 1500 - (266 + 968) = 266
-
-    strip_1500_f = np.zeros((ch, iw, 3), dtype=np.float32)
-    strip_1500_f[:, x_core_in : x_core_in + cw] = core_f
-
-    # Crisp un-inpainted source strips (strictly outside the central Tami+Ada hole):
-    src_left_foliage = core_f[:, 4:198]  # 194px wide crisp dehazed left foliage & grass
-    src_right_foliage = core_f[:, cw - 154 : cw - 4]  # 150px wide crisp right saplings & grass
-
-    # Graft left wing (`0 .. x_core_in = 266`) from `src_right_foliage` (150px) matched via Reinhard transfer
-    don_l1 = _reinhard_row_transfer(np.roll(src_right_foliage, shift=18, axis=0), core_f[:, :56])
-    don_l2 = _reinhard_row_transfer(np.roll(src_right_foliage, shift=-24, axis=0), core_f[:, :56])
-    ov_l = 32
-    w1 = don_l1.shape[1]  # 150 + 150 - 32 = 268 >= 266
-    wing_l = np.zeros((ch, w1 * 2 - ov_l, 3), dtype=np.float32)
-    wing_l[:, :w1] = don_l2
-    cut_l_mid = _min_error_vertical_cut_mask(wing_l[:, w1 - ov_l : w1], don_l1[:, :ov_l], feather_px=5.0)
-    wing_l[:, w1 - ov_l : w1] = wing_l[:, w1 - ov_l : w1] * (1.0 - cut_l_mid) + don_l1[:, :ov_l] * cut_l_mid
-    wing_l[:, w1:] = don_l1[:, ov_l:]
-    strip_1500_f[:, :left_wing_w] = wing_l[:, -left_wing_w:]
-
-    ov_join = 48
-    don_l_ext = _reinhard_row_transfer(src_right_foliage[:, :ov_join], core_f[:, :56])
-    cut_l_core = _min_error_vertical_cut_mask(don_l_ext, core_f[:, :ov_join], feather_px=6.5)
-    strip_1500_f[:, x_core_in : x_core_in + ov_join] = (
-        don_l_ext * (1.0 - cut_l_core) + core_f[:, :ov_join] * cut_l_core
-    )
-
-    # Graft right wing (`x_core_in + cw .. 1500`, 266px) from `src_left_foliage` (194px) matched via Reinhard transfer
-    don_r1 = _reinhard_row_transfer(np.roll(src_left_foliage, shift=-16, axis=0), core_f[:, cw - 56 :])
-    don_r2 = _reinhard_row_transfer(np.roll(src_left_foliage, shift=22, axis=0), core_f[:, cw - 56 :])
-    ov_r = 56
-    wr1 = don_r1.shape[1]  # 194 + 194 - 56 = 332 >= 266
-    wing_r = np.zeros((ch, wr1 * 2 - ov_r, 3), dtype=np.float32)
-    wing_r[:, :wr1] = don_r1
-    cut_r_mid = _min_error_vertical_cut_mask(wing_r[:, wr1 - ov_r : wr1], don_r2[:, :ov_r], feather_px=5.0)
-    wing_r[:, wr1 - ov_r : wr1] = wing_r[:, wr1 - ov_r : wr1] * (1.0 - cut_r_mid) + don_r2[:, :ov_r] * cut_r_mid
-    wing_r[:, wr1:] = don_r2[:, ov_r:]
-    rx0 = x_core_in + cw
-    strip_1500_f[:, rx0:] = wing_r[:, :right_wing_w]
-    don_r_ext = _reinhard_row_transfer(src_left_foliage[:, -ov_join:], core_f[:, cw - 56 :])
-    cut_r_core = _min_error_vertical_cut_mask(core_f[:, cw - ov_join :], don_r_ext, feather_px=6.5)
-    strip_1500_f[:, rx0 - ov_join : rx0] = (
-        core_f[:, cw - ov_join :] * (1.0 - cut_r_core) + don_r_ext * cut_r_core
-    )
-
-    # Native-resolution LaMa seam heal strictly along the two vertical joins (`x = 266` & `x = 1234`)
-    strip_1500_u8 = np.clip(np.rint(strip_1500_f), 0, 255).astype(np.uint8)
-    join_mask = np.zeros((ch, iw), dtype=np.uint8)
-    join_mask[:, x_core_in - 14 : x_core_in + 14] = 255
-    join_mask[:, rx0 - 14 : rx0 + 14] = 255
-    strip_healed_img = _inpaint_masked_plate_lama(
-        src_rgb=Image.fromarray(strip_1500_u8, mode="RGB"),
-        binary_mask_u8=join_mask,
-        lama_inpainter=lama_inpainter,
-        dilation_px=6,
-        blur_sigma=2.6,
-        max_working_side_px=1550,
-        roi_context_margin_px=96,
-    )
-    strip_healed_u8 = np.asarray(strip_healed_img, dtype=np.uint8)
-
-    # Expand `1500 x 1360` -> `2700 x 1800` at `(ox_in=600, fy_exp + inset = 165)`
-    return _expand_plate_reflect_and_heal_collar_2700(
-        core_rgb_u8=strip_healed_u8,
-        target_wh=target_wh,
-        dest_xy=(ox_in, fy_exp + inset),
-        collar_band_px=collar_band_px,
-        lama_inpainter=lama_inpainter,
-    )
+    w_dehaze = spec.glare_dehaze_strength * wx_haze * wy_haze
+    core_f[:, :dh_w] = (1.0 - w_dehaze) * donor + w_dehaze * dehazed_left
+    return np.clip(np.rint(core_f), 0, 255).astype(np.uint8)
 
 
 # ============================================================================
@@ -1156,26 +984,22 @@ def _extend_purim_garden_to_2700(
 # ============================================================================
 
 
-def _synthesize_museum_gallery_2700(
+def _clean_scroll_museum_plate(
     plate_rgb_u8: np.ndarray,
     occluder_union_plate_u8: np.ndarray,
-    exp_dims: CanvasDimensionsConfig,
-    ox_exp: int,
-    oy_exp: int,
     spec: ScrollFootSceneSpec,
     lama_inpainter: LamaOcclusionInpainter,
     max_working_side_px: int,
     roi_margin_px: int,
-) -> tuple[Image.Image, Image.Image]:
+) -> np.ndarray:
     """
-    Synthesizes:
-      1. `master_2700_rgb`: intact museum plate embedded seamlessly in a 2700x1800 gallery
-         with extended perspective baseboard line, harmonic wall & concrete illumination, and grain.
-      2. `bg_inpainted_rgb`: clean gallery wall + baseboard + concrete floor with the scroll,
-         rod, and sculpted foot completely LaMa-healed away.
+    Cleans the scroll, black rod, and sculpted foot (`occluder_union_plate_u8`) out of
+    the authentic `667 x 1000` museum plate (`plate_rgb_u8`) using perspective baseboard
+    continuity, 2D harmonic wall/floor illumination, authentic micro-grain, and LaMa
+    mid-frequency detail strictly inside the occluded hole while preserving 100% native
+    gallery pixels everywhere outside the hole up to all 4 authentic plate borders.
     """
     ph, pw, _ = plate_rgb_u8.shape
-    ew, eh = exp_dims.width, exp_dims.height
     plate_f = plate_rgb_u8.astype(np.float32)
     luma = 0.299 * plate_f[:, :, 0] + 0.587 * plate_f[:, :, 1] + 0.114 * plate_f[:, :, 2]
 
@@ -1200,13 +1024,6 @@ def _synthesize_museum_gallery_2700(
         1,
     )
 
-    xx_exp = np.arange(ew, dtype=np.float32)[None, :]
-    yy_exp = np.arange(eh, dtype=np.float32)[:, None]
-    y_base_exp_1d = float(oy_exp) + float(intercept) + float(slope) * (
-        np.arange(ew, dtype=np.float32) - float(ox_exp)
-    )
-    y_base_exp = y_base_exp_1d[None, :]
-
     xx_plate = np.arange(pw, dtype=np.float32)[None, :]
     yy_plate = np.arange(ph, dtype=np.float32)[:, None]
     y_base_plate = float(intercept) + float(slope) * xx_plate
@@ -1222,8 +1039,8 @@ def _synthesize_museum_gallery_2700(
     clean_wall_plate = (~occ_dil) & (yy_plate < (y_base_plate - float(bh)))
     clean_floor_plate = (~occ_dil) & (yy_plate > (y_base_plate + float(bh)))
 
-    # 2. Solve separate 2D harmonic fields for museum wall and concrete floor
-    def _solve_surface_field(clean_mask_p: np.ndarray) -> np.ndarray:
+    # 2. Solve separate 2D harmonic fields for museum wall and concrete floor on 667x1000
+    def _solve_surface_field_plate(clean_mask_p: np.ndarray) -> np.ndarray:
         lp_sig = spec.harmonic_lowpass_sigma_px
         w_c = np.maximum(1e-4, ndi.gaussian_filter(clean_mask_p.astype(np.float32), sigma=lp_sig))
         low_p = np.stack(
@@ -1234,14 +1051,14 @@ def _synthesize_museum_gallery_2700(
             axis=2,
         )
         cy_idx, cx_idx = np.where(clean_mask_p)
-        cy_s, cx_s = cy_idx[::6], cx_idx[::6]
-        tx_pts = np.tanh(((cx_s.astype(np.float32) + float(ox_exp) - 0.5 * ew) / (0.5 * ew)) * 1.15)
-        ty_pts = np.tanh(((cy_s.astype(np.float32) + float(oy_exp) - 0.5 * eh) / (0.5 * eh)) * 1.15)
+        cy_s, cx_s = cy_idx[::4], cx_idx[::4]
+        tx_pts = np.tanh(((cx_s.astype(np.float32) - 0.5 * pw) / (0.5 * pw)) * 1.15)
+        ty_pts = np.tanh(((cy_s.astype(np.float32) - 0.5 * ph) / (0.5 * ph)) * 1.15)
         design = np.column_stack([np.ones_like(tx_pts), tx_pts, ty_pts])
 
-        tx_full = np.tanh(((np.arange(ew, dtype=np.float32) - 0.5 * ew) / (0.5 * ew)) * 1.15)[None, :]
-        ty_full = np.tanh(((np.arange(eh, dtype=np.float32) - 0.5 * eh) / (0.5 * eh)) * 1.15)[:, None]
-        dir_vals = np.zeros((eh, ew, 3), dtype=np.float32)
+        tx_full = np.tanh(((np.arange(pw, dtype=np.float32) - 0.5 * pw) / (0.5 * pw)) * 1.15)[None, :]
+        ty_full = np.tanh(((np.arange(ph, dtype=np.float32) - 0.5 * ph) / (0.5 * ph)) * 1.15)[:, None]
+        dir_vals = np.zeros((ph, pw, 3), dtype=np.float32)
         for ch_i in range(3):
             vals = plate_f[cy_s, cx_s, ch_i]
             lo_b = float(np.percentile(vals, 3.0)) * 0.96
@@ -1250,35 +1067,28 @@ def _synthesize_museum_gallery_2700(
             pred = coeffs[0] + coeffs[1] * tx_full + coeffs[2] * ty_full
             dir_vals[:, :, ch_i] = np.clip(pred, lo_b, hi_b)
 
-        inset = 10
-        dir_mask = np.zeros((eh, ew), dtype=bool)
-        sub_m = clean_mask_p[inset : ph - inset, inset : pw - inset]
-        dir_mask[oy_exp + inset : oy_exp + ph - inset, ox_exp + inset : ox_exp + pw - inset] = sub_m
-        dir_vals[oy_exp : oy_exp + ph, ox_exp : ox_exp + pw] = np.where(
-            clean_mask_p[:, :, None],
-            low_p,
-            dir_vals[oy_exp : oy_exp + ph, ox_exp : ox_exp + pw],
-        )
-        dir_mask[:8, :] = True
-        dir_mask[-8:, :] = True
-        dir_mask[:, :8] = True
-        dir_mask[:, -8:] = True
+        dir_vals = np.where(clean_mask_p[:, :, None], low_p, dir_vals)
+        dir_mask = clean_mask_p.copy()
+        dir_mask[:4, :] = True
+        dir_mask[-4:, :] = True
+        dir_mask[:, :4] = True
+        dir_mask[:, -4:] = True
 
-        ds = spec.harmonic_downsample_factor
-        gh, gw = eh // ds, ew // ds
+        ds = max(1, spec.harmonic_downsample_factor)
+        gh, gw = max(8, ph // ds), max(8, pw // ds)
         dom_ds = np.ones((gh, gw), dtype=bool)
         dmask_ds = cv2.resize(dir_mask.astype(np.uint8), (gw, gh), interpolation=cv2.INTER_NEAREST) > 0
-        out = np.zeros((eh, ew, 3), dtype=np.float32)
+        out = np.zeros((ph, pw, 3), dtype=np.float32)
         for ch_i in range(3):
             dv_ds = cv2.resize(dir_vals[:, :, ch_i], (gw, gh), interpolation=cv2.INTER_AREA).astype(
                 np.float64
             )
             sol = _solve_harmonic_field_on_domain(dom_ds, dmask_ds, dv_ds).astype(np.float32)
-            out[:, :, ch_i] = cv2.resize(sol, (ew, eh), interpolation=cv2.INTER_CUBIC)
+            out[:, :, ch_i] = cv2.resize(sol, (pw, ph), interpolation=cv2.INTER_CUBIC)
         return out
 
-    wall_harm = _solve_surface_field(clean_wall_plate)
-    floor_harm = _solve_surface_field(clean_floor_plate)
+    wall_harm = _solve_surface_field_plate(clean_wall_plate)
+    floor_harm = _solve_surface_field_plate(clean_floor_plate)
 
     # 3. Sample authentic vertical baseboard residual profile [-bh..+bh] from left & right strips
     offsets = np.arange(-bh, bh + 1, dtype=np.float32)
@@ -1303,28 +1113,26 @@ def _synthesize_museum_gallery_2700(
             r_samples.append(plate_f[yc, x] - ref)
         prof_right[idx_o] = np.median(np.stack(r_samples, axis=0), axis=0)
 
-    # Smooth transition across baseboard line + authentic shadow-gap profile
-    rel_y_exp = yy_exp - y_base_exp
-    floor_weight = 0.5 * (1.0 + np.tanh(rel_y_exp / 1.35))[:, :, None]
+    rel_y_p = yy_plate - y_base_plate
+    floor_weight = 0.5 * (1.0 + np.tanh(rel_y_p / 1.35))[:, :, None]
     base_harm = (1.0 - floor_weight) * wall_harm + floor_weight * floor_harm
 
-    lr_blend = np.clip((xx_exp - float(ox_exp + lx1)) / max(1.0, float(rx0 - lx1)), 0.0, 1.0)
-    in_band = np.abs(rel_y_exp) <= float(bh)
+    lr_blend = np.clip((xx_plate - float(lx1)) / max(1.0, float(rx0 - lx1)), 0.0, 1.0)
+    in_band = np.abs(rel_y_p) <= float(bh)
     if np.any(in_band):
         by, bx = np.where(in_band)
-        frac_idx = np.clip(rel_y_exp[by, bx] + float(bh), 0.0, float(2 * bh))
+        frac_idx = np.clip(rel_y_p[by, bx] + float(bh), 0.0, float(2 * bh))
         i0 = np.floor(frac_idx).astype(np.int32)
         i1 = np.minimum(2 * bh, i0 + 1)
         wf = (frac_idx - i0.astype(np.float32))[:, None]
         w_lr = lr_blend[0, bx][:, None]
         p_l = (1.0 - wf) * prof_left[i0] + wf * prof_left[i1]
         p_r = (1.0 - wf) * prof_right[i0] + wf * prof_right[i1]
-        taper_b = np.cos(0.5 * np.pi * np.clip(np.abs(rel_y_exp[by, bx]) / float(bh + 1), 0.0, 1.0))[
+        taper_b = np.cos(0.5 * np.pi * np.clip(np.abs(rel_y_p[by, bx]) / float(bh + 1), 0.0, 1.0))[
             :, None
         ]
         base_harm[by, bx] += taper_b * ((1.0 - w_lr) * p_l + w_lr * p_r)
 
-    # 4. Non-periodic quilted micro-grain for wall and concrete floor
     wx0, wy0, wx1, wy1 = spec.wall_grain_box_plate
     fx0, fy0, fx1, fy1 = spec.floor_grain_box_plate
     wall_patch = plate_f[wy0:wy1, wx0:wx1]
@@ -1335,46 +1143,24 @@ def _synthesize_museum_gallery_2700(
     floor_grain_patch = floor_patch - ndi.gaussian_filter(
         floor_patch, sigma=(spec.grain_highpass_sigma_px, spec.grain_highpass_sigma_px, 0.0)
     )
-    wall_grain_2700 = _quilt_nonperiodic_grain_field(
-        wall_grain_patch, (ew, eh), spec.quilt_tile_px, spec.quilt_overlap_px, seed=7017
+    wall_grain_p = _quilt_nonperiodic_grain_field(
+        wall_grain_patch, (pw, ph), spec.quilt_tile_px, spec.quilt_overlap_px, seed=7017
     )
-    floor_grain_2700 = _quilt_nonperiodic_grain_field(
-        floor_grain_patch, (ew, eh), spec.quilt_tile_px, spec.quilt_overlap_px, seed=7018
+    floor_grain_p = _quilt_nonperiodic_grain_field(
+        floor_grain_patch, (pw, ph), spec.quilt_tile_px, spec.quilt_overlap_px, seed=7018
     )
-    grain_band_suppress = 1.0 - np.exp(-0.5 * (rel_y_exp / 3.0) ** 2)[:, :, None]
-    synth_2700_f = np.clip(
+    grain_band_suppress = 1.0 - np.exp(-0.5 * (rel_y_p / 3.0) ** 2)[:, :, None]
+    synth_plate_f = np.clip(
         base_harm
-        + grain_band_suppress * ((1.0 - floor_weight) * wall_grain_2700 + floor_weight * floor_grain_2700),
+        + grain_band_suppress * ((1.0 - floor_weight) * wall_grain_p + floor_weight * floor_grain_p),
         0.0,
         255.0,
     )
 
-    # 5. Feather-composite the intact 667x1000 plate -> master_2700_rgb
-    plate_w = _cosine_feather_2d(
-        height=ph,
-        width=pw,
-        left_px=spec.plate_feather_collar_px,
-        top_px=spec.plate_feather_collar_px,
-        right_px=spec.plate_feather_collar_px,
-        bottom_px=spec.plate_feather_collar_px,
-        elliptical=False,
-    )[:, :, None]
-    master_f = synth_2700_f.copy()
-    roi_m = master_f[oy_exp : oy_exp + ph, ox_exp : ox_exp + pw]
-    master_f[oy_exp : oy_exp + ph, ox_exp : ox_exp + pw] = (
-        plate_w * plate_f + (1.0 - plate_w) * roi_m
-    )
-    master_2700_rgb = Image.fromarray(np.clip(np.rint(master_f), 0, 255).astype(np.uint8), mode="RGB")
-
-    # 6. LaMa-inpaint scroll + rod + foot on master_2700_rgb, blending mid-frequency concrete/wall detail
-    occ_2700 = np.zeros((eh, ew), dtype=np.uint8)
-    occ_2700[oy_exp : oy_exp + ph, ox_exp : ox_exp + pw] = np.where(
-        occluder_union_plate_u8 >= 16, 255, 0
-    ).astype(np.uint8)
-
+    occ_plate = np.where(occluder_union_plate_u8 >= 16, 255, 0).astype(np.uint8)
     lama_raw = _inpaint_masked_plate_lama(
-        src_rgb=master_2700_rgb,
-        binary_mask_u8=occ_2700,
+        src_rgb=Image.fromarray(plate_rgb_u8, mode="RGB"),
+        binary_mask_u8=occ_plate,
         lama_inpainter=lama_inpainter,
         dilation_px=spec.bg_inpaint_dilation_px,
         blur_sigma=spec.bg_inpaint_blur_sigma,
@@ -1386,21 +1172,18 @@ def _synthesize_museum_gallery_2700(
     lama_midfreq = np.clip(lama_f - lama_low, -14.0, 14.0) * grain_band_suppress
 
     hole_dil = cv2.dilate(
-        occ_2700,
+        occ_plate,
         cv2.getStructuringElement(
             cv2.MORPH_ELLIPSE,
             (2 * spec.bg_inpaint_dilation_px + 1, 2 * spec.bg_inpaint_dilation_px + 1),
         ),
     )
     hole_w = ndi.gaussian_filter((hole_dil > 0).astype(np.float32), sigma=9.0)[:, :, None]
+    clean_bg_hole_f = np.clip(synth_plate_f + 0.55 * lama_midfreq, 0.0, 255.0)
+    bg_clean_f = (1.0 - hole_w) * plate_f + hole_w * clean_bg_hole_f
 
-    # Authentic clean pixels outside hole_dil keep master_f; inside hole_dil uses harmonic+baseboard+midfreq!
-    clean_bg_hole_f = np.clip(synth_2700_f + 0.55 * lama_midfreq, 0.0, 255.0)
-    bg_clean_f = (1.0 - hole_w) * master_f + hole_w * clean_bg_hole_f
-
-    # Subtle soft ambient shadow behind the hanging scroll so it sits naturally in museum light
     scroll_soft = ndi.gaussian_filter(
-        (occ_2700 > 0).astype(np.float32), sigma=spec.scroll_ambient_shadow_sigma_px
+        (occ_plate > 0).astype(np.float32), sigma=spec.scroll_ambient_shadow_sigma_px
     )
     if float(scroll_soft.max()) > 1e-5:
         scroll_soft = scroll_soft / float(scroll_soft.max())
@@ -1409,8 +1192,7 @@ def _synthesize_museum_gallery_2700(
         0.0,
         255.0,
     )
-    bg_inpainted_rgb = Image.fromarray(np.rint(bg_clean_f).astype(np.uint8), mode="RGB")
-    return master_2700_rgb, bg_inpainted_rgb
+    return np.rint(bg_clean_f).astype(np.uint8)
 
 
 def _build_pinned_purim_photo_rgba(
@@ -1692,31 +1474,49 @@ def build_bene_beitcha_scroll_foot_scene(
     occ_np = np.asarray(occ_canvas, dtype=np.uint8)
     photo_np = np.asarray(photo_canvas, dtype=np.uint8)
 
-    # 5. Synthesize 2700x1800 clean museum gallery background + depth
+    # 5. Clean 667x1000 museum plate inside scroll/rod/foot hole, then mirror-reflect onto 2700x1800
     occ_union_plate = np.maximum(scroll_plate_u8, rod_foot_union_1k)
-    print("  -> Synthesizing 2700x1800 museum gallery wall, perspective baseboard & concrete floor...")
-    master_2700_rgb, bg_inpainted_rgb = _synthesize_museum_gallery_2700(
+    print(
+        "  -> Cleaning 667x1000 museum plate & mirror-reflecting wall, baseboard & concrete floor to 2700x1800..."
+    )
+    clean_plate_u8 = _clean_scroll_museum_plate(
         plate_rgb_u8=plate_np,
         occluder_union_plate_u8=occ_union_plate,
-        exp_dims=exp_dims,
-        ox_exp=ox_exp,
-        oy_exp=oy_exp,
         spec=spec,
         lama_inpainter=lama_inpainter,
         max_working_side_px=cfg.lama_max_working_side_px,
         roi_margin_px=cfg.lama_roi_context_margin_px,
     )
-
-    raw_intact_depth_u8 = np.clip(
-        np.rint(depth_estimator.predict_depth(master_2700_rgb) * 255.0), 0, 255
-    ).astype(np.uint8)
-    inpainted_room_depth_u8 = np.asarray(
-        depth_estimator.build_smoothed_room_depth_uint8(bg_inpainted_rgb), dtype=np.uint8
+    exp_wh = (exp_dims.width, exp_dims.height)
+    bg_inpainted_rgb = Image.fromarray(
+        _mirror_reflect_rect_to_canvas(clean_plate_u8, exp_wh, (ox_exp, oy_exp)),
+        mode="RGB",
     )
-    bg_depth_clean_u8 = clean_room_depth_under_cutouts(
+
+    plate_intact_d_u8 = np.clip(
+        np.rint(depth_estimator.predict_depth(plate_rgb) * 255.0), 0, 255
+    ).astype(np.uint8)
+    raw_intact_depth_u8 = _mirror_reflect_rect_to_canvas(
+        plate_intact_d_u8, exp_wh, (ox_exp, oy_exp)
+    )
+    plate_clean_d_u8 = np.asarray(
+        depth_estimator.build_smoothed_room_depth_uint8(
+            Image.fromarray(clean_plate_u8, mode="RGB")
+        ),
+        dtype=np.uint8,
+    )
+    inpainted_room_depth_u8 = _mirror_reflect_rect_to_canvas(
+        plate_clean_d_u8, exp_wh, (ox_exp, oy_exp)
+    )
+    room_d_cleaned = clean_room_depth_under_cutouts(
         room_depth=inpainted_room_depth_u8,
         cutout_layers=(mid_np, rod_np, occ_np),
         cfg=spec.room_depth_clean,
+    )
+    bg_depth_clean_u8 = _mirror_reflect_rect_to_canvas(
+        room_d_cleaned[oy_exp : oy_exp + ph, ox_exp : ox_exp + pw],
+        exp_wh,
+        (ox_exp, oy_exp),
     )
 
     # 6. Solve Law 1 ($C^0$ contact) + Law 2 ($C^{-1}$ EDT) depths for mid, photo, rod, and occluder
@@ -1923,7 +1723,7 @@ def build_bene_beitcha_scroll_foot_scene(
         },
     ]
     px_piv, py_piv = rod_pivot_inner_px
-    piv_d_u8 = float(rod_solved.depth_u8[min(inner_dims.height - 1, max(0, int(round(py_piv)))), min(inner_dims.width - 1, max(0, int(round(px_piv))))])
+    piv_d_u8 = float(rod_depth_u8[min(inner_dims.height - 1, max(0, int(round(py_piv)))), min(inner_dims.width - 1, max(0, int(round(px_piv))))])
     piv_world_z = round(float(spec.rod_depth_solve.layer_z + spec.rod_depth_solve.layer_depth_amplitude * (piv_d_u8 / 255.0)), 3)
     photo_cx = int(round(0.5 * (photo_inner_box_px[0] + photo_inner_box_px[2])))
     photo_cy = int(round(0.5 * (photo_inner_box_px[1] + photo_inner_box_px[3])))
@@ -2161,34 +1961,45 @@ def build_purim_costume_1966_scene(
     )
     clean_full_garden_np = np.asarray(clean_full_garden_img, dtype=np.uint8)
 
-    # 3. Extend sunlit vintage garden shrubs, grass & stone border across 2700x1800
-    print("  -> Extending vintage 1966 garden horizontally & vertically across 2700x1800...")
-    bg_inpainted_rgb = _extend_purim_garden_to_2700(
-        clean_full_garden_np=clean_full_garden_np,
-        target_wh=(exp_dims.width, exp_dims.height),
-        full_dest_xy=(ox_exp, oy_exp - cy0),
-        inner_offset_xy=(ox_in, oy_in),
-        inner_wh=(inner_dims.width, inner_dims.height),
-        collar_band_px=spec.collar_heal_half_width_px,
-        lama_inpainter=lama_inpainter,
+    # 3. Mirror-reflect authentic 1966 garden plate & depth across all 4 photo edges onto 2700x1800
+    print("  -> Mirror-reflecting clean 1966 garden plate & depth across all 4 photo edges to 2700x1800...")
+    inset = spec.mirror_inset_px
+    core_dest_xy = (ox_exp + inset, oy_exp - cy0 + inset)
+    exp_wh = (exp_dims.width, exp_dims.height)
+    clean_core_u8 = _clean_and_dehaze_purim_garden_core(clean_full_garden_np, spec)
+    ch_core, cw_core = clean_core_u8.shape[:2]
+    bg_inpainted_rgb = Image.fromarray(
+        _mirror_reflect_rect_to_canvas(clean_core_u8, exp_wh, core_dest_xy),
+        mode="RGB",
     )
 
-    # Reconstruct intact master_2700_rgb for genuine room-relative Depth Anything V2 portrait relief
-    master_2700_rgba = bg_inpainted_rgb.convert("RGBA")
-    master_2700_rgba.alpha_composite(mid_patch_rgba, dest=(ox_exp, oy_exp))
-    master_2700_rgb = master_2700_rgba.convert("RGB")
-
-    # 4. Depth Anything V2 + Law 3 clean + Law 1 & Law 2 contact-anchored portrait relief
-    raw_intact_depth_u8 = np.clip(
-        np.rint(depth_estimator.predict_depth(master_2700_rgb) * 255.0), 0, 255
+    intact_core_u8 = rect_full_clean_np[inset : rh_full - inset, inset : rw_full - inset]
+    intact_core_d_u8 = np.clip(
+        np.rint(
+            depth_estimator.predict_depth(Image.fromarray(intact_core_u8, mode="RGB")) * 255.0
+        ),
+        0,
+        255,
     ).astype(np.uint8)
-    inpainted_room_depth_u8 = np.asarray(
-        depth_estimator.build_smoothed_room_depth_uint8(bg_inpainted_rgb), dtype=np.uint8
+    raw_intact_depth_u8 = _mirror_reflect_rect_to_canvas(intact_core_d_u8, exp_wh, core_dest_xy)
+
+    clean_core_d_u8 = np.asarray(
+        depth_estimator.build_smoothed_room_depth_uint8(Image.fromarray(clean_core_u8, mode="RGB")),
+        dtype=np.uint8,
     )
-    bg_depth_clean_u8 = clean_room_depth_under_cutouts(
+    inpainted_room_depth_u8 = _mirror_reflect_rect_to_canvas(clean_core_d_u8, exp_wh, core_dest_xy)
+    room_d_cleaned = clean_room_depth_under_cutouts(
         room_depth=inpainted_room_depth_u8,
         cutout_layers=(mid_np,),
         cfg=spec.room_depth_clean,
+    )
+    bg_depth_clean_u8 = _mirror_reflect_rect_to_canvas(
+        room_d_cleaned[
+            core_dest_xy[1] : core_dest_xy[1] + ch_core,
+            core_dest_xy[0] : core_dest_xy[0] + cw_core,
+        ],
+        exp_wh,
+        core_dest_xy,
     )
 
     mid_protrusion = compute_room_relative_neural_protrusion(
@@ -2604,43 +2415,42 @@ def build_herzliya_lawn_carpet_scene(
     )
     clean_inner_lawn_np = np.asarray(clean_inner_lawn_img, dtype=np.uint8)
 
-    print("  -> Outpainting sunlit Herzliya yard & lawn seamlessly to 2700x1800...")
-    bg_inpainted_rgb = _expand_plate_reflect_and_heal_collar_2700(
-        core_rgb_u8=clean_inner_lawn_np,
-        target_wh=(exp_dims.width, exp_dims.height),
-        dest_xy=(ox_in, oy_in),
-        collar_band_px=48,
-        lama_inpainter=lama_inpainter,
+    print("  -> Mirror-reflecting sunlit Herzliya yard & lawn across authentic edges to 2700x1800...")
+    exp_wh = (exp_dims.width, exp_dims.height)
+    bg_inpainted_rgb = Image.fromarray(
+        _mirror_reflect_rect_to_canvas(clean_inner_lawn_np, exp_wh, (ox_in, oy_in)),
+        mode="RGB",
     )
 
-    master_2700_rgba = bg_inpainted_rgb.convert("RGBA")
-    master_2700_rgba.alpha_composite(mid_canvas, dest=(ox_in, oy_in))
-    master_2700_rgb = master_2700_rgba.convert("RGB")
-
-    # 3. Depth Anything V2 on Herzliya yard + horizontal leveling of foreground lawn (`y_inner >= 720`)
-    # so the flat grass does not tilt left-to-right due to tree-shadow brightness differences!
-    raw_intact_depth_u8 = np.clip(
-        np.rint(depth_estimator.predict_depth(master_2700_rgb) * 255.0), 0, 255
+    # 3. Depth Anything V2 on authentic 1500x1000 Herzliya yard + horizontal leveling of foreground lawn
+    # (`y_inner >= 720`) + exact mirror reflection onto 2700x1800!
+    intact_inner_d_u8 = np.clip(
+        np.rint(depth_estimator.predict_depth(herz_img) * 255.0), 0, 255
     ).astype(np.uint8)
-    room_d_raw = np.asarray(
-        depth_estimator.build_smoothed_room_depth_uint8(bg_inpainted_rgb), dtype=np.uint8
+    raw_intact_depth_u8 = _mirror_reflect_rect_to_canvas(
+        intact_inner_d_u8, exp_wh, (ox_in, oy_in)
     )
+    clean_inner_d_u8 = np.asarray(
+        depth_estimator.build_smoothed_room_depth_uint8(clean_inner_lawn_img), dtype=np.uint8
+    )
+    room_d_raw = _mirror_reflect_rect_to_canvas(clean_inner_d_u8, exp_wh, (ox_in, oy_in))
     room_d_cleaned = clean_room_depth_under_cutouts(
         room_depth=room_d_raw,
         cutout_layers=(mid_np,),
         cfg=spec.room_depth_clean,
     )
-    # Level foreground grass rows horizontally while preserving vertical perspective ramp
-    yy_e = np.arange(exp_dims.height, dtype=np.float32)[:, None]
-    lawn_level_w = 0.5 * (1.0 + np.tanh((yy_e - float(oy_in + 735)) / 36.0))
-    row_med = np.median(room_d_cleaned[:, ox_in + 80 : ox_in + iw - 80].astype(np.float32), axis=1)[
-        :, None
-    ]
-    bg_depth_clean_u8 = np.clip(
-        np.rint((1.0 - lawn_level_w) * room_d_cleaned.astype(np.float32) + lawn_level_w * row_med),
+    d_inner_clean = room_d_cleaned[oy_in : oy_in + ih, ox_in : ox_in + iw].astype(np.float32)
+    yy_in_f = np.arange(ih, dtype=np.float32)[:, None]
+    lawn_level_w = 0.5 * (1.0 + np.tanh((yy_in_f - 735.0) / 36.0))
+    row_med = np.median(d_inner_clean[:, 80 : iw - 80], axis=1)[:, None]
+    d_inner_leveled_u8 = np.clip(
+        np.rint((1.0 - lawn_level_w) * d_inner_clean + lawn_level_w * row_med),
         0,
         255,
     ).astype(np.uint8)
+    bg_depth_clean_u8 = _mirror_reflect_rect_to_canvas(
+        d_inner_leveled_u8, exp_wh, (ox_in, oy_in)
+    )
 
     # 4. Segment Rolled Carpet Cylinder & Earth Trail from `IMG_BINY_0009` (1800x1200)
     biny_img = Image.open(project_root / spec.carpet_source_relpath).convert("RGB")
@@ -2879,8 +2689,14 @@ def build_herzliya_lawn_carpet_scene(
 
     mid_cov = float((mid_np[:, :, 3] >= 20).mean())
     start_uv_x = round(spec.start_center_x_px / float(iw), 6)
-    end_uv_x = round(spec.end_center_x_px / float(iw), 6)
+    end_uv_x = round(float(spec.earth_end_x_px) / float(iw), 6)
     delta_inner_px = round(spec.end_center_x_px - spec.start_center_x_px, 2)
+    roll_core_depth_u8 = float(np.median(roll_solved.depth_u8[roll_solid]))
+    roll_track_world_z = round(
+        spec.roll_depth_solve.layer_z
+        + spec.roll_depth_solve.layer_depth_amplitude * (roll_core_depth_u8 / 255.0),
+        3,
+    )
 
     carpet_unroll_spec = {
         "earthLayerId": "carpet_earth_trail",
@@ -2890,6 +2706,7 @@ def build_herzliya_lawn_carpet_scene(
         "deltaInnerPx": delta_inner_px,
         "startUvX": start_uv_x,
         "endUvX": end_uv_x,
+        "rollTrackWorldZ": roll_track_world_z,
         "rollBoxInnerPx": roll_box,
         "earthBoxInnerPx": earth_box,
         "startLawnWorldZ": round(start_lawn_z, 3),
@@ -3142,7 +2959,6 @@ def default_scroll_purim_carpet_bundle_config() -> ScrollPurimCarpetBundleConfig
         quilt_overlap_px=48,
         wall_grain_box_plate=(16, 80, 176, 620),
         floor_grain_box_plate=(16, 780, 236, 985),
-        plate_feather_collar_px=22,
         scroll_ambient_shadow_strength=0.045,
         scroll_ambient_shadow_sigma_px=16.0,
         scroll_catenary_peak_y_px=645.0,
@@ -3371,10 +3187,11 @@ def default_scroll_purim_carpet_bundle_config() -> ScrollPurimCarpetBundleConfig
         min_component_area_px=1200,
         bg_inpaint_dilation_px=26,
         bg_inpaint_blur_sigma=3.5,
-        collar_heal_half_width_px=30,
-        quilt_patch_w=340,
-        quilt_patch_h=300,
-        quilt_overlap_px=120,
+        mirror_inset_px=16,
+        glare_dehaze_width_px=210,
+        glare_dehaze_y_center_px=440.0,
+        glare_dehaze_y_scale_px=95.0,
+        glare_dehaze_strength=0.82,
         bg_jpeg_quality=94,
         room_depth_clean=RoomDepthCleanConfig(
             alpha_threshold_u8=16,
@@ -3481,10 +3298,6 @@ def default_scroll_purim_carpet_bundle_config() -> ScrollPurimCarpetBundleConfig
         hose_heal_box_inner=(1368, 868, 1500, 1000),
         bg_inpaint_dilation_px=26,
         bg_inpaint_blur_sigma=3.5,
-        collar_heal_half_width_px=30,
-        quilt_patch_w=340,
-        quilt_patch_h=280,
-        quilt_overlap_px=120,
         bg_jpeg_quality=94,
         carpet_sam_prompts=(
             _pg(
@@ -3655,7 +3468,7 @@ def default_scroll_purim_carpet_bundle_config() -> ScrollPurimCarpetBundleConfig
         expanded_dimensions=CanvasDimensionsConfig(width=2700, height=1800),
         inner_offset_xy=(600, 400),
         scenes_output_relpath="prototype/assets/scenes",
-        spec_output_abspath="/Users/talsheaffer/.gemini/antigravity/brain/235713ae-3cfb-48f0-94e4-2012c0824fd5/scratch/subagent_b_scenes.json",
+        spec_output_abspath="/Users/talsheaffer/.gemini/antigravity/brain/235713ae-3cfb-48f0-94e4-2012c0824fd5/scratch/sub2_scroll_purim_spec.json",
         depth_model=DepthModelConfig(
             model_id="depth-anything/Depth-Anything-V2-Small-hf",
             background_gaussian_sigma=2.2,

@@ -46,12 +46,14 @@ from prototype.depth_topology import (
 from prototype.scene_config import (
     ApertureBox,
     CanvasDimensionsConfig,
+    DiffuseApertureFusionSpec,
     ExtraDepthLayerSpec,
     FloatingElementExtractionConfig,
     InpaintingConfig,
     InpaintRegionDilationOverride,
     NeuralPortraitReliefConfig,
     OutpaintingConfig,
+    PipeTunnelReliefConfig,
     SceneBuildSpec,
     SpatialPipelineConfig,
     default_spatial_pipeline_config,
@@ -439,6 +441,8 @@ def _apply_optional_mid_fg_depth_manifest_fields(
         rec["midSegmentsX"] = spec.mid_segments_x
     if spec.mid_segments_y is not None:
         rec["midSegmentsY"] = spec.mid_segments_y
+    if spec.mid_depth_test:
+        rec["midDepthTest"] = True
     if spec.fg_depth_output_filename is not None:
         rec["fgDepthTexture"] = f"assets/scenes/{spec.fg_depth_output_filename}"
     if spec.fg_depth_amplitude is not None:
@@ -449,7 +453,187 @@ def _apply_optional_mid_fg_depth_manifest_fields(
         rec["fgSegmentsX"] = spec.fg_segments_x
     if spec.fg_segments_y is not None:
         rec["fgSegmentsY"] = spec.fg_segments_y
+    if spec.fg_depth_test:
+        rec["fgDepthTest"] = True
     return rec
+
+
+def _mirror_outpaint_inner_plate(
+    inner_rgb: Image.Image,
+    exp_dims: CanvasDimensionsConfig,
+) -> Image.Image:
+    """Expands an authentic inner RGB plate via seamless `cv2.BORDER_REFLECT_101` optical reflection."""
+    iw, ih = inner_rgb.size
+    pad_left = (exp_dims.width - iw) // 2
+    pad_right = exp_dims.width - iw - pad_left
+    pad_top = (exp_dims.height - ih) // 2
+    pad_bottom = exp_dims.height - ih - pad_top
+    if pad_left < 0 or pad_right < 0 or pad_top < 0 or pad_bottom < 0:
+        raise ValueError(
+            f"Expanded dimensions {(exp_dims.width, exp_dims.height)} smaller than inner {(iw, ih)}."
+        )
+    reflected = cv2.copyMakeBorder(
+        np.asarray(inner_rgb.convert("RGB"), dtype=np.uint8),
+        pad_top,
+        pad_bottom,
+        pad_left,
+        pad_right,
+        borderType=cv2.BORDER_REFLECT_101,
+    )
+    return Image.fromarray(reflected, mode="RGB")
+
+
+def _reflect_expanded_margins_from_inner(
+    arr: np.ndarray,
+    inner_wh: tuple[int, int],
+) -> np.ndarray:
+    """Replaces expanded border margins outside centered `inner_wh` with `cv2.BORDER_REFLECT_101`."""
+    eh, ew = arr.shape[:2]
+    iw, ih = inner_wh
+    px = (ew - iw) // 2
+    py = (eh - ih) // 2
+    core = arr[py : py + ih, px : px + iw]
+    return cv2.copyMakeBorder(
+        core,
+        py,
+        eh - ih - py,
+        px,
+        ew - iw - px,
+        borderType=cv2.BORDER_REFLECT_101,
+    )
+
+
+def _apply_pipe_outer_barrel_and_mirror_borders(
+    expanded_bg_rgb: Image.Image,
+    room_depth_img: Image.Image,
+    pipe_shell_rgba: Image.Image,
+    pipe_shell_depth_img: Image.Image,
+    dims: CanvasDimensionsConfig,
+    ptr_cfg: PipeTunnelReliefConfig,
+    use_mirror_outpaint: bool,
+) -> tuple[Image.Image, Image.Image, Image.Image, Image.Image]:
+    """
+    Seals `pipe_shell` with a solid 3D cast-concrete exterior cylinder barrel ramping smoothly from
+    `front_rim_z` (`+8`) back to `z_pos` (`-430`, `u8 = 0`) across the outer gallery-wall boundary
+    (leaving the enclosed rear bore untouched), and optionally mirrors expanded margins cleanly.
+    """
+    bg_arr = np.asarray(expanded_bg_rgb.convert("RGB"), dtype=np.uint8).copy()
+    bg_depth_arr = np.asarray(room_depth_img.convert("L"), dtype=np.uint8).copy()
+    shell_rgba = np.asarray(pipe_shell_rgba.convert("RGBA"), dtype=np.uint8).copy()
+    shell_depth = np.asarray(pipe_shell_depth_img.convert("L"), dtype=np.uint8).copy()
+
+    eh, ew = shell_rgba.shape[:2]
+    px = (ew - dims.width) // 2
+
+    if use_mirror_outpaint:
+        bg_arr = _reflect_expanded_margins_from_inner(bg_arr, (dims.width, dims.height))
+        bg_depth_arr = _reflect_expanded_margins_from_inner(bg_depth_arr, (dims.width, dims.height))
+        if px > 0 and px + 1 + px <= ew:
+            shell_rgba[:, :px] = shell_rgba[:, px + 1 : 2 * px + 1][:, ::-1]
+            shell_depth[:, :px] = shell_depth[:, px + 1 : 2 * px + 1][:, ::-1]
+
+    if ptr_cfg.outer_wall_collar_px > 0.0:
+        pipe_mask = shell_rgba[:, :, 3] >= 128
+        non_pipe = ~pipe_mask
+        comp_labels, num_comp = ndimage.label(non_pipe)
+        if num_comp > 0:
+            border_ids = set(np.unique(comp_labels[0, :]).tolist())
+            border_ids.update(np.unique(comp_labels[eh - 1, :]).tolist())
+            border_ids.update(np.unique(comp_labels[:, 0]).tolist())
+            border_ids.update(np.unique(comp_labels[:, ew - 1]).tolist())
+            border_ids.discard(0)
+            exterior_bg = np.isin(comp_labels, list(border_ids))
+        else:
+            exterior_bg = np.zeros_like(non_pipe)
+
+        filled_pipe = ~exterior_bg
+        dist_in = ndimage.distance_transform_edt(filled_pipe).astype(np.float32)
+        dist_out = ndimage.distance_transform_edt(exterior_bg).astype(np.float32)
+        sd_outer = dist_in - dist_out
+
+        collar_px = float(ptr_cfg.outer_wall_collar_px)
+        aa_px = max(0.25, float(ptr_cfg.shell_alpha_aa_halfwidth_px))
+        outer_alpha_f = glsl_smoothstep(-collar_px - aa_px, -collar_px + aa_px, sd_outer)
+        outer_alpha_u8 = np.rint(np.clip(outer_alpha_f * 255.0, 0.0, 255.0)).astype(np.uint8)
+
+        # Preserve enclosed inner rear aperture cutout (`~pipe_mask & ~exterior_bg`) verbatim.
+        inner_bore_zone = sd_outer > max(8.0, float(ptr_cfg.outer_wall_inner_bevel_px) + 2.0)
+        new_alpha_u8 = np.where(inner_bore_zone, shell_rgba[:, :, 3], outer_alpha_u8)
+
+        erode_px = max(1, int(ptr_cfg.shell_pure_concrete_erode_px))
+        pure_concrete = (shell_rgba[:, :, 3] >= 220) & (sd_outer >= float(erode_px))
+        if np.any(pure_concrete):
+            _, nearest_rgb_idx = ndimage.distance_transform_edt(~pure_concrete, return_indices=True)
+            extrap_rgb = shell_rgba[
+                nearest_rgb_idx[0], nearest_rgb_idx[1], :3
+            ].astype(np.float32)
+            shade_w = glsl_smoothstep(-2.0, 2.0, sd_outer)
+            shade_mult = float(ptr_cfg.outer_wall_shade_mult) + (
+                1.0 - float(ptr_cfg.outer_wall_shade_mult)
+            ) * shade_w
+            shaded_collar_rgb = np.rint(
+                np.clip(extrap_rgb * shade_mult[:, :, None], 0.0, 255.0)
+            ).astype(np.uint8)
+
+            pad_out_px = float(ptr_cfg.shell_edge_pad_outward_px)
+            use_extrap = (sd_outer < float(erode_px)) & (sd_outer >= -(collar_px + pad_out_px))
+            new_rgb = np.where(use_extrap[:, :, None], shaded_collar_rgb, shell_rgba[:, :, :3])
+            zero_outside = sd_outer < -(collar_px + pad_out_px)
+            new_rgb = np.where(zero_outside[:, :, None], 0, new_rgb)
+        else:
+            new_rgb = shell_rgba[:, :, :3]
+
+        shell_rgba = np.dstack([new_rgb, new_alpha_u8]).astype(np.uint8)
+
+        # Extrapolate interior concrete rim depth outward from eroded interior, then smoothly ramp
+        # across the exterior concrete barrel down to `u8 = 0` (`Z = z_pos = -430`) on a wide opaque flange.
+        bevel_in_px = float(ptr_cfg.outer_wall_inner_bevel_px)
+        zero_out_px = min(collar_px - 2.0, float(ptr_cfg.outer_wall_depth_zero_px))
+        depth_seed = (pipe_mask) & (sd_outer >= max(2.0, bevel_in_px * 0.5))
+        if np.any(depth_seed):
+            _, nearest_d_idx = ndimage.distance_transform_edt(~depth_seed, return_indices=True)
+            rim_depth_f = shell_depth[nearest_d_idx[0], nearest_d_idx[1]].astype(np.float32)
+            ramp_w = glsl_smoothstep(-zero_out_px, bevel_in_px, sd_outer)
+            barrel_depth_u8 = np.rint(np.clip(rim_depth_f * ramp_w, 0.0, 255.0)).astype(np.uint8)
+            shell_depth = np.where(sd_outer < bevel_in_px, barrel_depth_u8, shell_depth).astype(
+                np.uint8
+            )
+            extrap_d = extrapolate_depth_outward_edt(
+                shell_depth.astype(np.float32), new_alpha_u8 >= 20
+            )
+            shell_depth = np.rint(np.clip(extrap_d, 0.0, 255.0)).astype(np.uint8)
+
+    return (
+        Image.fromarray(bg_arr, mode="RGB"),
+        Image.fromarray(bg_depth_arr, mode="L"),
+        Image.fromarray(shell_rgba, mode="RGBA"),
+        Image.fromarray(shell_depth, mode="L"),
+    )
+
+
+def _clip_diffuse_aperture_layer_to_rear_bore(
+    layer_rgba: Image.Image,
+    scene_dims: CanvasDimensionsConfig,
+    fusion_cfg: DiffuseApertureFusionSpec,
+) -> Image.Image:
+    """Clips a diffuse-aperture RGBA layer strictly inside the rear pipe opening (`r_rear <= 1.0`)."""
+    if not fusion_cfg.clip_to_rear_bore:
+        return layer_rgba
+    arr = np.asarray(layer_rgba.convert("RGBA"), dtype=np.uint8).copy()
+    h, w = arr.shape[:2]
+    cx, cy = fusion_cfg.rear_bore_center_inner_xy
+    rx, ry = fusion_cfg.rear_bore_radii_inner_xy
+    x_in = (np.arange(w, dtype=np.float32) + 0.5) * (float(scene_dims.width) / float(w))
+    y_in = (np.arange(h, dtype=np.float32) + 0.5) * (float(scene_dims.height) / float(h))
+    dx = (x_in[None, :] - float(cx)) / max(1.0, float(rx))
+    dy = (y_in[:, None] - float(cy)) / max(1.0, float(ry))
+    r_norm = np.sqrt(dx * dx + dy * dy)
+    r0 = float(np.clip(fusion_cfg.rear_bore_feather_start_ratio, 0.0, 0.99))
+    keep_w = 1.0 - glsl_smoothstep(r0, 1.0, r_norm)
+    keep_w = np.where(r_norm >= 1.0, 0.0, keep_w)
+    arr[:, :, 3] = np.rint(arr[:, :, 3].astype(np.float32) * keep_w).astype(np.uint8)
+    arr[arr[:, :, 3] == 0, :3] = 0
+    return Image.fromarray(arr, mode="RGBA")
 
 
 def solve_neural_portrait_layer_depth(
@@ -685,7 +869,10 @@ def _synthesize_scene_topology_depths(
     has_portrait_solves = spec.fg_portrait_relief is not None or any(
         el.portrait_relief is not None for el in spec.extra_layers
     )
-    if not (has_room_clean or has_contact_solves or has_portrait_solves):
+    has_flat_depths = (
+        spec.mid_depth_output_filename is not None or spec.fg_depth_output_filename is not None
+    )
+    if not (has_room_clean or has_contact_solves or has_portrait_solves or has_flat_depths):
         return {}
 
     extra_by_id = {el.layer_id: el for el in spec.extra_layers}
@@ -734,6 +921,33 @@ def _synthesize_scene_topology_depths(
         print(
             f"  -> Saved ghost-free {depth_path.name} "
             f"({room_depth_u8.shape[1]}x{room_depth_u8.shape[0]})"
+        )
+
+    if (
+        spec.mid_depth_output_filename is not None
+        and spec.mid_contact_depth_solve is None
+    ):
+        mid_rgba_arr = _get_layer_rgba("mid")
+        flat_mid_d = np.zeros(mid_rgba_arr.shape[:2], dtype=np.uint8)
+        mid_d_path = output_dir / spec.mid_depth_output_filename
+        Image.fromarray(flat_mid_d, mode="L").save(mid_d_path, format="PNG", optimize=True)
+        print(
+            f"  -> Saved flat Z-buffer {mid_d_path.name} "
+            f"({flat_mid_d.shape[1]}x{flat_mid_d.shape[0]})"
+        )
+
+    if (
+        spec.fg_depth_output_filename is not None
+        and spec.fg_contact_depth_solve is None
+        and spec.fg_portrait_relief is None
+    ):
+        fg_rgba_arr = _get_layer_rgba("fg")
+        flat_fg_d = np.zeros(fg_rgba_arr.shape[:2], dtype=np.uint8)
+        fg_d_path = output_dir / spec.fg_depth_output_filename
+        Image.fromarray(flat_fg_d, mode="L").save(fg_d_path, format="PNG", optimize=True)
+        print(
+            f"  -> Saved flat Z-buffer {fg_d_path.name} "
+            f"({flat_fg_d.shape[1]}x{flat_fg_d.shape[0]})"
         )
 
     if not (has_contact_solves or has_portrait_solves):
@@ -1435,22 +1649,30 @@ def build_single_scene(
     fg_coverage = float((np.asarray(fg_img)[:, :, 3] > 16).mean())
     mid_coverage = float((np.asarray(mid_img)[:, :, 3] > 16).mean())
 
-    print(
-        f"[{spec.scene_id}] Registering & center-locking {scene_outpaint_cfg.expansion_factor:.2f}x "
-        f"outpainted plate ({outpaint_raw_path.name})..."
-    )
-    pipe_or_expanded_bg_rgb, reg_corr = compose_outpainted_room(
-        inner_rgb=lama_inner_rgb,
-        raw_outpaint_rgb=raw_outpaint_rgb,
-        dims=scene_dims,
-        outpaint_cfg=scene_outpaint_cfg,
-        min_registration_corr=spec.min_registration_corr,
-        feather_collar_px=spec.feather_collar_px,
-        registration_core_margin_xy=spec.registration_core_margin_xy,
-        harmonize_seam_field=spec.harmonize_seam_field,
-        seam_harmonic_downsample=spec.seam_harmonic_downsample,
-        seam_harmonic_iters=spec.seam_harmonic_iters,
-    )
+    if spec.use_mirror_outpaint:
+        print(
+            f"[{spec.scene_id}] Synthesizing seamless BORDER_REFLECT_101 optical mirror outpaint "
+            f"on {exp_dims.width}x{exp_dims.height}..."
+        )
+        pipe_or_expanded_bg_rgb = _mirror_outpaint_inner_plate(lama_inner_rgb, exp_dims)
+        reg_corr = 1.0
+    else:
+        print(
+            f"[{spec.scene_id}] Registering & center-locking {scene_outpaint_cfg.expansion_factor:.2f}x "
+            f"outpainted plate ({outpaint_raw_path.name})..."
+        )
+        pipe_or_expanded_bg_rgb, reg_corr = compose_outpainted_room(
+            inner_rgb=lama_inner_rgb,
+            raw_outpaint_rgb=raw_outpaint_rgb,
+            dims=scene_dims,
+            outpaint_cfg=scene_outpaint_cfg,
+            min_registration_corr=spec.min_registration_corr,
+            feather_collar_px=spec.feather_collar_px,
+            registration_core_margin_xy=spec.registration_core_margin_xy,
+            harmonize_seam_field=spec.harmonize_seam_field,
+            seam_harmonic_downsample=spec.seam_harmonic_downsample,
+            seam_harmonic_iters=spec.seam_harmonic_iters,
+        )
     bg_path = output_dir / spec.bg_output_filename
     depth_path = output_dir / spec.depth_output_filename
     exp_w, exp_h = pipe_or_expanded_bg_rgb.size
@@ -1481,6 +1703,17 @@ def build_single_scene(
                 depth_estimator=depth_estimator,
                 sam_extractor=sam_extractor,
                 lama_inpainter=lama_inpainter,
+            )
+        )
+        expanded_bg_rgb, room_depth_img, pipe_shell_rgba, pipe_shell_depth_img = (
+            _apply_pipe_outer_barrel_and_mirror_borders(
+                expanded_bg_rgb=expanded_bg_rgb,
+                room_depth_img=room_depth_img,
+                pipe_shell_rgba=pipe_shell_rgba,
+                pipe_shell_depth_img=pipe_shell_depth_img,
+                dims=scene_dims,
+                ptr_cfg=spec.pipe_tunnel_relief,
+                use_mirror_outpaint=spec.use_mirror_outpaint,
             )
         )
         expanded_bg_rgb.save(
@@ -1534,7 +1767,18 @@ def build_single_scene(
         el_out_path = output_dir / el_spec.output_filename
         use_float_canvas = raw_spec.uses_floating_overlay_canvas_for_extra_layer(raw_el)
         if el_out_path in built_extra_paths or (reuse_inner_layers and el_out_path.is_file()):
-            pass
+            if (
+                el_spec.diffuse_aperture_role is not None
+                and spec.diffuse_aperture_fusion is not None
+                and spec.diffuse_aperture_fusion.clip_to_rear_bore
+                and el_out_path.is_file()
+            ):
+                clipped_reused = _clip_diffuse_aperture_layer_to_rear_bore(
+                    Image.open(el_out_path).convert("RGBA"),
+                    scene_dims=scene_dims,
+                    fusion_cfg=spec.diffuse_aperture_fusion,
+                )
+                clipped_reused.save(el_out_path, format="PNG", optimize=True)
         elif el_spec.pipe_shell_mode:
             raise RuntimeError(
                 f"pipe_shell_mode extra layer '{el_spec.layer_id}' was not synthesized by "
@@ -1564,7 +1808,11 @@ def build_single_scene(
                     lama_inpainter=lama_inpainter,
                     depth_estimator=depth_estimator,
                 )
-            fused_layer_img = diffuse_fusion_cache[el_spec.diffuse_aperture_role]
+            fused_layer_img = _clip_diffuse_aperture_layer_to_rear_bore(
+                diffuse_fusion_cache[el_spec.diffuse_aperture_role],
+                scene_dims=scene_dims,
+                fusion_cfg=spec.diffuse_aperture_fusion,
+            )
             fused_layer_img.save(el_out_path, format="PNG", optimize=True)
             print(f"  -> Saved {el_out_path.name} ({fused_layer_img.size[0]}x{fused_layer_img.size[1]})")
         elif el_spec.ceiling_mirror_reflection is not None:

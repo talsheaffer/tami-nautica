@@ -177,6 +177,10 @@ body.beta-drawer-open .spatial-nav-bar {
   pointer-events: none;
 }
 
+.spatial-nav-primary-row {
+  display: contents;
+}
+
 .spatial-history-btns {
   display: inline-flex;
   align-items: center;
@@ -276,6 +280,8 @@ body.beta-drawer-open .spatial-nav-bar {
   padding: 3px 10px;
   border-radius: 10px;
   white-space: nowrap;
+  cursor: default;
+  flex: 0 0 auto;
 }
 
 .spatial-outgoing-portals {
@@ -1029,20 +1035,61 @@ body.beta-drawer-open .portal-hover-plaque {
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--bg-slate);
+  background: radial-gradient(circle at 50% 44%, #1a1c20 0%, var(--bg-slate) 72%);
   z-index: 100;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
+  padding: 24px;
   transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#loading-overlay.ready-to-skip {
+  cursor: pointer;
 }
 
 #loading-overlay.hidden {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+}
+
+.loading-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+}
+
+.loading-brand-he {
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.loading-brand-he .age-tag {
+  background: var(--accent-gold);
+  color: #1a1510;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 7px;
+  letter-spacing: 0.5px;
+}
+
+.loading-brand-en {
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  letter-spacing: 0.6px;
+  color: var(--text-secondary);
 }
 
 .spinner {
@@ -1060,8 +1107,32 @@ body.beta-drawer-open .portal-hover-plaque {
 
 .loading-text {
   font-family: var(--font-heading);
-  font-size: 1rem;
-  color: var(--text-secondary);
+  font-size: 1.08rem;
+  font-weight: 400;
+  color: #E3DBD0;
+  min-height: 1.6em;
+  text-align: center;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.loading-text.is-switching {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.loading-skip-hint {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: rgba(196, 155, 113, 0.86);
+  opacity: 1;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.loading-skip-hint.hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 
 /* Beta Feedback #16: Distinct Resolved Status Badge vs Action Button */
@@ -1135,7 +1206,9 @@ body.beta-drawer-open .portal-hover-plaque {
     margin-top: 5px;
     width: 100%;
     max-width: 100%;
+    display: flex;
     flex-wrap: wrap;
+    align-items: center;
     overflow-x: visible;
     padding: 4px 7px;
     row-gap: 4px;
@@ -1147,33 +1220,61 @@ body.beta-drawer-open .portal-hover-plaque {
     display: none;
   }
 
+  .spatial-nav-primary-row {
+    display: flex;
+    align-items: center;
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    gap: 5px;
+  }
+
   .spatial-history-btns {
-    padding-inline-end: 6px;
+    padding-inline-end: 5px;
     gap: 3px;
+    flex: 0 0 auto;
   }
 
   .spatial-hist-btn {
-    font-size: 0.69rem;
-    padding: 2px 7px;
+    font-size: 0.68rem;
+    padding: 2px 6px;
     min-height: 23px;
   }
 
   .spatial-breadcrumb-list {
-    flex: 1 1 170px;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex: 1 1 0%;
     min-width: 0;
+    gap: 2px;
     overflow-x: auto;
     touch-action: pan-x;
   }
 
+  .spatial-crumb-item {
+    gap: 2px;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .spatial-crumb-sep {
+    font-size: 0.72rem;
+    padding: 0;
+    flex: 0 0 auto;
+  }
+
   .spatial-crumb-btn,
   .spatial-crumb-current {
-    font-size: 0.71rem;
-    padding: 2px 7px;
+    font-size: 0.69rem;
+    padding: 2px 6px;
+    white-space: nowrap;
+    flex: 0 0 auto;
   }
 
   .spatial-outgoing-portals {
-    flex: 1 1 100%;
-    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
     padding-inline-start: 0;
     border-inline-start: none;
     border-top: 1px solid rgba(255, 255, 255, 0.09);
@@ -1186,11 +1287,14 @@ body.beta-drawer-open .portal-hover-plaque {
   .spatial-portal-chip {
     font-size: 0.68rem;
     padding: 2px 7px;
+    flex: 0 0 auto;
   }
 
   .portal-return-btn {
-    font-size: 0.71rem;
-    padding: 3px 10px;
+    font-size: 0.69rem;
+    padding: 3px 9px;
+    margin-inline-start: auto;
+    flex: 0 0 auto;
   }
 
   .spatial-sidebar {

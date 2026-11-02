@@ -46,7 +46,9 @@ from prototype.depth_topology import (
     LayerTopologyVerificationReport,
     RoomDepthCleanConfig,
     clean_room_depth_under_cutouts,
+    compute_perimeter_pin_weights,
     compute_room_relative_neural_protrusion,
+    extrapolate_depth_outward_edt,
     solve_contact_anchored_layer_depth,
     verify_layer_contact_and_discontinuity,
 )
@@ -156,7 +158,7 @@ class DiningFamilyLayerConfig:
 
 @dataclass(frozen=True)
 class DiningRoomBackgroundConfig:
-    """Registration, occlusion healing, and 2700x1800 neural LaMa outpaint config for IMG_WORD_0200."""
+    """Registration, occlusion healing, and authentic-border mirror reflection config for IMG_WORD_0200."""
 
     inner_scaled_wh: tuple[int, int]
     inner_x0: int
@@ -176,37 +178,13 @@ class DiningRoomBackgroundConfig:
     emp_table_suppress_boxes_inner: tuple[BoundingBoxPrompt, ...]
     occlusion_dilate_inner_px: int
     lowfreq_harmonize_sigma: float
-    side_margin_seam_width_px: int
     occ_lama_dilate_px: int
     occ_lama_blur_sigma: float
     occ_interior_feather_px: float
     occ_table_guard_dist_px: float
-    bottom_scaffold_exclude_boxes_inner: tuple[BoundingBoxPrompt, ...]
-    scaffold_smooth_sigma: float
-    left_floor_anchor_x: float
-    left_floor_anchor_y: float
-    left_floor_slope: float
-    right_floor_anchor_x: float
-    right_floor_anchor_y: float
-    right_floor_slope: float
-    floor_split_x: float
-    floor_transition_px: float
-    wall_grain_patch_inner_xyxy: tuple[int, int, int, int]
-    wall_grain_highpass_sigma: float
-    wall_grain_clamp_abs: float
-    wall_grain_seed_weight: float
-    wall_grain_final_weight: float
-    terrazzo_grain_patch_inner_xyxy: tuple[int, int, int, int]
-    terrazzo_grain_highpass_sigma: float
-    terrazzo_grain_clamp_abs: float
-    terrazzo_grain_seed_weight: float
-    terrazzo_grain_final_weight: float
-    lama_outpaint_downsample_wh: tuple[int, int]
-    lama_collar_max_dist_px: float
-    lama_outpaint_dilate_ds_px: int
-    lama_outpaint_blur_ds_sigma: float
-    lama_band_fade_start_px: float
-    lama_band_fade_span_px: float
+    mirror_authentic_borders: bool
+    expand_border_touching_cutouts: bool
+    border_touch_margin_px: int
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -230,39 +208,13 @@ class DiningRoomBackgroundConfig:
             ],
             "occlusion_dilate_inner_px": self.occlusion_dilate_inner_px,
             "lowfreq_harmonize_sigma": self.lowfreq_harmonize_sigma,
-            "side_margin_seam_width_px": self.side_margin_seam_width_px,
             "occ_lama_dilate_px": self.occ_lama_dilate_px,
             "occ_lama_blur_sigma": self.occ_lama_blur_sigma,
             "occ_interior_feather_px": self.occ_interior_feather_px,
             "occ_table_guard_dist_px": self.occ_table_guard_dist_px,
-            "bottom_scaffold_exclude_boxes_inner": [
-                b.to_dict() for b in self.bottom_scaffold_exclude_boxes_inner
-            ],
-            "scaffold_smooth_sigma": self.scaffold_smooth_sigma,
-            "left_floor_anchor_x": self.left_floor_anchor_x,
-            "left_floor_anchor_y": self.left_floor_anchor_y,
-            "left_floor_slope": self.left_floor_slope,
-            "right_floor_anchor_x": self.right_floor_anchor_x,
-            "right_floor_anchor_y": self.right_floor_anchor_y,
-            "right_floor_slope": self.right_floor_slope,
-            "floor_split_x": self.floor_split_x,
-            "floor_transition_px": self.floor_transition_px,
-            "wall_grain_patch_inner_xyxy": list(self.wall_grain_patch_inner_xyxy),
-            "wall_grain_highpass_sigma": self.wall_grain_highpass_sigma,
-            "wall_grain_clamp_abs": self.wall_grain_clamp_abs,
-            "wall_grain_seed_weight": self.wall_grain_seed_weight,
-            "wall_grain_final_weight": self.wall_grain_final_weight,
-            "terrazzo_grain_patch_inner_xyxy": list(self.terrazzo_grain_patch_inner_xyxy),
-            "terrazzo_grain_highpass_sigma": self.terrazzo_grain_highpass_sigma,
-            "terrazzo_grain_clamp_abs": self.terrazzo_grain_clamp_abs,
-            "terrazzo_grain_seed_weight": self.terrazzo_grain_seed_weight,
-            "terrazzo_grain_final_weight": self.terrazzo_grain_final_weight,
-            "lama_outpaint_downsample_wh": list(self.lama_outpaint_downsample_wh),
-            "lama_collar_max_dist_px": self.lama_collar_max_dist_px,
-            "lama_outpaint_dilate_ds_px": self.lama_outpaint_dilate_ds_px,
-            "lama_outpaint_blur_ds_sigma": self.lama_outpaint_blur_ds_sigma,
-            "lama_band_fade_start_px": self.lama_band_fade_start_px,
-            "lama_band_fade_span_px": self.lama_band_fade_span_px,
+            "mirror_authentic_borders": self.mirror_authentic_borders,
+            "expand_border_touching_cutouts": self.expand_border_touching_cutouts,
+            "border_touch_margin_px": self.border_touch_margin_px,
         }
 
     @classmethod
@@ -270,9 +222,6 @@ class DiningRoomBackgroundConfig:
         isw = data["inner_scaled_wh"]
         tpl = data["template_inner_xyxy"]
         ssr = data["scale_search_range_step"]
-        wgp = data["wall_grain_patch_inner_xyxy"]
-        tgp = data["terrazzo_grain_patch_inner_xyxy"]
-        lds = data["lama_outpaint_downsample_wh"]
         return cls(
             inner_scaled_wh=(int(isw[0]), int(isw[1])),
             inner_x0=int(data["inner_x0"]),
@@ -298,40 +247,13 @@ class DiningRoomBackgroundConfig:
             ),
             occlusion_dilate_inner_px=int(data["occlusion_dilate_inner_px"]),
             lowfreq_harmonize_sigma=float(data["lowfreq_harmonize_sigma"]),
-            side_margin_seam_width_px=int(data["side_margin_seam_width_px"]),
             occ_lama_dilate_px=int(data["occ_lama_dilate_px"]),
             occ_lama_blur_sigma=float(data["occ_lama_blur_sigma"]),
             occ_interior_feather_px=float(data["occ_interior_feather_px"]),
             occ_table_guard_dist_px=float(data["occ_table_guard_dist_px"]),
-            bottom_scaffold_exclude_boxes_inner=tuple(
-                BoundingBoxPrompt.from_dict(b)
-                for b in data["bottom_scaffold_exclude_boxes_inner"]
-            ),
-            scaffold_smooth_sigma=float(data["scaffold_smooth_sigma"]),
-            left_floor_anchor_x=float(data["left_floor_anchor_x"]),
-            left_floor_anchor_y=float(data["left_floor_anchor_y"]),
-            left_floor_slope=float(data["left_floor_slope"]),
-            right_floor_anchor_x=float(data["right_floor_anchor_x"]),
-            right_floor_anchor_y=float(data["right_floor_anchor_y"]),
-            right_floor_slope=float(data["right_floor_slope"]),
-            floor_split_x=float(data["floor_split_x"]),
-            floor_transition_px=float(data["floor_transition_px"]),
-            wall_grain_patch_inner_xyxy=(int(wgp[0]), int(wgp[1]), int(wgp[2]), int(wgp[3])),
-            wall_grain_highpass_sigma=float(data["wall_grain_highpass_sigma"]),
-            wall_grain_clamp_abs=float(data["wall_grain_clamp_abs"]),
-            wall_grain_seed_weight=float(data["wall_grain_seed_weight"]),
-            wall_grain_final_weight=float(data["wall_grain_final_weight"]),
-            terrazzo_grain_patch_inner_xyxy=(int(tgp[0]), int(tgp[1]), int(tgp[2]), int(tgp[3])),
-            terrazzo_grain_highpass_sigma=float(data["terrazzo_grain_highpass_sigma"]),
-            terrazzo_grain_clamp_abs=float(data["terrazzo_grain_clamp_abs"]),
-            terrazzo_grain_seed_weight=float(data["terrazzo_grain_seed_weight"]),
-            terrazzo_grain_final_weight=float(data["terrazzo_grain_final_weight"]),
-            lama_outpaint_downsample_wh=(int(lds[0]), int(lds[1])),
-            lama_collar_max_dist_px=float(data["lama_collar_max_dist_px"]),
-            lama_outpaint_dilate_ds_px=int(data["lama_outpaint_dilate_ds_px"]),
-            lama_outpaint_blur_ds_sigma=float(data["lama_outpaint_blur_ds_sigma"]),
-            lama_band_fade_start_px=float(data["lama_band_fade_start_px"]),
-            lama_band_fade_span_px=float(data["lama_band_fade_span_px"]),
+            mirror_authentic_borders=bool(data["mirror_authentic_borders"]),
+            expand_border_touching_cutouts=bool(data["expand_border_touching_cutouts"]),
+            border_touch_margin_px=int(data["border_touch_margin_px"]),
         )
 
 
@@ -900,20 +822,20 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
         min_registration_corr=0.88,
         bore_sight_at_rest=True,
         scene_bg_z=-320.0,
-        mid_z=-280.0,
-        fg_z=-245.0,
-        front_chair_z=-245.0,
+        mid_z=-298.0,
+        fg_z=-320.0,
+        front_chair_z=-320.0,
         mid_render_order=2,
         fg_render_order=4,
         front_chair_render_order=5,
-        bg_segments_x=224,
-        bg_segments_y=150,
+        bg_segments_x=288,
+        bg_segments_y=192,
         mid_segments_x=224,
         mid_segments_y=150,
-        fg_segments_x=224,
-        fg_segments_y=150,
-        front_chair_segments_x=224,
-        front_chair_segments_y=150,
+        fg_segments_x=320,
+        fg_segments_y=214,
+        front_chair_segments_x=320,
+        front_chair_segments_y=214,
         initial_camera_y=0.0,
         initial_camera_z=680.0,
         min_camera_z=185.0,
@@ -1039,41 +961,13 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
             ),
             occlusion_dilate_inner_px=15,
             lowfreq_harmonize_sigma=48.0,
-            side_margin_seam_width_px=12,
             occ_lama_dilate_px=10,
             occ_lama_blur_sigma=2.0,
             occ_interior_feather_px=4.0,
             occ_table_guard_dist_px=4.0,
-            bottom_scaffold_exclude_boxes_inner=(
-                BoundingBoxPrompt(x0=190, y0=905, x1=860, y1=1000),
-                BoundingBoxPrompt(x0=1275, y0=810, x1=1500, y1=1000),
-                BoundingBoxPrompt(x0=1385, y0=0, x1=1500, y1=460),
-            ),
-            scaffold_smooth_sigma=42.0,
-            left_floor_anchor_x=680.0,
-            left_floor_anchor_y=1335.0,
-            left_floor_slope=0.48,
-            right_floor_anchor_x=2020.0,
-            right_floor_anchor_y=1365.0,
-            right_floor_slope=0.35,
-            floor_split_x=1350.0,
-            floor_transition_px=28.0,
-            wall_grain_patch_inner_xyxy=(560, 60, 665, 175),
-            wall_grain_highpass_sigma=3.5,
-            wall_grain_clamp_abs=2.6,
-            wall_grain_seed_weight=0.75,
-            wall_grain_final_weight=0.65,
-            terrazzo_grain_patch_inner_xyxy=(980, 845, 1180, 965),
-            terrazzo_grain_highpass_sigma=5.5,
-            terrazzo_grain_clamp_abs=6.5,
-            terrazzo_grain_seed_weight=0.85,
-            terrazzo_grain_final_weight=0.75,
-            lama_outpaint_downsample_wh=(1350, 900),
-            lama_collar_max_dist_px=380.0,
-            lama_outpaint_dilate_ds_px=6,
-            lama_outpaint_blur_ds_sigma=1.5,
-            lama_band_fade_start_px=275.0,
-            lama_band_fade_span_px=95.0,
+            mirror_authentic_borders=True,
+            expand_border_touching_cutouts=True,
+            border_touch_margin_px=2,
         ),
         michael_mid=DiningFamilyLayerConfig(
             layer_id="michael_mid",
@@ -1407,8 +1301,8 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
             tabletop_front_margin_px=8.0,
             tabletop_bounds_xyxy=(280.0, 530.0, 935.0, 835.0),
             tabletop_mask_feather_sigma=4.0,
-            z_pos=-268.0,
-            depth_amplitude=115.0,
+            z_pos=-284.0,
+            depth_amplitude=125.0,
             render_order=3,
             segments_x=224,
             segments_y=150,
@@ -1421,7 +1315,7 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
             room_pin_margin_uv=0.045,
             da2_gaussian_sigma=10.0,
             da2_z_min=-314.0,
-            da2_z_max=-106.0,
+            da2_z_max=-195.0,
             contact_pins=(),
             final_smooth_sigma=0.0,
             room_clean=RoomDepthCleanConfig(
@@ -1445,8 +1339,8 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
                 bg_z=-320.0,
                 room_depth_amplitude=220.0,
                 room_pin_margin_uv=0.045,
-                layer_z=-280.0,
-                layer_depth_amplitude=115.0,
+                layer_z=-298.0,
+                layer_depth_amplitude=125.0,
                 layer_pin_margin_uv=0.0,
                 alpha_threshold_u8=20,
                 component_bridge_px=16,
@@ -1469,8 +1363,8 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
                 bg_z=-320.0,
                 room_depth_amplitude=220.0,
                 room_pin_margin_uv=0.045,
-                layer_z=-268.0,
-                layer_depth_amplitude=115.0,
+                layer_z=-284.0,
+                layer_depth_amplitude=125.0,
                 layer_pin_margin_uv=0.0,
                 alpha_threshold_u8=20,
                 component_bridge_px=28,
@@ -1493,8 +1387,8 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
                 bg_z=-320.0,
                 room_depth_amplitude=220.0,
                 room_pin_margin_uv=0.045,
-                layer_z=-245.0,
-                layer_depth_amplitude=95.0,
+                layer_z=-320.0,
+                layer_depth_amplitude=175.0,
                 layer_pin_margin_uv=0.0,
                 alpha_threshold_u8=20,
                 component_bridge_px=16,
@@ -1517,8 +1411,8 @@ def default_fried_table_hybrid_scene_config() -> FriedTableHybridSceneConfig:
                 bg_z=-320.0,
                 room_depth_amplitude=220.0,
                 room_pin_margin_uv=0.045,
-                layer_z=-245.0,
-                layer_depth_amplitude=95.0,
+                layer_z=-320.0,
+                layer_depth_amplitude=175.0,
                 layer_pin_margin_uv=0.0,
                 alpha_threshold_u8=20,
                 component_bridge_px=16,
@@ -1726,21 +1620,63 @@ def _register_empty_room_to_inner(
     return aligned, valid, best_corr
 
 
-def _mirror_tile_highpass_grain(
-    patch_rgb: np.ndarray,
-    target_hw: tuple[int, int],
-    highpass_sigma: float,
-    clamp_abs: float,
+def authentic_photo_box_expanded(cfg: FriedTableHybridSceneConfig) -> tuple[int, int, int, int]:
+    """
+    Returns exact `(x0_auth, y0_auth, x1_auth, y1_auth)` of unpadded `IMG_WORD_0200` inside the
+    `2700x1800` expanded canvas (`(683, 400, 2017, 1400)` for `1334x1000` at `inner_x0=83`).
+    """
+    iw, ih = cfg.dimensions.width, cfg.dimensions.height
+    exp_w, exp_h = cfg.outpainting.expanded_dimensions(cfg.dimensions)
+    px = (exp_w - iw) // 2
+    py = (exp_h - ih) // 2
+    sw_in, sh_in = cfg.room_background.inner_scaled_wh
+    x0_auth = px + cfg.room_background.inner_x0
+    y0_auth = py
+    return (x0_auth, y0_auth, x0_auth + sw_in, y0_auth + sh_in)
+
+
+def mirror_authentic_region_to_expanded(
+    auth_arr: np.ndarray,
+    auth_box_exp: tuple[int, int, int, int],
+    exp_wh: tuple[int, int],
 ) -> np.ndarray:
-    """Builds a zero-mean mirror-tiled high-pass surface micro-grain field with bounded amplitude."""
-    hp = patch_rgb - ndi.gaussian_filter(patch_rgb, sigma=(highpass_sigma, highpass_sigma, 0.0))
-    hp = np.clip(hp, -clamp_abs, clamp_abs)
-    tile_h = np.concatenate([hp, hp[:, ::-1]], axis=1)
-    tile_hv = np.concatenate([tile_h, tile_h[::-1, :]], axis=0)
-    th, tw = target_hw
-    reps_y = th // tile_hv.shape[0] + 2
-    reps_x = tw // tile_hv.shape[1] + 2
-    return np.tile(tile_hv, (reps_y, reps_x, 1))[:th, :tw].astype(np.float32)
+    """Applies optical `cv2.BORDER_REFLECT_101` mirror reflection outside `auth_box_exp`."""
+    x0_auth, y0_auth, x1_auth, y1_auth = auth_box_exp
+    exp_w, exp_h = exp_wh
+    expected_hw = (y1_auth - y0_auth, x1_auth - x0_auth)
+    if auth_arr.shape[:2] != expected_hw:
+        raise ValueError(
+            f"Expected authentic array shape {expected_hw} for box {auth_box_exp}, got {auth_arr.shape[:2]}."
+        )
+    return cv2.copyMakeBorder(
+        auth_arr,
+        y0_auth,
+        exp_h - y1_auth,
+        x0_auth,
+        exp_w - x1_auth,
+        borderType=cv2.BORDER_REFLECT_101,
+    )
+
+
+def cutout_touches_authentic_border_inner(
+    rgba_inner: np.ndarray,
+    bg_cfg: DiningRoomBackgroundConfig,
+    alpha_threshold_u8: int,
+) -> bool:
+    """Checks whether an `inner` (`1500x1000`) RGBA cutout touches the authentic photo border."""
+    sw_in, sh_in = bg_cfg.inner_scaled_wh
+    x0 = bg_cfg.inner_x0
+    x1 = x0 + sw_in
+    m = max(1, bg_cfg.border_touch_margin_px)
+    opaque = rgba_inner[:sh_in, x0:x1, 3] >= alpha_threshold_u8
+    if not np.any(opaque):
+        return False
+    return bool(
+        np.any(opaque[:m, :])
+        or np.any(opaque[sh_in - m :, :])
+        or np.any(opaque[:, :m])
+        or np.any(opaque[:, sw_in - m :])
+    )
 
 
 def _extract_unoccluded_table_mask_native(
@@ -1801,14 +1737,14 @@ def build_dining_room_background_plates(
 ) -> tuple[Image.Image, Image.Image, float]:
     """
     Synthesizes:
-      1) `lama_inner_rgb` (1500x1000): 100% untouched original `IMG_WORD_0200` on every
-         unoccluded pixel inside `[:sh_in, inner_x0 : inner_x0 + sw_in]` (preserving the entire
+      1) Authentic interior (`1334x1000` at `(683, 400, 2017, 1400)` in `2700x1800`): 100%
+         untouched original `IMG_WORD_0200` on every unoccluded pixel (preserving the entire
          visible dining table, red tablecloth, paisley runner, book, yellow folder, wooden legs,
-         doorway, and room walls), healing ONLY the occluded strips strictly behind
-         `(mid_a > 8) | (fg_a > 8) | (chair_a > 8)` (and narrow outer side strips outside
-         `[inner_x0 : inner_x0 + sw_in]`) via neural `LaMa` FFC with clean non-table room context.
-      2) `expanded_bg_rgb` (2700x1800): wide-angle dining-room continuation synthesized strictly
-         outside the `1500x1000` inner frame with zero floor leg/tablecloth smearing.
+         doorway, and room walls), healing ONLY occluded pixels behind `(mid_a > 8) | (fg_a > 8) |
+         (chair_a > 8)` via neural `LaMa` FFC with clean non-table room context.
+      2) `expanded_bg_rgb` (`2700x1800`) and `lama_inner_rgb` (`1500x1000`): crisp optical
+         `cv2.BORDER_REFLECT_101` mirror reflection of the LaMa-cleaned authentic interior across
+         `(x0_auth, y0_auth, x1_auth, y1_auth)` (Feedback #52).
     """
     bg_cfg = cfg.room_background
     iw, ih = cfg.dimensions.width, cfg.dimensions.height
@@ -1889,32 +1825,23 @@ def build_dining_room_background_plates(
     room_seed_inner = np.where(emp_valid[:, :, None], emp_harmonized, nearest_room_rgb)
     room_seed_inner[non_table_room_valid] = word_canvas[non_table_room_valid]
     room_seed_inner[unoccluded_table_inner] = nearest_room_rgb[unoccluded_table_inner]
-
-    seam_w = bg_cfg.side_margin_seam_width_px
-    side_seam_mask = np.zeros((ih, iw), dtype=bool)
-    side_seam_mask[:, max(0, x0 - seam_w) : x0] = True
-    side_seam_mask[:, x1 : min(iw, x1 + seam_w)] = True
-    outer_missing = (~word_frame_mask) & ((~emp_valid) | side_seam_mask)
-    lama_hole_inner = occ_inner | outer_missing
-
-    seed_inner_img = Image.fromarray(
-        np.clip(np.round(room_seed_inner), 0, 255).astype(np.uint8), mode="RGB"
+    room_seed_auth = np.clip(np.round(room_seed_inner[:sh_in, x0:x1]), 0, 255).astype(np.uint8)
+    seed_inner_u8 = cv2.copyMakeBorder(
+        room_seed_auth,
+        0,
+        ih - sh_in,
+        x0,
+        iw - x1,
+        borderType=cv2.BORDER_REFLECT_101,
     )
+
     healed_inner_img = lama_inpainter.inpaint_background(
-        seed_inner_img,
-        (lama_hole_inner.astype(np.uint8)) * 255,
+        Image.fromarray(seed_inner_u8, mode="RGB"),
+        (occ_inner.astype(np.uint8)) * 255,
         dilation_radius_px=bg_cfg.occ_lama_dilate_px,
         mask_blur_sigma=bg_cfg.occ_lama_blur_sigma,
     )
     healed_inner_np = np.asarray(healed_inner_img, dtype=np.float32)
-
-    # Assemble `inner_comp`:
-    # - Every unoccluded pixel inside `[0:sh_in, x0:x1]` (`word_valid == True`, including 100% of
-    #   `unoccluded_table_inner`) stays 100% untouched original `word_canvas`.
-    # - Inside `occ_inner`, feather strictly INSIDE `occ_inner` away from non-table room boundaries
-    #   (while using 100% `healed_inner_np` adjacent to `unoccluded_table_inner` so zero double-edge).
-    inner_comp = np.where(word_frame_mask[:, :, None], word_canvas, emp_harmonized)
-    inner_comp[outer_missing] = healed_inner_np[outer_missing]
 
     dist_inside_occ = cv2.distanceTransform(occ_inner.astype(np.uint8), cv2.DIST_L2, 5)
     dist_to_table = cv2.distanceTransform((~unoccluded_table_inner).astype(np.uint8), cv2.DIST_L2, 5)
@@ -1924,144 +1851,32 @@ def build_dining_room_background_plates(
     w_occ[near_table] = 1.0
     w_occ[~occ_inner] = 0.0
     w_occ_3 = w_occ[:, :, None]
-    inner_comp = (1.0 - w_occ_3) * inner_comp + w_occ_3 * healed_inner_np
-
-    # Smooth narrow seam strictly outside `word_frame_mask` into `emp_harmonized`
-    outer_only = ~word_frame_mask
-    dist_from_outer_miss = cv2.distanceTransform((~outer_missing).astype(np.uint8), cv2.DIST_L2, 5)
-    w_outer_heal = np.clip(1.0 - dist_from_outer_miss / max(1.0, float(seam_w)), 0.0, 1.0)
-    w_outer_heal = w_outer_heal * w_outer_heal * (3.0 - 2.0 * w_outer_heal)
-    w_outer_heal[~outer_only] = 0.0
-    w_outer_heal[outer_missing] = 1.0
-    inner_comp = (
-        (1.0 - w_outer_heal[:, :, None]) * inner_comp
-        + w_outer_heal[:, :, None] * healed_inner_np
-    )
+    inner_comp = (1.0 - w_occ_3) * word_canvas + w_occ_3 * healed_inner_np
 
     # Guarantee exact pixel identity on every unoccluded pixel inside `[0:sh_in, x0:x1]`
     word_scaled_u8 = np.asarray(word_scaled, dtype=np.uint8)
-    inner_u8 = np.clip(np.round(inner_comp), 0, 255).astype(np.uint8)
-    inner_view = inner_u8[:sh_in, x0:x1]
+    auth_clean_u8 = np.clip(np.round(inner_comp[:sh_in, x0:x1]), 0, 255).astype(np.uint8)
     keep_exact = occ_scaled == 0
-    inner_view[keep_exact] = word_scaled_u8[keep_exact]
-    clean_inner_img = Image.fromarray(inner_u8, mode="RGB")
-    inner_np = inner_u8.astype(np.float32)
+    auth_clean_u8[keep_exact] = word_scaled_u8[keep_exact]
 
-    # Synthesize 2700x1800 wide-angle surround STRICTLY outside the 1500x1000 inner frame
-    exp_w = int(round(iw * cfg.outpainting.expansion_factor))
-    exp_h = int(round(ih * cfg.outpainting.expansion_factor))
+    if not bg_cfg.mirror_authentic_borders:
+        raise ValueError("DiningRoomBackgroundConfig requires mirror_authentic_borders=True.")
+
+    exp_w, exp_h = cfg.outpainting.expanded_dimensions(cfg.dimensions)
     px = (exp_w - iw) // 2
     py = (exp_h - ih) // 2
-
-    full_inner_box = np.zeros((exp_h, exp_w), dtype=bool)
-    full_inner_box[py : py + ih, px : px + iw] = True
-    hole_mask = ~full_inner_box
-
-    # Exclude bottom-edge dark wooden table legs & corner bag from the EDT scaffold source ONLY
-    # so floor extrapolation into y >= py + ih stays pure beige terrazzo without vertical leg streaks.
-    scaffold_src_inner = np.ones((ih, iw), dtype=bool)
-    scaffold_src_inner &= ~unoccluded_table_inner
-    for ebox in bg_cfg.bottom_scaffold_exclude_boxes_inner:
-        scaffold_src_inner[ebox.y0 : ebox.y1, ebox.x0 : ebox.x1] = False
-    scaffold_src_exp = np.zeros((exp_h, exp_w), dtype=bool)
-    scaffold_src_exp[py : py + ih, px : px + iw] = scaffold_src_inner
-
-    inner_placed = np.zeros((exp_h, exp_w, 3), dtype=np.float32)
-    inner_placed[py : py + ih, px : px + iw] = inner_np
-    idx_edt = ndi.distance_transform_edt(
-        ~scaffold_src_exp, return_distances=False, return_indices=True
+    auth_box_exp = authentic_photo_box_expanded(cfg)
+    final_2700 = mirror_authentic_region_to_expanded(
+        auth_arr=auth_clean_u8,
+        auth_box_exp=auth_box_exp,
+        exp_wh=(exp_w, exp_h),
     )
-    scaffold = inner_placed[idx_edt[0], idx_edt[1]]
-    scaffold_smooth = ndi.gaussian_filter(
-        scaffold, sigma=(bg_cfg.scaffold_smooth_sigma, bg_cfg.scaffold_smooth_sigma, 0.0)
+    inner_mirrored_u8 = final_2700[py : py + ih, px : px + iw].copy()
+    return (
+        Image.fromarray(inner_mirrored_u8, mode="RGB"),
+        Image.fromarray(final_2700, mode="RGB"),
+        reg_corr,
     )
-
-    wx0, wy0, wx1, wy1 = bg_cfg.wall_grain_patch_inner_xyxy
-    wall_hp = _mirror_tile_highpass_grain(
-        patch_rgb=inner_np[wy0:wy1, wx0:wx1],
-        target_hw=(exp_h, exp_w),
-        highpass_sigma=bg_cfg.wall_grain_highpass_sigma,
-        clamp_abs=bg_cfg.wall_grain_clamp_abs,
-    )
-    tx0, ty0, tx1, ty1 = bg_cfg.terrazzo_grain_patch_inner_xyxy
-    terrazzo_hp = _mirror_tile_highpass_grain(
-        patch_rgb=inner_np[ty0:ty1, tx0:tx1],
-        target_hw=(exp_h, exp_w),
-        highpass_sigma=bg_cfg.terrazzo_grain_highpass_sigma,
-        clamp_abs=bg_cfg.terrazzo_grain_clamp_abs,
-    )
-
-    yy, xx = np.mgrid[0:exp_h, 0:exp_w].astype(np.float32)
-    left_floor_y = bg_cfg.left_floor_anchor_y + (
-        np.maximum(0.0, bg_cfg.left_floor_anchor_x - xx) * bg_cfg.left_floor_slope
-    )
-    right_floor_y = bg_cfg.right_floor_anchor_y + (
-        np.maximum(0.0, xx - bg_cfg.right_floor_anchor_x) * bg_cfg.right_floor_slope
-    )
-    floor_line_y = np.where(xx < bg_cfg.floor_split_x, left_floor_y, right_floor_y)
-    floor_w = np.clip((yy - floor_line_y) / bg_cfg.floor_transition_px, 0.0, 1.0)[:, :, None]
-
-    outer_seed = (
-        scaffold_smooth
-        + (1.0 - floor_w) * wall_hp * bg_cfg.wall_grain_seed_weight
-        + floor_w * terrazzo_hp * bg_cfg.terrazzo_grain_seed_weight
-    )
-    # In the LaMa seed ONLY, also suppress the bottom-edge wooden table leg tip inside `[py+ih-40:py+ih]`
-    # so LaMa's 2x-downsampled collar never bleeds dark leg wood across the bottom floor border.
-    lama_inner_seed = inner_np.copy()
-    leg_bottom_guard = unoccluded_table_inner.copy()
-    leg_bottom_guard[: ih - 60, :] = False
-    idx_inner_room = ndi.distance_transform_edt(
-        leg_bottom_guard, return_distances=False, return_indices=True
-    )
-    lama_inner_seed[leg_bottom_guard] = lama_inner_seed[
-        idx_inner_room[0][leg_bottom_guard], idx_inner_room[1][leg_bottom_guard]
-    ]
-    lama_seed_placed = np.zeros((exp_h, exp_w, 3), dtype=np.float32)
-    lama_seed_placed[py : py + ih, px : px + iw] = lama_inner_seed
-    seeded_2700 = np.where(
-        full_inner_box[:, :, None], lama_seed_placed, np.clip(outer_seed, 0.0, 255.0)
-    )
-
-    ds_w, ds_h = bg_cfg.lama_outpaint_downsample_wh
-    seed_ds = Image.fromarray(np.clip(np.round(seeded_2700), 0, 255).astype(np.uint8)).resize(
-        (ds_w, ds_h), Image.Resampling.LANCZOS
-    )
-    dist_from_inner = cv2.distanceTransform(hole_mask.astype(np.uint8), cv2.DIST_L2, 5)
-    collar_hole = (hole_mask & (dist_from_inner <= bg_cfg.lama_collar_max_dist_px)).astype(
-        np.uint8
-    ) * 255
-    mask_ds = cv2.resize(collar_hole, (ds_w, ds_h), interpolation=cv2.INTER_NEAREST)
-    lama_ds = lama_inpainter.inpaint_background(
-        seed_ds,
-        mask_ds,
-        dilation_radius_px=bg_cfg.lama_outpaint_dilate_ds_px,
-        mask_blur_sigma=bg_cfg.lama_outpaint_blur_ds_sigma,
-    )
-    lama_2700 = np.asarray(
-        lama_ds.resize((exp_w, exp_h), Image.Resampling.BICUBIC), dtype=np.float32
-    )
-    lama_2700 = np.clip(
-        lama_2700
-        + (1.0 - floor_w) * wall_hp * bg_cfg.wall_grain_final_weight
-        + floor_w * terrazzo_hp * bg_cfg.terrazzo_grain_final_weight,
-        0.0,
-        255.0,
-    )
-
-    w_lama_band = 1.0 - np.clip(
-        (dist_from_inner - bg_cfg.lama_band_fade_start_px) / bg_cfg.lama_band_fade_span_px,
-        0.0,
-        1.0,
-    )
-    w_lama_band = (w_lama_band * w_lama_band * (3.0 - 2.0 * w_lama_band))[:, :, None]
-    outer_final = w_lama_band * lama_2700 + (1.0 - w_lama_band) * np.clip(outer_seed, 0.0, 255.0)
-
-    # Keep the entire 1500x1000 inner frame 100% untouched (`full_inner_box == True`)
-    final_2700 = np.clip(np.round(outer_final), 0, 255).astype(np.uint8)
-    final_2700[py : py + ih, px : px + iw] = inner_u8
-    expanded_bg_img = Image.fromarray(final_2700, mode="RGB")
-    return clean_inner_img, expanded_bg_img, reg_corr
 
 
 def extract_hybrid_installation_cutout(
@@ -2325,20 +2140,29 @@ def build_calibrated_dining_room_depth_map(
     """
     Computes a ghost-free, calibrated `2700x1800` 8-bit dining-room depth map via
     `DepthAnythingEstimator` healed under native family/chair cutouts via
-    `clean_room_depth_under_cutouts` (preserving the unoccluded dining tabletop) + smooth
-    tabletop/terrazzo floor contact pins.
+    `clean_room_depth_under_cutouts` (preserving the unoccluded dining tabletop) and reflected via
+    `cv2.BORDER_REFLECT_101` across the authentic photo rectangle `(683, 400, 2017, 1400)` so
+    ground and surround depth match the mirrored RGB background seamlessly (Feedback #52).
     """
     dc = cfg.depth_calibration
     exp_w, exp_h = expanded_bg_rgb.size
     pad_x = (exp_w - cfg.dimensions.width) * 0.5
     pad_y = (exp_h - cfg.dimensions.height) * 0.5
+    x0_auth, y0_auth, x1_auth, y1_auth = authentic_photo_box_expanded(cfg)
 
-    raw_da2 = depth_estimator.predict_depth(expanded_bg_rgb)
-    raw_min = float(raw_da2.min())
-    raw_max = float(raw_da2.max())
-    raw_u8 = np.rint(
-        np.clip((raw_da2 - raw_min) / max(1e-6, raw_max - raw_min), 0.0, 1.0) * 255.0
+    exp_np = np.asarray(expanded_bg_rgb.convert("RGB"), dtype=np.uint8)
+    auth_rgb_img = Image.fromarray(exp_np[y0_auth:y1_auth, x0_auth:x1_auth], mode="RGB")
+    raw_da2_auth = depth_estimator.predict_depth(auth_rgb_img)
+    raw_min = float(raw_da2_auth.min())
+    raw_max = float(raw_da2_auth.max())
+    raw_u8_auth = np.rint(
+        np.clip((raw_da2_auth - raw_min) / max(1e-6, raw_max - raw_min), 0.0, 1.0) * 255.0
     ).astype(np.uint8)
+    raw_u8 = mirror_authentic_region_to_expanded(
+        auth_arr=raw_u8_auth,
+        auth_box_exp=(x0_auth, y0_auth, x1_auth, y1_auth),
+        exp_wh=(exp_w, exp_h),
+    )
 
     cutout_arrays = [np.asarray(im.convert("RGBA"), dtype=np.uint8) for im in cutout_layers]
     cleaned_raw_u8 = clean_room_depth_under_cutouts(
@@ -2350,9 +2174,10 @@ def build_calibrated_dining_room_depth_map(
     smooth_da2 = ndi.gaussian_filter(
         cleaned_raw_u8.astype(np.float32), sigma=dc.da2_gaussian_sigma
     )
-    d_min = float(smooth_da2.min())
-    d_max = float(smooth_da2.max())
-    norm_da2 = (smooth_da2 - d_min) / max(1e-6, d_max - d_min)
+    auth_smooth = smooth_da2[y0_auth:y1_auth, x0_auth:x1_auth]
+    d_min = float(auth_smooth.min())
+    d_max = float(auth_smooth.max())
+    norm_da2 = np.clip((smooth_da2 - d_min) / max(1e-6, d_max - d_min), 0.0, 1.0)
     z_field = dc.da2_z_min + norm_da2 * (dc.da2_z_max - dc.da2_z_min)
 
     xx_inner = (np.arange(exp_w, dtype=np.float32) - pad_x)[None, :]
@@ -2376,7 +2201,13 @@ def build_calibrated_dining_room_depth_map(
         0.0,
         1.0,
     )
-    depth_u8 = np.clip(np.round(norm_u8 * 255.0), 0, 255).astype(np.uint8)
+    depth_u8_full = np.clip(np.round(norm_u8 * 255.0), 0, 255).astype(np.uint8)
+    depth_u8_auth = depth_u8_full[y0_auth:y1_auth, x0_auth:x1_auth]
+    depth_u8 = mirror_authentic_region_to_expanded(
+        auth_arr=depth_u8_auth,
+        auth_box_exp=(x0_auth, y0_auth, x1_auth, y1_auth),
+        exp_wh=(exp_w, exp_h),
+    )
     return Image.fromarray(depth_u8, mode="L")
 
 
@@ -2399,6 +2230,71 @@ def compose_populated_dining_expanded_rgb(
     return comp.convert("RGB")
 
 
+def _expand_border_touching_cutout_and_depth(
+    rgba_inner_np: np.ndarray,
+    world_z_inner: np.ndarray,
+    contact_inner: np.ndarray,
+    cfg: FriedTableHybridSceneConfig,
+    layer_cfg: ContactAnchoredLayerDepthConfig,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Mirrors a border-touching `1500x1000` cutout + solved world-Z + contact mask across the
+    authentic photo rectangle `(683, 400, 2017, 1400)` onto `2700x1800` via `cv2.BORDER_REFLECT_101`,
+    applies the host room's outer perimeter pin taper (`room_pin_margin_uv = 0.045`) so reflected
+    floor contacts remain exact (`ΔZ_world == 0`) all the way to the `2700x1800` perimeter, and
+    extrapolates interior world-Z outward via Voronoi `EDT` (`pinMarginUv = 0.0`).
+    """
+    bg_cfg = cfg.room_background
+    sw_in, sh_in = bg_cfg.inner_scaled_wh
+    x0 = bg_cfg.inner_x0
+    x1 = x0 + sw_in
+    exp_wh = cfg.outpainting.expanded_dimensions(cfg.dimensions)
+    exp_w, exp_h = exp_wh
+    auth_box_exp = authentic_photo_box_expanded(cfg)
+
+    rgba_exp = mirror_authentic_region_to_expanded(
+        auth_arr=rgba_inner_np[:sh_in, x0:x1],
+        auth_box_exp=auth_box_exp,
+        exp_wh=exp_wh,
+    ).copy()
+    rgba_exp[0, :, 3] = 0
+    rgba_exp[-1, :, 3] = 0
+    rgba_exp[:, 0, 3] = 0
+    rgba_exp[:, -1, 3] = 0
+
+    world_z_mirrored = mirror_authentic_region_to_expanded(
+        auth_arr=world_z_inner[:sh_in, x0:x1].astype(np.float32),
+        auth_box_exp=auth_box_exp,
+        exp_wh=exp_wh,
+    )
+    pin_room = compute_perimeter_pin_weights(exp_h, exp_w, layer_cfg.room_pin_margin_uv)
+    world_z_pinned = (
+        float(layer_cfg.bg_z) + (world_z_mirrored - float(layer_cfg.bg_z)) * pin_room
+    ).astype(np.float32)
+
+    contact_exp = (
+        mirror_authentic_region_to_expanded(
+            auth_arr=contact_inner[:sh_in, x0:x1].astype(np.uint8),
+            auth_box_exp=auth_box_exp,
+            exp_wh=exp_wh,
+        )
+        > 0
+    )
+    opaque_exp = rgba_exp[:, :, 3] >= layer_cfg.alpha_threshold_u8
+    contact_exp &= opaque_exp
+    world_z_full = extrapolate_depth_outward_edt(world_z_pinned, opaque_exp)
+
+    d_norm = (world_z_full - float(layer_cfg.layer_z)) / float(layer_cfg.layer_depth_amplitude)
+    if float(d_norm.min()) < -0.005 or float(d_norm.max()) > 1.005:
+        raise ValueError(
+            f"Expanded mirrored layer world-Z [{float(world_z_full.min()):.2f}, "
+            f"{float(world_z_full.max()):.2f}] overflows [{layer_cfg.layer_z:.2f}, "
+            f"{layer_cfg.layer_z + layer_cfg.layer_depth_amplitude:.2f}]."
+        )
+    depth_exp = np.rint(np.clip(d_norm, 0.0, 1.0) * 255.0).astype(np.uint8)
+    return rgba_exp, depth_exp, contact_exp
+
+
 def solve_and_verify_dining_table_layer_depths(
     expanded_bg_rgb: Image.Image,
     room_depth_img: Image.Image,
@@ -2413,29 +2309,41 @@ def solve_and_verify_dining_table_layer_depths(
     Image.Image,
     Image.Image,
     Image.Image,
+    Image.Image,
+    Image.Image,
     dict[str, LayerTopologyVerificationReport],
 ]:
     """
     Solves harmonic contact-anchored depth maps (`pinMarginUv = 0.0`, outward `EDT` rim
-    extrapolation) for all 4 cutout layers in `fried_table_hybrid`:
-      - `mid`: Grandfather Michael + grandson anchored to the dining tabletop
-      - `table_installation`: `'היבריד'` anchored along the dining tabletop diagonal
-      - `fg`: Grandmother Ahuva + grandson anchored to the foreground terrazzo floor
-      - `front_chair`: foreground wooden chair anchored to the front-left terrazzo floor
+    extrapolation) for all 4 cutout layers in `fried_table_hybrid`, and expands any border-touching
+    cutout layers (`fg` and `front_chair`) to `2700x1800` via `cv2.BORDER_REFLECT_101` across the
+    authentic photo rectangle `(683, 400, 2017, 1400)` so chair legs, clothing, sandals, and ground
+    reflect seamlessly across `y1_auth` (Feedback #52).
     """
     dc = cfg.depth_calibration
+    bg_cfg = cfg.room_background
     room_depth_u8 = np.asarray(room_depth_img.convert("L"), dtype=np.uint8)
     populated_rgb = compose_populated_dining_expanded_rgb(
         expanded_bg_rgb=expanded_bg_rgb,
         cutout_layers=(mid_rgba, inst_rgba, fg_rgba, chair_rgba),
         inner_dims=cfg.dimensions,
     )
-    raw_pop = depth_estimator.predict_depth(populated_rgb)
-    pop_min = float(raw_pop.min())
-    pop_max = float(raw_pop.max())
-    raw_pop_u8 = np.rint(
-        np.clip((raw_pop - pop_min) / max(1e-6, pop_max - pop_min), 0.0, 1.0) * 255.0
+    pop_np = np.asarray(populated_rgb, dtype=np.uint8)
+    auth_box_exp = authentic_photo_box_expanded(cfg)
+    x0_auth, y0_auth, x1_auth, y1_auth = auth_box_exp
+    raw_pop_auth = depth_estimator.predict_depth(
+        Image.fromarray(pop_np[y0_auth:y1_auth, x0_auth:x1_auth], mode="RGB")
+    )
+    pop_min = float(raw_pop_auth.min())
+    pop_max = float(raw_pop_auth.max())
+    raw_pop_auth_u8 = np.rint(
+        np.clip((raw_pop_auth - pop_min) / max(1e-6, pop_max - pop_min), 0.0, 1.0) * 255.0
     ).astype(np.uint8)
+    raw_pop_u8 = mirror_authentic_region_to_expanded(
+        auth_arr=raw_pop_auth_u8,
+        auth_box_exp=auth_box_exp,
+        exp_wh=expanded_bg_rgb.size,
+    )
 
     specs: tuple[tuple[str, Image.Image, ContactAnchoredLayerDepthConfig], ...] = (
         ("mid", mid_rgba, dc.mid_topology),
@@ -2444,6 +2352,7 @@ def solve_and_verify_dining_table_layer_depths(
         (cfg.front_chair.layer_id, chair_rgba, dc.front_chair_topology),
     )
 
+    final_rgba_images: dict[str, Image.Image] = {}
     solved_images: dict[str, Image.Image] = {}
     reports: dict[str, LayerTopologyVerificationReport] = {}
     for layer_key, rgba_img, layer_cfg in specs:
@@ -2460,11 +2369,27 @@ def solve_and_verify_dining_table_layer_depths(
             cfg=layer_cfg,
             neural_protrusion_norm=protrusion,
         )
+        final_rgba_np = rgba_np
+        final_depth_u8 = solved.depth_u8
+        final_contact = solved.contact_mask
+        if bg_cfg.expand_border_touching_cutouts and cutout_touches_authentic_border_inner(
+            rgba_inner=rgba_np,
+            bg_cfg=bg_cfg,
+            alpha_threshold_u8=layer_cfg.alpha_threshold_u8,
+        ):
+            final_rgba_np, final_depth_u8, final_contact = _expand_border_touching_cutout_and_depth(
+                rgba_inner_np=rgba_np,
+                world_z_inner=solved.world_z_map,
+                contact_inner=solved.contact_mask,
+                cfg=cfg,
+                layer_cfg=layer_cfg,
+            )
+
         report = verify_layer_contact_and_discontinuity(
             room_depth_expanded=room_depth_u8,
-            layer_rgba=rgba_np,
-            layer_depth=solved.depth_u8,
-            contact_mask=solved.contact_mask,
+            layer_rgba=final_rgba_np,
+            layer_depth=final_depth_u8,
+            contact_mask=final_contact,
             bg_z=layer_cfg.bg_z,
             room_depth_amplitude=layer_cfg.room_depth_amplitude,
             room_pin_margin_uv=layer_cfg.room_pin_margin_uv,
@@ -2478,10 +2403,13 @@ def solve_and_verify_dining_table_layer_depths(
                 f"[{cfg.scene_id}] Layer {layer_key!r} failed 2.5D depth topology verification: "
                 f"{report.to_json()}"
             )
-        solved_images[layer_key] = Image.fromarray(solved.depth_u8, mode="L")
+        final_rgba_images[layer_key] = Image.fromarray(final_rgba_np, mode="RGBA")
+        solved_images[layer_key] = Image.fromarray(final_depth_u8, mode="L")
         reports[layer_key] = report
 
     return (
+        final_rgba_images["fg"],
+        final_rgba_images[cfg.front_chair.layer_id],
         solved_images["mid"],
         solved_images[cfg.hybrid_installation.layer_id],
         solved_images["fg"],
@@ -2493,6 +2421,7 @@ def solve_and_verify_dining_table_layer_depths(
 def _build_fried_table_extra_layers_spec(cfg: FriedTableHybridSceneConfig) -> list[dict[str, Any]]:
     inst = cfg.hybrid_installation
     dc = cfg.depth_calibration
+    expand_cutouts = cfg.room_background.expand_border_touching_cutouts
     return [
         {
             "id": inst.layer_id,
@@ -2519,7 +2448,7 @@ def _build_fried_table_extra_layers_spec(cfg: FriedTableHybridSceneConfig) -> li
             "depthTexture": f"assets/scenes/{cfg.front_chair_depth_output_filename}",
             "zPos": cfg.front_chair_z,
             "renderOrder": cfg.front_chair_render_order,
-            "expanded": False,
+            "expanded": expand_cutouts,
             "baseOpacity": 1.0,
             "excursionBoost": 0.0,
             "depthTest": False,
@@ -2560,7 +2489,8 @@ def build_fried_table_hybrid_manifest_entry(
         "bgExpandedWidth": exp_w,
         "bgExpandedHeight": exp_h,
         "bgExpansionFactor": cfg.outpainting.expansion_factor,
-        "fgExpanded": False,
+        "fgExpanded": cfg.room_background.expand_border_touching_cutouts,
+        "authenticPhotoBoxExpanded": list(authentic_photo_box_expanded(cfg)),
         "boreSightAtRest": cfg.bore_sight_at_rest,
         "roomDepthAmplitude": dc.room_depth_amplitude,
         "sceneBgZ": cfg.scene_bg_z,
@@ -2623,6 +2553,7 @@ def build_fried_table_hybrid_js_config(cfg: FriedTableHybridSceneConfig) -> dict
         "midSegmentsY": cfg.mid_segments_y,
         "fgTexture": f"assets/scenes/{cfg.fg_output_filename}",
         "fgDepthTexture": f"assets/scenes/{cfg.fg_depth_output_filename}",
+        "fgExpanded": cfg.room_background.expand_border_touching_cutouts,
         "fgDepthAmplitude": dc.fg_topology.layer_depth_amplitude,
         "fgPinMarginUv": dc.fg_topology.layer_pin_margin_uv,
         "fgSegmentsX": cfg.fg_segments_x,
@@ -2735,17 +2666,23 @@ def build_fried_table_hybrid_scene(
     print(
         f"[{scene_cfg.scene_id}] Solving & verifying C^0/C^-1 contact-anchored layer depth maps..."
     )
-    mid_depth_img, inst_depth_img, fg_depth_img, chair_depth_img, topology_reports = (
-        solve_and_verify_dining_table_layer_depths(
-            expanded_bg_rgb=expanded_bg_rgb,
-            room_depth_img=depth_img,
-            mid_rgba=mid_rgba,
-            inst_rgba=inst_rgba,
-            fg_rgba=fg_rgba,
-            chair_rgba=chair_rgba,
-            cfg=scene_cfg,
-            depth_estimator=depth_estimator,
-        )
+    (
+        fg_rgba,
+        chair_rgba,
+        mid_depth_img,
+        inst_depth_img,
+        fg_depth_img,
+        chair_depth_img,
+        topology_reports,
+    ) = solve_and_verify_dining_table_layer_depths(
+        expanded_bg_rgb=expanded_bg_rgb,
+        room_depth_img=depth_img,
+        mid_rgba=mid_rgba,
+        inst_rgba=inst_rgba,
+        fg_rgba=fg_rgba,
+        chair_rgba=chair_rgba,
+        cfg=scene_cfg,
+        depth_estimator=depth_estimator,
     )
     for lkey, rep in topology_reports.items():
         print(
@@ -2793,20 +2730,23 @@ def build_fried_table_hybrid_scene(
         expanded_bg_rgb.resize((1350, 900), Image.Resampling.LANCZOS).save(
             preview_dir / "scene11_outpaint_preview_v2.jpg", format="JPEG", quality=92
         )
-        comp = lama_inner_rgb.convert("RGBA")
-        comp.alpha_composite(mid_rgba)
-        comp.alpha_composite(inst_rgba)
-        comp.alpha_composite(fg_rgba)
-        comp.alpha_composite(chair_rgba)
-        comp.convert("RGB").save(
-            preview_dir / "scene11_full_comp_preview_v2.jpg", format="JPEG", quality=93
-        )
+        exp_w, exp_h = expanded_bg_rgb.size
+        pad_x = (exp_w - scene_cfg.dimensions.width) // 2
+        pad_y = (exp_h - scene_cfg.dimensions.height) // 2
+        comp_exp = expanded_bg_rgb.convert("RGBA")
+        for layer_img in (mid_rgba, inst_rgba, fg_rgba, chair_rgba):
+            dest = (0, 0) if layer_img.size == (exp_w, exp_h) else (pad_x, pad_y)
+            comp_exp.alpha_composite(layer_img, dest=dest)
+        comp_exp.crop((pad_x, pad_y, pad_x + scene_cfg.dimensions.width, pad_y + scene_cfg.dimensions.height)).convert(
+            "RGB"
+        ).save(preview_dir / "scene11_full_comp_preview_v2.jpg", format="JPEG", quality=93)
 
     manifest_entry = build_fried_table_hybrid_manifest_entry(scene_cfg, reg_corr=reg_corr)
     js_scene_config = build_fried_table_hybrid_js_config(scene_cfg)
     payload = {
         "scene_id": scene_cfg.scene_id,
-        "feedback_id": "fb-20261030-233158-3eb7d7",
+        "feedback_id": "fb-20261102-100309-7eadc1",
+        "authentic_photo_box_expanded": list(authentic_photo_box_expanded(scene_cfg)),
         "manifest_entry": manifest_entry,
         "js_scene_config": js_scene_config,
         "topology_verification": {k: v.to_dict() for k, v in topology_reports.items()},
@@ -2820,7 +2760,7 @@ def build_fried_table_hybrid_scene(
 
     print(
         f"[{scene_cfg.scene_id}] Completed! bg={expanded_bg_rgb.size} (corr={reg_corr:.4f}), "
-        f"inst={inst_rgba.size}, depth={depth_img.size}"
+        f"fg={fg_rgba.size}, chair={chair_rgba.size}, inst={inst_rgba.size}, depth={depth_img.size}"
     )
     return payload
 

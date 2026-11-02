@@ -111,10 +111,35 @@ class TzofenBrickSegmentationConfig:
     lower_shadow_sat_min: float
     lower_shadow_r_minus_b_min: float
     lower_shadow_hue_max: float
+    dark_recessed_y_max_px: int
+    dark_recessed_val_max: float
+    dark_recessed_sat_min: float
+    dark_recessed_hue_max: float
+    dark_recessed_r_over_g_min: float
+    dark_recessed_r_minus_b_min: float
     sam_brick_gate_sat_min: float
     sam_brick_gate_r_minus_b_min: float
     sam_brick_gate_luma_max: float
+    rim_pale_luma_min: float
+    rim_pale_sat_max: float
+    rim_neutral_r_minus_b_max: float
+    rim_neutral_luma_min: float
+    rim_r_over_g_min: float
+    aa_erode_bias_px: float
+    aa_half_width_px: float
+    decontam_band_px: float
+    decontam_interior_dist_px: float
+    decontam_core_sat_min: float
+    decontam_core_r_over_g_min: float
+    decontam_min_luma_ratio: float
+    decontam_outward_pad_px: float
+    warm_stain_r_minus_b_min: float
+    warm_stain_sat_min: float
+    warm_stain_hue_max: float
     baseboard_exclude_box: BoundingBoxPrompt
+    left_vent_exclude_box: BoundingBoxPrompt
+    wall_vent_boxes: tuple[BoundingBoxPrompt, ...]
+    upper_steel_boxes: tuple[BoundingBoxPrompt, ...]
     min_brick_component_px: int
     max_brick_pinhole_px: int
     brick_edge_feather_sigma: float
@@ -122,6 +147,29 @@ class TzofenBrickSegmentationConfig:
     brick_inpaint_feather_px: float
     tabletop_deck_x_range_px: tuple[int, int]
     tabletop_deck_y_range_px: tuple[int, int]
+    mid_brick_exclusion_dilate_px: int
+    mid_steel_max_sat: float
+    mid_steel_max_r_minus_b: float
+    mid_steel_max_r_over_g: float
+    mid_steel_min_luma: float
+    mid_recessed_shelf_y_max_px: int
+    mid_recessed_steel_min_luma: float
+    mid_recessed_steel_max_sat: float
+    mid_recessed_steel_max_r_over_g: float
+    mid_horiz_shelf_bridge_px: int
+    mid_vert_divider_bridge_px: int
+    mid_vert_bridge_min_y_px: int
+    mid_max_pinhole_px: int
+    bg_occ_dilate_px: int
+    bg_wall_donor_min_luma: float
+    bg_wall_donor_max_sat: float
+    bg_floor_shadow_luma_min: float
+    bg_floor_shadow_dilate_px: int
+    bg_floor_donor_max_sat: float
+    bg_floor_donor_max_abs_rb: float
+    bg_dc_harmonize_sigma_px: float
+    bg_dc_blend_band_px: float
+    mirror_authentic_collar: bool
     healed_steel_max_r_minus_b: float
     healed_steel_min_luma: float
     healed_steel_max_wall_luma: float
@@ -154,10 +202,35 @@ class TzofenBrickSegmentationConfig:
             "lower_shadow_sat_min": self.lower_shadow_sat_min,
             "lower_shadow_r_minus_b_min": self.lower_shadow_r_minus_b_min,
             "lower_shadow_hue_max": self.lower_shadow_hue_max,
+            "dark_recessed_y_max_px": self.dark_recessed_y_max_px,
+            "dark_recessed_val_max": self.dark_recessed_val_max,
+            "dark_recessed_sat_min": self.dark_recessed_sat_min,
+            "dark_recessed_hue_max": self.dark_recessed_hue_max,
+            "dark_recessed_r_over_g_min": self.dark_recessed_r_over_g_min,
+            "dark_recessed_r_minus_b_min": self.dark_recessed_r_minus_b_min,
             "sam_brick_gate_sat_min": self.sam_brick_gate_sat_min,
             "sam_brick_gate_r_minus_b_min": self.sam_brick_gate_r_minus_b_min,
             "sam_brick_gate_luma_max": self.sam_brick_gate_luma_max,
+            "rim_pale_luma_min": self.rim_pale_luma_min,
+            "rim_pale_sat_max": self.rim_pale_sat_max,
+            "rim_neutral_r_minus_b_max": self.rim_neutral_r_minus_b_max,
+            "rim_neutral_luma_min": self.rim_neutral_luma_min,
+            "rim_r_over_g_min": self.rim_r_over_g_min,
+            "aa_erode_bias_px": self.aa_erode_bias_px,
+            "aa_half_width_px": self.aa_half_width_px,
+            "decontam_band_px": self.decontam_band_px,
+            "decontam_interior_dist_px": self.decontam_interior_dist_px,
+            "decontam_core_sat_min": self.decontam_core_sat_min,
+            "decontam_core_r_over_g_min": self.decontam_core_r_over_g_min,
+            "decontam_min_luma_ratio": self.decontam_min_luma_ratio,
+            "decontam_outward_pad_px": self.decontam_outward_pad_px,
+            "warm_stain_r_minus_b_min": self.warm_stain_r_minus_b_min,
+            "warm_stain_sat_min": self.warm_stain_sat_min,
+            "warm_stain_hue_max": self.warm_stain_hue_max,
             "baseboard_exclude_box": self.baseboard_exclude_box.to_dict(),
+            "left_vent_exclude_box": self.left_vent_exclude_box.to_dict(),
+            "wall_vent_boxes": [b.to_dict() for b in self.wall_vent_boxes],
+            "upper_steel_boxes": [b.to_dict() for b in self.upper_steel_boxes],
             "min_brick_component_px": self.min_brick_component_px,
             "max_brick_pinhole_px": self.max_brick_pinhole_px,
             "brick_edge_feather_sigma": self.brick_edge_feather_sigma,
@@ -165,6 +238,29 @@ class TzofenBrickSegmentationConfig:
             "brick_inpaint_feather_px": self.brick_inpaint_feather_px,
             "tabletop_deck_x_range_px": list(self.tabletop_deck_x_range_px),
             "tabletop_deck_y_range_px": list(self.tabletop_deck_y_range_px),
+            "mid_brick_exclusion_dilate_px": self.mid_brick_exclusion_dilate_px,
+            "mid_steel_max_sat": self.mid_steel_max_sat,
+            "mid_steel_max_r_minus_b": self.mid_steel_max_r_minus_b,
+            "mid_steel_max_r_over_g": self.mid_steel_max_r_over_g,
+            "mid_steel_min_luma": self.mid_steel_min_luma,
+            "mid_recessed_shelf_y_max_px": self.mid_recessed_shelf_y_max_px,
+            "mid_recessed_steel_min_luma": self.mid_recessed_steel_min_luma,
+            "mid_recessed_steel_max_sat": self.mid_recessed_steel_max_sat,
+            "mid_recessed_steel_max_r_over_g": self.mid_recessed_steel_max_r_over_g,
+            "mid_horiz_shelf_bridge_px": self.mid_horiz_shelf_bridge_px,
+            "mid_vert_divider_bridge_px": self.mid_vert_divider_bridge_px,
+            "mid_vert_bridge_min_y_px": self.mid_vert_bridge_min_y_px,
+            "mid_max_pinhole_px": self.mid_max_pinhole_px,
+            "bg_occ_dilate_px": self.bg_occ_dilate_px,
+            "bg_wall_donor_min_luma": self.bg_wall_donor_min_luma,
+            "bg_wall_donor_max_sat": self.bg_wall_donor_max_sat,
+            "bg_floor_shadow_luma_min": self.bg_floor_shadow_luma_min,
+            "bg_floor_shadow_dilate_px": self.bg_floor_shadow_dilate_px,
+            "bg_floor_donor_max_sat": self.bg_floor_donor_max_sat,
+            "bg_floor_donor_max_abs_rb": self.bg_floor_donor_max_abs_rb,
+            "bg_dc_harmonize_sigma_px": self.bg_dc_harmonize_sigma_px,
+            "bg_dc_blend_band_px": self.bg_dc_blend_band_px,
+            "mirror_authentic_collar": self.mirror_authentic_collar,
             "healed_steel_max_r_minus_b": self.healed_steel_max_r_minus_b,
             "healed_steel_min_luma": self.healed_steel_min_luma,
             "healed_steel_max_wall_luma": self.healed_steel_max_wall_luma,
@@ -203,10 +299,39 @@ class TzofenBrickSegmentationConfig:
             lower_shadow_sat_min=float(data["lower_shadow_sat_min"]),
             lower_shadow_r_minus_b_min=float(data["lower_shadow_r_minus_b_min"]),
             lower_shadow_hue_max=float(data["lower_shadow_hue_max"]),
+            dark_recessed_y_max_px=int(data["dark_recessed_y_max_px"]),
+            dark_recessed_val_max=float(data["dark_recessed_val_max"]),
+            dark_recessed_sat_min=float(data["dark_recessed_sat_min"]),
+            dark_recessed_hue_max=float(data["dark_recessed_hue_max"]),
+            dark_recessed_r_over_g_min=float(data["dark_recessed_r_over_g_min"]),
+            dark_recessed_r_minus_b_min=float(data["dark_recessed_r_minus_b_min"]),
             sam_brick_gate_sat_min=float(data["sam_brick_gate_sat_min"]),
             sam_brick_gate_r_minus_b_min=float(data["sam_brick_gate_r_minus_b_min"]),
             sam_brick_gate_luma_max=float(data["sam_brick_gate_luma_max"]),
+            rim_pale_luma_min=float(data["rim_pale_luma_min"]),
+            rim_pale_sat_max=float(data["rim_pale_sat_max"]),
+            rim_neutral_r_minus_b_max=float(data["rim_neutral_r_minus_b_max"]),
+            rim_neutral_luma_min=float(data["rim_neutral_luma_min"]),
+            rim_r_over_g_min=float(data["rim_r_over_g_min"]),
+            aa_erode_bias_px=float(data["aa_erode_bias_px"]),
+            aa_half_width_px=float(data["aa_half_width_px"]),
+            decontam_band_px=float(data["decontam_band_px"]),
+            decontam_interior_dist_px=float(data["decontam_interior_dist_px"]),
+            decontam_core_sat_min=float(data["decontam_core_sat_min"]),
+            decontam_core_r_over_g_min=float(data["decontam_core_r_over_g_min"]),
+            decontam_min_luma_ratio=float(data["decontam_min_luma_ratio"]),
+            decontam_outward_pad_px=float(data["decontam_outward_pad_px"]),
+            warm_stain_r_minus_b_min=float(data["warm_stain_r_minus_b_min"]),
+            warm_stain_sat_min=float(data["warm_stain_sat_min"]),
+            warm_stain_hue_max=float(data["warm_stain_hue_max"]),
             baseboard_exclude_box=BoundingBoxPrompt.from_dict(data["baseboard_exclude_box"]),
+            left_vent_exclude_box=BoundingBoxPrompt.from_dict(data["left_vent_exclude_box"]),
+            wall_vent_boxes=tuple(
+                BoundingBoxPrompt.from_dict(b) for b in data["wall_vent_boxes"]
+            ),
+            upper_steel_boxes=tuple(
+                BoundingBoxPrompt.from_dict(b) for b in data["upper_steel_boxes"]
+            ),
             min_brick_component_px=int(data["min_brick_component_px"]),
             max_brick_pinhole_px=int(data["max_brick_pinhole_px"]),
             brick_edge_feather_sigma=float(data["brick_edge_feather_sigma"]),
@@ -214,6 +339,29 @@ class TzofenBrickSegmentationConfig:
             brick_inpaint_feather_px=float(data["brick_inpaint_feather_px"]),
             tabletop_deck_x_range_px=(int(tdx[0]), int(tdx[1])),
             tabletop_deck_y_range_px=(int(tdy[0]), int(tdy[1])),
+            mid_brick_exclusion_dilate_px=int(data["mid_brick_exclusion_dilate_px"]),
+            mid_steel_max_sat=float(data["mid_steel_max_sat"]),
+            mid_steel_max_r_minus_b=float(data["mid_steel_max_r_minus_b"]),
+            mid_steel_max_r_over_g=float(data["mid_steel_max_r_over_g"]),
+            mid_steel_min_luma=float(data["mid_steel_min_luma"]),
+            mid_recessed_shelf_y_max_px=int(data["mid_recessed_shelf_y_max_px"]),
+            mid_recessed_steel_min_luma=float(data["mid_recessed_steel_min_luma"]),
+            mid_recessed_steel_max_sat=float(data["mid_recessed_steel_max_sat"]),
+            mid_recessed_steel_max_r_over_g=float(data["mid_recessed_steel_max_r_over_g"]),
+            mid_horiz_shelf_bridge_px=int(data["mid_horiz_shelf_bridge_px"]),
+            mid_vert_divider_bridge_px=int(data["mid_vert_divider_bridge_px"]),
+            mid_vert_bridge_min_y_px=int(data["mid_vert_bridge_min_y_px"]),
+            mid_max_pinhole_px=int(data["mid_max_pinhole_px"]),
+            bg_occ_dilate_px=int(data["bg_occ_dilate_px"]),
+            bg_wall_donor_min_luma=float(data["bg_wall_donor_min_luma"]),
+            bg_wall_donor_max_sat=float(data["bg_wall_donor_max_sat"]),
+            bg_floor_shadow_luma_min=float(data["bg_floor_shadow_luma_min"]),
+            bg_floor_shadow_dilate_px=int(data["bg_floor_shadow_dilate_px"]),
+            bg_floor_donor_max_sat=float(data["bg_floor_donor_max_sat"]),
+            bg_floor_donor_max_abs_rb=float(data["bg_floor_donor_max_abs_rb"]),
+            bg_dc_harmonize_sigma_px=float(data["bg_dc_harmonize_sigma_px"]),
+            bg_dc_blend_band_px=float(data["bg_dc_blend_band_px"]),
+            mirror_authentic_collar=bool(data["mirror_authentic_collar"]),
             healed_steel_max_r_minus_b=float(data["healed_steel_max_r_minus_b"]),
             healed_steel_min_luma=float(data["healed_steel_min_luma"]),
             healed_steel_max_wall_luma=float(data["healed_steel_max_wall_luma"]),
@@ -491,7 +639,7 @@ def default_tzofen_tree_bundle_config() -> TzofenTreeBundleConfig:
                 (1320, 470),
                 (1465, 486),
             ],
-            [(8, 455), (1492, 465), (100, 515), (1320, 520)],
+            [(8, 455), (1484, 488), (1492, 465), (100, 515), (1320, 520)],
         ),
         _pg(
             (170, 460, 650, 962),
@@ -510,13 +658,27 @@ def default_tzofen_tree_bundle_config() -> TzofenTreeBundleConfig:
                 (636, 935),
                 (490, 680),
             ],
-            [(150, 750), (310, 770), (310, 910), (565, 910), (565, 795), (410, 660)],
+            [
+                (150, 750),
+                (310, 770),
+                (310, 910),
+                (565, 910),
+                (565, 795),
+                (410, 660),
+                (465, 530),
+                (575, 528),
+            ],
         ),
         _pg(
             (562, 495, 898, 955),
             [
                 (636, 560),
+                (668, 565),
+                (680, 580),
                 (740, 575),
+                (795, 565),
+                (815, 580),
+                (840, 525),
                 (863, 560),
                 (863, 750),
                 (863, 930),
@@ -528,7 +690,15 @@ def default_tzofen_tree_bundle_config() -> TzofenTreeBundleConfig:
                 (838, 625),
                 (815, 670),
             ],
-            [(735, 755), (745, 850), (595, 805), (595, 900)],
+            [
+                (575, 528),
+                (672, 540),
+                (813, 545),
+                (735, 755),
+                (745, 850),
+                (595, 805),
+                (595, 900),
+            ],
         ),
         _pg(
             (852, 495, 1290, 950),
@@ -547,17 +717,17 @@ def default_tzofen_tree_bundle_config() -> TzofenTreeBundleConfig:
                 (1126, 755),
                 (1195, 775),
             ],
-            [(1140, 610), (920, 920), (1310, 750), (1080, 950)],
+            [(950, 532), (1140, 610), (920, 920), (1310, 750), (1080, 950)],
         ),
         _pg(
-            (358, 495, 550, 634),
-            [(369, 555), (369, 618), (420, 528), (520, 535)],
-            [(348, 580), (430, 585), (395, 625)],
+            (358, 495, 550, 636),
+            [(369, 555), (369, 600), (369, 626), (420, 528), (520, 535)],
+            [(348, 580), (430, 585), (395, 625), (465, 530)],
         ),
         _pg(
-            (885, 495, 1055, 640),
-            [(1042, 540), (1042, 626), (975, 565), (920, 530)],
-            [(985, 525), (985, 610), (1065, 580)],
+            (885, 495, 1055, 644),
+            [(1042, 540), (1042, 605), (1042, 634), (975, 565), (920, 530)],
+            [(950, 532), (985, 525), (985, 610), (1065, 580)],
         ),
         _pg(
             (1350, 492, 1472, 602),
@@ -600,7 +770,37 @@ def default_tzofen_tree_bundle_config() -> TzofenTreeBundleConfig:
         _pg(
             (376, 232, 550, 422),
             [(435, 295), (505, 315), (505, 385)],
-            [(365, 355), (558, 355), (465, 224)],
+            [(365, 355), (558, 355), (465, 224), (415, 365)],
+        ),
+        _pg(
+            (368, 496, 442, 568),
+            [(395, 525), (420, 542)],
+            [(360, 530), (452, 530), (405, 576)],
+        ),
+        _pg(
+            (494, 496, 550, 572),
+            [(515, 528), (532, 550)],
+            [(482, 535), (560, 535), (520, 580)],
+        ),
+        _pg(
+            (600, 496, 698, 540),
+            [(618, 514), (672, 516)],
+            [(590, 516), (638, 516), (705, 545), (650, 548)],
+        ),
+        _pg(
+            (700, 496, 784, 568),
+            [(728, 525), (758, 548)],
+            [(690, 540), (792, 535), (715, 573), (742, 573), (768, 573), (668, 562)],
+        ),
+        _pg(
+            (850, 496, 916, 566),
+            [(860, 512), (898, 525), (900, 552)],
+            [(838, 525), (846, 540), (876, 525), (876, 555), (924, 535), (898, 573)],
+        ),
+        _pg(
+            (170, 558, 216, 698),
+            [(188, 595), (192, 655)],
+            [(162, 625), (224, 625), (192, 708)],
         ),
     )
 
@@ -645,14 +845,14 @@ def default_tzofen_tree_bundle_config() -> TzofenTreeBundleConfig:
             upper_hue_max=25.0,
             upper_r_minus_b_min=32.0,
             upper_shadow_val_max=115.0,
-            upper_shadow_r_minus_b_min=30.0,
+            upper_shadow_r_minus_b_min=26.0,
             upper_shadow_sat_min=128.0,
             upper_shadow_hue_max=26.0,
             lower_core_sat_min=135.0,
             lower_core_a_star_min=7.5,
             lower_core_b_star_min=16.0,
             lower_core_hue_max=25.0,
-            lower_core_r_minus_b_min=36.0,
+            lower_core_r_minus_b_min=32.0,
             lower_warm_sat_min=135.0,
             lower_warm_a_star_min=11.0,
             lower_warm_b_star_min=18.0,
@@ -660,20 +860,80 @@ def default_tzofen_tree_bundle_config() -> TzofenTreeBundleConfig:
             lower_shadow_dilate_px=15,
             lower_shadow_val_max=112.0,
             lower_shadow_sat_min=135.0,
-            lower_shadow_r_minus_b_min=30.0,
+            lower_shadow_r_minus_b_min=24.0,
             lower_shadow_hue_max=26.0,
-            sam_brick_gate_sat_min=135.0,
-            sam_brick_gate_r_minus_b_min=30.0,
-            sam_brick_gate_luma_max=172.0,
-            baseboard_exclude_box=BoundingBoxPrompt(1475, 478, 1500, 498),
+            dark_recessed_y_max_px=785,
+            dark_recessed_val_max=105.0,
+            dark_recessed_sat_min=158.0,
+            dark_recessed_hue_max=24.0,
+            dark_recessed_r_over_g_min=1.38,
+            dark_recessed_r_minus_b_min=16.0,
+            sam_brick_gate_sat_min=145.0,
+            sam_brick_gate_r_minus_b_min=20.0,
+            sam_brick_gate_luma_max=176.0,
+            rim_pale_luma_min=182.0,
+            rim_pale_sat_max=110.0,
+            rim_neutral_r_minus_b_max=22.0,
+            rim_neutral_luma_min=85.0,
+            rim_r_over_g_min=1.36,
+            aa_erode_bias_px=0.35,
+            aa_half_width_px=0.60,
+            decontam_band_px=5.0,
+            decontam_interior_dist_px=4.0,
+            decontam_core_sat_min=155.0,
+            decontam_core_r_over_g_min=1.38,
+            decontam_min_luma_ratio=0.35,
+            decontam_outward_pad_px=4.0,
+            warm_stain_r_minus_b_min=28.0,
+            warm_stain_sat_min=90.0,
+            warm_stain_hue_max=26.0,
+            baseboard_exclude_box=BoundingBoxPrompt(1470, 474, 1500, 502),
+            left_vent_exclude_box=BoundingBoxPrompt(0, 0, 155, 467),
+            wall_vent_boxes=(
+                BoundingBoxPrompt(0, 326, 170, 382),
+                BoundingBoxPrompt(0, 382, 28, 468),
+            ),
+            upper_steel_boxes=(
+                BoundingBoxPrompt(152, 378, 210, 468),
+                BoundingBoxPrompt(242, 134, 398, 438),
+                BoundingBoxPrompt(370, 314, 468, 438),
+                BoundingBoxPrompt(534, 368, 648, 438),
+                BoundingBoxPrompt(670, 194, 778, 438),
+                BoundingBoxPrompt(770, 240, 1148, 438),
+                BoundingBoxPrompt(960, 136, 1144, 258),
+                BoundingBoxPrompt(1095, 316, 1218, 482),
+            ),
             min_brick_component_px=45,
             max_brick_pinhole_px=150,
-            brick_edge_feather_sigma=0.55,
-            brick_inpaint_dilate_px=9,
-            brick_inpaint_feather_px=4.5,
-            tabletop_deck_x_range_px=(14, 1486),
-            tabletop_deck_y_range_px=(388, 498),
-            healed_steel_max_r_minus_b=14.0,
+            brick_edge_feather_sigma=0.45,
+            brick_inpaint_dilate_px=28,
+            brick_inpaint_feather_px=5.0,
+            tabletop_deck_x_range_px=(18, 1474),
+            tabletop_deck_y_range_px=(440, 497),
+            mid_brick_exclusion_dilate_px=0,
+            mid_steel_max_sat=135.0,
+            mid_steel_max_r_minus_b=85.0,
+            mid_steel_max_r_over_g=1.30,
+            mid_steel_min_luma=58.0,
+            mid_recessed_shelf_y_max_px=595,
+            mid_recessed_steel_min_luma=32.0,
+            mid_recessed_steel_max_sat=160.0,
+            mid_recessed_steel_max_r_over_g=1.35,
+            mid_horiz_shelf_bridge_px=180,
+            mid_vert_divider_bridge_px=160,
+            mid_vert_bridge_min_y_px=497,
+            mid_max_pinhole_px=48,
+            bg_occ_dilate_px=28,
+            bg_wall_donor_min_luma=225.0,
+            bg_wall_donor_max_sat=45.0,
+            bg_floor_shadow_luma_min=174.0,
+            bg_floor_shadow_dilate_px=12,
+            bg_floor_donor_max_sat=55.0,
+            bg_floor_donor_max_abs_rb=28.0,
+            bg_dc_harmonize_sigma_px=18.0,
+            bg_dc_blend_band_px=5.0,
+            mirror_authentic_collar=True,
+            healed_steel_max_r_minus_b=18.0,
             healed_steel_min_luma=135.0,
             healed_steel_max_wall_luma=236.0,
             brick_height_relief_weight=0.58,
@@ -681,7 +941,7 @@ def default_tzofen_tree_bundle_config() -> TzofenTreeBundleConfig:
         ),
         room_depth_clean=RoomDepthCleanConfig(
             alpha_threshold_u8=16,
-            mask_dilation_px=24,
+            mask_dilation_px=28,
             post_smooth_sigma_px=4.0,
             interior_blend_band_px=14.0,
         ),
@@ -700,13 +960,13 @@ def default_tzofen_tree_bundle_config() -> TzofenTreeBundleConfig:
             contact_boxes=(
                 ContactAnchorBox(x0=360, y0=616, x1=380, y1=636, mode="bottom_band", band_px=6),
                 ContactAnchorBox(x0=1032, y0=624, x1=1054, y1=644, mode="bottom_band", band_px=6),
-                ContactAnchorBox(x0=200, y0=942, x1=226, y1=962, mode="bottom_band", band_px=6),
-                ContactAnchorBox(x0=430, y0=942, x1=510, y1=962, mode="bottom_band", band_px=6),
+                ContactAnchorBox(x0=200, y0=955, x1=226, y1=999, mode="all_opaque", band_px=6),
+                ContactAnchorBox(x0=430, y0=955, x1=510, y1=999, mode="all_opaque", band_px=6),
                 ContactAnchorBox(x0=624, y0=938, x1=650, y1=960, mode="bottom_band", band_px=6),
                 ContactAnchorBox(x0=850, y0=934, x1=876, y1=956, mode="bottom_band", band_px=6),
                 ContactAnchorBox(x0=1242, y0=928, x1=1270, y1=950, mode="bottom_band", band_px=6),
             ),
-            neural_relief_amplitude=26.0,
+            neural_relief_amplitude=24.0,
             contact_relief_taper_px=12.0,
             enforce_front_of_host=True,
             host_clearance_tolerance_world=0.0,
@@ -1019,7 +1279,11 @@ def _segment_tzofen_bricks_alpha(
     alpha_threshold_u8: int,
     sam_ext: SamBoxMaskExtractor,
 ) -> np.ndarray:
-    """Segments warm terracotta mud-bricks (`fg`) cleanly from white/gray steel (`mid`)."""
+    """
+    Segments warm terracotta mud-bricks (`fg`, including dark shadowed recessed bricks under the
+    tabletop) cleanly from white/grey steel (`mid`) and gallery wall/floor (`bg`) with strict
+    chromatic perimeter tightening and crisp `~1.2px` signed-EDT antialiasing (Feedback #45).
+    """
     ih, iw = total_sculp_alpha_u8.shape
     sam_brick_u8 = sam_ext.segment_point_groups(
         tz_pad_img,
@@ -1036,15 +1300,16 @@ def _segment_tzofen_bricks_alpha(
     a_star = lab[:, :, 1] - 128.0
     b_star = lab[:, :, 2] - 128.0
     r_minus_b = rgb_f[:, :, 0] - rgb_f[:, :, 2]
+    r_minus_g = rgb_f[:, :, 0] - rgb_f[:, :, 1]
+    r_over_g = rgb_f[:, :, 0] / np.maximum(1.0, rgb_f[:, :, 1])
     luma = 0.299 * rgb_f[:, :, 0] + 0.587 * rgb_f[:, :, 1] + 0.114 * rgb_f[:, :, 2]
 
     yy = np.arange(ih)[:, None]
-    sculp_mask = total_sculp_alpha_u8 >= alpha_threshold_u8
+    sculp_mask = (total_sculp_alpha_u8 >= alpha_threshold_u8) | (sam_brick_u8 >= 128)
     upper = yy <= bcfg.tabletop_split_y_px
     lower = yy > bcfg.tabletop_split_y_px
 
-    r_minus_g = rgb_f[:, :, 0] - rgb_f[:, :, 1]
-    brick_upper = sculp_mask & upper & (r_minus_g >= 14.0) & (
+    brick_upper = sculp_mask & upper & (r_over_g >= bcfg.rim_r_over_g_min) & (
         (
             (sat >= bcfg.upper_sat_min)
             & (b_star >= bcfg.upper_b_star_min)
@@ -1058,7 +1323,7 @@ def _segment_tzofen_bricks_alpha(
             & (hue <= bcfg.upper_shadow_hue_max)
         )
     )
-    brick_lower_core = sculp_mask & lower & (r_minus_g >= 14.0) & (
+    brick_lower_core = sculp_mask & lower & (r_over_g >= bcfg.rim_r_over_g_min) & (
         (
             (sat >= bcfg.lower_core_sat_min)
             & (a_star >= bcfg.lower_core_a_star_min)
@@ -1073,13 +1338,22 @@ def _segment_tzofen_bricks_alpha(
             & (hue <= bcfg.lower_warm_hue_max)
         )
     )
-    sam_brick_bool = (
-        sculp_mask
-        & (sam_brick_u8 >= 110)
-        & (r_minus_g >= 14.0)
-        & (r_minus_b >= bcfg.sam_brick_gate_r_minus_b_min)
-        & (sat >= bcfg.sam_brick_gate_sat_min)
-        & (luma <= bcfg.sam_brick_gate_luma_max)
+    dark_recessed_chroma = (
+        (yy <= bcfg.dark_recessed_y_max_px)
+        & (val <= bcfg.dark_recessed_val_max)
+        & (sat >= bcfg.dark_recessed_sat_min)
+        & (hue <= bcfg.dark_recessed_hue_max)
+        & (r_over_g >= bcfg.dark_recessed_r_over_g_min)
+        & (r_minus_b >= bcfg.dark_recessed_r_minus_b_min)
+    )
+    sam_brick_bool = sculp_mask & (sam_brick_u8 >= 110) & (
+        (
+            (r_over_g >= bcfg.rim_r_over_g_min)
+            & (r_minus_b >= bcfg.sam_brick_gate_r_minus_b_min)
+            & (sat >= bcfg.sam_brick_gate_sat_min)
+            & (luma <= bcfg.sam_brick_gate_luma_max)
+        )
+        | dark_recessed_chroma
     )
 
     kd = bcfg.lower_shadow_dilate_px
@@ -1096,7 +1370,8 @@ def _segment_tzofen_bricks_alpha(
         sculp_mask
         & lower
         & lower_near_core
-        & (r_minus_g >= 14.0)
+        & (r_minus_g >= 10.0)
+        & (r_over_g >= bcfg.rim_r_over_g_min)
         & (val <= bcfg.lower_shadow_val_max)
         & (sat >= bcfg.lower_shadow_sat_min)
         & (r_minus_b >= bcfg.lower_shadow_r_minus_b_min)
@@ -1110,6 +1385,15 @@ def _segment_tzofen_bricks_alpha(
     bricks_bool[int(np.floor(wy0)) : int(np.ceil(wy1)), int(np.floor(wx0)) : int(np.ceil(wx1))] = (
         False
     )
+
+    # Strip any 2.5px outer-rim pixels mixed with white cubby steel or pale neutral wall/floor:
+    dist_in_raw = ndi.distance_transform_edt(bricks_bool).astype(np.float32)
+    contaminated_rim = (
+        ((luma >= bcfg.rim_pale_luma_min) & (sat < bcfg.rim_pale_sat_max))
+        | ((r_minus_b < bcfg.rim_neutral_r_minus_b_max) & (luma >= bcfg.rim_neutral_luma_min))
+        | (r_over_g < bcfg.rim_r_over_g_min)
+    )
+    bricks_bool = bricks_bool & ~((dist_in_raw <= 2.5) & contaminated_rim)
 
     nl, lbls, stats, _ = cv2.connectedComponentsWithStats(
         bricks_bool.astype(np.uint8), connectivity=8
@@ -1128,17 +1412,19 @@ def _segment_tzofen_bricks_alpha(
         hx1 = hx0 + int(hstats[cid, cv2.CC_STAT_WIDTH])
         hy1 = hy0 + int(hstats[cid, cv2.CC_STAT_HEIGHT])
         if area <= bcfg.max_brick_pinhole_px and hx0 > 0 and hy0 > 0 and hx1 < iw and hy1 < ih:
-            bricks_clean |= (hlbls == cid) & sculp_mask
+            bricks_clean |= (hlbls == cid) & sculp_mask & ((r_over_g >= 1.24) | (luma < 85.0))
 
-    soft = ndi.gaussian_filter(
-        bricks_clean.astype(np.float32), sigma=bcfg.brick_edge_feather_sigma
-    )
-    raw_u8 = np.minimum(
-        total_sculp_alpha_u8,
-        np.clip(np.round(np.clip((soft - 0.32) / 0.36, 0.0, 1.0) * 255.0), 0, 255).astype(
-            np.uint8
-        ),
-    )
+    # Crisp ~1.2px signed-EDT antialiased boundary slightly biased inward (`aa_erode_bias_px`):
+    dist_in = ndi.distance_transform_edt(bricks_clean).astype(np.float32)
+    dist_out = ndi.distance_transform_edt(~bricks_clean).astype(np.float32)
+    sdf = dist_in - dist_out - bcfg.aa_erode_bias_px
+    aa_u8 = np.clip(
+        np.round(np.clip(0.5 + sdf / max(0.25, 2.0 * bcfg.aa_half_width_px), 0.0, 1.0) * 255.0),
+        0,
+        255,
+    ).astype(np.uint8)
+    sculp_cap_u8 = np.maximum(total_sculp_alpha_u8, sam_brick_u8)
+    raw_u8 = np.minimum(sculp_cap_u8, aa_u8)
     raw_u8[0, :] = 0
     raw_u8[-1, :] = 0
     raw_u8[:, 0] = 0
@@ -1147,6 +1433,201 @@ def _segment_tzofen_bricks_alpha(
         raw_u8,
         min_area_px=bcfg.min_brick_component_px,
         alpha_threshold_u8=alpha_threshold_u8,
+    )
+
+
+def _decontaminate_tzofen_brick_rgba(
+    rgb_u8: np.ndarray,
+    alpha_u8: np.ndarray,
+    bcfg: TzofenBrickSegmentationConfig,
+) -> np.ndarray:
+    """
+    Replaces RGB across the outer `decontam_band_px` (`5px`) boundary band of every terracotta
+    brick component with the nearest pure interior terracotta pixel's RGB (`dist_in >= 4px`)
+    scaled by local luminance ratio clamped `<= 1.0` (so bright white cubby/wall bleed NEVER
+    brightens brick edges into pale pink/peach crusts), then pads clean terracotta RGB outward
+    across `alpha == 0` pixels so bilinear WebGL texture sampling never pulls white/grey RGB.
+    """
+    has_alpha = alpha_u8 > 0
+    if not np.any(has_alpha):
+        return rgb_u8.copy()
+
+    rgb_f = rgb_u8.astype(np.float32)
+    hsv = cv2.cvtColor(rgb_u8, cv2.COLOR_RGB2HSV).astype(np.float32)
+    sat = hsv[:, :, 1]
+    r_over_g = rgb_f[:, :, 0] / np.maximum(1.0, rgb_f[:, :, 1])
+    luma = 0.299 * rgb_f[:, :, 0] + 0.587 * rgb_f[:, :, 1] + 0.114 * rgb_f[:, :, 2]
+
+    opaque = alpha_u8 >= 128
+    dist_in = ndi.distance_transform_edt(opaque).astype(np.float32)
+    pure_core = (
+        (dist_in >= bcfg.decontam_interior_dist_px)
+        & (sat >= bcfg.decontam_core_sat_min)
+        & (r_over_g >= bcfg.decontam_core_r_over_g_min)
+    )
+
+    # Ensure thin brick components (< 8px wide) still get their own local warm interior donor:
+    lbl_comp, n_comp = ndi.label(has_alpha)
+    for cid in range(1, n_comp + 1):
+        comp = lbl_comp == cid
+        if np.any(comp & pure_core):
+            continue
+        comp_max_d = float(dist_in[comp].max())
+        local_seed = (
+            comp
+            & (dist_in >= max(0.8, 0.55 * comp_max_d))
+            & (sat >= 120.0)
+            & (r_over_g >= 1.28)
+        )
+        if np.any(local_seed):
+            pure_core |= local_seed
+
+    if not np.any(pure_core):
+        return decontaminate_matte_edge_rgb(rgb_u8, alpha_u8)
+
+    _, core_idx = ndi.distance_transform_edt(~pure_core, return_indices=True)
+    donor_rgb = rgb_f[core_idx[0], core_idx[1]]
+    donor_luma = luma[core_idx[0], core_idx[1]]
+    luma_ratio = np.clip(
+        luma / np.maximum(donor_luma, 10.0),
+        bcfg.decontam_min_luma_ratio,
+        1.0,
+    )
+    recolored_rgb = np.clip(donor_rgb * luma_ratio[:, :, None], 0.0, 255.0)
+
+    band_w = np.clip((bcfg.decontam_band_px - dist_in) / 1.25, 0.0, 1.0)
+    desat_bleed = (sat < bcfg.decontam_core_sat_min) | (r_over_g < bcfg.decontam_core_r_over_g_min)
+    band_w = np.where(has_alpha & desat_bleed, 1.0, band_w)
+    clean_f = np.where(
+        has_alpha[:, :, None],
+        (1.0 - band_w[:, :, None]) * rgb_f + band_w[:, :, None] * recolored_rgb,
+        rgb_f,
+    )
+    clean_u8 = np.clip(np.round(clean_f), 0, 255).astype(np.uint8)
+
+    # Pad clean brick RGB outward across all `alpha == 0` pixels (including >= 4px bilinear band):
+    _, out_idx = ndi.distance_transform_edt(~has_alpha, return_indices=True)
+    padded_u8 = clean_u8[out_idx[0], out_idx[1]].copy()
+    padded_u8[has_alpha] = clean_u8[has_alpha]
+    return padded_u8
+
+
+def _neutralize_warm_terracotta_bleed_rgb(
+    img_rgb_u8: np.ndarray,
+    inpaint_mask_bool: np.ndarray,
+    neutral_donor_bool: np.ndarray,
+) -> np.ndarray:
+    """
+    Strips residual warm orange/peach `a*, b*` chroma left by `LaMa` inside dilated brick-removal
+    masks so healed white steel cubbies (`mid`) and gallery wall/concrete (`bg`) match surrounding
+    neutral illumination with zero orange terracotta crusts.
+    """
+    if not np.any(inpaint_mask_bool) or not np.any(neutral_donor_bool):
+        return img_rgb_u8.copy()
+
+    lab = cv2.cvtColor(img_rgb_u8, cv2.COLOR_RGB2LAB).astype(np.float32)
+    _, near_idx = ndi.distance_transform_edt(~neutral_donor_bool, return_indices=True)
+    ref_a = ndi.gaussian_filter(lab[:, :, 1][near_idx[0], near_idx[1]], sigma=8.0)
+    ref_b = ndi.gaussian_filter(lab[:, :, 2][near_idx[0], near_idx[1]], sigma=8.0)
+
+    dist_in = ndi.distance_transform_edt(inpaint_mask_bool).astype(np.float32)
+    blend = np.clip(dist_in / 4.0, 0.0, 1.0)
+
+    clamped_a = np.minimum(lab[:, :, 1], ref_a + 1.5)
+    clamped_b = np.minimum(lab[:, :, 2], ref_b + 2.5)
+    lab[:, :, 1] = np.where(inpaint_mask_bool, (1.0 - blend) * lab[:, :, 1] + blend * clamped_a, lab[:, :, 1])
+    lab[:, :, 2] = np.where(inpaint_mask_bool, (1.0 - blend) * lab[:, :, 2] + blend * clamped_b, lab[:, :, 2])
+    return cv2.cvtColor(np.clip(np.round(lab), 0, 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
+
+
+def _harmonize_tzofen_room_inpaint_rgb(
+    auth_vent_rgb_u8: np.ndarray,
+    auth_inpainted_rgb_u8: np.ndarray,
+    auth_occ_bool: np.ndarray,
+    baseboard_auth_y: int,
+    bcfg: TzofenBrickSegmentationConfig,
+) -> np.ndarray:
+    """
+    Harmonizes low-frequency room brightness across `LaMa` holes via multi-scale Laplace membrane
+    interpolation separately above and below `baseboard_auth_y`, feathered outward across
+    `~auth_occ_bool` (`w == 1.0` everywhere inside `auth_occ_bool` so zero boundary moat forms),
+    then strips any warm terracotta Lab chroma bleed.
+    """
+    ah, aw, _ = auth_vent_rgb_u8.shape
+    by = int(np.clip(baseboard_auth_y, 16, ah - 16))
+    src_f = auth_vent_rgb_u8.astype(np.float32)
+    inp_f = auth_inpainted_rgb_u8.astype(np.float32)
+    hsv = cv2.cvtColor(auth_vent_rgb_u8, cv2.COLOR_RGB2HSV).astype(np.float32)
+    sat = hsv[:, :, 1]
+    luma = 0.299 * src_f[:, :, 0] + 0.587 * src_f[:, :, 1] + 0.114 * src_f[:, :, 2]
+
+    wall_donor = (
+        (~auth_occ_bool[:by])
+        & (luma[:by] >= bcfg.bg_wall_donor_min_luma)
+        & (sat[:by] <= bcfg.bg_wall_donor_max_sat)
+    )
+    floor_clean_donor = (
+        (~auth_occ_bool[by:])
+        & (luma[by:] >= bcfg.bg_floor_shadow_luma_min)
+        & (luma[by:] <= 232.0)
+        & (sat[by:] <= bcfg.bg_floor_donor_max_sat)
+    )
+    if not np.any(wall_donor) or not np.any(floor_clean_donor):
+        raise RuntimeError("Tzofen room harmonization found empty wall or floor donor mask")
+
+    sig = bcfg.bg_dc_harmonize_sigma_px
+
+    def _harmonic_dc_fill(sub_src_f: np.ndarray, donor_mask: np.ndarray) -> np.ndarray:
+        sh, sw, _ = sub_src_f.shape
+        _, idx = ndi.distance_transform_edt(~donor_mask, return_indices=True)
+        field = sub_src_f[idx[0], idx[1]].copy()
+        ds = 8
+        fh, fw = max(4, sh // ds), max(4, sw // ds)
+        f_small = cv2.resize(field, (fw, fh), interpolation=cv2.INTER_AREA)
+        d_small = (
+            cv2.resize(donor_mask.astype(np.uint8), (fw, fh), interpolation=cv2.INTER_NEAREST) > 0
+        )
+        fixed = f_small.copy()
+        for _ in range(300):
+            nb = 0.25 * (
+                np.roll(f_small, 1, axis=0)
+                + np.roll(f_small, -1, axis=0)
+                + np.roll(f_small, 1, axis=1)
+                + np.roll(f_small, -1, axis=1)
+            )
+            nb[0, :] = f_small[1, :]
+            nb[-1, :] = f_small[-2, :]
+            nb[:, 0] = f_small[:, 1]
+            nb[:, -1] = f_small[:, -2]
+            f_small = np.where(d_small[:, :, None], fixed, nb)
+        up = cv2.resize(f_small, (sw, sh), interpolation=cv2.INTER_CUBIC)
+        return ndi.gaussian_filter(up, sigma=(sig, sig, 0.0))
+
+    wall_ref_low = _harmonic_dc_fill(src_f[:by], wall_donor)
+    wall_inp = inp_f[:by]
+    wall_fine_grain = wall_inp - ndi.gaussian_filter(wall_inp, sigma=(2.5, 2.5, 0.0))
+    wall_seam_hf = wall_inp - ndi.gaussian_filter(wall_inp, sigma=(sig, sig, 0.0))
+    wy = np.arange(by)[:, None]
+    seam_t = np.clip((wy - float(by - 10)) / 8.0, 0.0, 1.0)[:, :, None]
+    wall_target = wall_ref_low + (1.0 - seam_t) * wall_fine_grain + seam_t * wall_seam_hf
+
+    floor_ref_low = _harmonic_dc_fill(src_f[by:], floor_clean_donor)
+    floor_inp = inp_f[by:]
+    floor_hf = floor_inp - ndi.gaussian_filter(floor_inp, sigma=(sig, sig, 0.0))
+    floor_target = floor_ref_low + floor_hf
+
+    target_full = np.vstack([wall_target, floor_target])
+    dist_out = ndi.distance_transform_edt(~auth_occ_bool).astype(np.float32)
+    w_dc = np.clip(1.0 - dist_out / max(1.0, bcfg.bg_dc_blend_band_px), 0.0, 1.0)[:, :, None]
+    harmonized_u8 = np.clip(
+        np.round((1.0 - w_dc) * src_f + w_dc * target_full), 0, 255
+    ).astype(np.uint8)
+
+    neutral_donor_full = np.vstack([wall_donor, floor_clean_donor])
+    return _neutralize_warm_terracotta_bleed_rgb(
+        img_rgb_u8=harmonized_u8,
+        inpaint_mask_bool=w_dc[:, :, 0] > 0.02,
+        neutral_donor_bool=neutral_donor_full,
     )
 
 
@@ -1203,32 +1684,54 @@ def _reconstruct_tzofen_white_steel_mid_rgba(
     fg_brick_alpha_u8: np.ndarray,
     cfg: TzofenSceneBuildConfig,
     lama: LamaOcclusionInpainter,
-) -> np.ndarray:
+) -> tuple[np.ndarray, np.ndarray]:
     """
-    Reconstructs `scene12_tzofen_mid.png` (`1500x1000` RGBA): the solid white steel multi-tier
-    table, legs, lower shelves, cubbies, and upper frame partitions with ZERO transparent holes
-    under bricks on the tabletop/shelves/cubbies, filled via neural `LaMa` white-steel inpainting,
-    and `window_portal_inner_box_px` preserved transparent.
+    Reconstructs `scene12_tzofen_mid.png` (`1500x1000` RGBA): ONLY the actual white/grey painted
+    steel multi-tier table, legs, shelves, cubbies, and upper frames — with ZERO white sticker
+    halos around bricks, ZERO ghost freestanding bricks, ZERO filled see-through floor bays,
+    `r = 28px` dilated LaMa + Lab chroma-neutralized brick removal, and `cv2.BORDER_REFLECT_101`
+    bottom floor-border reflection for border-touching front legs (`leg1`, `leg2`).
     """
     ih, iw = total_sculp_alpha_u8.shape
     bcfg = cfg.brick_segmentation
     alpha_thr = cfg.topology_verification.alpha_threshold_u8
+    y0 = cfg.inner_y_offset_px
+    y1 = y0 + cfg.scaled_height_px
 
     vent_rgb = np.asarray(tz_vent_clean_img, dtype=np.uint8)
     vent_f = vent_rgb.astype(np.float32)
+    vent_hsv = cv2.cvtColor(vent_rgb, cv2.COLOR_RGB2HSV).astype(np.float32)
+    vent_hue, vent_sat = vent_hsv[:, :, 0], vent_hsv[:, :, 1]
+    vent_rb = vent_f[:, :, 0] - vent_f[:, :, 2]
+    vent_rg = vent_f[:, :, 0] / np.maximum(1.0, vent_f[:, :, 1])
     vent_luma = (
         0.299 * vent_f[:, :, 0]
         + 0.587 * vent_f[:, :, 1]
         + 0.114 * vent_f[:, :, 2]
     )
 
-    # Build a pure bright painted-steel context plate outside the table so LaMa inpaints ONLY the
-    # brick footprints (`brick_collar`) with authentic white/light-grey painted steel (keeping 100%
-    # of unoccluded white steel legs, apron, shelves, and partitions untouched!).
+    warm_brick_stain = (
+        (total_sculp_alpha_u8 >= 6)
+        & (vent_rb >= bcfg.warm_stain_r_minus_b_min)
+        & (vent_sat >= bcfg.warm_stain_sat_min)
+        & (vent_hue <= bcfg.warm_stain_hue_max)
+        & (vent_rg >= 1.24)
+    )
+    kd = bcfg.brick_inpaint_dilate_px * 2 + 1
+    brick_collar = (
+        cv2.dilate(
+            ((fg_brick_alpha_u8 > 0) | warm_brick_stain).astype(np.uint8),
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kd, kd)),
+        )
+        > 0
+    )
+
     pure_steel = (
         (total_sculp_alpha_u8 >= 175)
-        & (fg_brick_alpha_u8 < 8)
-        & (vent_luma >= 145.0)
+        & (~brick_collar)
+        & (vent_luma >= bcfg.healed_steel_min_luma)
+        & (vent_sat <= 55.0)
+        & (vent_rg <= 1.12)
     )
     pure_steel = (
         cv2.erode(
@@ -1239,19 +1742,15 @@ def _reconstruct_tzofen_white_steel_mid_rgba(
     if not np.any(pure_steel):
         raise RuntimeError("Empty pure white steel seed mask on Tzofen mid!")
 
-    kd = bcfg.brick_inpaint_dilate_px * 2 + 1
-    brick_collar = (
-        cv2.dilate(
-            (fg_brick_alpha_u8 >= 8).astype(np.uint8),
-            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kd, kd)),
-        )
-        > 0
-    )
-
     _, nearest_idx = ndi.distance_transform_edt(~pure_steel, return_indices=True)
     nearest_steel_rgb = vent_rgb[nearest_idx[0], nearest_idx[1]].astype(np.float32)
     smooth_steel_env = ndi.gaussian_filter(nearest_steel_rgb, sigma=(6.0, 6.0, 0.0))
-    unoccluded_table = (total_sculp_alpha_u8 >= 120) & (~brick_collar)
+    unoccluded_table = (
+        (total_sculp_alpha_u8 >= 120)
+        & (~brick_collar)
+        & (vent_rg <= 1.26)
+        & (vent_sat <= bcfg.mid_steel_max_sat)
+    )
     steel_seed_rgb = np.where(
         unoccluded_table[:, :, None],
         vent_f,
@@ -1270,65 +1769,145 @@ def _reconstruct_tzofen_white_steel_mid_rgba(
     dist_in_collar = cv2.distanceTransform(brick_collar.astype(np.uint8), cv2.DIST_L2, 5)
     w_heal = np.clip(dist_in_collar / max(1.0, bcfg.brick_inpaint_feather_px), 0.0, 1.0)
     w_heal = (w_heal * w_heal * (3.0 - 2.0 * w_heal))[:, :, None]
-    mid_rgb_composite = np.clip(
+    mid_rgb_raw = np.clip(
         np.round((1.0 - w_heal) * vent_f + w_heal * healed_table_rgb),
         0,
         255,
     ).astype(np.uint8)
+    mid_rgb_composite = _neutralize_warm_terracotta_bleed_rgb(
+        img_rgb_u8=mid_rgb_raw,
+        inpaint_mask_bool=brick_collar,
+        neutral_donor_bool=pure_steel,
+    )
 
-    # Construct continuous hole-free white steel table/shelf silhouette:
-    # 1. All visible white steel (`total_sculp - fg_brick`).
-    # 2. Continuous horizontal tabletop & multi-tier deck (`ty0..ty1`): row-wise span across table.
-    # 3. Horizontal (`1x195`) & vertical (`108x1`) morphological steel spans across shelves/cubbies
-    #    clamped to `total_sculp_alpha_u8` so bricks on shelves/cubbies/partitions leave ZERO holes,
-    #    while freestanding brick crowns protruding into open wall/floor air produce zero ghost bricks.
-    sculp_bool = total_sculp_alpha_u8 >= alpha_thr
-    visible_steel_bool = sculp_bool & (fg_brick_alpha_u8 < 128)
+    # Construct crisp white-steel silhouette WITHOUT `sculp_f - brick_f` sticker halos:
+    sculp_bool = (total_sculp_alpha_u8 >= alpha_thr).copy()
+    eb = bcfg.baseboard_exclude_box
+    sculp_bool[eb.y0 : eb.y1, eb.x0 : eb.x1] = False
+    sculp_bool[y1:, :] = False
 
+    brick_core = fg_brick_alpha_u8 >= 185
+    if bcfg.mid_brick_exclusion_dilate_px > 0:
+        kx = bcfg.mid_brick_exclusion_dilate_px * 2 + 1
+        brick_excl = (
+            cv2.dilate(
+                brick_core.astype(np.uint8),
+                cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kx, kx)),
+            )
+            > 0
+        )
+    else:
+        brick_excl = brick_core.copy()
+    upper_steel_allow = np.zeros((ih, iw), dtype=bool)
+    for ub in bcfg.upper_steel_boxes:
+        upper_steel_allow[ub.y0 : ub.y1, ub.x0 : ub.x1] = True
+
+    yy = np.arange(ih)[:, None]
+    in_recess_band = (
+        (yy >= bcfg.tabletop_deck_y_range_px[1])
+        & (yy <= bcfg.mid_recessed_shelf_y_max_px)
+    )
+    open_steel_chroma = (
+        (vent_sat <= bcfg.mid_steel_max_sat)
+        & (vent_rb <= bcfg.mid_steel_max_r_minus_b)
+        & (vent_rg <= bcfg.mid_steel_max_r_over_g)
+        & (vent_luma >= bcfg.mid_steel_min_luma)
+    )
+    recessed_steel_chroma = (
+        in_recess_band
+        & (vent_sat <= bcfg.mid_recessed_steel_max_sat)
+        & (vent_rb <= bcfg.mid_steel_max_r_minus_b)
+        & (vent_rg <= bcfg.mid_recessed_steel_max_r_over_g)
+        & (vent_luma >= bcfg.mid_recessed_steel_min_luma)
+    )
+    genuine_steel_chroma = open_steel_chroma | recessed_steel_chroma
+    visible_steel_bool = (
+        sculp_bool
+        & (~brick_excl)
+        & genuine_steel_chroma
+        & ((yy >= bcfg.tabletop_deck_y_range_px[0]) | upper_steel_allow)
+    )
+    lvb = bcfg.left_vent_exclude_box
+    visible_steel_bool[lvb.y0 : lvb.y1, lvb.x0 : lvb.x1] = False
+
+    # 1. Main horizontal tabletop deck (`ty0..ty1`): exact perspective trapezoid from leftmost
+    #    to rightmost visible white steel on each row:
     tx0, tx1 = bcfg.tabletop_deck_x_range_px
     ty0, ty1 = bcfg.tabletop_deck_y_range_px
-    tabletop_solid = np.zeros((ih, iw), dtype=bool)
-    for row_y in range(ty0, ty1):
-        xs_row = np.where(sculp_bool[row_y, tx0:tx1])[0]
-        if len(xs_row) >= 2:
-            tabletop_solid[row_y, tx0 + int(xs_row[0]) : tx0 + int(xs_row[-1]) + 1] = True
-    # Clip tabletop_solid above the front horizontal beam (`y < 438`) to `sculp_bool` or horizontal
-    # steel span so open wall gaps on the far left/right above the front tabletop edge stay crisp:
-    horiz_close_wide = (
-        cv2.morphologyEx(
-            visible_steel_bool.astype(np.uint8),
-            cv2.MORPH_CLOSE,
-            np.ones((1, 215), dtype=np.uint8),
-        )
-        > 0
-    )
-    vert_close_cubby = (
-        cv2.morphologyEx(
-            visible_steel_bool.astype(np.uint8),
-            cv2.MORPH_CLOSE,
-            np.ones((108, 1), dtype=np.uint8),
-        )
-        > 0
-    )
     front_beam_band = np.zeros((ih, iw), dtype=bool)
-    front_beam_band[440:ty1, :] = tabletop_solid[440:ty1, :]
-    upper_deck_band = tabletop_solid & (sculp_bool | horiz_close_wide)
+    for row_y in range(ty0, ty1):
+        xs_row = np.where(visible_steel_bool[row_y, tx0:tx1])[0]
+        if len(xs_row) >= 2:
+            front_beam_band[row_y, tx0 + int(xs_row[0]) : tx0 + int(xs_row[-1]) + 1] = True
+
+    # 2. Orthogonal shelf/divider bridging ONLY across actual brick footprints (`brick_bridge_zone`),
+    #    seeded strictly from true horizontal shelves (`>=22px` wide) or vertical columns (`>=22px` tall)
+    #    so open see-through floor bays and freestanding brick silhouettes NEVER gain white steel:
+    brick_bridge_zone = (
+        cv2.dilate(
+            (fg_brick_alpha_u8 >= 8).astype(np.uint8),
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9)),
+        )
+        > 0
+    ) & ((yy >= ty0) | upper_steel_allow)
+
+    horiz_shelf_seeds = cv2.morphologyEx(
+        visible_steel_bool.astype(np.uint8),
+        cv2.MORPH_OPEN,
+        np.ones((1, 22), dtype=np.uint8),
+    )
+    horiz_shelf_bridged = (
+        cv2.morphologyEx(
+            horiz_shelf_seeds,
+            cv2.MORPH_CLOSE,
+            np.ones((1, bcfg.mid_horiz_shelf_bridge_px), dtype=np.uint8),
+        )
+        > 0
+    ) & brick_bridge_zone
+
+    vert_col_seeds = cv2.morphologyEx(
+        visible_steel_bool.astype(np.uint8),
+        cv2.MORPH_OPEN,
+        np.ones((22, 1), dtype=np.uint8),
+    )
+    vert_col_bridged = (
+        cv2.morphologyEx(
+            vert_col_seeds,
+            cv2.MORPH_CLOSE,
+            np.ones((bcfg.mid_vert_divider_bridge_px, 1), dtype=np.uint8),
+        )
+        > 0
+    ) & brick_bridge_zone & ((yy >= bcfg.mid_vert_bridge_min_y_px) | upper_steel_allow)
+
+    # 3. Voronoi / EDT contact partition inside brick footprints: where a brick sits inside or
+    #    against a grey steel cubby wall, extend continuous steel behind the steel-contacting portion
+    #    of the brick (`d_steel < d_air - 1.5` and `>= 3.5px` inside any open-air edge) so neither
+    #    rest-pose rims nor off-axis parallax ever expose a bright `bg` moat around dark bricks:
+    open_air_adj = (~sculp_bool) | (
+        (~visible_steel_bool) & (~(fg_brick_alpha_u8 >= 8)) & (~front_beam_band)
+    )
+    d_steel = ndi.distance_transform_edt(~visible_steel_bool).astype(np.float32)
+    d_air = ndi.distance_transform_edt(~open_air_adj).astype(np.float32)
+    voronoi_steel_behind_brick = (
+        (fg_brick_alpha_u8 >= 160)
+        & ((yy >= ty0) | upper_steel_allow)
+        & (d_steel < (d_air - 1.5))
+        & (d_air >= 3.5)
+    )
 
     solid_steel_bool = (
         visible_steel_bool
         | front_beam_band
-        | upper_deck_band
-        | (sculp_bool & (horiz_close_wide | vert_close_cubby))
+        | horiz_shelf_bridged
+        | vert_col_bridged
+        | voronoi_steel_behind_brick
     )
+    solid_steel_bool[eb.y0 : eb.y1, eb.x0 : eb.x1] = False
 
-    sculp_f = total_sculp_alpha_u8.astype(np.float32) / 255.0
-    brick_f = fg_brick_alpha_u8.astype(np.float32) / 255.0
-    visible_steel_f = np.clip(sculp_f - brick_f, 0.0, 1.0)
-    solid_fill_f = ndi.gaussian_filter(solid_steel_bool.astype(np.float32), sigma=0.55)
-    mid_alpha_f = np.maximum(
-        visible_steel_f,
-        np.where(front_beam_band, solid_fill_f, np.minimum(sculp_f, solid_fill_f)),
-    )
+    dist_in_mid = ndi.distance_transform_edt(solid_steel_bool).astype(np.float32)
+    dist_out_mid = ndi.distance_transform_edt(~solid_steel_bool).astype(np.float32)
+    sdf_mid = dist_in_mid - dist_out_mid - 0.15
+    mid_alpha_f = np.clip(0.5 + sdf_mid / 1.2, 0.0, 1.0)
 
     wx0, wy0, wx1, wy1 = cfg.window_portal_inner_box_px
     px0 = int(np.ceil(wx0)) + 1
@@ -1337,27 +1916,47 @@ def _reconstruct_tzofen_white_steel_mid_rgba(
     py1 = int(np.floor(wy1))
     mid_alpha_f[py0:py1, px0:px1] = 0.0
     mid_alpha_f[0, :] = 0.0
-    mid_alpha_f[-1, :] = 0.0
+    mid_alpha_f[y1:, :] = 0.0
     mid_alpha_f[:, 0] = 0.0
     mid_alpha_f[:, -1] = 0.0
 
     mid_alpha_u8 = _fill_interior_alpha_pinholes(
         np.clip(np.round(mid_alpha_f * 255.0), 0, 255).astype(np.uint8),
-        max_hole_area_px=3200,
+        max_hole_area_px=bcfg.mid_max_pinhole_px,
         preserve_open_box_px=cfg.window_portal_inner_box_px,
         alpha_threshold_u8=alpha_thr,
     )
     mid_alpha_u8[py0:py1, px0:px1] = 0
+
+    # Mirror bottom-border-touching front legs (`leg1`, `leg2`) across `y1 - 1 = 960` into `y1..ih-2`
+    # via `cv2.BORDER_REFLECT_101` so they reflect seamlessly with the floor collar (Feedback #48):
+    if bcfg.mirror_authentic_collar and ih > y1 + 1:
+        touch_cols = np.any(mid_alpha_u8[y1 - 3 : y1, :] >= alpha_thr, axis=0)
+        touch_cols_dil = (
+            cv2.dilate(touch_cols[None, :].astype(np.uint8), np.ones((1, 13), dtype=np.uint8))[0]
+            > 0
+        )
+        n_bot = ih - y1
+        refl_rgb = cv2.copyMakeBorder(
+            mid_rgb_composite[y0:y1, :], 0, n_bot, 0, 0, borderType=cv2.BORDER_REFLECT_101
+        )[y1 - y0 :]
+        refl_a = cv2.copyMakeBorder(
+            mid_alpha_u8[y0:y1, :], 0, n_bot, 0, 0, borderType=cv2.BORDER_REFLECT_101
+        )[y1 - y0 :]
+        mid_rgb_composite[y1:, touch_cols_dil] = refl_rgb[:, touch_cols_dil]
+        mid_alpha_u8[y1:, touch_cols_dil] = refl_a[:, touch_cols_dil]
+
     mid_alpha_u8[0, :] = 0
     mid_alpha_u8[-1, :] = 0
     mid_alpha_u8[:, 0] = 0
     mid_alpha_u8[:, -1] = 0
 
     mid_rgb_clean = decontaminate_matte_edge_rgb(mid_rgb_composite, mid_alpha_u8)
-    return _prune_unanchored_cutout_rgba(
+    mid_rgba_pruned = _prune_unanchored_cutout_rgba(
         np.dstack([mid_rgb_clean, mid_alpha_u8]),
         cfg.mid_contact_solve,
     )
+    return mid_rgba_pruned, brick_collar
 
 
 def _compute_brick_tower_protrusion(
@@ -1415,6 +2014,7 @@ def build_tzofen_scene(
     iw, ih = cfg.inner_dims.width, cfg.inner_dims.height
     ew, eh = cfg.expanded_dims.width, cfg.expanded_dims.height
     px, py = (ew - iw) // 2, (eh - ih) // 2
+    bcfg = cfg.brick_segmentation
 
     src_path = repo_root / cfg.source_image_relpath
     if not src_path.is_file():
@@ -1473,7 +2073,7 @@ def build_tzofen_scene(
     sam_dil = (
         cv2.dilate(
             (sam_f > 0.35).astype(np.uint8),
-            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7)),
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)),
         )
         > 0
     )
@@ -1499,7 +2099,7 @@ def build_tzofen_scene(
         np.clip((alpha_f - 0.42) / 0.22, 0.0, 1.0).astype(np.float32), sigma=0.55
     )
     alpha_f[:130, :] = 0.0
-    alpha_f[y1 - 1 :, :] = 0.0
+    alpha_f[y1:, :] = 0.0
     alpha_f[:, :8] = 0.0
     alpha_f[:, iw - 8 :] = 0.0
 
@@ -1510,32 +2110,43 @@ def build_tzofen_scene(
     )
     total_sculp_alpha_u8 = _fill_interior_alpha_pinholes(
         total_sculp_alpha_u8,
-        max_hole_area_px=110,
+        max_hole_area_px=96,
         preserve_open_box_px=cfg.window_portal_inner_box_px,
         alpha_threshold_u8=cfg.topology_verification.alpha_threshold_u8,
     )
 
     vent_mask = np.zeros((ih, iw), dtype=np.uint8)
-    vent_mask[326:402, :195] = 255
+    for vb in bcfg.wall_vent_boxes:
+        vent_mask[vb.y0 : vb.y1, vb.x0 : vb.x1] = 255
     tz_vent_clean_img = lama.inpaint_background(tz_pad_img, vent_mask)
 
     fg_brick_alpha_u8 = _segment_tzofen_bricks_alpha(
         tz_pad=tz_pad,
         tz_pad_img=tz_pad_img,
         total_sculp_alpha_u8=total_sculp_alpha_u8,
-        bcfg=cfg.brick_segmentation,
+        bcfg=bcfg,
         portal_box_px=cfg.window_portal_inner_box_px,
         alpha_threshold_u8=cfg.topology_verification.alpha_threshold_u8,
         sam_ext=sam_ext,
     )
-    fg_rgb_clean = decontaminate_matte_edge_rgb(tz_pad, fg_brick_alpha_u8)
+    fg_rgb_clean = _decontaminate_tzofen_brick_rgba(
+        rgb_u8=tz_pad,
+        alpha_u8=fg_brick_alpha_u8,
+        bcfg=bcfg,
+    )
     fg_rgba = _prune_unanchored_cutout_rgba(
         np.dstack([fg_rgb_clean, fg_brick_alpha_u8]),
         cfg.fg_contact_solve,
     )
     fg_brick_alpha_u8 = fg_rgba[:, :, 3]
+    fg_rgb_clean = _decontaminate_tzofen_brick_rgba(
+        rgb_u8=tz_pad,
+        alpha_u8=fg_brick_alpha_u8,
+        bcfg=bcfg,
+    )
+    fg_rgba = np.dstack([fg_rgb_clean, fg_brick_alpha_u8])
 
-    mid_rgba = _reconstruct_tzofen_white_steel_mid_rgba(
+    mid_rgba, brick_collar = _reconstruct_tzofen_white_steel_mid_rgba(
         tz_pad=tz_pad,
         tz_vent_clean_img=tz_vent_clean_img,
         total_sculp_alpha_u8=total_sculp_alpha_u8,
@@ -1553,7 +2164,14 @@ def build_tzofen_scene(
     Image.fromarray(mid_rgba, mode="RGBA").save(scenes_dir / "scene12_tzofen_mid.png")
     Image.fromarray(fg_rgba, mode="RGBA").save(scenes_dir / "scene12_tzofen_fg.png")
 
-    raw_occ = (total_sculp_alpha_u8 >= 6) | (mid_alpha_u8 >= 6) | (fg_brick_alpha_u8 >= 6)
+    # Build `bg` sculpture removal mask = sculpture + mid + fg + portal + bottom leg tips, dilated by
+    # `r = bg_occ_dilate_px` (`28px`) before `LaMa` while keeping unmasked wall & floor context intact:
+    vent_clean_u8 = np.asarray(tz_vent_clean_img, dtype=np.uint8)
+    raw_occ = (
+        (total_sculp_alpha_u8 >= 6)
+        | (mid_alpha_u8 >= 6)
+        | (fg_brick_alpha_u8 >= 6)
+    )
     wx0, wy0, wx1, wy1 = cfg.window_portal_inner_box_px
     raw_occ[
         max(0, int(np.floor(wy0)) - 6) : min(ih, int(np.ceil(wy1)) + 6),
@@ -1561,70 +2179,145 @@ def build_tzofen_scene(
     ] = True
     bot_leg_cols = np.any(raw_occ[max(0, y1 - 36) : y1, :], axis=0)
     bot_leg_cols_dil = (
-        cv2.dilate(bot_leg_cols[None, :].astype(np.uint8), np.ones((1, 41), dtype=np.uint8))[0] > 0
+        cv2.dilate(bot_leg_cols[None, :].astype(np.uint8), np.ones((1, 45), dtype=np.uint8))[0] > 0
     )
-    raw_occ[max(0, y1 - 8) :, bot_leg_cols_dil] = True
+    raw_occ[max(0, y1 - 12) : y1, bot_leg_cols_dil] = True
 
+    k_bg = bcfg.bg_occ_dilate_px * 2 + 1
     lama_occ_bool = (
         cv2.dilate(
             raw_occ.astype(np.uint8),
-            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (23, 23)),
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k_bg, k_bg)),
         )
         > 0
     )
-    vent_clean_u8 = np.asarray(tz_vent_clean_img, dtype=np.uint8)
-    clean_room_donor = (~lama_occ_bool) & (
-        (np.arange(ih)[:, None] < cfg.baseboard_inner_y)
-        | (
-            (
-                0.299 * vent_clean_u8[:, :, 0]
-                + 0.587 * vent_clean_u8[:, :, 1]
-                + 0.114 * vent_clean_u8[:, :, 2]
-            )
-            <= 218.0
-        )
-    )
-    row_bg_rgb = np.zeros((ih, 3), dtype=np.float32)
-    for ry in range(ih):
-        rm = clean_room_donor[ry]
-        if np.any(rm):
-            row_bg_rgb[ry] = np.median(vent_clean_u8[ry, rm], axis=0)
-        else:
-            row_bg_rgb[ry] = row_bg_rgb[max(0, ry - 1)]
-    row_bg_rgb = ndi.gaussian_filter1d(row_bg_rgb, sigma=6.0, axis=0)
-    _, near_bg_idx = ndi.distance_transform_edt(~clean_room_donor, return_indices=True)
-    near_bg_rgb = ndi.gaussian_filter(
-        vent_clean_u8[near_bg_idx[0], near_bg_idx[1]].astype(np.float32),
-        sigma=(10.0, 10.0, 0.0),
-    )
-    bg_seed_u8 = np.where(
-        lama_occ_bool[:, :, None],
-        np.clip(np.round(0.55 * row_bg_rgb[:, None, :] + 0.45 * near_bg_rgb), 0, 255).astype(
-            np.uint8
+    # Two-pass neural `LaMa` room heal on authentic `919x1500` crop `[y0:y1, :]`:
+    #   Pass 1 removes the sculpture (`r = 28px`) with ample unmasked room context;
+    #   Pass 2 removes residual under-table floor cast-shadow stencils (`<18%` mask) on the
+    #   already-sculpture-free room, followed by `cv2.BORDER_REFLECT_101` mirror collar (#48):
+    auth_vent_u8 = vent_clean_u8[y0:y1, :]
+    auth_occ_bool = lama_occ_bool[y0:y1, :]
+    baseboard_auth_y = cfg.baseboard_inner_y - y0
+    auth_inp1_rgb = np.asarray(
+        lama.inpaint_background(
+            Image.fromarray(auth_vent_u8, mode="RGB"),
+            (auth_occ_bool.astype(np.uint8)) * 255,
         ),
-        vent_clean_u8,
+        dtype=np.uint8,
     )
-    lama_mask = (lama_occ_bool.astype(np.uint8)) * 255
-    lama_inner_img = lama.inpaint_background(Image.fromarray(bg_seed_u8, mode="RGB"), lama_mask)
-    lama_inner_img.save(scenes_dir / "scene12_tzofen_lama_inner.jpg", quality=cfg.jpeg_quality)
-    lama_inner_rgb = np.asarray(lama_inner_img, dtype=np.uint8)
+    auth_pass1_rgb = _harmonize_tzofen_room_inpaint_rgb(
+        auth_vent_rgb_u8=auth_vent_u8,
+        auth_inpainted_rgb_u8=auth_inp1_rgb,
+        auth_occ_bool=auth_occ_bool,
+        baseboard_auth_y=baseboard_auth_y,
+        bcfg=bcfg,
+    )
+    p1_f = auth_pass1_rgb.astype(np.float32)
+    p1_luma = 0.299 * p1_f[:, :, 0] + 0.587 * p1_f[:, :, 1] + 0.114 * p1_f[:, :, 2]
+    p1_rb = p1_f[:, :, 0] - p1_f[:, :, 2]
+    p1_sat = cv2.cvtColor(auth_pass1_rgb, cv2.COLOR_RGB2HSV).astype(np.float32)[:, :, 1]
+    ay = np.arange(auth_pass1_rgb.shape[0])[:, None]
+    floor_shadow_raw = (ay >= baseboard_auth_y + 2) & (
+        (p1_luma < bcfg.bg_floor_shadow_luma_min)
+        | (p1_rb >= bcfg.bg_floor_donor_max_abs_rb)
+        | (p1_sat >= bcfg.bg_floor_donor_max_sat)
+    )
+    ks2 = bcfg.bg_floor_shadow_dilate_px * 2 + 1
+    floor_shadow_occ = (
+        cv2.dilate(
+            floor_shadow_raw.astype(np.uint8),
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (ks2, ks2)),
+        )
+        > 0
+    )
+    floor_shadow_occ[:baseboard_auth_y, :] = False
+    if np.any(floor_shadow_occ):
+        auth_inp2_rgb = np.asarray(
+            lama.inpaint_background(
+                Image.fromarray(auth_pass1_rgb, mode="RGB"),
+                (floor_shadow_occ.astype(np.uint8)) * 255,
+            ),
+            dtype=np.uint8,
+        )
+        auth_clean_rgb = _harmonize_tzofen_room_inpaint_rgb(
+            auth_vent_rgb_u8=auth_pass1_rgb,
+            auth_inpainted_rgb_u8=auth_inp2_rgb,
+            auth_occ_bool=floor_shadow_occ,
+            baseboard_auth_y=baseboard_auth_y,
+            bcfg=bcfg,
+        )
+    else:
+        auth_clean_rgb = auth_pass1_rgb
 
-    seed_exp = cv2.copyMakeBorder(
-        lama_inner_rgb, py, py, px, px, borderType=cv2.BORDER_REFLECT_101
+    if bcfg.mirror_authentic_collar:
+        bg_exp_rgb = cv2.copyMakeBorder(
+            auth_clean_rgb,
+            py + y0,
+            eh - (py + y1),
+            px,
+            ew - (px + iw),
+            borderType=cv2.BORDER_REFLECT_101,
+        )
+        lama_inner_rgb = bg_exp_rgb[py : py + ih, px : px + iw].copy()
+    else:
+        lama_inner_rgb = cv2.copyMakeBorder(
+            auth_clean_rgb, y0, ih - y1, 0, 0, borderType=cv2.BORDER_REFLECT_101
+        )
+        seed_exp = cv2.copyMakeBorder(
+            lama_inner_rgb, py, py, px, px, borderType=cv2.BORDER_REFLECT_101
+        )
+        bg_exp_rgb = _heal_expanded_collar_lama(lama_inner_rgb, seed_exp, None, lama)
+
+    Image.fromarray(lama_inner_rgb, mode="RGB").save(
+        scenes_dir / "scene12_tzofen_lama_inner.jpg", quality=cfg.jpeg_quality
     )
-    bg_exp_rgb = _heal_expanded_collar_lama(lama_inner_rgb, seed_exp, None, lama)
     bg_exp_img = Image.fromarray(bg_exp_rgb, mode="RGB")
     bg_exp_img.save(scenes_dir / "scene12_tzofen_bg_inpainted.jpg", quality=cfg.jpeg_quality)
 
-    raw_room_da2 = depth_est.predict_depth(bg_exp_img)
-    raw_room_u8 = np.clip(np.round(raw_room_da2 * 255.0), 0, 255).astype(np.uint8)
-    clean_room_u8 = clean_room_depth_under_cutouts(
+    # Predict Depth Anything V2 on clean right-side-up authentic room `919x1500`, clean residual
+    # mounds harmonically under `[mid_rgba, fg_rgba]`, then mirror cleanly across `(600, 442, 2100, 1361)`:
+    raw_auth_da2 = depth_est.predict_depth(Image.fromarray(auth_clean_rgb, mode="RGB"))
+    raw_auth_u8 = np.clip(np.round(raw_auth_da2 * 255.0), 0, 255).astype(np.uint8)
+    raw_room_u8 = cv2.copyMakeBorder(
+        raw_auth_u8,
+        py + y0,
+        eh - (py + y1),
+        px,
+        ew - (px + iw),
+        borderType=cv2.BORDER_REFLECT_101,
+    )
+    clean_room_pre_u8 = clean_room_depth_under_cutouts(
         raw_room_u8, [mid_rgba, fg_rgba], cfg.room_depth_clean
     )
+    if bcfg.mirror_authentic_collar:
+        clean_room_u8 = cv2.copyMakeBorder(
+            clean_room_pre_u8[py + y0 : py + y1, px : px + iw],
+            py + y0,
+            eh - (py + y1),
+            px,
+            ew - (px + iw),
+            borderType=cv2.BORDER_REFLECT_101,
+        )
+    else:
+        clean_room_u8 = clean_room_pre_u8
     Image.fromarray(clean_room_u8, mode="L").save(scenes_dir / "scene12_tzofen_depth.png")
 
-    # 1. Solve `mid` (white steel table) depth anchored C^0 at all 7 floor feet to `clean_room_u8`
-    mid_excess_pos = np.maximum(0.0, da2_excess)
+    # 1. Solve `mid` (white steel table) depth anchored C^0 at all 7 floor feet to `clean_room_u8`,
+    #    after harmonically removing brick depth mounds (`brick_collar`) from `da2_excess` so white
+    #    steel shelves/tabletop NEVER bulge toward the camera where bricks used to sit:
+    full_dom = np.ones((ih, iw), dtype=bool)
+    brick_heal = brick_collar.copy()
+    brick_heal[0, :] = False
+    brick_heal[-1, :] = False
+    brick_heal[:, 0] = False
+    brick_heal[:, -1] = False
+    da2_excess_brick_free = _solve_harmonic_field_on_domain(
+        domain_mask=full_dom,
+        dirichlet_mask=~brick_heal,
+        dirichlet_values=da2_excess.astype(np.float64),
+    ).astype(np.float32)
+
+    mid_excess_pos = np.maximum(0.0, da2_excess_brick_free)
     mid_opaque = mid_alpha_u8 >= cfg.mid_contact_solve.alpha_threshold_u8
     mid_prot_scale = max(1e-5, float(np.percentile(mid_excess_pos[mid_opaque], 98.0)))
     mid_prot_norm = np.clip(mid_excess_pos / mid_prot_scale, 0.0, 1.0).astype(np.float32)
@@ -1661,7 +2354,7 @@ def build_tzofen_scene(
     fg_prot_norm = _compute_brick_tower_protrusion(
         da2_excess=da2_excess,
         fg_brick_alpha_u8=fg_brick_alpha_u8,
-        bcfg=cfg.brick_segmentation,
+        bcfg=bcfg,
         fg_solve_cfg=cfg.fg_contact_solve,
     )
     fg_solve = solve_contact_anchored_layer_depth(

@@ -214,7 +214,7 @@ const DEFAULT_YARD_PORTAL_SHELVES = Object.freeze([
     shortBadgeHe: 'תמי ואראלה במעקה',
     showMicroBadge: false,
     innerBoxPx: Object.freeze([515.0, 468.0, 705.0, 788.0]),
-    worldZ: -303.44,
+    worldZ: -306.04,
     recessDepth: 0.0,
     embedDiorama: false,
     showFrame: false,
@@ -260,7 +260,7 @@ const DEFAULT_DENYA_LIVING_PORTAL_SHELVES = Object.freeze([
     labelHe: 'ספת הסלון בדניה · טל, יערה וכרמל עם הגיטרה',
     shortBadgeHe: 'לספה והגיטרה',
     innerBoxPx: Object.freeze([435.0, 266.0, 815.0, 422.0]),
-    worldZ: -378.93,
+    worldZ: -378.4,
     recessDepth: 0.0,
     embedDiorama: false,
     showFrame: false,
@@ -279,7 +279,7 @@ const DEFAULT_DENYA_COUCH_PORTAL_SHELVES = Object.freeze([
     labelHe: '׳שיטוט 2׳ על קיר הסלון · איים מרחפים',
     shortBadgeHe: 'שיטוט 2',
     innerBoxPx: Object.freeze([623.0, 163.0, 749.0, 237.0]),
-    worldZ: -340.0,
+    worldZ: -341.6,
     recessDepth: 96.0,
     embedDiorama: true,
     showFrame: true,
@@ -294,7 +294,7 @@ const DEFAULT_DENYA_COUCH_PORTAL_SHELVES = Object.freeze([
     labelHe: 'מבט משולחן האוכל · תמי, גדי והמשפחה',
     shortBadgeHe: 'לשולחן האוכל',
     innerBoxPx: Object.freeze([540.0, 580.0, 760.0, 648.0]),
-    worldZ: -305.12,
+    worldZ: -281.8,
     recessDepth: 0.0,
     embedDiorama: false,
     showFrame: false,
@@ -366,7 +366,7 @@ const DEFAULT_TZOFEN_PORTAL_SHELVES = Object.freeze([
     labelHe: 'מסגרת החלון הלבנה ב׳צופן׳ · שער אל צמרת העץ בהרצליה',
     shortBadgeHe: 'חלון אל העץ',
     innerBoxPx: Object.freeze([975.0, 146.0, 1126.0, 250.0]),
-    worldZ: -262.5,
+    worldZ: -194.26,
     recessDepth: 115.0,
     embedDiorama: true,
     showFrame: false,
@@ -384,7 +384,7 @@ const DEFAULT_SCROLL_FOOT_PORTAL_SHELVES = Object.freeze([
     shortBadgeHe: 'אל פורים 1966',
     showMicroBadge: false,
     innerBoxPx: Object.freeze([706.0, 774.0, 883.0, 939.0]),
-    worldZ: -300.82,
+    worldZ: -274.29,
     recessDepth: 0.0,
     embedDiorama: false,
     showFrame: false,
@@ -408,7 +408,7 @@ const DEFAULT_SCROLL_FOOT_PORTAL_SHELVES = Object.freeze([
       companionFall: Object.freeze({
         extraLayerId: 'scroll_black_rod',
         pivotInnerPx: Object.freeze([836.8, 791.0]),
-        pivotWorldZ: -308.588,
+        pivotWorldZ: -293.706,
         fallAngleDeg: -95.0,
         shiftWorldX: 0.0,
         shiftWorldY: 0.0
@@ -425,8 +425,8 @@ const DEFAULT_BAR_GIORA_PORTAL_SHELVES = Object.freeze([
     labelHe: 'תיבת הוויטרינה מ׳בנה ביתך׳ · לחצו להתקרבות וסיבוב אל תוך הוויטרינה',
     shortBadgeHe: 'אל הוויטרינה',
     showMicroBadge: false,
-    innerBoxPx: Object.freeze([492.0, 361.0, 618.0, 487.0]),
-    worldZ: -325.98,
+    innerBoxPx: Object.freeze([501.9, 363.0, 608.1, 485.0]),
+    worldZ: -316.37,
     recessDepth: 0.0,
     embedDiorama: false,
     showFrame: false,
@@ -446,7 +446,7 @@ const DEFAULT_PARIS_TABLE_PORTAL_SHELVES = Object.freeze([
     shortBadgeHe: 'אל תמי 1958',
     showMicroBadge: false,
     innerBoxPx: Object.freeze([420.0, 353.0, 667.0, 390.0]),
-    worldZ: -302.12,
+    worldZ: -312.27,
     recessDepth: 0.0,
     embedDiorama: false,
     showFrame: false,
@@ -548,10 +548,12 @@ export const SCENE_GEOMETRY_SPEC = Object.freeze({
   portalDustRenderOrder: 13.5,
   portalOccluderDefaultAlphaHit: 24,
   touchSyntheticMouseGuardMs: 2500,
-  directPortalApproachDollyZ: 280.0,
-  directPortalApproachTrackXFactor: 0.85,
-  directPortalApproachTrackYFactor: 0.65,
-  directPortalBlendStartT: 0.16,
+  directPortalFlightDurationMs: 1380,
+  directPortalFitScale: 1.15,
+  directPortalMinFitDistance: 76.0,
+  directPortalBlendStartT: 0.66,
+  directPortalReverseBlendEndT: 0.34,
+  tunnelMinStrafeScale: 0.42,
   clearColorHex: 0x121314,
   shelfPortalShelves: DEFAULT_SHELF_PORTAL_SHELVES,
   yardPortalShelves: DEFAULT_YARD_PORTAL_SHELVES,
@@ -914,7 +916,7 @@ function createSoftRadialDustTexture() {
  * Euler(pitchRad, yawRad, 0, 'YXZ') intersect Z = bgZ inside [-maxHalfW..maxHalfW] x [-maxHalfH..maxHalfH],
  * and (when fgBounds is active) stay within any edge-bleeding foreground subject bounds.
  */
-function doFrustumCornersFitOnBackground(
+export function doFrustumCornersFitOnBackground(
   posX,
   posY,
   posZ,
@@ -925,12 +927,15 @@ function doFrustumCornersFitOnBackground(
   bgZ,
   maxHalfW,
   maxHalfH,
-  fgBounds = null
+  fgBounds = null,
+  rollRad = 0.0
 ) {
   const cosY = Math.cos(yawRad);
   const sinY = Math.sin(yawRad);
   const cosP = Math.cos(pitchRad);
   const sinP = Math.sin(pitchRad);
+  const cosR = Math.cos(rollRad);
+  const sinR = Math.sin(rollRad);
   const distZ = posZ - bgZ;
   if (distZ <= 1.0) return false;
 
@@ -946,9 +951,11 @@ function doFrustumCornersFitOnBackground(
 
   for (let sx = -1; sx <= 1; sx += 2) {
     for (let sy = -1; sy <= 1; sy += 2) {
-      const vx = sx * tanX;
-      const vy = sy * tanY;
-      // Local ray is (vx, vy, -1); apply R_x(pitchRad) then R_y(yawRad)
+      const vx0 = sx * tanX;
+      const vy0 = sy * tanY;
+      // Local ray is (vx0, vy0, -1); apply R_z(rollRad), then R_x(pitchRad), then R_y(yawRad)
+      const vx = vx0 * cosR - vy0 * sinR;
+      const vy = vx0 * sinR + vy0 * cosR;
       const y1 = vy * cosP + sinP;
       const z1 = vy * sinP - cosP;
       const rx = vx * cosY + z1 * sinY;
@@ -986,14 +993,17 @@ function doFrustumCornersFitOnBackground(
  * 2. Off-axis translation & rotation scale smoothly via binary search whenever any viewport
  *    corner ray would otherwise cross the expanded 2700x1800 room boundary.
  */
-function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
+export function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
   const halfFovRad = THREE.MathUtils.degToRad(fovDeg * 0.5);
   const tanHalfFov = Math.tan(halfFovRad);
   const tanX = Math.max(0.05, tanHalfFov * aspect);
   const tanY = Math.max(0.05, tanHalfFov);
   const maxHalfW = 0.5 * spec.bgBaseWidth * layer0Scale * spec.frustumEdgeSafetyRatio;
   const maxHalfH = 0.5 * spec.bgBaseHeight * layer0Scale * spec.frustumEdgeSafetyRatio;
+  const restX = typeof spec.restCameraX === 'number' ? spec.restCameraX : 0.0;
   const restY = typeof spec.restCameraY === 'number' ? spec.restCameraY : 0.0;
+  const rollDeg = typeof rawPose.rollDeg === 'number' ? rawPose.rollDeg : 0.0;
+  const rollRad = THREE.MathUtils.degToRad(rollDeg);
   const fgBounds = spec.fgBleedBounds || null;
 
   const maxCenteredDistW = (maxHalfW * 0.95) / tanX;
@@ -1063,10 +1073,10 @@ function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
     validMaxY = midY;
   }
 
-  const refX = THREE.MathUtils.clamp(0.0, validMinX, validMaxX);
+  const refX = THREE.MathUtils.clamp(restX, validMinX, validMaxX);
   const refY = THREE.MathUtils.clamp(restY, validMinY, validMaxY);
 
-  const candX = THREE.MathUtils.clamp(rawPose.x, -spec.maxStrafeX, spec.maxStrafeX);
+  const candX = THREE.MathUtils.clamp(rawPose.x, restX - spec.maxStrafeX, restX + spec.maxStrafeX);
   const candY = THREE.MathUtils.clamp(rawPose.y, restY - spec.maxStrafeY, restY + spec.maxStrafeY);
   const candYawDeg = THREE.MathUtils.clamp(rawPose.yawDeg, -spec.maxYawDeg, spec.maxYawDeg);
   const candPitchDeg = THREE.MathUtils.clamp(rawPose.pitchDeg, -spec.maxPitchDeg, spec.maxPitchDeg);
@@ -1086,7 +1096,8 @@ function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
       spec.bgZ,
       maxHalfW,
       maxHalfH,
-      fgBounds
+      fgBounds,
+      rollRad
     )
   ) {
     return {
@@ -1095,7 +1106,7 @@ function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
       z: clampedZ,
       yawDeg: candYawDeg,
       pitchDeg: candPitchDeg,
-      rollDeg: typeof rawPose.rollDeg === 'number' ? rawPose.rollDeg : 0
+      rollDeg
     };
   }
 
@@ -1117,7 +1128,8 @@ function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
         spec.bgZ,
         maxHalfW,
         maxHalfH,
-        fgBounds
+        fgBounds,
+        rollRad
       )
     ) {
       loJ = mid;
@@ -1145,7 +1157,8 @@ function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
         spec.bgZ,
         maxHalfW,
         maxHalfH,
-        fgBounds
+        fgBounds,
+        rollRad
       )
     ) {
       loH = mid;
@@ -1174,7 +1187,8 @@ function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
         spec.bgZ,
         maxHalfW,
         maxHalfH,
-        fgBounds
+        fgBounds,
+        rollRad
       )
     ) {
       loV = mid;
@@ -1189,7 +1203,7 @@ function clampPoseToRoomFrustum(rawPose, fovDeg, aspect, layer0Scale, spec) {
     z: clampedZ,
     yawDeg: finalYawDeg,
     pitchDeg: candPitchDeg * loV,
-    rollDeg: typeof rawPose.rollDeg === 'number' ? rawPose.rollDeg : 0
+    rollDeg
   };
 }
 
@@ -1219,8 +1233,10 @@ export class SpatialSceneManager {
     this.onPortalHover = options.onPortalHover || (() => {});
     this.onPortalUnlock =
       typeof options.onPortalUnlock === 'function' ? options.onPortalUnlock : () => {};
+    this.onLoadingProgress =
+      typeof options.onLoadingProgress === 'function' ? options.onLoadingProgress : null;
 
-    const assetVer = 'v=neural34';
+    const assetVer = 'v=neural40';
     this._assetVer = assetVer;
     this.sceneConfigs = {
       shelf_portal: {
@@ -1324,7 +1340,7 @@ export class SpatialSceneManager {
         depthTexture: `assets/scenes/denya_living_dining_depth.png?${assetVer}`,
         midTexture: `assets/scenes/denya_living_dining_mid.png?${assetVer}`,
         midDepthTexture: `assets/scenes/denya_living_dining_mid_depth.png?${assetVer}`,
-        midDepthAmplitude: 74.0,
+        midDepthAmplitude: 88.0,
         midPinMarginUv: 0.0,
         midSegmentsX: 192,
         midSegmentsY: 128,
@@ -1332,7 +1348,7 @@ export class SpatialSceneManager {
         midDepthWrite: false,
         fgTexture: `assets/scenes/denya_living_dining_fg.png?${assetVer}`,
         fgDepthTexture: `assets/scenes/denya_living_dining_fg_depth.png?${assetVer}`,
-        fgDepthAmplitude: 175.0,
+        fgDepthAmplitude: 195.0,
         fgPinMarginUv: 0.0,
         fgSegmentsX: 224,
         fgSegmentsY: 150,
@@ -1383,7 +1399,7 @@ export class SpatialSceneManager {
             texture: `assets/scenes/denya_living_dining_couch_people.png?${assetVer}`,
             depthTexture: `assets/scenes/denya_living_dining_couch_people_depth.png?${assetVer}`,
             zPos: -384.0,
-            depthAmplitude: 68.0,
+            depthAmplitude: 84.0,
             pinMarginUv: 0.0,
             segmentsX: 192,
             segmentsY: 128,
@@ -1415,7 +1431,7 @@ export class SpatialSceneManager {
         midDepthWrite: false,
         fgTexture: `assets/scenes/denya_living_couch_fg.png?${assetVer}`,
         fgDepthTexture: `assets/scenes/denya_living_couch_fg_depth.png?${assetVer}`,
-        fgDepthAmplitude: 105.0,
+        fgDepthAmplitude: 125.0,
         fgPinMarginUv: 0.0,
         fgSegmentsX: 224,
         fgSegmentsY: 150,
@@ -1471,7 +1487,19 @@ export class SpatialSceneManager {
         bgTexture: `assets/scenes/scene4_plan_b_bg_inpainted.jpg?${assetVer}`,
         depthTexture: `assets/scenes/scene4_plan_b_depth.png?${assetVer}`,
         midTexture: `assets/scenes/scene4_plan_b_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene4_plan_b_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 1.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 64,
+        midSegmentsY: 44,
+        midDepthTest: true,
         fgTexture: `assets/scenes/scene4_plan_b_fg.png?${assetVer}`,
+        fgDepthTexture: `assets/scenes/scene4_plan_b_fg_depth.png?${assetVer}`,
+        fgDepthAmplitude: 1.0,
+        fgPinMarginUv: 0.0,
+        fgSegmentsX: 64,
+        fgSegmentsY: 44,
+        fgDepthTest: true,
         bgZ: -520,
         minInnerScale: 2.0783,
         fgZ: -35,
@@ -1483,6 +1511,10 @@ export class SpatialSceneManager {
         initialCameraZ: 400,
         minCameraZ: 25,
         maxCameraZ: 685,
+        maxYawDeg: 18.0,
+        maxPitchDeg: 12.5,
+        maxStrafeX: 56.0,
+        maxStrafeY: 36.0,
         dollySpeedMult: 1.20,
         midRenderOrder: 4,
         fgRenderOrder: 6,
@@ -1515,14 +1547,16 @@ export class SpatialSceneManager {
             labelHe: 'טבעת המלט התלויה מתקרת הצינור',
             texture: `assets/scenes/scene4_plan_b_hanging_ring.png?${assetVer}`,
             zPos: -95,
-            renderOrder: 5
+            renderOrder: 5,
+            depthTest: true
           },
           {
             id: 'rear_disc',
             labelHe: 'דיסקית התלייה בפתח האחורי של הצינור',
             texture: `assets/scenes/scene4_plan_b_rear_disc.png?${assetVer}`,
             zPos: -265,
-            renderOrder: 3
+            renderOrder: 3,
+            depthTest: true
           }
         ],
         particleColor: 0x9FB7CC,
@@ -1535,7 +1569,19 @@ export class SpatialSceneManager {
         bgTexture: `assets/scenes/scene4_plan_b_v3_bg_inpainted.jpg?${assetVer}`,
         depthTexture: `assets/scenes/scene4_plan_b_v3_depth.png?${assetVer}`,
         midTexture: `assets/scenes/scene4_plan_b_v3_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene4_plan_b_v3_mid_depth.png?${assetVer}`,
+        midDepthAmplitude: 1.0,
+        midPinMarginUv: 0.0,
+        midSegmentsX: 64,
+        midSegmentsY: 44,
+        midDepthTest: true,
         fgTexture: `assets/scenes/scene4_plan_b_v3_fg.png?${assetVer}`,
+        fgDepthTexture: `assets/scenes/scene4_plan_b_v3_fg_depth.png?${assetVer}`,
+        fgDepthAmplitude: 1.0,
+        fgPinMarginUv: 0.0,
+        fgSegmentsX: 64,
+        fgSegmentsY: 44,
+        fgDepthTest: true,
         bgZ: -520,
         minInnerScale: 2.0783,
         fgZ: -35,
@@ -1545,12 +1591,12 @@ export class SpatialSceneManager {
         roomDepthAmplitude: 0.0,
         initialCameraY: 0,
         initialCameraZ: 400,
-        minCameraZ: -235,
+        minCameraZ: -145,
         maxCameraZ: 685,
-        maxYawDeg: 36,
-        maxPitchDeg: 26,
-        maxStrafeX: 280,
-        maxStrafeY: 140,
+        maxYawDeg: 18.0,
+        maxPitchDeg: 12.5,
+        maxStrafeX: 56.0,
+        maxStrafeY: 36.0,
         dollySpeedMult: 1.50,
         midRenderOrder: 6,
         fgRenderOrder: 8,
@@ -1583,14 +1629,16 @@ export class SpatialSceneManager {
             labelHe: 'טבעת המלט התלויה מתקרת הצינור',
             texture: `assets/scenes/scene4_plan_b_v3_hanging_ring.png?${assetVer}`,
             zPos: -95,
-            renderOrder: 7
+            renderOrder: 7,
+            depthTest: true
           },
           {
             id: 'rear_disc',
             labelHe: 'דיסקית התלייה בפתח האחורי של הצינור',
             texture: `assets/scenes/scene4_plan_b_v3_rear_disc.png?${assetVer}`,
             zPos: -265,
-            renderOrder: 5
+            renderOrder: 5,
+            depthTest: true
           },
           {
             id: 'yaara_front',
@@ -2034,10 +2082,11 @@ export class SpatialSceneManager {
           rollLayerId: 'carpet_roll',
           clipUvMinX: 0.0,
           initialClipUvMaxX: 0.156667,
-          unrolledClipUvMaxX: 0.876667,
+          unrolledClipUvMaxX: 0.903333,
           rollShiftInnerPxX: 1080.0,
           rollShiftInnerPxY: 0.0,
           rollShiftWorldZ: 0.0,
+          rollTrackWorldZ: -232.235,
           durationMs: 1450
         },
         extraLayers: [
@@ -2103,7 +2152,7 @@ export class SpatialSceneManager {
         fgSegmentsY: 150,
         fgDepthTest: false,
         fgDepthWrite: false,
-        fgExpanded: false,
+        fgExpanded: true,
         boreSightAtRest: true,
         bgZ: -350.0,
         midZ: -350.0,
@@ -2148,8 +2197,7 @@ export class SpatialSceneManager {
         fgSegmentsY: 150,
         fgDepthTest: false,
         fgDepthWrite: false,
-        fgExpanded: false,
-        fgBleedEdges: { left: true, right: true, top: true, bottom: true, guardMinZ: 210.0 },
+        fgExpanded: true,
         boreSightAtRest: true,
         bgZ: -350.0,
         midZ: -350.0,
@@ -2173,7 +2221,7 @@ export class SpatialSceneManager {
         extraLayers: [
           {
             id: 'mounted_wall_vitrine',
-            labelHe: 'תיבת הוויטרינה התלויה על קיר החדר (מסובבת 130° להתאמת אור החלון)',
+            labelHe: 'תיבת הוויטרינה התלויה צמוד לקיר החדר (מסובבת 130° עם צל מקורי)',
             texture: `assets/scenes/scene21_bar_giora_vitrine.png?${assetVer}`,
             depthTexture: `assets/scenes/scene21_bar_giora_vitrine_depth.png?${assetVer}`,
             zPos: -350.0,
@@ -2274,11 +2322,18 @@ export class SpatialSceneManager {
         midDepthTest: false,
         midDepthWrite: false,
         fgTexture: `assets/scenes/scene23_tami_1958_fg.png?${assetVer}`,
-        fgExpanded: false,
+        fgDepthTexture: `assets/scenes/scene23_tami_1958_fg_depth.png?${assetVer}`,
+        fgDepthAmplitude: 165.0,
+        fgPinMarginUv: 0.0,
+        fgSegmentsX: 224,
+        fgSegmentsY: 150,
+        fgDepthTest: false,
+        fgDepthWrite: false,
+        fgExpanded: true,
         boreSightAtRest: true,
         bgZ: -350.0,
         midZ: -350.0,
-        fgZ: -180.0,
+        fgZ: -350.0,
         minInnerScale: 1.94,
         bgSegmentsX: 224,
         bgSegmentsY: 150,
@@ -2293,7 +2348,7 @@ export class SpatialSceneManager {
         maxStrafeY: 82.0,
         dollySpeedMult: 1.30,
         midRenderOrder: 6,
-        fgRenderOrder: 8,
+        fgRenderOrder: 5.8,
         particleColor: 0xE6DFD5,
         particleCount: 52,
         hasReflection: false
@@ -2324,8 +2379,8 @@ export class SpatialSceneManager {
         fgExpanded: true,
         boreSightAtRest: true,
         bgZ: -360,
-        midZ: -303.44,
-        fgZ: -229.07,
+        midZ: -306.04,
+        fgZ: -236.18,
         bgSegmentsX: 224,
         bgSegmentsY: 150,
         roomDepthAmplitude: 215.0,
@@ -2448,22 +2503,23 @@ export class SpatialSceneManager {
         depthTexture: `assets/scenes/scene11_fried_table_hybrid_depth.png?${assetVer}`,
         midTexture: `assets/scenes/scene11_fried_table_hybrid_mid.png?${assetVer}`,
         midDepthTexture: `assets/scenes/scene11_fried_table_hybrid_mid_depth.png?${assetVer}`,
-        midDepthAmplitude: 115.0,
+        midDepthAmplitude: 125.0,
         midPinMarginUv: 0.0,
         midSegmentsX: 224,
         midSegmentsY: 150,
         fgTexture: `assets/scenes/scene11_fried_table_hybrid_fg.png?${assetVer}`,
         fgDepthTexture: `assets/scenes/scene11_fried_table_hybrid_fg_depth.png?${assetVer}`,
-        fgDepthAmplitude: 95.0,
+        fgDepthAmplitude: 175.0,
         fgPinMarginUv: 0.0,
-        fgSegmentsX: 224,
-        fgSegmentsY: 150,
+        fgSegmentsX: 320,
+        fgSegmentsY: 214,
+        fgExpanded: true,
         boreSightAtRest: true,
         bgZ: -320.0,
-        midZ: -280.0,
-        fgZ: -245.0,
-        bgSegmentsX: 224,
-        bgSegmentsY: 150,
+        midZ: -298.0,
+        fgZ: -320.0,
+        bgSegmentsX: 288,
+        bgSegmentsY: 192,
         roomDepthAmplitude: 220.0,
         initialCameraY: 0.0,
         initialCameraZ: 680.0,
@@ -2482,14 +2538,14 @@ export class SpatialSceneManager {
             labelHe: 'מיצב ׳היבריד׳ (2021) במהופך לאורך שולחן האוכל בבית פריד',
             texture: `assets/scenes/scene11_fried_table_hybrid_installation.png?${assetVer}`,
             depthTexture: `assets/scenes/scene11_fried_table_hybrid_installation_depth.png?${assetVer}`,
-            zPos: -268.0,
+            zPos: -284.0,
             renderOrder: 3,
             expanded: false,
             baseOpacity: 1.0,
             excursionBoost: 0.0,
             depthTest: false,
             depthWrite: false,
-            depthAmplitude: 115.0,
+            depthAmplitude: 125.0,
             alphaCutout: 0.0,
             pinMarginUv: 0.0,
             segmentsX: 224,
@@ -2500,18 +2556,18 @@ export class SpatialSceneManager {
             labelHe: 'כיסא העץ הקדמי משמאל לשולחן האוכל',
             texture: `assets/scenes/scene11_fried_table_hybrid_front_chair.png?${assetVer}`,
             depthTexture: `assets/scenes/scene11_fried_table_hybrid_front_chair_depth.png?${assetVer}`,
-            zPos: -245.0,
+            zPos: -320.0,
             renderOrder: 5,
-            expanded: false,
+            expanded: true,
             baseOpacity: 1.0,
             excursionBoost: 0.0,
             depthTest: false,
             depthWrite: false,
-            depthAmplitude: 95.0,
+            depthAmplitude: 175.0,
             alphaCutout: 0.0,
             pinMarginUv: 0.0,
-            segmentsX: 224,
-            segmentsY: 150
+            segmentsX: 320,
+            segmentsY: 214
           }
         ],
         particleColor: 0xEFE4CF,
@@ -3495,8 +3551,11 @@ export class SpatialSceneManager {
       this.height = window.innerHeight;
       this.camera.aspect = this.width / this.height;
       this.renderer.setSize(this.width, this.height);
-      if (this.rtCurrent) this.rtCurrent.setSize(this.width, this.height);
-      if (this.rtNext) this.rtNext.setSize(this.width, this.height);
+      const dpr = this.renderer ? this.renderer.getPixelRatio() : 1;
+      const rtW = Math.max(1, Math.round(this.width * dpr));
+      const rtH = Math.max(1, Math.round(this.height * dpr));
+      if (this.rtCurrent) this.rtCurrent.setSize(rtW, rtH);
+      if (this.rtNext) this.rtNext.setSize(rtW, rtH);
       if (this.transitionMaterial && this.transitionMaterial.uniforms) {
         this.transitionMaterial.uniforms.uAspect.value = this.camera.aspect;
       }
@@ -3964,17 +4023,27 @@ export class SpatialSceneManager {
     };
   }
 
-  _computeTunnelBoreDollyDelta(forwardDelta, effectiveYawRad) {
-    const rawDx = -Math.sin(effectiveYawRad) * forwardDelta;
-    const rawDz = -Math.cos(effectiveYawRad) * forwardDelta;
-    const activeId = this.targetSceneId || this.currentSceneId;
-    const activeCfg = this.sceneConfigs && activeId ? this.sceneConfigs[activeId] : null;
-    const activeObj = this.sceneObjects && activeId ? this.sceneObjects[activeId] : null;
+  _computeTunnelBoreAxisAtZ(sceneId, camZ) {
+    const restPose = this._getSceneRestPose(sceneId);
+    const activeCfg = this.sceneConfigs && sceneId ? this.sceneConfigs[sceneId] : null;
+    const activeObj = this.sceneObjects && sceneId ? this.sceneObjects[sceneId] : null;
+    const sceneMinZ =
+      activeCfg && typeof activeCfg.minCameraZ === 'number'
+        ? activeCfg.minCameraZ
+        : SCENE_GEOMETRY_SPEC.minCameraZ;
     if (!activeCfg || !activeCfg.tunnelBoreTarget || !activeObj) {
-      return { dx: rawDx, dy: 0, dz: rawDz };
+      return {
+        hasTunnel: false,
+        centerX: 0.0,
+        centerY: restPose.y,
+        strafeScale: 1.0,
+        targetX: 0.0,
+        targetY: restPose.y,
+        arrivalZ: sceneMinZ,
+        spanZ: SCENE_GEOMETRY_SPEC.tunnelMinSpanZ
+      };
     }
 
-    const restPose = this._getSceneRestPose(activeId);
     const boreZ = activeCfg.boreSightAtRest ? restPose.z : this.baseCameraZ;
     const boreY = activeCfg.boreSightAtRest ? restPose.y : 0.0;
     const boreDistBg = Math.max(1.0, boreZ - activeObj.sceneBgZ);
@@ -3983,25 +4052,53 @@ export class SpatialSceneManager {
     const planeH = SCENE_GEOMETRY_SPEC.bgBaseHeight * activeObj.innerScale * tRatio;
     const targetX = (activeCfg.tunnelBoreTarget.innerNormX - 0.5) * planeW;
     const targetY = boreY * (1.0 - tRatio) + (0.5 - activeCfg.tunnelBoreTarget.innerNormY) * planeH;
-
-    const sceneMinZ =
-      typeof activeCfg.minCameraZ === 'number'
-        ? activeCfg.minCameraZ
-        : SCENE_GEOMETRY_SPEC.minCameraZ;
-    const activeMaxZ = this._getActiveMaxCameraZ();
     const arrivalZ = Math.max(
       activeCfg.tunnelBoreTarget.targetZ + SCENE_GEOMETRY_SPEC.tunnelArrivalClearanceZ,
       sceneMinZ
     );
     const spanZ = Math.min(SCENE_GEOMETRY_SPEC.tunnelMinSpanZ, arrivalZ - restPose.z);
+    const tBore = THREE.MathUtils.clamp(
+      (restPose.z - camZ) / Math.max(1.0, restPose.z - arrivalZ),
+      0.0,
+      1.0
+    );
+    const strafeScale =
+      1.0 - (1.0 - SCENE_GEOMETRY_SPEC.tunnelMinStrafeScale) * tBore;
+    return {
+      hasTunnel: true,
+      centerX: targetX * tBore,
+      centerY: restPose.y + (targetY - restPose.y) * tBore,
+      strafeScale,
+      targetX,
+      targetY,
+      arrivalZ,
+      spanZ
+    };
+  }
 
+  _computeTunnelBoreDollyDelta(forwardDelta, effectiveYawRad) {
+    const rawDx = -Math.sin(effectiveYawRad) * forwardDelta;
+    const rawDz = -Math.cos(effectiveYawRad) * forwardDelta;
+    const activeId = this.targetSceneId || this.currentSceneId;
+    const bore = this._computeTunnelBoreAxisAtZ(activeId, this.poseTarget.z);
+    if (!bore.hasTunnel) {
+      return { dx: rawDx, dy: 0, dz: rawDz };
+    }
+
+    const activeCfg = this.sceneConfigs[activeId];
+    const restPose = this._getSceneRestPose(activeId);
+    const sceneMinZ =
+      typeof activeCfg.minCameraZ === 'number'
+        ? activeCfg.minCameraZ
+        : SCENE_GEOMETRY_SPEC.minCameraZ;
+    const activeMaxZ = this._getActiveMaxCameraZ();
     const clampedNextZ = THREE.MathUtils.clamp(this.poseTarget.z + rawDz, sceneMinZ, activeMaxZ);
-    const tunnelZBefore = THREE.MathUtils.clamp(this.poseTarget.z, arrivalZ, restPose.z);
-    const tunnelZAfter = THREE.MathUtils.clamp(clampedNextZ, arrivalZ, restPose.z);
+    const tunnelZBefore = THREE.MathUtils.clamp(this.poseTarget.z, bore.arrivalZ, restPose.z);
+    const tunnelZAfter = THREE.MathUtils.clamp(clampedNextZ, bore.arrivalZ, restPose.z);
     const tunnelDz = tunnelZAfter - tunnelZBefore;
 
-    const boreDx = (targetX / spanZ) * tunnelDz;
-    const boreDy = ((targetY - restPose.y) / spanZ) * tunnelDz;
+    const boreDx = (bore.targetX / bore.spanZ) * tunnelDz;
+    const boreDy = ((bore.targetY - restPose.y) / bore.spanZ) * tunnelDz;
     return {
       dx: rawDx + boreDx,
       dy: boreDy,
@@ -4028,7 +4125,6 @@ export class SpatialSceneManager {
 
   _clampPoseForScene(sceneId, rawPose, maxCameraZOverride = null) {
     const activeCfg = this.sceneConfigs && sceneId ? this.sceneConfigs[sceneId] : null;
-    const restPose = this._getSceneRestPose(sceneId);
     const activeObj = this.sceneObjects && sceneId ? this.sceneObjects[sceneId] : null;
     const activeLayer0Scale =
       activeObj && typeof activeObj.layer0Scale === 'number'
@@ -4062,6 +4158,8 @@ export class SpatialSceneManager {
       activeCfg && typeof activeCfg.maxStrafeY === 'number'
         ? activeCfg.maxStrafeY
         : SCENE_GEOMETRY_SPEC.maxStrafeY;
+    const prelimZ = THREE.MathUtils.clamp(rawPose.z, sceneMinZ, sceneMaxZ);
+    const bore = this._computeTunnelBoreAxisAtZ(sceneId, prelimZ);
     return clampPoseToRoomFrustum(
       rawPose,
       this.camera ? this.camera.fov : SCENE_GEOMETRY_SPEC.desktopFovDeg,
@@ -4071,12 +4169,13 @@ export class SpatialSceneManager {
         ...SCENE_GEOMETRY_SPEC,
         bgZ: sceneBgZ,
         minCameraZ: sceneMinZ,
-        restCameraY: restPose.y,
+        restCameraX: bore.centerX,
+        restCameraY: bore.centerY,
         maxCameraZ: sceneMaxZ,
         maxYawDeg: sceneMaxYaw,
         maxPitchDeg: sceneMaxPitch,
-        maxStrafeX: sceneMaxStrafeX,
-        maxStrafeY: sceneMaxStrafeY,
+        maxStrafeX: sceneMaxStrafeX * bore.strafeScale,
+        maxStrafeY: sceneMaxStrafeY * bore.strafeScale,
         fgBleedBounds: activeObj && activeObj.fgBleedBounds ? activeObj.fgBleedBounds : null
       }
     );
@@ -4206,11 +4305,6 @@ export class SpatialSceneManager {
     }
   }
 
-  _updateLoadingText(text) {
-    const el = document.querySelector('#loading-overlay .loading-text');
-    if (el) el.textContent = text;
-  }
-
   _loadTextureIntoSlot(url, targetTex, onSlotDone, isInitialScene, onSlotError = null) {
     this.textureLoader.load(
       url,
@@ -4218,11 +4312,11 @@ export class SpatialSceneManager {
         targetTex.image = loadedTex.image;
         targetTex.needsUpdate = true;
         this._loadedTextures += 1;
-        if (isInitialScene && !this.layersReady) {
+        if (isInitialScene && !this.layersReady && this.onLoadingProgress) {
           const initObj = this.sceneObjects[this.currentSceneId];
           const initLoaded = initObj ? initObj.loadedCount + 1 : this._loadedTextures;
           const initTotal = initObj ? initObj.expectedCount : 5;
-          this._updateLoadingText(`טוען מרחב רב-שכבתי... (${initLoaded}/${initTotal})`);
+          this.onLoadingProgress(initLoaded, initTotal);
         }
         if (window.__sendDiag) {
           window.__sendDiag('texture_loaded', {
@@ -6129,8 +6223,26 @@ export class SpatialSceneManager {
       const shiftPxX = typeof rig.rollShiftInnerPxX === 'number' ? rig.rollShiftInnerPxX : 0.0;
       const shiftPxY = typeof rig.rollShiftInnerPxY === 'number' ? rig.rollShiftInnerPxY : 0.0;
       const shiftZ = typeof rig.rollShiftWorldZ === 'number' ? rig.rollShiftWorldZ : 0.0;
-      const worldDx = (shiftPxX / SCENE_GEOMETRY_SPEC.innerFrameWidthPx) * rollRec.planeWorldW * u;
-      const worldDy = -(shiftPxY / SCENE_GEOMETRY_SPEC.innerFrameHeightPx) * rollRec.planeWorldH * u;
+      let boreRayScale = 1.0;
+      if (cfg.boreSightAtRest && typeof rig.rollTrackWorldZ === 'number') {
+        const restPose = this._getSceneRestPose(sceneId);
+        const distPlane = Math.max(1.0, restPose.z - rollRec.basePosZ);
+        boreRayScale = THREE.MathUtils.clamp(
+          (restPose.z - rig.rollTrackWorldZ) / distPlane,
+          0.2,
+          1.5
+        );
+      }
+      const worldDx =
+        (shiftPxX / SCENE_GEOMETRY_SPEC.innerFrameWidthPx) *
+        rollRec.planeWorldW *
+        boreRayScale *
+        u;
+      const worldDy =
+        -(shiftPxY / SCENE_GEOMETRY_SPEC.innerFrameHeightPx) *
+        rollRec.planeWorldH *
+        boreRayScale *
+        u;
       rollRec.mesh.position.set(
         rollRec.basePosX + worldDx,
         rollRec.basePosY + worldDy,
@@ -6186,17 +6298,48 @@ export class SpatialSceneManager {
 
     for (const { rec, clipped } of candidates) {
       if (!rec.mesh || !rec.mesh.visible || !rec.tex) continue;
+      const sampler = this._getTextureSampler(rec.tex, 512);
+      if (!sampler) continue;
+
+      if (
+        !clipped &&
+        cfg.boreSightAtRest &&
+        typeof rig.rollTrackWorldZ === 'number' &&
+        rec.planeWorldW > 1e-4 &&
+        rec.planeWorldH > 1e-4
+      ) {
+        const restPose = this._getSceneRestPose(this.currentSceneId);
+        const distPlane = Math.max(1.0, restPose.z - rec.basePosZ);
+        const boreRayScale = THREE.MathUtils.clamp(
+          (restPose.z - rig.rollTrackWorldZ) / distPlane,
+          0.2,
+          1.5
+        );
+        const planeHit = this._intersectPlaneZ(clientX, clientY, rig.rollTrackWorldZ);
+        if (planeHit) {
+          const optY = cfg.boreSightAtRest ? restPose.y - rec.basePosY : 0.0;
+          const localWorldX = (planeHit[0] - rec.mesh.position.x) / boreRayScale;
+          const localWorldY =
+            optY + (planeHit[1] - rec.mesh.position.y - optY) / boreRayScale;
+          const uvX = localWorldX / rec.planeWorldW + 0.5;
+          const uvY = localWorldY / rec.planeWorldH + 0.5;
+          if (uvX >= 0.0 && uvX <= 1.0 && uvY >= 0.0 && uvY <= 1.0) {
+            const sample = sampler.sampleAtUv(uvX, uvY);
+            if (sample.a >= 24) {
+              return true;
+            }
+          }
+        }
+      }
+
       const hits = this._raycaster.intersectObject(rec.mesh, false);
       if (hits.length > 0 && hits[0].uv) {
         const uvX = hits[0].uv.x;
         const uvY = hits[0].uv.y;
         if (clipped && (uvX < minUvX || uvX > maxUvX)) continue;
-        const sampler = this._getTextureSampler(rec.tex, 512);
-        if (sampler) {
-          const sample = sampler.sampleAtUv(uvX, uvY);
-          if (sample.a >= 24) {
-            return true;
-          }
+        const sample = sampler.sampleAtUv(uvX, uvY);
+        if (sample.a >= 24) {
+          return true;
         }
       }
     }
@@ -6773,6 +6916,51 @@ export class SpatialSceneManager {
     obj.gpuPrewarmed = true;
   }
 
+  _computeDirectPortalTargetPose(spec, hostSceneId) {
+    const flightRollDeg = typeof spec.flightRollDeg === 'number' ? spec.flightRollDeg : 0.0;
+    const rawFitDist = Math.max(
+      SCENE_GEOMETRY_SPEC.cameraNearPlane + 6.0,
+      SCENE_GEOMETRY_SPEC.directPortalMinFitDistance,
+      (typeof spec.fitZ === 'number' ? spec.fitZ : 110.0) * SCENE_GEOMETRY_SPEC.directPortalFitScale
+    );
+    const hostObj = this.sceneObjects && hostSceneId ? this.sceneObjects[hostSceneId] : null;
+    const hostCfg = this.sceneConfigs && hostSceneId ? this.sceneConfigs[hostSceneId] : null;
+    const sceneBgZ =
+      hostCfg && typeof hostCfg.bgZ === 'number' ? hostCfg.bgZ : SCENE_GEOMETRY_SPEC.bgZ;
+    const layer0Scale =
+      hostObj && typeof hostObj.layer0Scale === 'number' ? hostObj.layer0Scale : this._layer0Scale;
+    const targetZ = Math.max(
+      sceneBgZ + SCENE_GEOMETRY_SPEC.nearPassFadeFullDist + 4.0,
+      spec.worldZ + rawFitDist
+    );
+
+    const distBg = Math.max(1.0, targetZ - sceneBgZ);
+    const fovDeg = this.camera ? this.camera.fov : SCENE_GEOMETRY_SPEC.desktopFovDeg;
+    const aspect = this.camera ? this.camera.aspect : this.width / Math.max(1, this.height);
+    const tanY = Math.tan(THREE.MathUtils.degToRad(fovDeg * 0.5));
+    const tanX = tanY * aspect;
+    const rollRad = THREE.MathUtils.degToRad(flightRollDeg);
+    const absCos = Math.abs(Math.cos(rollRad));
+    const absSin = Math.abs(Math.sin(rollRad));
+    const rotHalfVisW = distBg * (tanX * absCos + tanY * absSin);
+    const rotHalfVisH = distBg * (tanX * absSin + tanY * absCos);
+    const maxHalfW =
+      0.5 * SCENE_GEOMETRY_SPEC.bgBaseWidth * layer0Scale * SCENE_GEOMETRY_SPEC.frustumEdgeSafetyRatio;
+    const maxHalfH =
+      0.5 * SCENE_GEOMETRY_SPEC.bgBaseHeight * layer0Scale * SCENE_GEOMETRY_SPEC.frustumEdgeSafetyRatio;
+    const safeSpanX = Math.max(0.0, maxHalfW - rotHalfVisW);
+    const safeSpanY = Math.max(0.0, maxHalfH - rotHalfVisH);
+
+    return {
+      x: THREE.MathUtils.clamp(spec.worldX, -safeSpanX, safeSpanX),
+      y: THREE.MathUtils.clamp(spec.worldY, -safeSpanY, safeSpanY),
+      z: targetZ,
+      yawDeg: 0.0,
+      pitchDeg: 0.0,
+      rollDeg: flightRollDeg
+    };
+  }
+
   _startPortalFlight(spec) {
     this._prewarmSceneGpuResources(spec.targetSceneId);
     if (this.hasPortalShelves(spec.targetSceneId)) {
@@ -6803,28 +6991,16 @@ export class SpatialSceneManager {
           pitchDeg: targetRest.pitchDeg,
           rollDeg: flightRollDeg
         }
-      : {
-          ...this._clampPoseForScene(hostSceneId, {
-            x:
-              this.camera.position.x +
-              (spec.worldX - this.camera.position.x) *
-                SCENE_GEOMETRY_SPEC.directPortalApproachTrackXFactor,
-            y:
-              this.camera.position.y +
-              (spec.worldY - this.camera.position.y) *
-                SCENE_GEOMETRY_SPEC.directPortalApproachTrackYFactor,
-            z: this.camera.position.z - SCENE_GEOMETRY_SPEC.directPortalApproachDollyZ,
-            yawDeg: targetRest.yawDeg,
-            pitchDeg: targetRest.pitchDeg,
-            rollDeg: flightRollDeg
-          }),
-          rollDeg: flightRollDeg
-        };
+      : this._computeDirectPortalTargetPose(spec, hostSceneId);
 
     const flightInst = this._portalInstances.find((p) => p.spec.id === spec.id);
     if (flightInst && flightInst.spec.veil) {
       flightInst.veilFlightStartOpacity = flightInst.veilCurrentOpacity;
     }
+
+    const flightDurationMs = embedDiorama
+      ? this._rigSpec.portalFlightDurationMs
+      : SCENE_GEOMETRY_SPEC.directPortalFlightDurationMs;
 
     this._portalFlight = {
       reverse: false,
@@ -6834,7 +7010,7 @@ export class SpatialSceneManager {
       embedDiorama,
       flightRollDeg,
       startTimeMs: performance.now(),
-      durationMs: this._rigSpec.portalFlightDurationMs,
+      durationMs: flightDurationMs,
       fromPose: {
         x: this.camera.position.x,
         y: this.camera.position.y,
@@ -6852,6 +7028,8 @@ export class SpatialSceneManager {
         from: hostSceneId,
         to: spec.targetSceneId,
         fitZ: spec.fitZ,
+        toZ: Number(toPose.z.toFixed(2)),
+        rollDeg: flightRollDeg,
         embedDiorama
       });
     }
@@ -6861,17 +7039,15 @@ export class SpatialSceneManager {
   _startReversePortalFlight(spec, returnHost) {
     const hostObj = this.sceneObjects && this.sceneObjects[returnHost];
     const childObj = this.sceneObjects && this.sceneObjects[spec.targetSceneId];
+    if (!hostObj || !hostObj.texturesReady || !childObj || !childObj.texturesReady) {
+      return false;
+    }
+
+    const embedDiorama = spec.embedDiorama !== false;
     const inst = this._portalInstances.find(
       (p) => p.hostSceneId === returnHost && p.spec.id === spec.id
     );
-    if (
-      !hostObj ||
-      !hostObj.texturesReady ||
-      !childObj ||
-      !inst ||
-      !inst.embedDiorama ||
-      !inst.dioramaGroup
-    ) {
+    if (embedDiorama && (!inst || !inst.embedDiorama || !inst.dioramaGroup)) {
       return false;
     }
 
@@ -6884,6 +7060,53 @@ export class SpatialSceneManager {
     this._hoverNorm.targetY = 0;
     this.pointer.targetX = 0;
     this.pointer.targetY = 0;
+
+    const flightRollDeg = typeof spec.flightRollDeg === 'number' ? spec.flightRollDeg : 0.0;
+    const hostRest = this._getSceneRestPose(returnHost);
+
+    if (!embedDiorama) {
+      const fromPose = this._computeDirectPortalTargetPose(spec, returnHost);
+      const childStartPose = {
+        x: this.camera.position.x,
+        y: this.camera.position.y,
+        z: this.camera.position.z,
+        yawDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.yaw,
+        pitchDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.pitch,
+        rollDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.roll || 0
+      };
+      this.currentSceneId = returnHost;
+      this._innerScale = hostObj.innerScale;
+      this._layer0Scale = hostObj.layer0Scale;
+      window.__PROTOTYPE_STATE__.currentScene = returnHost;
+      window.__PROTOTYPE_STATE__.innerLayerScale = this._innerScale;
+      window.__PROTOTYPE_STATE__.layer0Scale = this._layer0Scale;
+      window.__PROTOTYPE_STATE__.isTransitioning = true;
+
+      this._applyPoseToCameraObject(fromPose);
+      this._portalFlight = {
+        reverse: true,
+        portalSpec: spec,
+        hostSceneId: returnHost,
+        targetSceneId: spec.targetSceneId,
+        embedDiorama: false,
+        flightRollDeg,
+        childStartPose,
+        startTimeMs: performance.now(),
+        durationMs: SCENE_GEOMETRY_SPEC.directPortalFlightDurationMs,
+        fromPose,
+        toPose: { ...hostRest }
+      };
+      if (window.__sendDiag) {
+        window.__sendDiag('portal_reverse_flight_start', {
+          portal: spec.id,
+          from: spec.targetSceneId,
+          to: returnHost,
+          embedDiorama: false
+        });
+      }
+      this.onSceneChange(returnHost);
+      return true;
+    }
 
     // Map user's current camera pose inside childScene 1:1 into hostScene's dioramaGroup coordinates
     // so frame t = 0 has zero visual discontinuity even if the visitor dollied or rotated inside childScene.
@@ -6899,7 +7122,6 @@ export class SpatialSceneManager {
       spec.worldZ + SCENE_GEOMETRY_SPEC.cameraNearPlane + 3.0,
       fitCamZ + lambdaP * (this.camera.position.z - childRest.z)
     );
-    const flightRollDeg = typeof spec.flightRollDeg === 'number' ? spec.flightRollDeg : 0.0;
     const rollRad = THREE.MathUtils.degToRad(spec.dioramaRollDeg || 0.0);
     const cosR = Math.cos(rollRad);
     const sinR = Math.sin(rollRad);
@@ -6913,7 +7135,6 @@ export class SpatialSceneManager {
       pitchDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.pitch,
       rollDeg: flightRollDeg
     };
-    const hostRest = this._getSceneRestPose(returnHost);
 
     if (inst.spec.veil) {
       inst.veilCurrentOpacity = 0.0;
@@ -7051,7 +7272,6 @@ export class SpatialSceneManager {
       const portalSpec = hostShelves.find((s) => s.id === returnPortalId);
       if (
         portalSpec &&
-        portalSpec.embedDiorama !== false &&
         portalSpec.targetSceneId === this.currentSceneId &&
         !this.isPortalLocked(portalSpec)
       ) {
@@ -7262,8 +7482,11 @@ export class SpatialSceneManager {
   }
 
   initTransitionPipeline() {
-    this.rtCurrent = new THREE.WebGLRenderTarget(this.width, this.height);
-    this.rtNext = new THREE.WebGLRenderTarget(this.width, this.height);
+    const dpr = this.renderer ? this.renderer.getPixelRatio() : 1;
+    const rtW = Math.max(1, Math.round(this.width * dpr));
+    const rtH = Math.max(1, Math.round(this.height * dpr));
+    this.rtCurrent = new THREE.WebGLRenderTarget(rtW, rtH);
+    this.rtNext = new THREE.WebGLRenderTarget(rtW, rtH);
 
     this.transitionCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     this.transitionScene = new THREE.Scene();
@@ -7937,35 +8160,59 @@ export class SpatialSceneManager {
           completePortalFlight();
           this.renderer.setRenderTarget(null);
           this.renderer.render(this.sceneObjects[this.currentSceneId].scene, this.camera);
+        } else if (flight.reverse) {
+          const revBlendEnd = SCENE_GEOMETRY_SPEC.directPortalReverseBlendEndT;
+          const blendProgress = THREE.MathUtils.clamp(
+            t / Math.max(1e-5, revBlendEnd),
+            0.0,
+            1.0
+          );
+          if (blendProgress >= 0.9999) {
+            this._updateScenePlaneVisibilitiesAndOpacities(flight.hostSceneId);
+            if (this._sceneNeedsLocalClipping(flight.hostSceneId)) {
+              this._updatePortalClippingPlanes();
+            }
+            this.renderer.setRenderTarget(null);
+            this.renderer.render(this.sceneObjects[flight.hostSceneId].scene, this.camera);
+          } else {
+            this._updateScenePlaneVisibilitiesAndOpacities(flight.hostSceneId);
+            if (this._sceneNeedsLocalClipping(flight.hostSceneId)) {
+              this._updatePortalClippingPlanes();
+            }
+            this.renderer.setRenderTarget(this.rtNext);
+            this.renderer.render(this.sceneObjects[flight.hostSceneId].scene, this.camera);
+
+            const childBase =
+              flight.childStartPose || this._getSceneRestPose(flight.targetSceneId);
+            const childRollDeg = -(flight.flightRollDeg || 0.0) * ease;
+            const childOutPose = {
+              ...this._clampPoseForScene(flight.targetSceneId, {
+                x: childBase.x,
+                y: childBase.y,
+                z: childBase.z + SCENE_GEOMETRY_SPEC.transitionGlideInOffsetZ * ease,
+                yawDeg: childBase.yawDeg * (1.0 - ease),
+                pitchDeg: childBase.pitchDeg * (1.0 - ease),
+                rollDeg: childRollDeg
+              }),
+              rollDeg: childRollDeg
+            };
+            this._applyPoseToCameraObject(childOutPose);
+            this._updateScenePlaneVisibilitiesAndOpacities(flight.targetSceneId);
+            if (this._sceneNeedsLocalClipping(flight.targetSceneId)) {
+              this._updatePortalClippingPlanes();
+            }
+            this.renderer.setRenderTarget(this.rtCurrent);
+            this.renderer.render(this.sceneObjects[flight.targetSceneId].scene, this.camera);
+
+            this._applyPoseToCameraObject(flightPose);
+            this.renderer.setRenderTarget(null);
+            this.transitionMaterial.uniforms.uTexCurrent.value = this.rtCurrent.texture;
+            this.transitionMaterial.uniforms.uTexNext.value = this.rtNext.texture;
+            this.transitionMaterial.uniforms.uProgress.value = blendProgress;
+            this.transitionMaterial.uniforms.uPointer.value.set(0.0, 0.0);
+            this.renderer.render(this.transitionScene, this.transitionCamera);
+          }
         } else {
-          this._updateScenePlaneVisibilitiesAndOpacities(flight.hostSceneId);
-          if (this._sceneNeedsLocalClipping(flight.hostSceneId)) {
-            this._updatePortalClippingPlanes();
-          }
-          this.renderer.setRenderTarget(this.rtCurrent);
-          this.renderer.render(this.sceneObjects[flight.hostSceneId].scene, this.camera);
-
-          const targetRest = this._getSceneRestPose(flight.targetSceneId);
-          const inRollDeg = -(flight.flightRollDeg || 0.0) * (1.0 - ease);
-          const inPose = {
-            ...this._clampPoseForScene(flight.targetSceneId, {
-              x: targetRest.x,
-              y: targetRest.y,
-              z: targetRest.z + SCENE_GEOMETRY_SPEC.transitionGlideInOffsetZ * (1.0 - ease),
-              yawDeg: targetRest.yawDeg,
-              pitchDeg: targetRest.pitchDeg,
-              rollDeg: inRollDeg
-            }),
-            rollDeg: inRollDeg
-          };
-          this._applyPoseToCameraObject(inPose);
-          this._updateScenePlaneVisibilitiesAndOpacities(flight.targetSceneId);
-          if (this._sceneNeedsLocalClipping(flight.targetSceneId)) {
-            this._updatePortalClippingPlanes();
-          }
-          this.renderer.setRenderTarget(this.rtNext);
-          this.renderer.render(this.sceneObjects[flight.targetSceneId].scene, this.camera);
-
           const blendStart =
             typeof flight.portalSpec.fadeStartProgress === 'number'
               ? flight.portalSpec.fadeStartProgress
@@ -7975,24 +8222,61 @@ export class SpatialSceneManager {
             0.0,
             1.0
           );
-          const flightNormYaw = THREE.MathUtils.clamp(
-            flightPose.yawDeg / SCENE_GEOMETRY_SPEC.maxYawDeg,
-            -1,
-            1
-          );
-          const flightNormPitch = THREE.MathUtils.clamp(
-            flightPose.pitchDeg / SCENE_GEOMETRY_SPEC.maxPitchDeg,
-            -1,
-            1
-          );
-          this._applyPoseToCameraObject(flightPose);
+          if (blendProgress <= 1e-4) {
+            this._updateScenePlaneVisibilitiesAndOpacities(flight.hostSceneId);
+            if (this._sceneNeedsLocalClipping(flight.hostSceneId)) {
+              this._updatePortalClippingPlanes();
+            }
+            this.renderer.setRenderTarget(null);
+            this.renderer.render(this.sceneObjects[flight.hostSceneId].scene, this.camera);
+          } else {
+            this._updateScenePlaneVisibilitiesAndOpacities(flight.hostSceneId);
+            if (this._sceneNeedsLocalClipping(flight.hostSceneId)) {
+              this._updatePortalClippingPlanes();
+            }
+            this.renderer.setRenderTarget(this.rtCurrent);
+            this.renderer.render(this.sceneObjects[flight.hostSceneId].scene, this.camera);
 
-          this.renderer.setRenderTarget(null);
-          this.transitionMaterial.uniforms.uTexCurrent.value = this.rtCurrent.texture;
-          this.transitionMaterial.uniforms.uTexNext.value = this.rtNext.texture;
-          this.transitionMaterial.uniforms.uProgress.value = blendProgress;
-          this.transitionMaterial.uniforms.uPointer.value.set(flightNormYaw, flightNormPitch);
-          this.renderer.render(this.transitionScene, this.transitionCamera);
+            const targetRest = this._getSceneRestPose(flight.targetSceneId);
+            const inRollDeg = -(flight.flightRollDeg || 0.0) * (1.0 - ease);
+            const inPose = {
+              ...this._clampPoseForScene(flight.targetSceneId, {
+                x: targetRest.x,
+                y: targetRest.y,
+                z: targetRest.z + SCENE_GEOMETRY_SPEC.transitionGlideInOffsetZ * (1.0 - ease),
+                yawDeg: targetRest.yawDeg,
+                pitchDeg: targetRest.pitchDeg,
+                rollDeg: inRollDeg
+              }),
+              rollDeg: inRollDeg
+            };
+            this._applyPoseToCameraObject(inPose);
+            this._updateScenePlaneVisibilitiesAndOpacities(flight.targetSceneId);
+            if (this._sceneNeedsLocalClipping(flight.targetSceneId)) {
+              this._updatePortalClippingPlanes();
+            }
+            this.renderer.setRenderTarget(this.rtNext);
+            this.renderer.render(this.sceneObjects[flight.targetSceneId].scene, this.camera);
+
+            const flightNormYaw = THREE.MathUtils.clamp(
+              flightPose.yawDeg / SCENE_GEOMETRY_SPEC.maxYawDeg,
+              -1,
+              1
+            );
+            const flightNormPitch = THREE.MathUtils.clamp(
+              flightPose.pitchDeg / SCENE_GEOMETRY_SPEC.maxPitchDeg,
+              -1,
+              1
+            );
+            this._applyPoseToCameraObject(flightPose);
+
+            this.renderer.setRenderTarget(null);
+            this.transitionMaterial.uniforms.uTexCurrent.value = this.rtCurrent.texture;
+            this.transitionMaterial.uniforms.uTexNext.value = this.rtNext.texture;
+            this.transitionMaterial.uniforms.uProgress.value = blendProgress;
+            this.transitionMaterial.uniforms.uPointer.value.set(flightNormYaw, flightNormPitch);
+            this.renderer.render(this.transitionScene, this.transitionCamera);
+          }
         }
       }
 

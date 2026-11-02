@@ -1107,68 +1107,6 @@ def _synthesize_uncropped_studio_inner_and_expanded(
         clean_src_rgb.resize((sw, sh), Image.Resampling.LANCZOS), dtype=np.uint8
     )
 
-    # Sample smooth studio wall, crisp horizontal wood dado rail, and lower wainscoting profile
-    # without extruding local wall screws/pipes into horizontal stripes!
-    raw_col = np.median(scaled_src[:, sw - 34 : sw - 4, :].astype(np.float32), axis=1)
-    smooth_upper = ndi.gaussian_filter(raw_col[:506], sigma=(75.0, 0.0), mode="nearest")
-    smooth_rail = ndi.gaussian_filter(raw_col[496:548], sigma=(3.0, 0.0), mode="nearest")
-    smooth_lower = ndi.gaussian_filter(raw_col[538:680], sigma=(36.0, 0.0), mode="nearest")
-
-    right_wall_col = raw_col.copy()
-    right_wall_col[:506] = smooth_upper
-    right_wall_col[538:680] = smooth_lower
-    # Blend crisp wooden dado rail (`y = 502..542`) smoothly into upper & lower plaster
-    rail_w = np.exp(-0.5 * ((np.arange(sh, dtype=np.float32) - 521.0) / 11.5) ** 2)[:, None]
-    rail_padded = np.zeros_like(right_wall_col)
-    rail_padded[496:548] = smooth_rail
-    right_wall_col[:680] = (
-        (1.0 - rail_w[:680]) * right_wall_col[:680] + rail_w[:680] * rail_padded[:680]
-    )
-    right_wall_col = ndi.gaussian_filter(right_wall_col, sigma=(3.5, 0.0))  # (sh, 3)
-    top_ceil_rgb = right_wall_col[4].copy()
-    board_bot_rgb = right_wall_col[672].copy()
-    floor_rgb = np.array([154.0, 147.0, 137.0], dtype=np.float32)
-
-    yy_exp = np.arange(eh, dtype=np.float32)[:, None]
-    xx_exp = np.arange(ew, dtype=np.float32)[None, :]
-    y_in_clamped = np.clip(np.round(yy_exp[:, 0] - float(oy)).astype(np.int32), 0, sh - 1)
-    studio_prof = right_wall_col[y_in_clamped][:, None, :]  # (eh, 1, 3)
-
-    # Above `oy`: gently brighten into ceiling plaster; below `oy + 675`: transition into studio floor
-    w_above = np.clip((float(oy) - yy_exp) / 140.0, 0.0, 1.0)[:, :, None]
-    studio_prof = (1.0 - 0.35 * w_above) * studio_prof + (0.35 * w_above) * top_ceil_rgb
-    y_floor = float(oy + spec.studio_floor_horizon_y_inner)
-    w_board_tail = np.clip((yy_exp - float(oy + 668)) / 24.0, 0.0, 1.0)[:, :, None]
-    studio_prof = (1.0 - w_board_tail) * studio_prof + w_board_tail * board_bot_rgb
-    w_floor = np.clip((yy_exp - y_floor) / 36.0, 0.0, 1.0)[:, :, None]
-    floor_grad = floor_rgb * (
-        1.0 - 0.12 * np.clip((yy_exp - y_floor) / max(1.0, float(eh) - y_floor), 0.0, 1.0)
-    )[:, :, None]
-    studio_prof = (1.0 - w_floor) * studio_prof + w_floor * floor_grad
-
-    # Gentle natural vignette + fine pixel-scale plaster sensor micro-grain (sigma=1.8 -> zero lattice!)
-    cx_vig = (xx_exp - 0.5 * float(ew)) / (0.5 * float(ew))
-    cy_vig = (yy_exp - 0.45 * float(eh)) / (0.55 * float(eh))
-    vignette = (1.0 - 0.045 * np.clip(cx_vig**2 + 0.55 * cy_vig**2, 0.0, 1.5))[:, :, None]
-    studio_base = studio_prof * vignette
-
-    clean_patch = scaled_src[16:112, sw - 114 : sw - 18, :].astype(np.float32)
-    grain_hp = np.clip(
-        clean_patch - ndi.gaussian_filter(clean_patch, sigma=(1.8, 1.8, 0.0)),
-        -2.0,
-        2.0,
-    )
-    grain_top = np.concatenate([grain_hp, grain_hp[:, ::-1, :]], axis=1)
-    grain_bot = np.concatenate([grain_hp[::-1, :, :], grain_hp[::-1, ::-1, :]], axis=1)
-    grain_tile = np.concatenate([grain_top, grain_bot], axis=0)
-    th, tw, _ = grain_tile.shape
-    tiled_grain = np.tile(grain_tile, (eh // th + 2, ew // tw + 2, 1))[:eh, :ew, :]
-    studio_canvas = np.clip(np.round(studio_base + 0.65 * tiled_grain), 0, 255).astype(np.uint8)
-
-    # Paste uncropped scaled photo at `(ox + dx_in, oy + dy_in)`:
-    #   - Left side: trim strictly at `x_left_out` so zero striped-cloth sliver appears!
-    #   - Lower-right outside `x_right_out` (`y_in >= 682`): omit the half-sliced storage crate corner
-    #     so the right studio wall & floor continue seamlessly across `1500x1000` and `2700x1800`!
     px0 = ox + dx_in
     py0 = oy + dy_in
     g = spec.fg_frame_geometry
@@ -1176,29 +1114,94 @@ def _synthesize_uncropped_studio_inner_and_expanded(
     xx_in_sub = (np.arange(sw, dtype=np.float32) + float(dx_in))[None, :]
     x_left_out_sub = _line_x_at_y(g.left_outer_top_xy, g.left_outer_bot_xy, yy_local)
     x_right_out_sub = _line_x_at_y(g.right_outer_top_xy, g.right_outer_bot_xy, yy_local)
-    sliced_crate_zone = (xx_in_sub > x_right_out_sub + 2.0) & (yy_local >= 682.0)
-    keep_photo_mask = (xx_in_sub >= x_left_out_sub) & (~sliced_crate_zone)
 
+    # First heal the lower-right sliced storage-crate corner (`y >= 676` outside `x_right_out`)
+    # directly on `scaled_src` via neural LaMa so the right-side studio strip (`sw-152 : sw-4`)
+    # has 100% authentic 2D camera-captured plaster, wood dado rail, wainscoting, and floor.
+    healed_scaled = scaled_src.copy()
+    sliced_crate_zone = (xx_in_sub > x_right_out_sub + 2.0) & (yy_local >= 676.0)
+    floor_seed_rgb = np.array([154, 147, 137], dtype=np.uint8)
+    healed_scaled[sliced_crate_zone] = floor_seed_rgb
+    crate_roi_y0 = 520
+    crate_roi_x0 = max(0, int(np.floor(x_right_out_sub.min())) - dx_in - 48)
+    crate_roi_mask = np.zeros((sh - crate_roi_y0, sw - crate_roi_x0), dtype=np.uint8)
+    crate_roi_mask[sliced_crate_zone[crate_roi_y0:, crate_roi_x0:]] = 255
+    # Also mask small isolated wall-hardware outlier spots on the right studio plaster strip
+    # strictly outside the slanted outer booth stile + wall hardware (`x > max(x_right_out_sub) + 19`)
+    strip_x0 = min(sw - 16, int(np.ceil(float((x_right_out_sub - float(dx_in)).max()))) + 20)
+    strip_x1 = sw - 2
+    strip_f = scaled_src[:, strip_x0:strip_x1, :].astype(np.float32)
+    strip_ref = np.percentile(strip_f, 82.0, axis=1, keepdims=True)
+    spot_diff = np.max(np.abs(strip_f - strip_ref), axis=2)
+    rail_band = (np.arange(sh)[:, None] >= 494) & (np.arange(sh)[:, None] <= 550)
+    spot_mask_strip = (spot_diff > 18.0) & (~rail_band) & (np.arange(sh)[:, None] < 676)
+    if np.any(spot_mask_strip):
+        spot_full = np.zeros((sh, sw), dtype=np.uint8)
+        spot_full[:, strip_x0:strip_x1][spot_mask_strip] = 255
+        healed_spots = np.asarray(
+            lama_inpainter.inpaint_background(
+                Image.fromarray(healed_scaled, mode="RGB"),
+                spot_full,
+                dilation_radius_px=5,
+                mask_blur_sigma=1.5,
+            ),
+            dtype=np.uint8,
+        )
+        spot_dil = cv2.dilate(spot_full, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))) > 0
+        healed_scaled[spot_dil] = healed_spots[spot_dil]
+
+    healed_crate_roi = np.asarray(
+        lama_inpainter.inpaint_background(
+            Image.fromarray(healed_scaled[crate_roi_y0:, crate_roi_x0:], mode="RGB"),
+            crate_roi_mask,
+            dilation_radius_px=8,
+            mask_blur_sigma=2.5,
+        ),
+        dtype=np.uint8,
+    )
+    crate_dil = (
+        cv2.dilate(crate_roi_mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))) > 0
+    )
+    sub_crate = healed_scaled[crate_roi_y0:, crate_roi_x0:]
+    sub_crate[crate_dil] = healed_crate_roi[crate_dil]
+    healed_scaled[crate_roi_y0:, crate_roi_x0:] = sub_crate
+
+    # Build the full `2700x1800` studio backdrop purely via 2D `cv2.BORDER_REFLECT_101` optical
+    # mirror reflection of the authentic `148x1000` right-side studio strip anchored at its exact
+    # native coordinates `[py0:py0+sh, px0+strip_x0:px0+strip_x1]` (zero 1D column extrusion!).
+    strip_2d = healed_scaled[:, strip_x0:strip_x1, :]
+    pad_bot = eh - py0 - sh
+    top_plaster_refl = cv2.copyMakeBorder(
+        strip_2d[:420, :, :], py0, 0, 0, 0, borderType=cv2.BORDER_REFLECT_101
+    )[:py0, :, :]
+    bot_floor_refl = cv2.copyMakeBorder(
+        strip_2d[700:, :, :], 0, pad_bot, 0, 0, borderType=cv2.BORDER_REFLECT_101
+    )[sh - 700 :, :, :]
+    strip_full_h = np.concatenate([top_plaster_refl, strip_2d, bot_floor_refl], axis=0)
+
+    anchor_x0 = px0 + strip_x0
+    anchor_x1 = px0 + strip_x1
+    studio_canvas = cv2.copyMakeBorder(
+        strip_full_h,
+        0,
+        0,
+        anchor_x0,
+        ew - anchor_x1,
+        borderType=cv2.BORDER_REFLECT_101,
+    )
+
+    keep_photo_mask = (xx_in_sub >= x_left_out_sub) & (xx_in_sub < float(dx_in + strip_x1))
     sub_view = studio_canvas[py0 : py0 + sh, px0 : px0 + sw]
-    sub_view[keep_photo_mask] = scaled_src[keep_photo_mask]
+    sub_view[keep_photo_mask] = healed_scaled[keep_photo_mask]
     studio_canvas[py0 : py0 + sh, px0 : px0 + sw] = sub_view
 
-    # Heal outer boundary transitions via neural LaMa while keeping 100% of the booth untouched!
+    # Heal ONLY the narrow boundary transitions at the top-above-booth lintel and left booth edge
+    # while keeping 100% of the booth AND the crisp 2D BORDER_REFLECT_101 right/outer walls intact!
     hw = spec.outpaint_seam_halfwidth_px
+    yy_exp = np.arange(eh, dtype=np.float32)[:, None]
+    xx_exp = np.arange(ew, dtype=np.float32)[None, :]
     seam_mask = np.zeros((eh, ew), dtype=np.uint8)
-    # Right vertical transition (`y_in < 688`, around `px0 + sw`)
-    seam_mask[max(0, py0 - hw) : py0 + 695, px0 + sw - hw : px0 + sw + hw] = 255
-    # Sliced-crate transition collar just outside `x_right_out` (`y_in >= 674`)
-    crate_seam = (
-        (yy_exp >= float(py0 + 674))
-        & (yy_exp <= float(py0 + sh + hw))
-        & (xx_exp >= float(ox) + _line_x_at_y(g.right_outer_top_xy, g.right_outer_bot_xy, yy_exp - float(oy)) + 2.0)
-        & (xx_exp <= float(px0 + sw + hw))
-    )
-    seam_mask[crate_seam] = 255
-    # Top ceiling transition (`x > ox + 526`)
-    seam_mask[py0 - hw : py0 + 12, ox + 528 : px0 + sw + hw] = 255
-    # Left outer transition just outside the brown booth side panel (`x_left_out`)
+    seam_mask[py0 - hw : py0 + 12, ox + 420 : anchor_x0 + 8] = 255
     x_left_out_exp = float(ox) + _line_x_at_y(
         g.left_outer_top_xy, g.left_outer_bot_xy, yy_exp - float(oy)
     )
@@ -1223,7 +1226,10 @@ def _synthesize_uncropped_studio_inner_and_expanded(
     # Guarantee 100% bit-identical original pixels across the entire booth & interior!
     booth_protect = (
         (xx_in_sub >= x_left_out_sub)
-        & (xx_in_sub <= np.where(yy_local < 674.0, float(dx_in + sw - hw), x_right_out_sub + 1.0))
+        & (
+            xx_in_sub
+            <= np.where(yy_local < 674.0, float(dx_in + strip_x0), x_right_out_sub + 1.0)
+        )
     )
     sub_healed = healed_2700_u8[py0 : py0 + sh, px0 : px0 + sw]
     sub_healed[booth_protect] = scaled_src[booth_protect]

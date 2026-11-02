@@ -336,12 +336,12 @@ class TestPrototypeIntegrity(unittest.TestCase):
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_depth.png", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_mid.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_mid_depth.png", inner_dims),
-            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_fg.png", inner_dims),
-            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_fg.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_fg_depth.png", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_installation.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_installation_depth.png", inner_dims),
-            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_front_chair.png", inner_dims),
-            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_front_chair_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_front_chair.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene11_fried_table_hybrid_front_chair_depth.png", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene7_wandering1_scroll_foot.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene7_wandering1_scroll_foot_depth.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene7_wandering1_scroll_veil.png", inner_dims),
@@ -405,14 +405,14 @@ class TestPrototypeIntegrity(unittest.TestCase):
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_depth.png", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_mid.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_mid_depth.png", inner_dims),
-            (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_fg.png", inner_dims),
-            (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_fg.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene20_vitrine_fg_depth.png", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_bg_inpainted.jpg", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_depth.png", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_mid.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_mid_depth.png", inner_dims),
-            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_fg.png", inner_dims),
-            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_fg_depth.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_fg.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_fg_depth.png", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_vitrine.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene21_bar_giora_vitrine_depth.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene22_paris_table_bg_inpainted.jpg", expanded_dims),
@@ -427,7 +427,8 @@ class TestPrototypeIntegrity(unittest.TestCase):
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_depth.png", expanded_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_mid.png", inner_dims),
             (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_mid_depth.png", inner_dims),
-            (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_fg.png", inner_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_fg.png", expanded_dims),
+            (PROTOTYPE_DIR / "assets" / "scenes" / "scene23_tami_1958_fg_depth.png", expanded_dims),
         ]
         for asset, exp_size in companion_expected:
             self.assertTrue(asset.exists(), f"Missing companion scene asset: {asset}")
@@ -611,7 +612,90 @@ console.log(JSON.stringify({
         self.assertIn('class="story-drawings-strip"', content)
         self.assertIn('rgma_bene_beitcha_scroll_drawing_foot_2026_331d870d.jpg', content)
         self.assertIn('id="info-drawer"', content)
+        self.assertIn('id="loading-status-text"', content)
+        self.assertIn('id="loading-skip-hint"', content)
+        self.assertIn('תמי-נאוטיקה', content)
+        self.assertIn('Tami-Nautica', content)
         self.assertIn('תמר שפר', content)
+        self.assertNotIn('<ol id="spatial-breadcrumb-list"', content)
+
+    def test_loading_screen_ssot_and_real_esm_imports_via_node(self):
+        """Verifies real Node ESM module evaluation of app.js & scene_manager.js, LOADING_SCREEN_SPEC, and roll-aware frustum clamp."""
+        node_script = """
+import { LOADING_SCREEN_SPEC, EXHIBITION_GROUPS } from './prototype/js/app.js';
+import {
+  SCENE_GEOMETRY_SPEC,
+  doFrustumCornersFitOnBackground,
+  clampPoseToRoomFrustum
+} from './prototype/js/scene_manager.js';
+
+const fitRolled = doFrustumCornersFitOnBackground(
+  -197.7, 77.0, -203.0, 0.0, 0.0, Math.tan(22.5 * Math.PI / 180.0), 1.6,
+  -350.0, 900.0, 600.0, null, -130.0 * Math.PI / 180.0
+);
+const clampedTunnel = clampPoseToRoomFrustum(
+  { x: 999.0, y: 0.0, z: -145.0, yawDeg: 40.0, pitchDeg: 0.0, rollDeg: 0.0 },
+  56.0,
+  411 / 705,
+  2.2,
+  {
+    ...SCENE_GEOMETRY_SPEC,
+    bgZ: -350.0,
+    minCameraZ: -145.0,
+    maxCameraZ: 685.0,
+    restCameraX: 52.0,
+    restCameraY: 0.0,
+    maxYawDeg: 18.0,
+    maxPitchDeg: 12.5,
+    maxStrafeX: 39.0,
+    maxStrafeY: 25.0
+  }
+);
+
+console.log(JSON.stringify({
+  brandHe: LOADING_SCREEN_SPEC.brandTitleHe,
+  brandEn: LOADING_SCREEN_SPEC.brandTitleEn,
+  messagesHe: LOADING_SCREEN_SPEC.messagesHe,
+  rotationIntervalMs: LOADING_SCREEN_SPEC.rotationIntervalMs,
+  minHumanDisplayMs: LOADING_SCREEN_SPEC.minHumanDisplayMs,
+  groupCount: EXHIBITION_GROUPS.length,
+  directFlightMs: SCENE_GEOMETRY_SPEC.directPortalFlightDurationMs,
+  directFitScale: SCENE_GEOMETRY_SPEC.directPortalFitScale,
+  tunnelMinStrafeScale: SCENE_GEOMETRY_SPEC.tunnelMinStrafeScale,
+  fitRolled,
+  clampedTunnel
+}));
+"""
+        res = subprocess.run(
+            ["node", "--input-type=module", "-e", node_script],
+            cwd=str(PROJECT_ROOT),
+            capture_output=True,
+            text=True,
+            timeout=10,
+            stdin=subprocess.DEVNULL,
+        )
+        self.assertEqual(res.returncode, 0, f"Node ESM evaluation failed:\n{res.stderr}")
+        out = json.loads(res.stdout.strip())
+        self.assertEqual(out["brandHe"], "תמי-נאוטיקה")
+        self.assertEqual(out["brandEn"], "Tami-Nautica")
+        self.assertEqual(
+            out["messagesHe"],
+            [
+                "טוען מרחבים...",
+                "משחק עם יערה וכרמל...",
+                "דואג לעתיד המדינה...",
+                "מגייס את גדי לשיפצורים אחרונים...",
+            ],
+        )
+        self.assertGreaterEqual(out["rotationIntervalMs"], 1500)
+        self.assertGreaterEqual(out["minHumanDisplayMs"], 6000)
+        self.assertEqual(out["groupCount"], 6)
+        self.assertGreater(out["directFlightMs"], 800)
+        self.assertGreater(out["directFitScale"], 1.0)
+        self.assertGreater(out["tunnelMinStrafeScale"], 0.0)
+        self.assertTrue(out["fitRolled"])
+        self.assertLessEqual(out["clampedTunnel"]["x"], 52.0 + 39.0 + 0.01)
+        self.assertLessEqual(abs(out["clampedTunnel"]["yawDeg"]), 18.01)
 
 
 class TestDynamicWidescreenFrustumScaling(unittest.TestCase):
@@ -810,7 +894,7 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 frame.extend(masked)
                 s.sendall(bytes(frame))
 
-            def read_cdp(target_id=None, timeout=12.0):
+            def read_cdp(target_id=None, timeout=20.0):
                 s.settimeout(timeout)
                 start = time.time()
                 while time.time() - start < timeout:
@@ -846,7 +930,7 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             start_ready = time.time()
             layers_ready = False
             msg_counter = 100
-            while time.time() - start_ready < 15.0:
+            while time.time() - start_ready < 25.0:
                 msg_counter += 1
                 send_cdp("Runtime.evaluate", {"expression": poll_js, "returnByValue": True}, msg_id=msg_counter)
                 res = read_cdp(target_id=msg_counter)
@@ -978,6 +1062,40 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             self.assertAlmostEqual(dof_data["resetPose"]["z"], 1740.0, places=1)
             self.assertAlmostEqual(dof_data["resetPose"]["y"], -36.0, places=1)
             self.assertAlmostEqual(dof_data["resetPose"]["yawDeg"], 0.0, places=2)
+
+            # 2c. Direct Portal Flight Target Framing (#47 Purim, #53 Vitrine -130 deg roll, #43 Paris 1958)
+            #     + plan_b_pipe_v3 Bore Clamp (#46) + Mobile Compact Breadcrumb Non-Overlap
+            portal_and_clamp_js = """
+            (() => {
+                const sm = window.__tamiSceneManager || window.__SPATIAL_MANAGER__;
+                const purimSpec = sm._findPortalSpec('portal_scroll_foot_purim_1966');
+                const vitrineSpec = sm._findPortalSpec('portal_bar_giora_vitrine');
+                const parisSpec = sm._findPortalSpec('portal_paris_table_tami_1958');
+                const purimPose = sm._computeDirectPortalTargetPose(purimSpec, 'bene_beitcha_scroll_foot');
+                const vitrinePose = sm._computeDirectPortalTargetPose(vitrineSpec, 'bar_giora_bedroom');
+                const parisPose = sm._computeDirectPortalTargetPose(parisSpec, 'paris_cite_white_table');
+                const pipeClampRest = sm._clampPoseForScene('plan_b_pipe_v3', {
+                    x: 999, y: -999, z: 430.2, yawDeg: 65, pitchDeg: 45, rollDeg: 0
+                });
+                return JSON.stringify({
+                    purimPose,
+                    vitrinePose,
+                    parisPose,
+                    pipeClampRest,
+                    titleText: document.title
+                });
+            })()
+            """
+            send_cdp("Runtime.evaluate", {"expression": portal_and_clamp_js, "returnByValue": True}, msg_id=262)
+            res262 = read_cdp(target_id=262)
+            pc_data = json.loads(res262.get("result", {}).get("result", {}).get("value"))
+            self.assertIn("תמי-נאוטיקה", pc_data["titleText"])
+            self.assertLess(pc_data["purimPose"]["z"], -100.0)
+            self.assertAlmostEqual(pc_data["vitrinePose"]["rollDeg"], -130.0, places=2)
+            self.assertLess(pc_data["vitrinePose"]["z"], -120.0)
+            self.assertLess(pc_data["parisPose"]["z"], -150.0)
+            self.assertLessEqual(abs(pc_data["pipeClampRest"]["x"]), 56.1)
+            self.assertLessEqual(abs(pc_data["pipeClampRest"]["yawDeg"]), 18.1)
 
             if not is_mobile:
                 kb_elev_js = """

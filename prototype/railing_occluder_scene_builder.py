@@ -735,8 +735,8 @@ def default_railing_occluder_scene_config() -> RailingOccluderSceneConfig:
         bore_sight_at_rest=True,
         fg_is_expanded=True,
         scene_bg_z=-360.0,
-        mid_z=-303.44,
-        fg_z=-229.07,
+        mid_z=-306.04,
+        fg_z=-236.18,
         mid_render_order=3,
         fg_render_order=8,
         bg_segments_x=224,
@@ -769,8 +769,8 @@ def default_railing_occluder_scene_config() -> RailingOccluderSceneConfig:
                 ),
             ),
             bystander_dilate_src_px=26,
-            outpaint_seed_blur_sigma=3.5,
-            outpaint_seam_dilate_exp_px=28,
+            outpaint_seed_blur_sigma=0.0,
+            outpaint_seam_dilate_exp_px=0,
             lama_global_downsample_wh=(1080, 720),
             lama_railing_roi_pad_exp_px=95,
             lama_feather_sigma_exp_px=5.5,
@@ -1142,16 +1142,16 @@ def default_railing_occluder_scene_config() -> RailingOccluderSceneConfig:
             scene_bg_z=-360.0,
             room_depth_amplitude=215.0,
             da2_gaussian_sigma=13.0,
-            da2_z_min=-360.0,
+            da2_z_min=-356.5,
             da2_z_max=-145.0,
             sky_norm_guard_band=0.05,
             contact_pins=(
                 FriedHouseDepthContactPinSpec(
                     label="sisters_walkway_footprint",
                     inner_xy=(610.0, 768.0),
-                    radii_xy=(46.0, 14.0),
-                    feather_px=30.0,
-                    target_z=-303.7,
+                    radii_xy=(76.0, 14.0),
+                    feather_px=18.0,
+                    target_z=-305.2,
                 ),
             ),
             final_smooth_sigma=8.0,
@@ -2116,10 +2116,8 @@ def build_railing_occluder_scene(
     exp_w, exp_h, pad_x, pad_y, _ = _compute_yard_expanded_mapping(active_cfg)
     inner_w, inner_h = active_cfg.dimensions.width, active_cfg.dimensions.height
 
-    # 1. Warp source yard onto 2700x1800 expanded canvas & segment multi-plane elements with SAM
+    # 1. Segment & LaMa-heal far-left bystander on native 3008x2000 source BEFORE mirror-warping
     print(f"[{active_cfg.scene_id}] Segmenting yard layers (hedge, green railing, brush pile, bystander)...")
-    seeded_exp_rgb, missing_exp_u8 = _warp_source_to_expanded_canvas(word_rgb, active_cfg)
-
     bystander_src_u8 = _segment_source_crop_mask_u8(
         word_rgb=word_rgb,
         crop_xyxy=active_cfg.yard_framing.bystander_crop_xyxy,
@@ -2134,7 +2132,37 @@ def build_railing_occluder_scene(
     bystander_src_u8 = cv2.dilate(
         bystander_src_u8, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kb, kb))
     )
-    bystander_exp_u8 = _warp_source_mask_to_expanded(bystander_src_u8, active_cfg)
+    bys_ys, bys_xs = np.where(bystander_src_u8 > 0)
+    if bys_xs.size > 0:
+        src_np_full = np.asarray(word_rgb, dtype=np.uint8).copy()
+        sh_src, sw_src, _ = src_np_full.shape
+        bx1_roi = min(sw_src, int(bys_xs.max()) + 280)
+        by0_roi = max(0, int(bys_ys.min()) - 200)
+        by1_roi = min(sh_src, int(bys_ys.max()) + 200)
+        roi_mask = bystander_src_u8[by0_roi:by1_roi, 0:bx1_roi]
+        roi_inp = lama_inpainter.inpaint_background(
+            rgb_image=Image.fromarray(src_np_full[by0_roi:by1_roi, 0:bx1_roi], mode="RGB"),
+            binary_mask_u8=roi_mask,
+            dilation_radius_px=4,
+            mask_blur_sigma=1.5,
+        )
+        roi_w = np.clip(
+            ndi.gaussian_filter((roi_mask > 0).astype(np.float32), sigma=4.0),
+            0.0,
+            1.0,
+        )[:, :, None]
+        src_np_full[by0_roi:by1_roi, 0:bx1_roi] = np.clip(
+            np.round(
+                src_np_full[by0_roi:by1_roi, 0:bx1_roi].astype(np.float32) * (1.0 - roi_w)
+                + np.asarray(roi_inp, dtype=np.float32) * roi_w
+            ),
+            0,
+            255,
+        ).astype(np.uint8)
+        word_rgb = Image.fromarray(src_np_full, mode="RGB")
+
+    seeded_exp_rgb, missing_exp_u8 = _warp_source_to_expanded_canvas(word_rgb, active_cfg)
+    bystander_exp_u8 = np.zeros((exp_h, exp_w), dtype=np.uint8)
 
     def _extract_yard_layer(spec: SeparatedYardLayerConfig) -> tuple[np.ndarray, np.ndarray]:
         src_alpha = _segment_source_crop_mask_u8(
@@ -2188,7 +2216,6 @@ def build_railing_occluder_scene(
 
     global_hole_u8 = np.maximum.reduce(
         [
-            _dilate_exp(missing_exp_u8, active_cfg.yard_framing.outpaint_seam_dilate_exp_px),
             _dilate_exp(bystander_exp_u8, active_cfg.inpainting.dilation_radius_px),
             _dilate_exp(hedge_alpha_exp, active_cfg.hedge_layer.bg_inpaint_dilate_exp_px),
             _dilate_exp(rail_alpha_exp, active_cfg.railing_layer.bg_inpaint_dilate_exp_px),
@@ -2280,9 +2307,20 @@ def build_railing_occluder_scene(
             + np.asarray(local_inp, dtype=np.float32) * local_w
         )
 
-    clean_bg_rgb = Image.fromarray(
-        np.clip(np.round(bg_exp_f32), 0, 255).astype(np.uint8), mode="RGB"
-    )
+    bg_u8 = np.clip(np.round(bg_exp_f32), 0, 255).astype(np.uint8)
+    valid_ys, valid_xs = np.where(missing_exp_u8 == 0)
+    if valid_xs.size > 0:
+        vx0, vx1 = int(valid_xs.min()), int(valid_xs.max()) + 1
+        vy0, vy1 = int(valid_ys.min()), int(valid_ys.max()) + 1
+        bg_u8 = cv2.copyMakeBorder(
+            bg_u8[vy0:vy1, vx0:vx1],
+            vy0,
+            exp_h - vy1,
+            vx0,
+            exp_w - vx1,
+            borderType=cv2.BORDER_REFLECT_101,
+        )
+    clean_bg_rgb = Image.fromarray(bg_u8, mode="RGB")
     bg_path = scenes_dir / active_cfg.bg_output_filename
     clean_bg_rgb.save(
         bg_path, format="JPEG", quality=active_cfg.inpainting.jpeg_quality, optimize=True
@@ -2424,7 +2462,8 @@ def build_railing_occluder_scene(
     sys_idx, _ = np.where(sis_solid)
     shoe_band_mask = sis_solid.copy()
     shoe_band_mask[: int(sys_idx.max()) - topo.sisters_shoe_contact_band_px, :] = False
-    calibrated_mid_z = round(float(z_world_bg_inner[shoe_band_mask].mean()), 2)
+    shoe_vals = z_world_bg_inner[shoe_band_mask]
+    calibrated_mid_z = round(0.5 * float(shoe_vals.min() + shoe_vals.max()), 2)
 
     # 5. Synthesize clickable C0-anchored + C^-1 EDT installation occluder (IMG_PORT_0062)
     print(f"[{active_cfg.scene_id}] Segmenting & harmonic-anchoring installation occluder (IMG_PORT_0062)...")
@@ -2543,6 +2582,12 @@ def main() -> None:
         help="Atomically update fried_yard_installation inside prototype/assets/scenes/scene_manifest.json",
     )
     parser.add_argument(
+        "--export-manifest-json",
+        type=Path,
+        default=None,
+        help="Optional isolated output path for the fried_yard_installation manifest entry JSON",
+    )
+    parser.add_argument(
         "--preview-dir",
         type=Path,
         default=None,
@@ -2551,6 +2596,13 @@ def main() -> None:
     args = parser.parse_args()
 
     updated_cfg, entry = build_railing_occluder_scene()
+    if args.export_manifest_json is not None:
+        args.export_manifest_json.parent.mkdir(parents=True, exist_ok=True)
+        args.export_manifest_json.write_text(
+            json.dumps(entry, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        print(f"[{updated_cfg.scene_id}] Exported isolated manifest entry -> {args.export_manifest_json}")
     if args.update_manifest:
         manifest_path = _REPO_ROOT / "prototype" / "assets" / "scenes" / "scene_manifest.json"
         update_manifest_scene_key_atomically(manifest_path, updated_cfg.scene_id, entry)

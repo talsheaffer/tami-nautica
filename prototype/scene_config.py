@@ -800,6 +800,10 @@ class PipeTunnelReliefConfig:
     conduit_bell_vert_taper_px: float = 36.0
     rim_arc_taper_deg: float = 10.0
     contact_pins: tuple[ContactDepthPinSpec, ...] = ()
+    outer_wall_collar_px: float = 24.0
+    outer_wall_depth_zero_px: float = 12.0
+    outer_wall_inner_bevel_px: float = 6.0
+    outer_wall_shade_mult: float = 0.84
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -870,6 +874,10 @@ class PipeTunnelReliefConfig:
             "conduit_bell_vert_taper_px": self.conduit_bell_vert_taper_px,
             "rim_arc_taper_deg": self.rim_arc_taper_deg,
             "contact_pins": [p.to_dict() for p in self.contact_pins],
+            "outer_wall_collar_px": self.outer_wall_collar_px,
+            "outer_wall_depth_zero_px": self.outer_wall_depth_zero_px,
+            "outer_wall_inner_bevel_px": self.outer_wall_inner_bevel_px,
+            "outer_wall_shade_mult": self.outer_wall_shade_mult,
         }
 
     @classmethod
@@ -957,6 +965,10 @@ class PipeTunnelReliefConfig:
             contact_pins=tuple(
                 ContactDepthPinSpec.from_dict(p) for p in data.get("contact_pins", ())
             ),
+            outer_wall_collar_px=float(data.get("outer_wall_collar_px", 24.0)),
+            outer_wall_depth_zero_px=float(data.get("outer_wall_depth_zero_px", 12.0)),
+            outer_wall_inner_bevel_px=float(data.get("outer_wall_inner_bevel_px", 6.0)),
+            outer_wall_shade_mult=float(data.get("outer_wall_shade_mult", 0.84)),
         )
 
 
@@ -1040,6 +1052,10 @@ class DiffuseApertureFusionSpec:
     warm_rim_wrap_strength: float = 0.42
     lower_warm_pool_strength: float = 0.66
     tabletop_preserve_real_rgb_weight: float = 0.78
+    clip_to_rear_bore: bool = True
+    rear_bore_center_inner_xy: tuple[float, float] = (878.0, 480.0)
+    rear_bore_radii_inner_xy: tuple[float, float] = (152.0, 168.0)
+    rear_bore_feather_start_ratio: float = 0.84
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -1103,6 +1119,10 @@ class DiffuseApertureFusionSpec:
             "warm_rim_wrap_strength": self.warm_rim_wrap_strength,
             "lower_warm_pool_strength": self.lower_warm_pool_strength,
             "tabletop_preserve_real_rgb_weight": self.tabletop_preserve_real_rgb_weight,
+            "clip_to_rear_bore": self.clip_to_rear_bore,
+            "rear_bore_center_inner_xy": list(self.rear_bore_center_inner_xy),
+            "rear_bore_radii_inner_xy": list(self.rear_bore_radii_inner_xy),
+            "rear_bore_feather_start_ratio": self.rear_bore_feather_start_ratio,
         }
 
     @classmethod
@@ -1122,6 +1142,8 @@ class DiffuseApertureFusionSpec:
         agc = data["aperture_glow_center_inner_xy"]
         agr = data["aperture_glow_radii_inner_xy"]
         agrgb = data["aperture_glow_core_rgb"]
+        rbc = data.get("rear_bore_center_inner_xy", (878.0, 480.0))
+        rbr = data.get("rear_bore_radii_inner_xy", (152.0, 168.0))
         return cls(
             source_image_relpath=str(data["source_image_relpath"]),
             src_crop_xyxy=(int(sc[0]), int(sc[1]), int(sc[2]), int(sc[3])),
@@ -1191,6 +1213,10 @@ class DiffuseApertureFusionSpec:
             warm_rim_wrap_strength=float(data["warm_rim_wrap_strength"]),
             lower_warm_pool_strength=float(data["lower_warm_pool_strength"]),
             tabletop_preserve_real_rgb_weight=float(data["tabletop_preserve_real_rgb_weight"]),
+            clip_to_rear_bore=bool(data.get("clip_to_rear_bore", True)),
+            rear_bore_center_inner_xy=(float(rbc[0]), float(rbc[1])),
+            rear_bore_radii_inner_xy=(float(rbr[0]), float(rbr[1])),
+            rear_bore_feather_start_ratio=float(data.get("rear_bore_feather_start_ratio", 0.84)),
         )
 
 
@@ -1669,6 +1695,9 @@ class SceneBuildSpec:
     canvas_scale_mult: float = 1.0
     floating_overlay_scale_mult: float = 1.0
     mirror_blur_override: tuple[float, float] | None = None
+    use_mirror_outpaint: bool = False
+    mid_depth_test: bool = False
+    fg_depth_test: bool = False
 
     def __post_init__(self) -> None:
         if self.segmentation_backend not in VALID_SEGMENTATION_BACKENDS:
@@ -2123,6 +2152,9 @@ class SceneBuildSpec:
             mirror_blur_override=(
                 (float(raw_mbo[0]), float(raw_mbo[1])) if raw_mbo is not None else None
             ),
+            use_mirror_outpaint=bool(data.get("use_mirror_outpaint", False)),
+            mid_depth_test=bool(data.get("mid_depth_test", False)),
+            fg_depth_test=bool(data.get("fg_depth_test", False)),
         )
 
 
@@ -3440,6 +3472,19 @@ def _plan_b_pipe_v2_scene_spec() -> SceneBuildSpec:
         mid_render_order=4,
         fg_z=-35.0,
         mid_z=-180.0,
+        mid_depth_output_filename="scene4_plan_b_mid_depth.png",
+        mid_depth_amplitude=1.0,
+        mid_pin_margin_uv=0.0,
+        mid_segments_x=64,
+        mid_segments_y=44,
+        mid_depth_test=True,
+        fg_depth_output_filename="scene4_plan_b_fg_depth.png",
+        fg_depth_amplitude=1.0,
+        fg_pin_margin_uv=0.0,
+        fg_segments_x=64,
+        fg_segments_y=44,
+        fg_depth_test=True,
+        use_mirror_outpaint=True,
         bg_segments_x=256,
         bg_segments_y=172,
         harmonize_seam_field=True,
@@ -3475,6 +3520,7 @@ def _plan_b_pipe_v2_scene_spec() -> SceneBuildSpec:
                 output_filename="scene4_plan_b_hanging_ring.png",
                 z_pos=-95.0,
                 render_order=5,
+                depth_test=True,
                 sam_boxes=(
                     BoundingBoxPrompt(x0=620, y0=284, x1=766, y1=552),
                 ),
@@ -3485,6 +3531,7 @@ def _plan_b_pipe_v2_scene_spec() -> SceneBuildSpec:
                 output_filename="scene4_plan_b_rear_disc.png",
                 z_pos=-265.0,
                 render_order=3,
+                depth_test=True,
                 sam_boxes=(
                     BoundingBoxPrompt(x0=868, y0=330, x1=925, y1=438),
                 ),
@@ -3545,6 +3592,19 @@ def _plan_b_pipe_v3_scene_spec() -> SceneBuildSpec:
         mid_render_order=6,
         fg_z=-35.0,
         mid_z=-180.0,
+        mid_depth_output_filename="scene4_plan_b_v3_mid_depth.png",
+        mid_depth_amplitude=1.0,
+        mid_pin_margin_uv=0.0,
+        mid_segments_x=64,
+        mid_segments_y=44,
+        mid_depth_test=True,
+        fg_depth_output_filename="scene4_plan_b_v3_fg_depth.png",
+        fg_depth_amplitude=1.0,
+        fg_pin_margin_uv=0.0,
+        fg_segments_x=64,
+        fg_segments_y=44,
+        fg_depth_test=True,
+        use_mirror_outpaint=True,
         bg_segments_x=256,
         bg_segments_y=172,
         harmonize_seam_field=True,
@@ -3652,6 +3712,7 @@ def _plan_b_pipe_v3_scene_spec() -> SceneBuildSpec:
                 output_filename="scene4_plan_b_v3_hanging_ring.png",
                 z_pos=-95.0,
                 render_order=7,
+                depth_test=True,
                 sam_boxes=(
                     BoundingBoxPrompt(x0=620, y0=284, x1=766, y1=552),
                 ),
@@ -3662,6 +3723,7 @@ def _plan_b_pipe_v3_scene_spec() -> SceneBuildSpec:
                 output_filename="scene4_plan_b_v3_rear_disc.png",
                 z_pos=-265.0,
                 render_order=5,
+                depth_test=True,
                 sam_boxes=(
                     BoundingBoxPrompt(x0=868, y0=330, x1=925, y1=438),
                 ),
@@ -4021,6 +4083,7 @@ def default_spatial_pipeline_config() -> SpatialPipelineConfig:
                 initial_camera_y=0.0,
                 initial_camera_z=525.0,
                 max_camera_z=780.0,
+                use_mirror_outpaint=True,
             ),
             _marseille_mirror_scene_spec(),
             _plan_b_pipe_v1_scene_spec(),

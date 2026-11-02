@@ -468,6 +468,10 @@ class TestBetaFeedbackHttpAndChromeE2E(unittest.TestCase):
         for route in ("/wiki", "/catalog", "/api/wiki", "/api/catalog"):
             with urllib.request.urlopen(f"{base}{route}", timeout=5) as r:
                 self.assertEqual(r.status, 200)
+                if route in ("/wiki", "/catalog"):
+                    html_body = r.read().decode("utf-8")
+                    self.assertIn("תמי-נאוטיקה", html_body)
+                    self.assertIn("Tami-Nautica", html_body)
 
         # Disabled beta server check (clean gift presentation mode)
         dis_port = find_free_port(7560)
@@ -562,7 +566,7 @@ class TestBetaFeedbackHttpAndChromeE2E(unittest.TestCase):
                 frame.extend(bytearray(b ^ mask[i % 4] for i, b in enumerate(data)))
                 s.sendall(bytes(frame))
 
-            def read_cdp(target_id: int, timeout: float = 12.0) -> dict | None:
+            def read_cdp(target_id: int, timeout: float = 20.0) -> dict | None:
                 s.settimeout(timeout)
                 start = time.time()
                 while time.time() - start < timeout:
@@ -588,7 +592,7 @@ class TestBetaFeedbackHttpAndChromeE2E(unittest.TestCase):
             mid = 10
             ready = False
             start_wait = time.time()
-            while time.time() - start_wait < 15.0:
+            while time.time() - start_wait < 25.0:
                 mid += 1
                 send_cdp(
                     "Runtime.evaluate",

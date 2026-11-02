@@ -69,6 +69,7 @@ from prototype.scene_config import (
     CanvasDimensionsConfig,
     DepthModelConfig,
     InpaintingConfig,
+    OrientedMatteBoxSpec,
     OutpaintingConfig,
     SamPointGroupPrompt,
     SegmentationConfig,
@@ -79,6 +80,8 @@ from prototype.vision_primitives import (
     SalientMatteExtractor,
     SamBoxMaskExtractor,
     decontaminate_matte_edge_rgb,
+    extract_oriented_isnet_roi_alpha_f32,
+    merge_sam_and_oriented_mattes_u8,
     select_torch_device,
 )
 
@@ -112,36 +115,124 @@ class PointCorrespondencePair:
 
 
 @dataclass(frozen=True)
-class ProgressiveLamaOutpaintConfig:
-    """Multi-ring LaMa architectural periphery continuation without hallucinated objects."""
+class MirrorBorderOutpaintConfig:
+    """Optical mirror-reflection (`cv2.BORDER_REFLECT_101`) periphery continuation outside authentic photo bounds."""
 
     resized_source_wh: tuple[int, int]
     inner_crop_y0: int
-    working_scale: float
-    ring_step_px: int
-    ring_dilation_px: int
-    seam_feather_px: float
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "resized_source_wh": list(self.resized_source_wh),
             "inner_crop_y0": self.inner_crop_y0,
-            "working_scale": self.working_scale,
-            "ring_step_px": self.ring_step_px,
-            "ring_dilation_px": self.ring_dilation_px,
-            "seam_feather_px": self.seam_feather_px,
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> ProgressiveLamaOutpaintConfig:
+    def from_dict(cls, data: dict[str, Any]) -> MirrorBorderOutpaintConfig:
         rwh = data["resized_source_wh"]
         return cls(
             resized_source_wh=(int(rwh[0]), int(rwh[1])),
             inner_crop_y0=int(data["inner_crop_y0"]),
-            working_scale=float(data["working_scale"]),
-            ring_step_px=int(data["ring_step_px"]),
-            ring_dilation_px=int(data["ring_dilation_px"]),
-            seam_feather_px=float(data["seam_feather_px"]),
+        )
+
+
+@dataclass(frozen=True)
+class CouchPeopleMatteCleanseConfig:
+    """High-res crop hair matting, pillow/wall pocket suppression, and EDT interior RGB decontamination."""
+
+    oriented_hair_boxes: tuple[OrientedMatteBoxSpec, ...]
+    sam_core_support_dilate_px: int
+    pillow_notch_box_inner: BoundingBoxPrompt
+    pillow_max_rg_diff: float
+    pillow_max_rb_diff: float
+    pillow_smooth_sigma: float
+    sofa_erase_pillow_box_inner: BoundingBoxPrompt
+    sofa_erase_donor_box_inner: BoundingBoxPrompt
+    sofa_erase_min_luma: float
+    sofa_erase_max_rg_diff: float
+    hair_wall_max_y_inner: int
+    hair_wall_rim_px: float
+    hair_wall_luma_lo: float
+    hair_wall_luma_hi: float
+    hair_wall_max_chroma_diff: float
+    decontam_core_erode_px: int
+    decontam_core_min_alpha_u8: int
+    decontam_bright_halo_delta_luma: float
+    decontam_bright_halo_span_luma: float
+    decontam_outward_pad_px: float
+    protect_wall_art_boxes_inner: tuple[BoundingBoxPrompt, ...]
+    hair_bg_dilation_px: int
+    body_bg_dilation_px: int
+    table_bg_dilation_px: int
+    bg_final_dilation_px: int
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "oriented_hair_boxes": [b.to_dict() for b in self.oriented_hair_boxes],
+            "sam_core_support_dilate_px": self.sam_core_support_dilate_px,
+            "pillow_notch_box_inner": self.pillow_notch_box_inner.to_dict(),
+            "pillow_max_rg_diff": self.pillow_max_rg_diff,
+            "pillow_max_rb_diff": self.pillow_max_rb_diff,
+            "pillow_smooth_sigma": self.pillow_smooth_sigma,
+            "sofa_erase_pillow_box_inner": self.sofa_erase_pillow_box_inner.to_dict(),
+            "sofa_erase_donor_box_inner": self.sofa_erase_donor_box_inner.to_dict(),
+            "sofa_erase_min_luma": self.sofa_erase_min_luma,
+            "sofa_erase_max_rg_diff": self.sofa_erase_max_rg_diff,
+            "hair_wall_max_y_inner": self.hair_wall_max_y_inner,
+            "hair_wall_rim_px": self.hair_wall_rim_px,
+            "hair_wall_luma_lo": self.hair_wall_luma_lo,
+            "hair_wall_luma_hi": self.hair_wall_luma_hi,
+            "hair_wall_max_chroma_diff": self.hair_wall_max_chroma_diff,
+            "decontam_core_erode_px": self.decontam_core_erode_px,
+            "decontam_core_min_alpha_u8": self.decontam_core_min_alpha_u8,
+            "decontam_bright_halo_delta_luma": self.decontam_bright_halo_delta_luma,
+            "decontam_bright_halo_span_luma": self.decontam_bright_halo_span_luma,
+            "decontam_outward_pad_px": self.decontam_outward_pad_px,
+            "protect_wall_art_boxes_inner": [
+                b.to_dict() for b in self.protect_wall_art_boxes_inner
+            ],
+            "hair_bg_dilation_px": self.hair_bg_dilation_px,
+            "body_bg_dilation_px": self.body_bg_dilation_px,
+            "table_bg_dilation_px": self.table_bg_dilation_px,
+            "bg_final_dilation_px": self.bg_final_dilation_px,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> CouchPeopleMatteCleanseConfig:
+        return cls(
+            oriented_hair_boxes=tuple(
+                OrientedMatteBoxSpec.from_dict(b) for b in data["oriented_hair_boxes"]
+            ),
+            sam_core_support_dilate_px=int(data["sam_core_support_dilate_px"]),
+            pillow_notch_box_inner=BoundingBoxPrompt.from_dict(data["pillow_notch_box_inner"]),
+            pillow_max_rg_diff=float(data["pillow_max_rg_diff"]),
+            pillow_max_rb_diff=float(data["pillow_max_rb_diff"]),
+            pillow_smooth_sigma=float(data["pillow_smooth_sigma"]),
+            sofa_erase_pillow_box_inner=BoundingBoxPrompt.from_dict(
+                data["sofa_erase_pillow_box_inner"]
+            ),
+            sofa_erase_donor_box_inner=BoundingBoxPrompt.from_dict(
+                data["sofa_erase_donor_box_inner"]
+            ),
+            sofa_erase_min_luma=float(data["sofa_erase_min_luma"]),
+            sofa_erase_max_rg_diff=float(data["sofa_erase_max_rg_diff"]),
+            hair_wall_max_y_inner=int(data["hair_wall_max_y_inner"]),
+            hair_wall_rim_px=float(data["hair_wall_rim_px"]),
+            hair_wall_luma_lo=float(data["hair_wall_luma_lo"]),
+            hair_wall_luma_hi=float(data["hair_wall_luma_hi"]),
+            hair_wall_max_chroma_diff=float(data["hair_wall_max_chroma_diff"]),
+            decontam_core_erode_px=int(data["decontam_core_erode_px"]),
+            decontam_core_min_alpha_u8=int(data["decontam_core_min_alpha_u8"]),
+            decontam_bright_halo_delta_luma=float(data["decontam_bright_halo_delta_luma"]),
+            decontam_bright_halo_span_luma=float(data["decontam_bright_halo_span_luma"]),
+            decontam_outward_pad_px=float(data["decontam_outward_pad_px"]),
+            protect_wall_art_boxes_inner=tuple(
+                BoundingBoxPrompt.from_dict(b) for b in data["protect_wall_art_boxes_inner"]
+            ),
+            hair_bg_dilation_px=int(data["hair_bg_dilation_px"]),
+            body_bg_dilation_px=int(data["body_bg_dilation_px"]),
+            table_bg_dilation_px=int(data["table_bg_dilation_px"]),
+            bg_final_dilation_px=int(data["bg_final_dilation_px"]),
         )
 
 
@@ -687,6 +778,7 @@ class DenyaCouchViewSceneConfig:
     people_max_pinhole_fill_px: int
     people_min_component_px: int
     people_head_salient_max_y: int
+    people_matte_cleanse: CouchPeopleMatteCleanseConfig
     coffee_table_full_sam_prompts: tuple[SamPointGroupPrompt, ...]
     coffee_table_morph_close_px: int
     coffee_table_edge_feather_sigma: float
@@ -754,6 +846,7 @@ class DenyaCouchViewSceneConfig:
             "people_max_pinhole_fill_px": self.people_max_pinhole_fill_px,
             "people_min_component_px": self.people_min_component_px,
             "people_head_salient_max_y": self.people_head_salient_max_y,
+            "people_matte_cleanse": self.people_matte_cleanse.to_dict(),
             "coffee_table_full_sam_prompts": [
                 p.to_dict() for p in self.coffee_table_full_sam_prompts
             ],
@@ -830,6 +923,9 @@ class DenyaCouchViewSceneConfig:
             people_max_pinhole_fill_px=int(data["people_max_pinhole_fill_px"]),
             people_min_component_px=int(data["people_min_component_px"]),
             people_head_salient_max_y=int(data["people_head_salient_max_y"]),
+            people_matte_cleanse=CouchPeopleMatteCleanseConfig.from_dict(
+                data["people_matte_cleanse"]
+            ),
             coffee_table_full_sam_prompts=tuple(
                 SamPointGroupPrompt.from_dict(p) for p in data["coffee_table_full_sam_prompts"]
             ),
@@ -894,7 +990,7 @@ class DenyaLivingRoomBundleConfig:
     spec_output_relpath: str
     dimensions: CanvasDimensionsConfig
     outpainting: OutpaintingConfig
-    progressive_lama: ProgressiveLamaOutpaintConfig
+    mirror_outpaint: MirrorBorderOutpaintConfig
     depth_model: DepthModelConfig
     segmentation: SegmentationConfig
     salient_edge_support_px: int
@@ -917,7 +1013,7 @@ class DenyaLivingRoomBundleConfig:
             "spec_output_relpath": self.spec_output_relpath,
             "dimensions": self.dimensions.to_dict(),
             "outpainting": self.outpainting.to_dict(),
-            "progressive_lama": self.progressive_lama.to_dict(),
+            "mirror_outpaint": self.mirror_outpaint.to_dict(),
             "depth_model": self.depth_model.to_dict(),
             "segmentation": self.segmentation.to_dict(),
             "salient_edge_support_px": self.salient_edge_support_px,
@@ -942,7 +1038,7 @@ class DenyaLivingRoomBundleConfig:
             spec_output_relpath=str(data["spec_output_relpath"]),
             dimensions=CanvasDimensionsConfig.from_dict(data["dimensions"]),
             outpainting=OutpaintingConfig.from_dict(data["outpainting"]),
-            progressive_lama=ProgressiveLamaOutpaintConfig.from_dict(data["progressive_lama"]),
+            mirror_outpaint=MirrorBorderOutpaintConfig.from_dict(data["mirror_outpaint"]),
             depth_model=DepthModelConfig.from_dict(data["depth_model"]),
             segmentation=SegmentationConfig.from_dict(data["segmentation"]),
             salient_edge_support_px=int(data["salient_edge_support_px"]),
@@ -1038,13 +1134,9 @@ def default_denya_living_room_bundle_config() -> DenyaLivingRoomBundleConfig:
             color_match_band_px=40,
             min_registration_corr=0.92,
         ),
-        progressive_lama=ProgressiveLamaOutpaintConfig(
+        mirror_outpaint=MirrorBorderOutpaintConfig(
             resized_source_wh=(1500, 1125),
             inner_crop_y0=62,
-            working_scale=0.50,
-            ring_step_px=72,
-            ring_dilation_px=2,
-            seam_feather_px=6.0,
         ),
         depth_model=DepthModelConfig(
             model_id="depth-anything/Depth-Anything-V2-Small-hf",
@@ -1122,7 +1214,7 @@ def default_denya_living_room_bundle_config() -> DenyaLivingRoomBundleConfig:
                 room_depth_amplitude=din_room_amp,
                 room_pin_margin_uv=room_pin_uv,
                 layer_z=-384.0,
-                layer_depth_amplitude=68.0,
+                layer_depth_amplitude=84.0,
                 layer_pin_margin_uv=0.0,
                 alpha_threshold_u8=20,
                 component_bridge_px=8,
@@ -1343,7 +1435,7 @@ def default_denya_living_room_bundle_config() -> DenyaLivingRoomBundleConfig:
                 room_depth_amplitude=din_room_amp,
                 room_pin_margin_uv=room_pin_uv,
                 layer_z=-382.0,
-                layer_depth_amplitude=74.0,
+                layer_depth_amplitude=88.0,
                 layer_pin_margin_uv=0.0,
                 alpha_threshold_u8=20,
                 component_bridge_px=8,
@@ -1369,7 +1461,7 @@ def default_denya_living_room_bundle_config() -> DenyaLivingRoomBundleConfig:
                 room_depth_amplitude=din_room_amp,
                 room_pin_margin_uv=room_pin_uv,
                 layer_z=-374.0,
-                layer_depth_amplitude=175.0,
+                layer_depth_amplitude=195.0,
                 layer_pin_margin_uv=0.0,
                 alpha_threshold_u8=20,
                 component_bridge_px=8,
@@ -1435,34 +1527,55 @@ def default_denya_living_room_bundle_config() -> DenyaLivingRoomBundleConfig:
             frame_output_filename="denya_living_couch_wandering2_frame.png",
             frame_depth_output_filename="denya_living_couch_wandering2_frame_depth.png",
             people_sam_prompts=(
-                # Tal seated in profile on left-center of gray couch (`c_in` 1500x1000) — clean nose & glasses silhouette
+                # Tal seated in profile on left-center of gray couch (`c_in` 1500x1000) — full curved sweatshirt back, full forearm, clean nose & glasses, full right trouser ankle & sock
                 _sam_group(
-                    (440, 245, 650, 682),
+                    (404, 268, 672, 686),
                     [
-                        (575, 290),
+                        (573, 286),
                         (575, 345),
                         (610, 365),
+                        (638, 350),
                         (618, 382),
                         (595, 410),
                         (535, 345),
+                        (446, 425),
+                        (438, 455),
+                        (430, 485),
+                        (428, 515),
+                        (424, 545),
+                        (428, 580),
                         (495, 455),
                         (560, 480),
+                        (615, 445),
+                        (620, 475),
+                        (626, 505),
                         (600, 600),
                         (520, 585),
                         (640, 580),
+                        (612, 662),
+                        (638, 658),
+                        (652, 668),
+                        (636, 673),
                     ],
                     [
-                        (638, 355),
-                        (642, 378),
+                        (575, 266),
+                        (646, 338),
+                        (648, 352),
+                        (642, 368),
+                        (642, 382),
                         (636, 405),
-                        (620, 435),
-                        (608, 472),
-                        (612, 488),
-                        (616, 502),
+                        (636, 435),
+                        (638, 465),
+                        (601, 508),
+                        (644, 552),
                         (450, 355),
-                        (438, 440),
-                        (432, 485),
-                        (595, 686),
+                        (432, 422),
+                        (425, 442),
+                        (416, 465),
+                        (414, 495),
+                        (416, 525),
+                        (408, 545),
+                        (610, 684),
                         (485, 675),
                     ],
                 ),
@@ -1481,27 +1594,114 @@ def default_denya_living_room_bundle_config() -> DenyaLivingRoomBundleConfig:
                     ],
                     [(680, 600), (885, 455), (885, 518), (985, 450), (985, 515)],
                 ),
-                # Ya'ara in rose sweater & pink pants
+                # Ya'ara in rose sweater & pink pants — clean curly hair top & shoulder without white pillow corner
                 _sam_group(
-                    (722, 240, 892, 670),
-                    [(825, 275), (825, 315), (815, 365), (795, 410), (775, 625), (855, 615)],
-                    [(725, 370), (890, 405), (820, 676)],
+                    (722, 286, 885, 670),
+                    [
+                        (828, 304),
+                        (822, 324),
+                        (815, 365),
+                        (795, 410),
+                        (858, 415),
+                        (866, 394),
+                        (866, 450),
+                        (775, 625),
+                        (855, 615),
+                    ],
+                    [
+                        (825, 282),
+                        (795, 295),
+                        (856, 302),
+                        (780, 320),
+                        (725, 370),
+                        (878, 384),
+                        (880, 402),
+                        (882, 420),
+                        (882, 438),
+                        (820, 676),
+                    ],
                 ),
-                # Carmel in cream ribbed sweater & gray leggings
+                # Carmel in cream ribbed sweater & gray leggings — below wall art & clear of white pillow corner
                 _sam_group(
-                    (858, 305, 1025, 650),
-                    [(965, 382), (955, 422), (935, 500), (930, 545), (915, 608), (968, 600)],
-                    [(890, 385), (992, 330), (1030, 480)],
+                    (882, 348, 1024, 650),
+                    [
+                        (976, 378),
+                        (968, 405),
+                        (955, 428),
+                        (902, 438),
+                        (935, 500),
+                        (930, 545),
+                        (915, 608),
+                        (968, 600),
+                    ],
+                    [
+                        (936, 366),
+                        (944, 355),
+                        (968, 346),
+                        (1000, 342),
+                        (886, 395),
+                        (892, 408),
+                        (886, 425),
+                        (885, 442),
+                        (1026, 480),
+                    ],
                 ),
             ),
             people_exclude_boxes=(
                 BoundingBoxPrompt(445, 652, 525, 705),
-                BoundingBoxPrompt(400, 405, 452, 520),
-                BoundingBoxPrompt(602, 458, 636, 513),
             ),
-            people_max_pinhole_fill_px=4500,
+            people_max_pinhole_fill_px=1200,
             people_min_component_px=2500,
             people_head_salient_max_y=430,
+            people_matte_cleanse=CouchPeopleMatteCleanseConfig(
+                oriented_hair_boxes=(
+                    OrientedMatteBoxSpec(
+                        box=BoundingBoxPrompt(496, 252, 658, 402),
+                        upright_angle_deg=0.0,
+                        taper_margin_px=8,
+                        sam_core_erode_px=11,
+                    ),
+                    OrientedMatteBoxSpec(
+                        box=BoundingBoxPrompt(742, 268, 886, 382),
+                        upright_angle_deg=0.0,
+                        taper_margin_px=8,
+                        sam_core_erode_px=17,
+                    ),
+                    OrientedMatteBoxSpec(
+                        box=BoundingBoxPrompt(902, 336, 1034, 468),
+                        upright_angle_deg=0.0,
+                        taper_margin_px=8,
+                        sam_core_erode_px=11,
+                    ),
+                ),
+                sam_core_support_dilate_px=9,
+                pillow_notch_box_inner=BoundingBoxPrompt(858, 374, 892, 452),
+                pillow_max_rg_diff=18.0,
+                pillow_max_rb_diff=24.0,
+                pillow_smooth_sigma=0.8,
+                sofa_erase_pillow_box_inner=BoundingBoxPrompt(858, 374, 958, 502),
+                sofa_erase_donor_box_inner=BoundingBoxPrompt(858, 338, 958, 374),
+                sofa_erase_min_luma=160.0,
+                sofa_erase_max_rg_diff=22.0,
+                hair_wall_max_y_inner=388,
+                hair_wall_rim_px=8.0,
+                hair_wall_luma_lo=166.0,
+                hair_wall_luma_hi=194.0,
+                hair_wall_max_chroma_diff=16.0,
+                decontam_core_erode_px=5,
+                decontam_core_min_alpha_u8=242,
+                decontam_bright_halo_delta_luma=16.0,
+                decontam_bright_halo_span_luma=26.0,
+                decontam_outward_pad_px=6.0,
+                protect_wall_art_boxes_inner=(
+                    BoundingBoxPrompt(360, 0, 500, 246),
+                    BoundingBoxPrompt(970, 0, 1085, 344),
+                ),
+                hair_bg_dilation_px=30,
+                body_bg_dilation_px=16,
+                table_bg_dilation_px=26,
+                bg_final_dilation_px=2,
+            ),
             # Coordinates in FULL 1500x1125 resized photo (y_full = y_inner + 62) so entire coffee table + all objects + legs stay unified
             coffee_table_full_sam_prompts=(
                 # Main oak coffee table slab & both wooden legs
@@ -1522,6 +1722,8 @@ def default_denya_living_room_bundle_config() -> DenyaLivingRoomBundleConfig:
                         (1260, 875),
                         (1295, 860),
                         (410, 760),
+                        (635, 742),
+                        (650, 742),
                         (660, 745),
                         (800, 735),
                         (965, 720),
@@ -1651,7 +1853,7 @@ def default_denya_living_room_bundle_config() -> DenyaLivingRoomBundleConfig:
                 component_bridge_px=8,
                 min_component_area_px=500,
                 contact_boxes=(
-                    ContactAnchorBox(445, 555, 1025, 725, mode="bottom_band", band_px=8),
+                    ContactAnchorBox(404, 540, 1028, 725, mode="bottom_band", band_px=8),
                 ),
                 neural_relief_amplitude=14.0,
                 contact_relief_taper_px=12.0,
@@ -1671,7 +1873,7 @@ def default_denya_living_room_bundle_config() -> DenyaLivingRoomBundleConfig:
                 room_depth_amplitude=couch_room_amp,
                 room_pin_margin_uv=room_pin_uv,
                 layer_z=-322.0,
-                layer_depth_amplitude=105.0,
+                layer_depth_amplitude=125.0,
                 layer_pin_margin_uv=0.0,
                 alpha_threshold_u8=20,
                 component_bridge_px=8,
@@ -1733,16 +1935,16 @@ def default_denya_living_room_bundle_config() -> DenyaLivingRoomBundleConfig:
 
 def load_source_full_and_inner(
     image_path: Path,
-    prog_cfg: ProgressiveLamaOutpaintConfig,
+    mirror_cfg: MirrorBorderOutpaintConfig,
     inner_dims: CanvasDimensionsConfig,
 ) -> tuple[Image.Image, Image.Image]:
     """Loads EXIF-upright 4:3 photograph, resizes to `1500x1125`, and extracts `1500x1000` inner crop."""
     if not image_path.is_file():
         raise FileNotFoundError(f"Missing Denya living-room source photograph: {image_path}")
     src = ImageOps.exif_transpose(Image.open(image_path)).convert("RGB")
-    rw, rh = prog_cfg.resized_source_wh
+    rw, rh = mirror_cfg.resized_source_wh
     full_rgb = src.resize((rw, rh), Image.Resampling.LANCZOS)
-    y0 = prog_cfg.inner_crop_y0
+    y0 = mirror_cfg.inner_crop_y0
     inner_rgb = full_rgb.crop((0, y0, inner_dims.width, y0 + inner_dims.height))
     return full_rgb, inner_rgb
 
@@ -1856,6 +2058,282 @@ def refine_alpha_with_salient_edges(
     return np.clip(np.round(combined), 0, 255).astype(np.uint8)
 
 
+def cleanse_couch_people_matte_and_rgb(
+    couch_inner_rgb: Image.Image,
+    sam_u8: np.ndarray,
+    couch_cfg: DenyaCouchViewSceneConfig,
+    bundle: DenyaLivingRoomBundleConfig,
+    matte_extractor: SalientMatteExtractor,
+) -> tuple[np.ndarray, Image.Image, np.ndarray]:
+    """
+    Refines `denya_couch_guitar` trio segmentation & edge colors:
+    1) Fuses per-person high-resolution `OrientedMatteBoxSpec` IS-Net hair/glasses mattes.
+    2) Suppresses the pointed white throw-pillow corner in the Ya'ara/Carmel shoulder notch and
+       any trapped neutral-white wall pockets along upper curly hair silhouettes (`y < 388`)
+       WITHOUT running hole-fill across open hair curls.
+    3) Performs EDT interior foreground color decontamination (`pure_core` -> semi-transparent &
+       haloed rim pixels + `6px` outward pad into `alpha == 0` for clean `THREE.LinearFilter` sampling).
+    Returns `(clean_alpha_u8, decontaminated_inner_rgb, raw_hair_isnet_u8)`.
+    """
+    cleanse = couch_cfg.people_matte_cleanse
+    rgb_u8 = np.asarray(couch_inner_rgb, dtype=np.uint8)
+    rgb_f = rgb_u8.astype(np.float32)
+    h_in, w_in = sam_u8.shape
+
+    raw_hair_f = np.zeros((h_in, w_in), dtype=np.float32)
+    for omb in cleanse.oriented_hair_boxes:
+        raw_hair_f = np.maximum(
+            raw_hair_f,
+            extract_oriented_isnet_roi_alpha_f32(couch_inner_rgb, omb, matte_extractor.session),
+        )
+    raw_hair_u8 = np.clip(np.round(raw_hair_f), 0, 255).astype(np.uint8)
+
+    merged_u8 = merge_sam_and_oriented_mattes_u8(
+        rgb_image=couch_inner_rgb,
+        sam_u8=sam_u8,
+        oriented_boxes=cleanse.oriented_hair_boxes,
+        support_dilate_px=cleanse.sam_core_support_dilate_px,
+        right_edge_fade_x_start=None,
+        rembg_session=matte_extractor.session,
+    )
+    alpha_f = merged_u8.astype(np.float32)
+
+    # 1. Suppress neutral-white pointed throw pillow & grey sofa backrest in Ya'ara/Carmel shoulder notch
+    nb = cleanse.pillow_notch_box_inner
+    notch_rg = rgb_f[nb.y0 : nb.y1, nb.x0 : nb.x1, 0] - rgb_f[nb.y0 : nb.y1, nb.x0 : nb.x1, 1]
+    notch_rb = rgb_f[nb.y0 : nb.y1, nb.x0 : nb.x1, 0] - rgb_f[nb.y0 : nb.y1, nb.x0 : nb.x1, 2]
+    neutral_pillow = (notch_rg <= cleanse.pillow_max_rg_diff) & (
+        notch_rb <= cleanse.pillow_max_rb_diff
+    )
+    if np.any(neutral_pillow):
+        keep_notch = 1.0 - ndi.gaussian_filter(
+            neutral_pillow.astype(np.float32), sigma=cleanse.pillow_smooth_sigma
+        )
+        alpha_f[nb.y0 : nb.y1, nb.x0 : nb.x1] *= np.clip((keep_notch - 0.35) / 0.65, 0.0, 1.0)
+
+    # 2. Suppress trapped bright neutral-white salon wall pockets along upper hair silhouettes
+    hy = cleanse.hair_wall_max_y_inner
+    fg_upper = alpha_f[:hy, :] >= float(bundle.alpha_clean_threshold_u8)
+    dist_inside_upper = ndi.distance_transform_edt(fg_upper).astype(np.float32)
+    luma_upper = (
+        0.299 * rgb_f[:hy, :, 0] + 0.587 * rgb_f[:hy, :, 1] + 0.114 * rgb_f[:hy, :, 2]
+    )
+    chroma_upper = np.maximum(
+        np.abs(rgb_f[:hy, :, 0] - rgb_f[:hy, :, 1]),
+        np.abs(rgb_f[:hy, :, 0] - rgb_f[:hy, :, 2]),
+    )
+    wall_luma_w = np.clip(
+        (luma_upper - cleanse.hair_wall_luma_lo)
+        / max(1.0, cleanse.hair_wall_luma_hi - cleanse.hair_wall_luma_lo),
+        0.0,
+        1.0,
+    )
+    wall_chroma_w = np.clip(
+        (cleanse.hair_wall_max_chroma_diff - chroma_upper) / 6.0,
+        0.0,
+        1.0,
+    )
+    wall_rim_w = np.clip(
+        (cleanse.hair_wall_rim_px - dist_inside_upper) / 2.5,
+        0.0,
+        1.0,
+    )
+    wall_suppress = wall_luma_w * wall_chroma_w * wall_rim_w
+    alpha_f[:hy, :] *= 1.0 - wall_suppress
+
+    # 3. Solidify ONLY torso/legs below `hair_wall_max_y_inner` so open hair curls stay airy
+    alpha_u8 = np.clip(np.round(alpha_f), 0, 255).astype(np.uint8)
+    body_solid = solidify_interior_alpha_u8(
+        alpha_u8,
+        max_hole_area_px=couch_cfg.people_max_pinhole_fill_px,
+        erode_px=bundle.interior_solidify_erode_px,
+        threshold_u8=bundle.interior_solidify_threshold_u8,
+    )
+    alpha_u8[hy:, :] = body_solid[hy:, :]
+    # re-enforce clean pillow notch & exclude boxes after torso solidification
+    if np.any(neutral_pillow):
+        alpha_u8[nb.y0 : nb.y1, nb.x0 : nb.x1] = np.where(
+            neutral_pillow, 0, alpha_u8[nb.y0 : nb.y1, nb.x0 : nb.x1]
+        )
+    for eb in couch_cfg.people_exclude_boxes:
+        alpha_u8[eb.y0 : eb.y1, eb.x0 : eb.x1] = 0
+    alpha_u8 = filter_min_components_u8(
+        alpha_u8, couch_cfg.people_min_component_px, bundle.alpha_clean_threshold_u8
+    )
+
+    # 4. EDT interior foreground color decontamination + outward RGB pad into `alpha == 0`
+    decontam_u8 = decontaminate_matte_edge_rgb(rgb_u8, alpha_u8)
+    decontam_f = decontam_u8.astype(np.float32)
+
+    er_px = max(1, cleanse.decontam_core_erode_px)
+    k_core = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * er_px + 1, 2 * er_px + 1))
+    opaque_core = (
+        cv2.erode(
+            (alpha_u8 >= cleanse.decontam_core_min_alpha_u8).astype(np.uint8),
+            k_core,
+            iterations=1,
+        )
+        > 0
+    )
+    # Exclude any bright neutral wall pixel in upper hair zone from serving as an EDT color donor
+    upper_wall_like = np.zeros((h_in, w_in), dtype=bool)
+    upper_wall_like[:hy, :] = (luma_upper >= cleanse.hair_wall_luma_lo) & (
+        chroma_upper <= cleanse.hair_wall_max_chroma_diff
+    )
+    pure_core = opaque_core & (~upper_wall_like)
+    if np.any(pure_core):
+        _, idx_edt = ndi.distance_transform_edt(
+            ~pure_core, return_distances=True, return_indices=True
+        )
+        nearest_core_rgb = decontam_f[idx_edt[0], idx_edt[1]]
+        luma_curr = (
+            0.299 * decontam_f[:, :, 0]
+            + 0.587 * decontam_f[:, :, 1]
+            + 0.114 * decontam_f[:, :, 2]
+        )
+        luma_core = (
+            0.299 * nearest_core_rgb[:, :, 0]
+            + 0.587 * nearest_core_rgb[:, :, 1]
+            + 0.114 * nearest_core_rgb[:, :, 2]
+        )
+        core_min_f = float(cleanse.decontam_core_min_alpha_u8)
+        semi_w = np.where(
+            (alpha_u8 > 0) & (alpha_u8 < cleanse.decontam_core_min_alpha_u8),
+            np.clip(1.0 - (alpha_u8.astype(np.float32) / core_min_f) ** 1.35, 0.0, 1.0),
+            0.0,
+        )
+        halo_w = np.where(
+            (~pure_core) & (alpha_u8 > 0),
+            np.clip(
+                (luma_curr - luma_core - cleanse.decontam_bright_halo_delta_luma)
+                / max(1.0, cleanse.decontam_bright_halo_span_luma),
+                0.0,
+                1.0,
+            ),
+            0.0,
+        )
+        dist_outside_fg = ndi.distance_transform_edt(alpha_u8 == 0).astype(np.float32)
+        pad_w = np.where(
+            (alpha_u8 == 0) & (dist_outside_fg <= cleanse.decontam_outward_pad_px),
+            1.0,
+            0.0,
+        )
+        pull_w = np.maximum(np.maximum(semi_w, halo_w), pad_w)[:, :, None]
+        decontam_f = (1.0 - pull_w) * decontam_f + pull_w * nearest_core_rgb
+
+    clean_rgb_img = Image.fromarray(
+        np.clip(np.round(decontam_f), 0, 255).astype(np.uint8), mode="RGB"
+    )
+    return alpha_u8, clean_rgb_img, raw_hair_u8
+
+
+def prepare_couch_bg_inpaint_source_and_mask(
+    couch_full_rgb: Image.Image,
+    table_and_tips_full_u8: np.ndarray,
+    people_sam_u8: np.ndarray,
+    people_raw_hair_u8: np.ndarray,
+    people_clean_alpha_u8: np.ndarray,
+    couch_inner_rgb: Image.Image,
+    couch_cfg: DenyaCouchViewSceneConfig,
+    inner_crop_y0: int,
+) -> tuple[Image.Image, np.ndarray]:
+    """
+    Constructs a pre-seeded `1500x1125` RGB source + LaMa occlusion mask for `denya_couch_guitar`:
+    - Dilates upper hair silhouettes (`y_inner < hair_wall_max_y_inner`) generously (`30px`) over
+      the empty white salon wall (while protecting wall-artwork frames) so zero dark hair smudges survive.
+    - Erases the pointed white throw pillow tucked between Ya'ara and Carmel (`sofa_erase_pillow_box_inner`),
+      pre-seeding that triangle with tiled authentic woven gray sofa upholstery from `sofa_erase_donor_box_inner`
+      above it so LaMa synthesizes continuous gray sofa backrest with zero white pillow blob.
+    - Dilates torso/legs (`16px`) and foreground oak coffee table & bottom chair tips (`26px`).
+    """
+    cleanse = couch_cfg.people_matte_cleanse
+    full_h, full_w = table_and_tips_full_u8.shape
+    in_h, in_w = people_clean_alpha_u8.shape
+    hy = cleanse.hair_wall_max_y_inner
+
+    # 1. Table + foreground chair tips
+    kt = cv2.getStructuringElement(
+        cv2.MORPH_ELLIPSE,
+        (2 * cleanse.table_bg_dilation_px + 1, 2 * cleanse.table_bg_dilation_px + 1),
+    )
+    table_dil = cv2.dilate((table_and_tips_full_u8 > 16).astype(np.uint8) * 255, kt, iterations=1)
+
+    # 2. Upper hair zone over salon wall (union raw SAM, raw IS-Net hair inside support, & clean alpha)
+    k_sup = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (23, 23))
+    hair_sup = cv2.dilate((people_sam_u8 > 32).astype(np.uint8), k_sup, iterations=1) > 0
+    hair_union_in = np.zeros((in_h, in_w), dtype=np.uint8)
+    hair_src = (
+        (people_clean_alpha_u8[:hy, :] > 4)
+        | (people_sam_u8[:hy, :] > 16)
+        | ((people_raw_hair_u8[:hy, :] > 12) & hair_sup[:hy, :])
+    )
+    hair_union_in[:hy, :] = np.where(hair_src, 255, 0).astype(np.uint8)
+    kh = cv2.getStructuringElement(
+        cv2.MORPH_ELLIPSE,
+        (2 * cleanse.hair_bg_dilation_px + 1, 2 * cleanse.hair_bg_dilation_px + 1),
+    )
+    hair_dil_in = cv2.dilate(hair_union_in, kh, iterations=1)
+    for pb in cleanse.protect_wall_art_boxes_inner:
+        hair_dil_in[pb.y0 : pb.y1, pb.x0 : pb.x1] = 0
+
+    # 3. Torso/legs zone + pointed white throw pillow between Ya'ara and Carmel
+    body_union_in = np.where(people_clean_alpha_u8 >= 8, 255, 0).astype(np.uint8)
+    kb = cv2.getStructuringElement(
+        cv2.MORPH_ELLIPSE,
+        (2 * cleanse.body_bg_dilation_px + 1, 2 * cleanse.body_bg_dilation_px + 1),
+    )
+    body_dil_in = cv2.dilate(body_union_in, kb, iterations=1)
+
+    eb = cleanse.sofa_erase_pillow_box_inner
+    db = cleanse.sofa_erase_donor_box_inner
+    rgb_in_f = np.asarray(couch_inner_rgb, dtype=np.float32)
+    roi_f = rgb_in_f[eb.y0 : eb.y1, eb.x0 : eb.x1]
+    roi_luma = 0.299 * roi_f[:, :, 0] + 0.587 * roi_f[:, :, 1] + 0.114 * roi_f[:, :, 2]
+    roi_rg = roi_f[:, :, 0] - roi_f[:, :, 1]
+    pillow_blob = (roi_luma >= cleanse.sofa_erase_min_luma) & (
+        roi_rg <= cleanse.sofa_erase_max_rg_diff
+    )
+    pillow_blob_dil = (
+        cv2.dilate(
+            pillow_blob.astype(np.uint8),
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15)),
+            iterations=1,
+        )
+        > 0
+    )
+    body_dil_in[eb.y0 : eb.y1, eb.x0 : eb.x1][pillow_blob_dil] = 255
+
+    src_full_np = np.asarray(couch_full_rgb, dtype=np.uint8).copy()
+    donor_patch = src_full_np[
+        inner_crop_y0 + db.y0 : inner_crop_y0 + db.y1,
+        db.x0 : db.x1,
+    ]
+    eb_h = eb.y1 - eb.y0
+    eb_w = eb.x1 - eb.x0
+    tiled_donor = cv2.copyMakeBorder(
+        donor_patch,
+        0,
+        max(0, eb_h - donor_patch.shape[0]),
+        0,
+        max(0, eb_w - donor_patch.shape[1]),
+        borderType=cv2.BORDER_REFLECT_101,
+    )[:eb_h, :eb_w]
+    target_view = src_full_np[
+        inner_crop_y0 + eb.y0 : inner_crop_y0 + eb.y1,
+        eb.x0 : eb.x1,
+    ]
+    seed_mask = pillow_blob_dil | (body_dil_in[eb.y0 : eb.y1, eb.x0 : eb.x1] > 0)
+    target_view[seed_mask] = tiled_donor[seed_mask]
+
+    out_full = table_dil.copy()
+    people_dil_in = np.maximum(hair_dil_in, body_dil_in)
+    out_full[inner_crop_y0 : inner_crop_y0 + in_h, :in_w] = np.maximum(
+        out_full[inner_crop_y0 : inner_crop_y0 + in_h, :in_w],
+        people_dil_in,
+    )
+    return Image.fromarray(src_full_np, mode="RGB"), out_full
+
+
 def build_downward_apron_rgba(
     authentic_inner_rgb: Image.Image,
     healed_behind_occluder_inner_rgb: Image.Image,
@@ -1863,6 +2341,7 @@ def build_downward_apron_rgba(
     occluder_inner_u8: np.ndarray,
     apron_cfg: DownwardOcclusionApronConfig,
     min_component_px: int,
+    already_decontaminated: bool = False,
 ) -> Image.Image:
     """
     Constructs an RGBA mid-layer cutout that is 100% authentic un-inpainted pixels above the
@@ -1901,7 +2380,9 @@ def build_downward_apron_rgba(
         combined_alpha_u8, min_component_px, apron_cfg.alpha_threshold_u8
     )
 
-    decontam_auth = decontaminate_matte_edge_rgb(auth_np, base_alpha_u8)
+    decontam_auth = (
+        auth_np if already_decontaminated else decontaminate_matte_edge_rgb(auth_np, base_alpha_u8)
+    )
     # Blend smoothly from authentic pixels outside occluder to LaMa-healed pixels inside occluder
     w_healed = np.where(
         occ_bool,
@@ -1955,71 +2436,39 @@ def compute_source_da2_protrusion_norm(
     return np.clip(excess / scale, 0.0, 1.0).astype(np.float32)
 
 
-def progressive_lama_outpaint_canvas(
+def mirror_reflect_authentic_canvas(
     full_clean_rgb: Image.Image,
     inner_dims: CanvasDimensionsConfig,
     outpaint_cfg: OutpaintingConfig,
-    prog_cfg: ProgressiveLamaOutpaintConfig,
-    lama_inpainter: LamaOcclusionInpainter,
+    mirror_cfg: MirrorBorderOutpaintConfig,
 ) -> Image.Image:
     """
     Extends the `1500x1125` clean architectural room plate seamlessly to `2700x1800` via
-    progressive multi-ring Fast Fourier Convolution LaMa continuation — zero hallucinated
-    objects or synthetic furniture.
+    optical `cv2.BORDER_REFLECT_101` mirror reflection across authentic photo boundaries —
+    100% crisp high-frequency texture with zero blurry outpaint rings or synthetic seams.
     """
     exp_w, exp_h = outpaint_cfg.expanded_dimensions(inner_dims)
     pad_x = (exp_w - inner_dims.width) // 2
     pad_y = (exp_h - inner_dims.height) // 2
     rw, rh = full_clean_rgb.size
-    y_start = pad_y - prog_cfg.inner_crop_y0
-
-    canvas = np.zeros((exp_h, exp_w, 3), dtype=np.uint8)
-    known_full = np.zeros((exp_h, exp_w), dtype=bool)
-    canvas[y_start : y_start + rh, pad_x : pad_x + rw] = np.asarray(full_clean_rgb, dtype=np.uint8)
-    known_full[y_start : y_start + rh, pad_x : pad_x + rw] = True
-
-    work_w = int(round(exp_w * prog_cfg.working_scale))
-    work_h = int(round(exp_h * prog_cfg.working_scale))
-    work_rgb = np.asarray(
-        Image.fromarray(canvas, mode="RGB").resize((work_w, work_h), Image.Resampling.LANCZOS),
-        dtype=np.uint8,
-    ).copy()
-    known_work = (
-        np.asarray(
-            Image.fromarray((known_full.astype(np.uint8) * 255), mode="L").resize(
-                (work_w, work_h), Image.Resampling.NEAREST
-            ),
-            dtype=np.uint8,
+    top_pad = pad_y - mirror_cfg.inner_crop_y0
+    bottom_pad = exp_h - (top_pad + rh)
+    left_pad = pad_x
+    right_pad = exp_w - (left_pad + rw)
+    if top_pad < 0 or bottom_pad < 0 or left_pad < 0 or right_pad < 0:
+        raise ValueError(
+            f"Authentic source {rw}x{rh} exceeds expanded canvas {exp_w}x{exp_h} "
+            f"(pads={top_pad},{bottom_pad},{left_pad},{right_pad})."
         )
-        > 127
+    reflected = cv2.copyMakeBorder(
+        np.asarray(full_clean_rgb.convert("RGB"), dtype=np.uint8),
+        top=top_pad,
+        bottom=bottom_pad,
+        left=left_pad,
+        right=right_pad,
+        borderType=cv2.BORDER_REFLECT_101,
     )
-
-    ring = prog_cfg.ring_step_px
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2 * ring + 1, 2 * ring + 1))
-    while not bool(known_work.all()):
-        grown = cv2.dilate(known_work.astype(np.uint8), kernel, iterations=1) > 0
-        unknown_u8 = np.where(known_work, 0, 255).astype(np.uint8)
-        inpainted = np.asarray(
-            lama_inpainter.inpaint_background(
-                Image.fromarray(work_rgb, mode="RGB"),
-                unknown_u8,
-                dilation_radius_px=prog_cfg.ring_dilation_px,
-                mask_blur_sigma=0.0,
-            ),
-            dtype=np.uint8,
-        )
-        new_band = grown & (~known_work)
-        work_rgb[new_band] = inpainted[new_band]
-        known_work = grown
-
-    upscaled = np.asarray(
-        Image.fromarray(work_rgb, mode="RGB").resize((exp_w, exp_h), Image.Resampling.LANCZOS),
-        dtype=np.float32,
-    )
-    dist_inside = ndi.distance_transform_edt(known_full).astype(np.float32)
-    alpha_real = np.clip(dist_inside / max(1.0, prog_cfg.seam_feather_px), 0.0, 1.0)[:, :, None]
-    composed = alpha_real * canvas.astype(np.float32) + (1.0 - alpha_real) * upscaled
-    return Image.fromarray(np.clip(np.round(composed), 0, 255).astype(np.uint8), mode="RGB")
+    return Image.fromarray(reflected, mode="RGB")
 
 
 def synthesize_wandering2_framed_assets(
@@ -2411,7 +2860,7 @@ def build_denya_living_room_scenes(
     couch_cfg = bundle.couch_scene
     fp_cfg = bundle.framed_painting
     trio_cfg = bundle.planted_trio
-    y0 = bundle.progressive_lama.inner_crop_y0
+    y0 = bundle.mirror_outpaint.inner_crop_y0
     W, H = bundle.dimensions.width, bundle.dimensions.height
     exp_w, exp_h = bundle.outpainting.expanded_dimensions(bundle.dimensions)
     pad_x = (exp_w - W) // 2
@@ -2426,10 +2875,10 @@ def build_denya_living_room_scenes(
     lama_inpainter = LamaOcclusionInpainter(bundle.inpainting)
 
     din_full_rgb, din_inner_rgb = load_source_full_and_inner(
-        project_root / din_cfg.source_relpath, bundle.progressive_lama, bundle.dimensions
+        project_root / din_cfg.source_relpath, bundle.mirror_outpaint, bundle.dimensions
     )
     couch_full_rgb, couch_inner_rgb = load_source_full_and_inner(
-        project_root / couch_cfg.source_relpath, bundle.progressive_lama, bundle.dimensions
+        project_root / couch_cfg.source_relpath, bundle.mirror_outpaint, bundle.dimensions
     )
 
     # Predict authentic source Depth Anything V2 maps BEFORE any foreground erasure
@@ -2438,9 +2887,15 @@ def build_denya_living_room_scenes(
 
     couch_source_da2_full = depth_estimator.predict_depth(couch_full_rgb)
     couch_source_da2_inner = couch_source_da2_full[y0 : y0 + H, :]
-    couch_source_da2_exp = np.zeros((exp_h, exp_w), dtype=np.float32)
     rh_full = couch_full_rgb.size[1]
-    couch_source_da2_exp[fy_start : fy_start + rh_full, pad_x : pad_x + W] = couch_source_da2_full
+    couch_source_da2_exp = cv2.copyMakeBorder(
+        couch_source_da2_full.astype(np.float32),
+        top=fy_start,
+        bottom=exp_h - (fy_start + rh_full),
+        left=pad_x,
+        right=exp_w - (pad_x + W),
+        borderType=cv2.BORDER_REFLECT_101,
+    )
 
     H_wall = compute_homography_from_pairs(bundle.wall_homography_pairs)
     (
@@ -2470,40 +2925,14 @@ def build_denya_living_room_scenes(
         couch_cfg.people_max_pinhole_fill_px,
         couch_cfg.people_min_component_px,
     )
-    people_sal_u8 = refine_alpha_with_salient_edges(
-        couch_inner_rgb,
-        people_sam_u8,
-        matte_extractor,
-        support_px=bundle.salient_edge_support_px,
-        edge_feather_sigma=bundle.segmentation.edge_feather_sigma,
-    )
-    head_max_y = couch_cfg.people_head_salient_max_y
-    people_alpha_u8 = people_sam_u8.copy()
-    people_alpha_u8[:head_max_y, :] = people_sal_u8[:head_max_y, :]
-    if bundle.segmentation.edge_feather_sigma > 0.0:
-        body_soft = np.clip(
-            np.round(
-                ndi.gaussian_filter(
-                    people_sam_u8.astype(np.float32),
-                    sigma=bundle.segmentation.edge_feather_sigma * 0.5,
-                )
-            ),
-            0,
-            255,
-        ).astype(np.uint8)
-        people_alpha_u8[head_max_y:, :] = body_soft[head_max_y:, :]
-    for eb in couch_cfg.people_exclude_boxes:
-        people_alpha_u8[eb.y0 : eb.y1, eb.x0 : eb.x1] = 0
-    people_alpha_u8 = solidify_interior_alpha_u8(
-        people_alpha_u8,
-        max_hole_area_px=couch_cfg.people_max_pinhole_fill_px,
-        erode_px=bundle.interior_solidify_erode_px,
-        threshold_u8=bundle.interior_solidify_threshold_u8,
-    )
-    for eb in couch_cfg.people_exclude_boxes:
-        people_alpha_u8[eb.y0 : eb.y1, eb.x0 : eb.x1] = 0
-    people_alpha_u8 = filter_min_components_u8(
-        people_alpha_u8, couch_cfg.people_min_component_px, bundle.alpha_clean_threshold_u8
+    people_alpha_u8, couch_people_decontam_inner_rgb, people_raw_hair_u8 = (
+        cleanse_couch_people_matte_and_rgb(
+            couch_inner_rgb=couch_inner_rgb,
+            sam_u8=people_sam_u8,
+            couch_cfg=couch_cfg,
+            bundle=bundle,
+            matte_extractor=matte_extractor,
+        )
     )
 
     # Full 1500x1125 coffee-table + all tabletop objects + legs
@@ -2557,12 +2986,13 @@ def build_denya_living_room_scenes(
     couch_without_table_inner_rgb = couch_without_table_full_rgb.crop((0, y0, W, y0 + H))
 
     couch_mid_rgba = build_downward_apron_rgba(
-        authentic_inner_rgb=couch_inner_rgb,
+        authentic_inner_rgb=couch_people_decontam_inner_rgb,
         healed_behind_occluder_inner_rgb=couch_without_table_inner_rgb,
         base_alpha_u8=people_alpha_u8,
         occluder_inner_u8=table_inner_u8,
         apron_cfg=couch_cfg.mid_apron,
         min_component_px=couch_cfg.people_min_component_px,
+        already_decontaminated=True,
     )
 
     # Expanded 2700x1800 coffee-table foreground (`fgExpanded: true`)
@@ -2574,25 +3004,30 @@ def build_denya_living_room_scenes(
     couch_fg_exp[fy_start : fy_start + rh_full, pad_x : pad_x + W, 3] = table_full_u8
     couch_fg_rgba = Image.fromarray(couch_fg_exp, mode="RGBA")
 
-    # Erase ONLY people+guitar + coffee table + bottom foreground chair arms from `layer0` so the
-    # gray sofa, pillows, and plush toy remain intact on `layer0` (`C^-1` behind Tal's profile!)
-    couch_occ_full_u8 = table_and_tips_u8.copy()
-    couch_occ_full_u8[y0 : y0 + H, :] = np.maximum(
-        couch_occ_full_u8[y0 : y0 + H, :], people_alpha_u8
+    # Erase people+guitar (generous 30px hair erase on wall, sofa-seeded pillow erase behind Ya'ara/Carmel)
+    # + coffee table + bottom foreground chair arms from `layer0`
+    couch_bg_inpaint_src_rgb, couch_occ_full_u8 = prepare_couch_bg_inpaint_source_and_mask(
+        couch_full_rgb=couch_full_rgb,
+        table_and_tips_full_u8=table_and_tips_u8,
+        people_sam_u8=people_sam_u8,
+        people_raw_hair_u8=people_raw_hair_u8,
+        people_clean_alpha_u8=people_alpha_u8,
+        couch_inner_rgb=couch_inner_rgb,
+        couch_cfg=couch_cfg,
+        inner_crop_y0=y0,
     )
     couch_clean_full_rgb = lama_inpainter.inpaint_background(
-        couch_full_rgb,
-        np.where(couch_occ_full_u8 > 24, 255, 0).astype(np.uint8),
-        dilation_radius_px=bundle.inpainting.dilation_radius_px,
+        couch_bg_inpaint_src_rgb,
+        couch_occ_full_u8,
+        dilation_radius_px=couch_cfg.people_matte_cleanse.bg_final_dilation_px,
     )
     couch_clean_full_rgba = couch_clean_full_rgb.convert("RGBA")
     couch_clean_full_rgba.alpha_composite(couch_art_prev_rgba, dest=(0, y0))
-    couch_bg_exp_rgb = progressive_lama_outpaint_canvas(
+    couch_bg_exp_rgb = mirror_reflect_authentic_canvas(
         full_clean_rgb=couch_clean_full_rgba.convert("RGB"),
         inner_dims=bundle.dimensions,
         outpaint_cfg=bundle.outpainting,
-        prog_cfg=bundle.progressive_lama,
-        lama_inpainter=lama_inpainter,
+        mirror_cfg=bundle.mirror_outpaint,
     )
     couch_raw_depth_u8, _ = build_calibrated_wall_pinned_depth(
         expanded_bg_rgb=couch_bg_exp_rgb,
@@ -2759,7 +3194,7 @@ def build_denya_living_room_scenes(
 
     planted_trio_rgba, planted_trio_shadow_rgba, planted_trio_warped_da2 = (
         synthesize_planted_couch_trio_and_shadow(
-            couch_inner_rgb=couch_inner_rgb,
+            couch_inner_rgb=couch_people_decontam_inner_rgb,
             couch_people_alpha_u8=people_alpha_u8,
             couch_inner_da2=couch_source_da2_inner,
             dining_clean_inner_rgb=din_clean_inner_rgb,
@@ -2772,12 +3207,11 @@ def build_denya_living_room_scenes(
     din_clean_full_rgba = din_clean_full_rgb.convert("RGBA")
     din_clean_full_rgba.alpha_composite(planted_trio_shadow_rgba, dest=(0, y0))
     din_clean_full_rgba.alpha_composite(din_art_prev_rgba, dest=(0, y0))
-    din_bg_exp_rgb = progressive_lama_outpaint_canvas(
+    din_bg_exp_rgb = mirror_reflect_authentic_canvas(
         full_clean_rgb=din_clean_full_rgba.convert("RGB"),
         inner_dims=bundle.dimensions,
         outpaint_cfg=bundle.outpainting,
-        prog_cfg=bundle.progressive_lama,
-        lama_inpainter=lama_inpainter,
+        mirror_cfg=bundle.mirror_outpaint,
     )
     din_raw_depth_u8, _ = build_calibrated_wall_pinned_depth(
         expanded_bg_rgb=din_bg_exp_rgb,
