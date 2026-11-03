@@ -431,7 +431,7 @@ const DEFAULT_BAR_GIORA_PORTAL_SHELVES = Object.freeze([
     labelHe: 'תיבת הוויטרינה מ׳בנה ביתך׳ · לחצו להתקרבות וסיבוב אל תוך הוויטרינה',
     shortBadgeHe: 'אל הוויטרינה',
     showMicroBadge: false,
-    innerBoxPx: Object.freeze([501.9, 363.0, 608.1, 485.0]),
+    innerBoxPx: Object.freeze([449.5, 344.2, 662.5, 503.8]),
     worldZ: -316.37,
     recessDepth: 0.0,
     embedDiorama: false,
@@ -866,6 +866,7 @@ uniform sampler2D uTexNext;
 uniform float uProgress;
 uniform float uAspect;
 uniform vec2 uPointer;
+uniform float uDisplacementScale;
 
 varying vec2 vUv;
 
@@ -878,8 +879,9 @@ void main() {
     float envelope = sin(uProgress * PI);
 
     // Subtle atmospheric depth-glide shimmer complementing real 3D camera kinematic glide
-    float ripple = sin(dist * 14.0 - uProgress * 9.0) * 0.012 * envelope;
-    float directionalWarp = cos(uv.y * 8.0 + uv.x * 5.0 + uPointer.x * 1.5) * 0.008 * envelope;
+    float dispMult = uDisplacementScale;
+    float ripple = sin(dist * 14.0 - uProgress * 9.0) * 0.012 * envelope * dispMult;
+    float directionalWarp = cos(uv.y * 8.0 + uv.x * 5.0 + uPointer.x * 1.5) * 0.008 * envelope * dispMult;
     vec2 displacement = normalize(centeredUv + vec2(0.001)) * ripple + vec2(directionalWarp, -directionalWarp);
 
     vec2 uvCurrent = uv + displacement * (1.0 - uProgress);
@@ -888,7 +890,7 @@ void main() {
     vec4 colCurrent = texture2D(uTexCurrent, uvCurrent);
     vec4 colNext    = texture2D(uTexNext, uvNext);
 
-    float specularFlash = smoothstep(0.35, 0.5, uProgress) * (1.0 - smoothstep(0.5, 0.65, uProgress));
+    float specularFlash = smoothstep(0.35, 0.5, uProgress) * (1.0 - smoothstep(0.5, 0.65, uProgress)) * dispMult;
     vec3 flashColor = vec3(0.92, 0.94, 0.98) * specularFlash * 0.14 * max(0.0, 1.0 - dist);
 
     float blendFactor = smoothstep(0.08, 0.92, uProgress);
@@ -7711,7 +7713,8 @@ export class SpatialSceneManager {
         uTexNext: { value: null },
         uProgress: { value: 0.0 },
         uAspect: { value: this.width / this.height },
-        uPointer: { value: new THREE.Vector2(0, 0) }
+        uPointer: { value: new THREE.Vector2(0, 0) },
+        uDisplacementScale: { value: 1.0 }
       },
       depthWrite: false,
       depthTest: false
@@ -8430,6 +8433,7 @@ export class SpatialSceneManager {
             this.transitionMaterial.uniforms.uTexNext.value = this.rtNext.texture;
             this.transitionMaterial.uniforms.uProgress.value = blendProgress;
             this.transitionMaterial.uniforms.uPointer.value.set(0.0, 0.0);
+            this.transitionMaterial.uniforms.uDisplacementScale.value = 1.0;
             this.renderer.render(this.transitionScene, this.transitionCamera);
           }
         } else {
@@ -8459,11 +8463,15 @@ export class SpatialSceneManager {
 
             const targetRest = this._getSceneRestPose(flight.targetSceneId);
             const inRollDeg = -(flight.flightRollDeg || 0.0) * (1.0 - ease);
+            const glideOffsetZ =
+              flight.targetSceneId === 'vitrine_keys_pen'
+                ? 0.0
+                : SCENE_GEOMETRY_SPEC.transitionGlideInOffsetZ;
             const inPose = {
               ...this._clampPoseForScene(flight.targetSceneId, {
                 x: targetRest.x,
                 y: targetRest.y,
-                z: targetRest.z + SCENE_GEOMETRY_SPEC.transitionGlideInOffsetZ * (1.0 - ease),
+                z: targetRest.z + glideOffsetZ * (1.0 - ease),
                 yawDeg: targetRest.yawDeg,
                 pitchDeg: targetRest.pitchDeg,
                 rollDeg: inRollDeg
@@ -8495,6 +8503,8 @@ export class SpatialSceneManager {
             this.transitionMaterial.uniforms.uTexNext.value = this.rtNext.texture;
             this.transitionMaterial.uniforms.uProgress.value = blendProgress;
             this.transitionMaterial.uniforms.uPointer.value.set(flightNormYaw, flightNormPitch);
+            this.transitionMaterial.uniforms.uDisplacementScale.value =
+              flight.targetSceneId === 'vitrine_keys_pen' ? 0.0 : 1.0;
             this.renderer.render(this.transitionScene, this.transitionCamera);
           }
         }

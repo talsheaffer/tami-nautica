@@ -1521,7 +1521,7 @@ def build_bar_giora_bedroom_scene(
             "labelHe": spec.portal_label_he,
             "shortBadgeHe": spec.portal_short_badge_he,
             "showMicroBadge": False,
-            "innerBoxPx": portal_box,
+            "innerBoxPx": [449.5, 344.2, 662.5, 503.8],
             "worldZ": portal_world_z,
             "recessDepth": 0.0,
             "embedDiorama": False,
