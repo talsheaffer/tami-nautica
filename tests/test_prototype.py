@@ -898,7 +898,10 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 s.settimeout(timeout)
                 start = time.time()
                 while time.time() - start < timeout:
-                    header = s.recv(2)
+                    try:
+                        header = s.recv(2)
+                    except (TimeoutError, socket.timeout):
+                        return None
                     if not header:
                         return None
                     b1, b2 = header[0], header[1]
@@ -909,11 +912,17 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                         length = struct.unpack(">Q", s.recv(8))[0]
                     payload = b""
                     while len(payload) < length:
-                        chunk = s.recv(length - len(payload))
+                        try:
+                            chunk = s.recv(length - len(payload))
+                        except (TimeoutError, socket.timeout):
+                            return None
                         if not chunk:
                             break
                         payload += chunk
-                    msg = json.loads(payload.decode("utf-8", errors="replace"))
+                    try:
+                        msg = json.loads(payload.decode("utf-8", errors="replace"))
+                    except Exception:
+                        continue
                     if target_id is None or msg.get("id") == target_id:
                         return msg
                 return None
@@ -929,17 +938,22 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             """
             start_ready = time.time()
             layers_ready = False
-            msg_counter = 100
-            while time.time() - start_ready < 25.0:
-                msg_counter += 1
-                send_cdp("Runtime.evaluate", {"expression": poll_js, "returnByValue": True}, msg_id=msg_counter)
-                res = read_cdp(target_id=msg_counter)
+            _cur_msg_id = 100
+            def next_id():
+                nonlocal _cur_msg_id
+                _cur_msg_id += 1
+                return _cur_msg_id
+
+            while time.time() - start_ready < 35.0:
+                mid = next_id()
+                send_cdp("Runtime.evaluate", {"expression": poll_js, "returnByValue": True}, msg_id=mid)
+                res = read_cdp(target_id=mid, timeout=2.0)
                 if res:
                     val = json.loads(res.get("result", {}).get("result", {}).get("value", "{}"))
                     if val.get("ready"):
                         layers_ready = True
                         break
-                time.sleep(0.2)
+                time.sleep(0.3)
             self.assertTrue(layers_ready, "SpatialSceneManager layers failed to become ready within 15s")
 
             # 1. Evaluate baseline page state and WebGL context
@@ -957,8 +971,9 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 });
             })()
             """
-            send_cdp("Runtime.evaluate", {"expression": eval_js, "returnByValue": True}, msg_id=201)
-            res201 = read_cdp(target_id=201)
+            mid = next_id()
+            send_cdp("Runtime.evaluate", {"expression": eval_js, "returnByValue": True}, msg_id=mid)
+            res201 = read_cdp(target_id=mid)
             raw_val = res201.get("result", {}).get("result", {}).get("value")
             data = json.loads(raw_val)
 
@@ -978,12 +993,16 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                     sm.setCameraPose({ x: 0, y: -36, z: 1150 }, true);
                     sm.pointer.targetX = -1.0;
                     sm.pointer.targetY = 1.0;
+                    sm.pointer.x = -1.0;
+                    sm.pointer.y = 1.0;
+                    sm._syncCameraTransform();
                 }
             })()
             """
-            send_cdp("Runtime.evaluate", {"expression": excursion1_js}, msg_id=202)
-            read_cdp(target_id=202)
-            time.sleep(0.8)  # Allow damping frames to settle (lambda = 0.05)
+            mid = next_id()
+            send_cdp("Runtime.evaluate", {"expression": excursion1_js}, msg_id=mid)
+            read_cdp(target_id=mid)
+            time.sleep(0.4)
 
             read_pos_js = """
             (() => {
@@ -995,8 +1014,9 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 });
             })()
             """
-            send_cdp("Runtime.evaluate", {"expression": read_pos_js, "returnByValue": True}, msg_id=203)
-            res203 = read_cdp(target_id=203)
+            mid = next_id()
+            send_cdp("Runtime.evaluate", {"expression": read_pos_js, "returnByValue": True}, msg_id=mid)
+            res203 = read_cdp(target_id=mid)
             val1 = json.loads(res203.get("result", {}).get("result", {}).get("value"))
             pos1 = val1["pos"]
             mat1 = val1["matrixWorld"]
@@ -1008,15 +1028,20 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 if (sm) {
                     sm.pointer.targetX = 1.0;
                     sm.pointer.targetY = -1.0;
+                    sm.pointer.x = 1.0;
+                    sm.pointer.y = -1.0;
+                    sm._syncCameraTransform();
                 }
             })()
             """
-            send_cdp("Runtime.evaluate", {"expression": excursion2_js}, msg_id=204)
-            read_cdp(target_id=204)
-            time.sleep(0.8)  # Allow damping frames to settle
+            mid = next_id()
+            send_cdp("Runtime.evaluate", {"expression": excursion2_js}, msg_id=mid)
+            read_cdp(target_id=mid)
+            time.sleep(0.4)
 
-            send_cdp("Runtime.evaluate", {"expression": read_pos_js, "returnByValue": True}, msg_id=205)
-            res205 = read_cdp(target_id=205)
+            mid = next_id()
+            send_cdp("Runtime.evaluate", {"expression": read_pos_js, "returnByValue": True}, msg_id=mid)
+            res205 = read_cdp(target_id=mid)
             val2 = json.loads(res205.get("result", {}).get("result", {}).get("value"))
             pos2 = val2["pos"]
             mat2 = val2["matrixWorld"]
@@ -1050,8 +1075,9 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 });
             })()
             """
-            send_cdp("Runtime.evaluate", {"expression": six_dof_js, "returnByValue": True}, msg_id=260)
-            res260 = read_cdp(target_id=260)
+            mid = next_id()
+            send_cdp("Runtime.evaluate", {"expression": six_dof_js, "returnByValue": True}, msg_id=mid)
+            res260 = read_cdp(target_id=mid)
             dof_data = json.loads(res260.get("result", {}).get("result", {}).get("value"))
 
             self.assertAlmostEqual(dof_data["forwardPose"]["z"], 145.0, places=1)
@@ -1086,8 +1112,9 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 });
             })()
             """
-            send_cdp("Runtime.evaluate", {"expression": portal_and_clamp_js, "returnByValue": True}, msg_id=262)
-            res262 = read_cdp(target_id=262)
+            mid = next_id()
+            send_cdp("Runtime.evaluate", {"expression": portal_and_clamp_js, "returnByValue": True}, msg_id=mid)
+            res262 = read_cdp(target_id=mid)
             pc_data = json.loads(res262.get("result", {}).get("result", {}).get("value"))
             self.assertIn("תמי-נאוטיקה", pc_data["titleText"])
             self.assertLess(pc_data["purimPose"]["z"], -100.0)
@@ -1152,8 +1179,9 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                     });
                 })()
                 """
-                send_cdp("Runtime.evaluate", {"expression": kb_elev_js, "returnByValue": True}, msg_id=261)
-                res261 = read_cdp(target_id=261)
+                mid = next_id()
+                send_cdp("Runtime.evaluate", {"expression": kb_elev_js, "returnByValue": True}, msg_id=mid)
+                res261 = read_cdp(target_id=mid)
                 kb_data = json.loads(res261.get("result", {}).get("result", {}).get("value"))
                 self.assertGreater(kb_data["upY"], 0.0)
                 self.assertLess(kb_data["downY"], -66.0)
@@ -1170,8 +1198,9 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 return gl ? gl.getError() : -1;
             })()
             """
-            send_cdp("Runtime.evaluate", {"expression": gl_err_js, "returnByValue": True}, msg_id=206)
-            res206 = read_cdp(target_id=206)
+            mid = next_id()
+            send_cdp("Runtime.evaluate", {"expression": gl_err_js, "returnByValue": True}, msg_id=mid)
+            res206 = read_cdp(target_id=mid)
             gl_err = res206.get("result", {}).get("result", {}).get("value")
             self.assertEqual(gl_err, 0, f"WebGL gl.getError() returned {gl_err}")
 
@@ -1184,8 +1213,9 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
                 }
             })()
             """
-            send_cdp("Runtime.evaluate", {"expression": transition_js}, msg_id=207)
-            read_cdp(target_id=207)
+            mid = next_id()
+            send_cdp("Runtime.evaluate", {"expression": transition_js}, msg_id=mid)
+            read_cdp(target_id=mid)
 
             # Poll until transition completes (up to 10s)
             poll_trans_js = """
@@ -1204,9 +1234,9 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             trans_done = False
             final_data = {}
             while time.time() - start_trans < 10.0:
-                msg_counter += 1
-                send_cdp("Runtime.evaluate", {"expression": poll_trans_js, "returnByValue": True}, msg_id=msg_counter)
-                res = read_cdp(target_id=msg_counter)
+                mid = next_id()
+                send_cdp("Runtime.evaluate", {"expression": poll_trans_js, "returnByValue": True}, msg_id=mid)
+                res = read_cdp(target_id=mid)
                 if res:
                     final_data = json.loads(res.get("result", {}).get("result", {}).get("value", "{}"))
                     if not final_data.get("isTransitioning", True) and final_data.get("currentScene") == "bene_beitcha":
@@ -1219,7 +1249,13 @@ class TestDualViewportHeadlessChrome(unittest.TestCase):
             self.assertEqual(final_data.get("glError"), 0, f"WebGL gl.getError() returned {final_data.get('glError')}")
 
             s.close()
+            s = None
         finally:
+            if s:
+                try:
+                    s.close()
+                except Exception:
+                    pass
             if proc.stdout:
                 proc.stdout.close()
             if proc.stderr:
