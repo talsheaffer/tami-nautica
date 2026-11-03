@@ -1794,11 +1794,11 @@ def default_new_scenes_bundle_config() -> NewScenesBundleConfig:
             ),
             PortalCubbySpec(
                 cubby_id="row4_col3",
-                runtime_shelf_id="cubby_plan_b_pipe",
+                runtime_shelf_id="cubby_bar_giora",
                 row_index=3,
                 col_index=2,
-                target_scene_id="plan_b_pipe",
-                label_he="🕳️ צינור Plan B · מלט ונייר",
+                target_scene_id="bar_giora_bedroom",
+                label_he="🕳️ חדר שינה בבר גיורא · ויטרינה ומנורת מפרש",
                 aperture_bounds_px=BoundingBoxPrompt(x0=661, y0=763, x1=808, y1=905),
                 backplane_sam_prompt=SamPointGroupPrompt(
                     box=BoundingBoxPrompt(x0=659, y0=761, x1=810, y1=907),
@@ -1814,6 +1814,20 @@ def default_new_scenes_bundle_config() -> NewScenesBundleConfig:
                         (735.0, 914.0),
                     ),
                     point_labels=(1, 1, 1, 1, 1, 0, 0, 0, 0),
+                ),
+            ),
+            PortalCubbySpec(
+                cubby_id="row7_col1",
+                runtime_shelf_id="cubby_paris_table",
+                row_index=6,
+                col_index=0,
+                target_scene_id="paris_cite_white_table",
+                label_he="🕳️ פאריס · שולחן לבן בסיטה",
+                aperture_bounds_px=BoundingBoxPrompt(x0=268, y0=1286, x1=415, y1=1452),
+                backplane_sam_prompt=SamPointGroupPrompt(
+                    box=BoundingBoxPrompt(x0=268, y0=1286, x1=415, y1=1452),
+                    points_xy=((340.0, 1370.0),),
+                    point_labels=(1,),
                 ),
             ),
             PortalCubbySpec(

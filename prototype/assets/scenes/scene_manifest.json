@@ -6778,9 +6778,9 @@
           }
         },
         {
-          "id": "cubby_plan_b_pipe",
-          "targetSceneId": "plan_b_pipe",
-          "labelHe": "צינור Plan B · מלט ונייר",
+          "id": "cubby_bar_giora",
+          "targetSceneId": "bar_giora_bedroom",
+          "labelHe": "חדר שינה בבר גיורא · ויטרינה ומנורת מפרש",
           "innerBoxPx": [
             838.36,
             431.55,
@@ -6855,6 +6855,19 @@
             "coverageRatio": 0.4869,
             "locksPortal": true
           }
+        },
+        {
+          "id": "cubby_paris_table",
+          "targetSceneId": "paris_cite_white_table",
+          "labelHe": "פאריס · שולחן לבן בסיטה",
+          "innerBoxPx": [
+            612.21,
+            732.85,
+            704.8,
+            836.48
+          ],
+          "worldZ": -284.0,
+          "recessDepth": 160.0
         }
       ],
       "portalCubbies": [
@@ -7358,11 +7371,11 @@
         },
         {
           "cubbyId": "row4_col3",
-          "runtimeShelfId": "cubby_plan_b_pipe",
+          "runtimeShelfId": "cubby_bar_giora",
           "rowIndex": 3,
           "colIndex": 2,
-          "targetSceneId": "plan_b_pipe",
-          "labelHe": "🕳️ צינור Plan B · מלט ונייר",
+          "targetSceneId": "bar_giora_bedroom",
+          "labelHe": "🕳️ חדר שינה בבר גיורא · ויטרינה ומנורת מפרש",
           "hasRemovableOccluder": false,
           "innerBoxPx": [
             838.36,
@@ -7583,6 +7596,69 @@
             "labelHe": "כלי טרקוטה ולוחות בטון על לבד אדום",
             "coverageRatio": 0.4869,
             "locksPortal": true
+          }
+        },
+        {
+          "cubbyId": "row7_col1",
+          "runtimeShelfId": "cubby_paris_table",
+          "rowIndex": 6,
+          "colIndex": 0,
+          "targetSceneId": "paris_cite_white_table",
+          "labelHe": "🕳️ פאריס · שולחן לבן בסיטה",
+          "hasRemovableOccluder": false,
+          "innerBoxPx": [
+            612.21,
+            732.85,
+            704.8,
+            836.48
+          ],
+          "boxPx2700": [
+            1216.21,
+            1136.85,
+            1300.8,
+            1232.48
+          ],
+          "pixelBoundsSource": {
+            "x0": 268,
+            "y0": 1286,
+            "x1": 415,
+            "y1": 1452
+          },
+          "fullCubbyBackplaneBoundsPxSource": {
+            "x0": 268,
+            "y0": 1286,
+            "x1": 415,
+            "y1": 1452
+          },
+          "uvExpandedTopLeftOrigin": {
+            "u0": 0.45045,
+            "v0": 0.631582,
+            "u1": 0.481778,
+            "v1": 0.68471
+          },
+          "uvExpandedWebglBottomLeftOrigin": {
+            "u0": 0.45045,
+            "v0": 0.31529,
+            "u1": 0.481778,
+            "v1": 0.368418
+          },
+          "worldRectAperture": {
+            "worldX": -76.854,
+            "worldY": -239.117,
+            "width": 71.053,
+            "height": 80.33
+          },
+          "worldRectFullBackplane": {
+            "worldX": -76.854,
+            "worldY": -239.117,
+            "width": 71.053,
+            "height": 80.33
+          },
+          "worldRectBleedBehindRim": {
+            "worldX": -76.854,
+            "worldY": -239.117,
+            "width": 87.853,
+            "height": 97.13
           }
         }
       ]

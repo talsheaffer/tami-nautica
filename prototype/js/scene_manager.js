@@ -165,11 +165,18 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
     })
   }),
   Object.freeze({
-    id: 'cubby_plan_b_pipe',
-    targetSceneId: 'plan_b_pipe',
-    showMicroBadge: false,
-    labelHe: 'צינור Plan B · מלט ונייר',
+    id: 'cubby_bar_giora',
+    targetSceneId: 'bar_giora_bedroom',
+    labelHe: 'חדר שינה בבר גיורא · ויטרינה ומנורת מפרש',
     innerBoxPx: Object.freeze([838.36, 431.55, 930.94, 521.36]),
+    worldZ: -284.0,
+    recessDepth: 160.0
+  }),
+  Object.freeze({
+    id: 'cubby_paris_table',
+    targetSceneId: 'paris_cite_white_table',
+    labelHe: 'פאריס · שולחן לבן בסיטה',
+    innerBoxPx: Object.freeze([612.21, 732.85, 704.8, 836.48]),
     worldZ: -284.0,
     recessDepth: 160.0
   }),

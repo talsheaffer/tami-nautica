@@ -98,7 +98,7 @@ class TestPrototypeIntegrity(unittest.TestCase):
 
         new_cfg = default_new_scenes_bundle_config()
         self.assertEqual(new_cfg, NewScenesBundleConfig.from_json(new_cfg.to_json()))
-        self.assertEqual(len(new_cfg.shelf_portal.portal_cubbies), 9)
+        self.assertEqual(len(new_cfg.shelf_portal.portal_cubbies), 10)
 
         fried_cfg = default_fried_house_scene_config()
         self.assertEqual(fried_cfg, FriedHouseSceneConfig.from_json(fried_cfg.to_json()))
