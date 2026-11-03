@@ -671,6 +671,7 @@ export class BetaFeedbackOverlay {
   }
 
   openDrawer() {
+    if (!this.drawer) return;
     const infoDrawer = document.getElementById('info-drawer');
     if (infoDrawer) infoDrawer.classList.remove('open');
     document.body.classList.remove('info-drawer-open');
@@ -683,15 +684,15 @@ export class BetaFeedbackOverlay {
         sbToggle.setAttribute('aria-expanded', 'false');
       }
     }
-    this.focusBar.classList.add('hidden');
+    if (this.focusBar) this.focusBar.classList.add('hidden');
     this.drawer.classList.add('open');
     document.body.classList.add('beta-drawer-open');
     if (this.drawerToggleBtn) this.drawerToggleBtn.classList.add('active');
   }
 
   closeDrawer() {
+    if (!this.drawer) return;
     if (
-      this.drawer &&
       document.activeElement &&
       this.drawer.contains(document.activeElement) &&
       typeof document.activeElement.blur === 'function'
@@ -704,6 +705,7 @@ export class BetaFeedbackOverlay {
   }
 
   toggleDrawer() {
+    if (!this.drawer) return;
     if (this.drawer.classList.contains('open')) {
       this.closeDrawer();
     } else {
@@ -713,6 +715,7 @@ export class BetaFeedbackOverlay {
   }
 
   startHighlightMode() {
+    if (!this.drawer) return;
     this._pickingFromDrawer = this.drawer.classList.contains('open');
     this.closeDrawer();
     const infoDrawer = document.getElementById('info-drawer');
@@ -720,7 +723,7 @@ export class BetaFeedbackOverlay {
     document.body.classList.remove('info-drawer-open');
     const centerHint = document.getElementById('center-hint');
     if (centerHint) centerHint.classList.add('hidden');
-    this.focusBar.classList.add('hidden');
+    if (this.focusBar) this.focusBar.classList.add('hidden');
 
     this.isPicking = true;
     if (this.sceneManager) {
