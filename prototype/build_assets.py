@@ -585,19 +585,14 @@ def _apply_pipe_outer_barrel_and_mirror_borders(
 
         shell_rgba = np.dstack([new_rgb, new_alpha_u8]).astype(np.uint8)
 
-        # Extrapolate interior concrete rim depth outward from eroded interior, then smoothly ramp
-        # across the exterior concrete barrel down to `u8 = 0` (`Z = z_pos = -430`) on a wide opaque flange.
+        # Extrapolate interior concrete rim depth outward across the collar and beyond (Law 2: C^-1 free silhouette),
+        # NEVER ramping down to wall depth (u8 = 0) which causes visible rubber-sheeting against the back wall.
         bevel_in_px = float(ptr_cfg.outer_wall_inner_bevel_px)
-        zero_out_px = min(collar_px - 2.0, float(ptr_cfg.outer_wall_depth_zero_px))
-        depth_seed = (pipe_mask) & (sd_outer >= max(2.0, bevel_in_px * 0.5))
+        depth_seed = (pipe_mask) & (sd_outer >= max(2.0, bevel_in_px * 0.5)) & (shell_depth > 0)
         if np.any(depth_seed):
             _, nearest_d_idx = ndimage.distance_transform_edt(~depth_seed, return_indices=True)
-            rim_depth_f = shell_depth[nearest_d_idx[0], nearest_d_idx[1]].astype(np.float32)
-            ramp_w = glsl_smoothstep(-zero_out_px, bevel_in_px, sd_outer)
-            barrel_depth_u8 = np.rint(np.clip(rim_depth_f * ramp_w, 0.0, 255.0)).astype(np.uint8)
-            shell_depth = np.where(sd_outer < bevel_in_px, barrel_depth_u8, shell_depth).astype(
-                np.uint8
-            )
+            rim_depth_u8 = shell_depth[nearest_d_idx[0], nearest_d_idx[1]]
+            shell_depth = np.where(sd_outer < bevel_in_px, rim_depth_u8, shell_depth).astype(np.uint8)
             extrap_d = extrapolate_depth_outward_edt(
                 shell_depth.astype(np.float32), new_alpha_u8 >= 20
             )
