@@ -1533,11 +1533,11 @@ def default_new_scenes_bundle_config() -> NewScenesBundleConfig:
         portal_cubbies=(
             PortalCubbySpec(
                 cubby_id="row1_col1",
-                runtime_shelf_id="cubby_wandering_1",
+                runtime_shelf_id="cubby_scroll_foot",
                 row_index=0,
                 col_index=0,
-                target_scene_id="wandering_drawing_1",
-                label_he="✏️ שיטוט 1 · רישום משולב על נייר",
+                target_scene_id="bene_beitcha_scroll_foot",
+                label_he="📜 מגילה וכף רגל · ׳בנה ביתך׳",
                 aperture_bounds_px=BoundingBoxPrompt(x0=3, y0=112, x1=148, y1=281),
                 backplane_sam_prompt=SamPointGroupPrompt(
                     box=BoundingBoxPrompt(x0=2, y0=110, x1=150, y1=283),

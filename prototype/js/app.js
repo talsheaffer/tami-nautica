@@ -34,6 +34,7 @@ const EXHIBITION_SCENE_SEQUENCE = Object.freeze(
 const PORTAL_SHORT_BADGE_LABELS_HE = Object.freeze({
   cubby_capsules: 'קפסולות נייר',
   cubby_plan_b_v3: 'תמי ויערה',
+  cubby_scroll_foot: 'מגילה וכף רגל',
   cubby_wandering_1: 'שיטוט 1',
   cubby_bene_beitcha: 'בנה ביתך',
   cubby_plan_b_pipe: 'צינור Plan B',
@@ -286,34 +287,27 @@ class SpatialApp {
 
   _handleLayersReady() {
     if (this._loadingDismissed) return;
-    if (!this._shouldHoldLoadingForReading()) {
-      this._dismissLoadingOverlayNow();
-      return;
-    }
-    const navElapsedMs = typeof performance !== 'undefined' ? performance.now() : 0;
-    const remainingMs = LOADING_SCREEN_SPEC.minHumanDisplayMs - navElapsedMs;
-    if (remainingMs <= 0) {
-      this._dismissLoadingOverlayNow();
-      return;
-    }
+
     if (this.loadingSkipHintEl) {
+      this.loadingSkipHintEl.textContent = 'המרחב מוכן · לחצו בכל מקום כדי להתחיל';
       this.loadingSkipHintEl.classList.remove('hidden');
     }
+
     if (this.loadingOverlay) {
       this.loadingOverlay.classList.add('ready-to-skip');
-      this._onSkipLoadingEarly = () => {
+      this._onSkipLoadingEarly = (e) => {
+        if (e && typeof e.stopPropagation === 'function') {
+          e.stopPropagation();
+        }
         this._dismissLoadingOverlayNow();
       };
       this.loadingOverlay.addEventListener('click', this._onSkipLoadingEarly, { once: true });
       this.loadingOverlay.addEventListener('touchstart', this._onSkipLoadingEarly, {
         once: true,
-        passive: true
+        passive: false
       });
       window.addEventListener('keydown', this._onSkipLoadingEarly, { once: true });
     }
-    this._loadingHoldTimer = setTimeout(() => {
-      this._dismissLoadingOverlayNow();
-    }, remainingMs);
   }
 
   initSceneManager() {
@@ -324,9 +318,7 @@ class SpatialApp {
       onSceneChange: (sceneId) => {
         this.updateActiveSceneUI(sceneId);
       },
-      onPortalHover: (spec, clientX, clientY) => {
-        this.updatePortalHoverPlaque(spec, clientX, clientY);
-      },
+      onPortalHover: (_spec, _clientX, _clientY) => {},
       onPortalUnlock: (spec) => {
         this._handlePortalUnlock(spec);
       }
@@ -356,35 +348,21 @@ class SpatialApp {
 
   _syncBadgeLabelAndLockState(badgeBtn, spec) {
     if (!badgeBtn || !spec || !this.manager) return;
-    const baseLabel =
-      spec.shortBadgeHe || PORTAL_SHORT_BADGE_LABELS_HE[spec.id] || spec.labelHe;
     const isLocked =
       typeof this.manager.isPortalLocked === 'function'
         ? this.manager.isPortalLocked(spec.id)
         : false;
     const isCompactPin = this.manager.currentSceneId === 'shelf_portal';
     badgeBtn.classList.toggle('compact-pin', isCompactPin);
-    if (isCompactPin) {
-      const pinState = `${isLocked ? 'locked' : 'open'}:${baseLabel}`;
-      if (badgeBtn.dataset.pinState !== pinState) {
-        badgeBtn.dataset.pinState = pinState;
-        badgeBtn.innerHTML = '';
-        const iconSpan = document.createElement('span');
-        iconSpan.className = 'badge-pin-icon';
-        iconSpan.setAttribute('aria-hidden', 'true');
-        iconSpan.textContent = isLocked ? '🔒' : '↗';
-        const labelSpan = document.createElement('span');
-        labelSpan.className = 'badge-pin-label';
-        labelSpan.textContent = baseLabel;
-        badgeBtn.appendChild(iconSpan);
-        badgeBtn.appendChild(labelSpan);
-      }
-    } else {
-      delete badgeBtn.dataset.pinState;
-      const nextText = isLocked ? `🔒 ${baseLabel}` : baseLabel;
-      if (badgeBtn.textContent !== nextText) {
-        badgeBtn.textContent = nextText;
-      }
+    const pinState = isLocked ? 'locked' : 'open';
+    if (badgeBtn.dataset.pinState !== pinState) {
+      badgeBtn.dataset.pinState = pinState;
+      badgeBtn.innerHTML = '';
+      const iconSpan = document.createElement('span');
+      iconSpan.className = 'badge-pin-icon';
+      iconSpan.setAttribute('aria-hidden', 'true');
+      iconSpan.textContent = isLocked ? '🔒' : '↗';
+      badgeBtn.appendChild(iconSpan);
     }
     badgeBtn.classList.toggle('locked', isLocked);
     badgeBtn.setAttribute(
@@ -410,10 +388,6 @@ class SpatialApp {
       if (!isNowLocked) {
         void badgeEl.offsetWidth;
         badgeEl.classList.add('just-unlocked');
-      }
-      const rect = badgeEl.getBoundingClientRect();
-      if (rect.width > 0 && !this.portalHoverPlaque.classList.contains('hidden')) {
-        this.updatePortalHoverPlaque(spec, rect.left + rect.width * 0.5, rect.top);
       }
     }
     if (this.manager) {
@@ -473,23 +447,13 @@ class SpatialApp {
         }
       });
 
-      badgeBtn.addEventListener('mouseenter', () => {
-        const rect = badgeBtn.getBoundingClientRect();
-        this.updatePortalHoverPlaque(spec, rect.left + rect.width * 0.5, rect.top);
-      });
+      badgeBtn.addEventListener('mouseenter', () => {});
 
-      badgeBtn.addEventListener('mouseleave', () => {
-        this.updatePortalHoverPlaque(null, 0, 0);
-      });
+      badgeBtn.addEventListener('mouseleave', () => {});
 
-      badgeBtn.addEventListener('focus', () => {
-        const rect = badgeBtn.getBoundingClientRect();
-        this.updatePortalHoverPlaque(spec, rect.left + rect.width * 0.5, rect.top);
-      });
+      badgeBtn.addEventListener('focus', () => {});
 
-      badgeBtn.addEventListener('blur', () => {
-        this.updatePortalHoverPlaque(null, 0, 0);
-      });
+      badgeBtn.addEventListener('blur', () => {});
 
       this.portalBadgesLayer.appendChild(badgeBtn);
       this._portalBadgeEls.set(spec.id, badgeBtn);
@@ -592,46 +556,10 @@ class SpatialApp {
     }
   }
 
-  updatePortalHoverPlaque(spec, clientX, clientY) {
-    if (!this.portalHoverPlaque) return;
-    if (
-      !spec ||
-      !this.manager ||
-      !this._isScenePortalHost(this.manager.currentSceneId) ||
-      this.manager.isTransitioning ||
-      this.manager._portalFlight ||
-      this.manager.interactionCaptureActive
-    ) {
+  updatePortalHoverPlaque(_spec, _clientX, _clientY) {
+    if (this.portalHoverPlaque) {
       this.portalHoverPlaque.classList.add('hidden');
-      return;
     }
-
-    const vw = window.innerWidth || 1440;
-    const vh = window.innerHeight || 900;
-    const clampedX = Math.min(vw - 170, Math.max(170, clientX));
-    const clampedY = Math.min(vh - 130, Math.max(92, clientY));
-    const isLocked =
-      typeof this.manager.isPortalLocked === 'function'
-        ? this.manager.isPortalLocked(spec.id)
-        : false;
-    const occLabel = (spec.occluder && spec.occluder.labelHe) || 'חפץ במדף';
-    let ctaHtml = '<span class="plaque-cta">לחצו לצלילה לתוך המרחב ↙</span>';
-    if (isLocked) {
-      ctaHtml = `<span class="plaque-cta">🔒 חסום ע״י ${escapeHtmlText(occLabel)} · לחצו להסרה ופתיחת המרחב ✨</span>`;
-    } else if (spec.id === 'yard_railing_portal') {
-      ctaHtml = '<span class="plaque-cta">לחצו למעבר אל תמי ואראלה ליד המעקה ↙</span>';
-    } else if (spec.portalMode === 'reverse_transition') {
-      ctaHtml = '<span class="plaque-cta">לחצו למעבר אל המבט משולחן האוכל ↩</span>';
-    }
-
-    this.portalHoverPlaque.innerHTML =
-      `<span class="plaque-title">${escapeHtmlText(spec.labelHe)}</span>` + ctaHtml;
-    this.portalHoverPlaque.style.left = `${clampedX.toFixed(1)}px`;
-    this.portalHoverPlaque.style.top = `${clampedY.toFixed(1)}px`;
-    if (this.centerHint) {
-      this.centerHint.classList.add('hidden');
-    }
-    this.portalHoverPlaque.classList.remove('hidden');
   }
 
   _setActiveExhibitionGroup(groupId, navigateIfOutside = false) {

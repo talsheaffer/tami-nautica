@@ -340,6 +340,7 @@ class TestBetaFeedbackStore(unittest.TestCase):
     def test_extra_layer_and_occluder_layer_ids_accepted_and_unsafe_rejected(self) -> None:
         dynamic_layer_ids = (
             "occluder_cubby_wandering_1",
+            "occluder_cubby_scroll_foot",
             "occluder_fried_installation",
             "pipe_shell",
             "planted_couch_trio",

@@ -21,8 +21,7 @@ export const EXHIBITION_GROUPS = Object.freeze([
     sceneIds: Object.freeze([
       'paper_capsules',
       'tzofen_brick_table',
-      'plan_b_pipe_v3',
-      'plan_b_pipe'
+      'plan_b_pipe_v3'
     ])
   }),
   Object.freeze({
@@ -35,7 +34,6 @@ export const EXHIBITION_GROUPS = Object.freeze([
       'purim_costume_1966',
       'vitrine_keys_pen',
       'humpty_dumpty_booth',
-      'humpty_dumpty_bundle',
       'denya_model',
       'denya_living_room',
       'denya_couch_guitar'
@@ -69,17 +67,17 @@ export const EXHIBITION_GROUPS = Object.freeze([
   }),
   Object.freeze({
     id: 'archive_versions',
-    titleHe: 'ארכיון גרסאות (v1)',
-    shortTabHe: 'ארכיון v1',
-    sceneIds: Object.freeze(['plan_b_pipe_v1', 'marseille_mirror_v1'])
+    titleHe: 'ארכיון גרסאות',
+    shortTabHe: 'ארכיון',
+    sceneIds: Object.freeze(['plan_b_pipe', 'humpty_dumpty_bundle', 'plan_b_pipe_v1', 'marseille_mirror_v1'])
   })
 ]);
 
 const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
-    id: 'cubby_wandering_1',
-    targetSceneId: 'wandering_drawing_1',
-    labelHe: 'שיטוט 1 · רישום משולב על נייר',
+    id: 'cubby_scroll_foot',
+    targetSceneId: 'bene_beitcha_scroll_foot',
+    labelHe: 'מגילה וכף רגל · ׳בנה ביתך׳',
     innerBoxPx: Object.freeze([459.73, 56.52, 551.16, 161.88]),
     worldZ: -284.0,
     recessDepth: 160.0,
@@ -169,6 +167,7 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'cubby_plan_b_pipe',
     targetSceneId: 'plan_b_pipe',
+    showMicroBadge: false,
     labelHe: 'צינור Plan B · מלט ונייר',
     innerBoxPx: Object.freeze([838.36, 431.55, 930.94, 521.36]),
     worldZ: -284.0,
@@ -4881,6 +4880,18 @@ export class SpatialSceneManager {
         !ordered.includes(spec.targetSceneId)
       ) {
         ordered.push(spec.targetSceneId);
+        const childShelves = this.getPortalShelves(spec.targetSceneId);
+        for (const childSpec of childShelves) {
+          if (
+            childSpec &&
+            childSpec.embedDiorama !== false &&
+            childSpec.targetSceneId &&
+            this.sceneConfigs[childSpec.targetSceneId] &&
+            !ordered.includes(childSpec.targetSceneId)
+          ) {
+            ordered.push(childSpec.targetSceneId);
+          }
+        }
       }
     }
     return ordered;
@@ -5200,6 +5211,7 @@ export class SpatialSceneManager {
         let fgMat = null;
         let dustMesh = null;
         let dustMat = null;
+        const childPortalMeshes = [];
 
         if (embedDiorama) {
           clipPlanes = [
@@ -5264,16 +5276,7 @@ export class SpatialSceneManager {
             depthTest: true,
             depthFunc: THREE.AlwaysDepth
           });
-          const dioSegX = SCENE_GEOMETRY_SPEC.portalDioramaSegmentsX;
-          const dioSegY = SCENE_GEOMETRY_SPEC.portalDioramaSegmentsY;
-          const dioBgGeo = this._getSharedPlaneGeo(
-            SCENE_GEOMETRY_SPEC.bgBaseWidth,
-            SCENE_GEOMETRY_SPEC.bgBaseHeight,
-            dioSegX,
-            dioSegY
-          );
-          ownedResources.push(bgMat);
-          bgMesh = new THREE.Mesh(dioBgGeo, bgMat);
+          bgMesh = new THREE.Mesh(targetObj.layer0.geometry, bgMat);
           bgMesh.renderOrder = baseOrder;
           dioramaGroup.add(bgMesh);
 
@@ -5333,21 +5336,7 @@ export class SpatialSceneManager {
             });
           }
           ownedResources.push(midMat);
-          const dioMidGeo =
-            targetObj.hasMidDepthRelief && targetObj.midDepthTex
-              ? this._getSharedPlaneGeo(
-                  SCENE_GEOMETRY_SPEC.midBaseWidth,
-                  SCENE_GEOMETRY_SPEC.midBaseHeight,
-                  dioSegX,
-                  dioSegY
-                )
-              : this._getSharedPlaneGeo(
-                  SCENE_GEOMETRY_SPEC.midBaseWidth,
-                  SCENE_GEOMETRY_SPEC.midBaseHeight,
-                  1,
-                  1
-                );
-          midMesh = new THREE.Mesh(dioMidGeo, midMat);
+          midMesh = new THREE.Mesh(targetObj.layer1.geometry, midMat);
           midMesh.renderOrder = baseOrder + targetMidOrder;
           dioramaGroup.add(midMesh);
 
@@ -5391,17 +5380,7 @@ export class SpatialSceneManager {
                 });
               }
               ownedResources.push(exMat);
-              const exW = extra.expanded
-                ? SCENE_GEOMETRY_SPEC.bgBaseWidth
-                : SCENE_GEOMETRY_SPEC.midBaseWidth;
-              const exH = extra.expanded
-                ? SCENE_GEOMETRY_SPEC.bgBaseHeight
-                : SCENE_GEOMETRY_SPEC.midBaseHeight;
-              const dioExGeo =
-                extra.hasDepthRelief && extra.depthTex
-                  ? this._getSharedPlaneGeo(exW, exH, dioSegX, dioSegY)
-                  : this._getSharedPlaneGeo(exW, exH, 1, 1);
-              const exMesh = new THREE.Mesh(dioExGeo, exMat);
+              const exMesh = new THREE.Mesh(extra.mesh.geometry, exMat);
               exMesh.renderOrder = baseOrder + extra.renderOrder;
               dioramaGroup.add(exMesh);
               extraMeshes.push({ sourceExtra: extra, mesh: exMesh, mat: exMat });
@@ -5444,17 +5423,7 @@ export class SpatialSceneManager {
             });
           }
           ownedResources.push(fgMat);
-          const fgW = targetCfg.fgExpanded
-            ? SCENE_GEOMETRY_SPEC.bgBaseWidth
-            : SCENE_GEOMETRY_SPEC.fgBaseWidth;
-          const fgH = targetCfg.fgExpanded
-            ? SCENE_GEOMETRY_SPEC.bgBaseHeight
-            : SCENE_GEOMETRY_SPEC.fgBaseHeight;
-          const dioFgGeo =
-            targetObj.hasFgDepthRelief && targetObj.fgDepthTex
-              ? this._getSharedPlaneGeo(fgW, fgH, dioSegX, dioSegY)
-              : this._getSharedPlaneGeo(fgW, fgH, 1, 1);
-          fgMesh = new THREE.Mesh(dioFgGeo, fgMat);
+          fgMesh = new THREE.Mesh(targetObj.layer2.geometry, fgMat);
           fgMesh.renderOrder = baseOrder + targetFgOrder;
           dioramaGroup.add(fgMesh);
 
@@ -5467,6 +5436,159 @@ export class SpatialSceneManager {
               ? this._rigSpec.portalDustRenderOrder
               : baseOrder + targetFgOrder + 0.5;
           dioramaGroup.add(dustMesh);
+
+          // If the target scene defines embedded portalShelves (e.g. wandering_drawing_1 has a scroll world aperture
+          // with a pencil drawing veil; fried_house_railing has a window with a wooden shutter occluder),
+          // instantiate representation meshes inside dioramaGroup with clippingPlanes attached so the transition
+          // has zero popping of windows, veils, or occluders.
+          // Child portal representation meshes attached to dioramaGroup
+          childPortalMeshes.length = 0;
+          if (Array.isArray(targetCfg.portalShelves)) {
+            for (const childSpec of targetCfg.portalShelves) {
+              const childTargetObj = this.sceneObjects[childSpec.targetSceneId];
+              const childTargetCfg = this.sceneConfigs[childSpec.targetSceneId];
+
+              // Child diorama preview mesh (embedded background aperture)
+              let childDioBgMesh = null;
+              if (childSpec.embedDiorama !== false && childTargetObj && childTargetCfg) {
+                const childBgTex = this._resolvePortalTexture(
+                  childSpec.previewBgTex,
+                  childTargetCfg.bgTexture,
+                  childTargetObj.bgTex,
+                  ownedResources
+                );
+                const childBgMat = new THREE.MeshBasicMaterial({
+                  map: childBgTex,
+                  transparent: true,
+                  opacity: 1.0,
+                  depthWrite: false,
+                  depthTest: true,
+                  fog: false,
+                  toneMapped: false,
+                  clippingPlanes: clipPlanes
+                });
+                ownedResources.push(childBgMat);
+                const childBgGeo = this._getSharedPlaneGeo(1, 1, 1, 1);
+                childDioBgMesh = new THREE.Mesh(childBgGeo, childBgMat);
+                childDioBgMesh.renderOrder = baseOrder + 1.5;
+                dioramaGroup.add(childDioBgMesh);
+              }
+
+              // Child frame line
+              let childFrameLine = null;
+              if (childSpec.showFrame !== false) {
+                const bevelPts = [
+                  new THREE.Vector3(-0.5, 0.5, 0),
+                  new THREE.Vector3(0.5, 0.5, 0),
+                  new THREE.Vector3(0.5, -0.5, 0),
+                  new THREE.Vector3(-0.5, -0.5, 0)
+                ];
+                const frameGeo = new THREE.BufferGeometry().setFromPoints(bevelPts);
+                const frameMat = new THREE.LineBasicMaterial({
+                  color: 0xE6B980,
+                  transparent: true,
+                  opacity:
+                    typeof childSpec.restFrameOpacity === 'number'
+                      ? childSpec.restFrameOpacity
+                      : 0.24,
+                  depthWrite: false,
+                  depthTest: false,
+                  clippingPlanes: clipPlanes
+                });
+                ownedResources.push(frameGeo, frameMat);
+                childFrameLine = new THREE.LineLoop(frameGeo, frameMat);
+                childFrameLine.renderOrder =
+                  typeof childSpec.frameRenderOrder === 'number'
+                    ? baseOrder + childSpec.frameRenderOrder
+                    : baseOrder + 5.0;
+                dioramaGroup.add(childFrameLine);
+              }
+
+              // Child occluder
+              let childOccMesh = null;
+              let childOccMat = null;
+              if (childSpec.occluder && childSpec.occluder.texture) {
+                const occTex = new THREE.Texture();
+                occTex.minFilter = THREE.LinearFilter;
+                occTex.magFilter = THREE.LinearFilter;
+                ownedResources.push(occTex);
+                this._loadTextureIntoSlot(childSpec.occluder.texture, occTex, () => {}, false);
+                const occGeo = childSpec.occluder.fullInnerCanvas
+                  ? targetObj.layer2.geometry
+                  : new THREE.PlaneGeometry(1, 1);
+                if (!childSpec.occluder.fullInnerCanvas) {
+                  ownedResources.push(occGeo);
+                }
+                const isChildOccErased = this._erasedPortalOccluders.has(childSpec.id);
+                childOccMat = new THREE.MeshBasicMaterial({
+                  map: occTex,
+                  transparent: true,
+                  opacity: isChildOccErased ? 0.0 : 1.0,
+                  depthWrite: false,
+                  depthTest: false,
+                  fog: false,
+                  toneMapped: false,
+                  clippingPlanes: clipPlanes
+                });
+                ownedResources.push(childOccMat);
+                childOccMesh = new THREE.Mesh(occGeo, childOccMat);
+                childOccMesh.visible = !isChildOccErased;
+                childOccMesh.renderOrder =
+                  typeof childSpec.occluder.renderOrder === 'number'
+                    ? baseOrder + childSpec.occluder.renderOrder
+                    : baseOrder + 6.0;
+                dioramaGroup.add(childOccMesh);
+              }
+
+              // Child veil
+              let childVeilMesh = null;
+              let childVeilMat = null;
+              if (childSpec.veil && childSpec.veil.texture) {
+                const veilTex = new THREE.Texture();
+                veilTex.minFilter = THREE.LinearFilter;
+                veilTex.magFilter = THREE.LinearFilter;
+                ownedResources.push(veilTex);
+                this._loadTextureIntoSlot(childSpec.veil.texture, veilTex, () => {}, false);
+                const veilGeo = childSpec.veil.fullInnerCanvas
+                  ? targetObj.layer2.geometry
+                  : new THREE.PlaneGeometry(1, 1);
+                if (!childSpec.veil.fullInnerCanvas) {
+                  ownedResources.push(veilGeo);
+                }
+                const vOp =
+                  typeof childSpec.veil.restOpacity === 'number' ? childSpec.veil.restOpacity : 1.0;
+                childVeilMat = new THREE.MeshBasicMaterial({
+                  map: veilTex,
+                  transparent: true,
+                  opacity: vOp,
+                  depthWrite: false,
+                  depthTest: false,
+                  fog: false,
+                  toneMapped: false,
+                  clippingPlanes: clipPlanes
+                });
+                ownedResources.push(childVeilMat);
+                childVeilMesh = new THREE.Mesh(veilGeo, childVeilMat);
+                childVeilMesh.visible = vOp > 0.005;
+                childVeilMesh.renderOrder =
+                  typeof childSpec.veil.renderOrder === 'number'
+                    ? baseOrder + childSpec.veil.renderOrder
+                    : baseOrder + 6.5;
+                dioramaGroup.add(childVeilMesh);
+              }
+
+              childPortalMeshes.push({
+                childSpec,
+                targetSceneId: spec.targetSceneId,
+                childDioBgMesh,
+                childFrameLine,
+                childOccMesh,
+                childOccMat,
+                childVeilMesh,
+                childVeilMat
+              });
+            }
+          }
 
           dioramaGroup.visible =
             hostSceneId === 'shelf_portal' ? true : Boolean(targetObj.texturesReady);
@@ -5671,7 +5793,8 @@ export class SpatialSceneManager {
           veilTex,
           veilCurrentOpacity: initVeilOp,
           veilTargetOpacity: initVeilOp,
-          veilFlightStartOpacity: initVeilOp
+          veilFlightStartOpacity: initVeilOp,
+          childPortalMeshes: childPortalMeshes || []
         });
       }
     }
@@ -5715,7 +5838,8 @@ export class SpatialSceneManager {
       const hostObj = this.sceneObjects[inst.hostSceneId];
       const hostCfg = this.sceneConfigs[inst.hostSceneId];
       const targetObj = this.sceneObjects[inst.targetSceneId];
-      if (!hostObj || !hostCfg || !targetObj) continue;
+      const targetCfg = this.sceneConfigs[inst.targetSceneId];
+      if (!hostObj || !hostCfg || !targetObj || !targetCfg) continue;
       const geom = inst.spec;
 
       if (inst.embedDiorama && inst.dioramaGroup) {
@@ -5794,6 +5918,87 @@ export class SpatialSceneManager {
         }
         if (inst.dustMesh && targetObj.layer3) {
           inst.dustMesh.rotation.copy(targetObj.layer3.rotation);
+        }
+
+        if (Array.isArray(inst.childPortalMeshes)) {
+          const tRest = this._getSceneRestPose(inst.targetSceneId);
+          const tBoreY = targetCfg.boreSightAtRest ? tRest.y : 0.0;
+          const tBoreZ = targetCfg.boreSightAtRest ? tRest.z : this.baseCameraZ;
+
+          for (const cp of inst.childPortalMeshes) {
+            const cs = cp.childSpec;
+            const cGeom = computePortalWorldGeometry(
+              cs,
+              targetObj.innerScale,
+              tBoreY,
+              tBoreZ,
+              targetObj.sceneBgZ,
+              this.camera.fov,
+              this.camera.aspect
+            );
+
+            if (cp.childFrameLine) {
+              cp.childFrameLine.position.set(
+                cGeom.worldX,
+                cGeom.worldY,
+                cGeom.worldZ + SCENE_GEOMETRY_SPEC.portalFrameBevelOffsetZ
+              );
+              cp.childFrameLine.rotation.set(0, 0, THREE.MathUtils.degToRad(cs.rotationDeg || 0.0));
+              cp.childFrameLine.scale.set(cGeom.width, cGeom.height, 1.0);
+            }
+
+            if (cp.childDioBgMesh) {
+              const recessZ = cGeom.worldZ - cGeom.recessDepth;
+              cp.childDioBgMesh.position.set(cGeom.worldX, cGeom.worldY, recessZ);
+              cp.childDioBgMesh.scale.set(cGeom.width * 1.5, cGeom.height * 1.5, 1.0);
+            }
+
+            if (cp.childOccMesh && cs.occluder) {
+              const occZ = cs.occluder.worldZ;
+              const isErased = this._erasedPortalOccluders.has(cs.id);
+              if (cs.occluder.fullInnerCanvas) {
+                const boreDistBg = Math.max(1.0, tBoreZ - targetObj.sceneBgZ);
+                const ratio = (tBoreZ - occZ) / boreDistBg;
+                const innerW = SCENE_GEOMETRY_SPEC.bgBaseWidth * targetObj.innerScale;
+                const occScale = (innerW * ratio) / SCENE_GEOMETRY_SPEC.fgBaseWidth;
+                cp.childOccMesh.position.set(0.0, tBoreY * (1.0 - ratio), occZ);
+                cp.childOccMesh.scale.set(occScale, occScale, 1.0);
+              } else {
+                const occGeom = Array.isArray(cs.occluder.innerBoxPx)
+                  ? computePortalWorldGeometry(
+                      { innerBoxPx: cs.occluder.innerBoxPx, worldZ: occZ },
+                      targetObj.innerScale,
+                      tBoreY,
+                      tBoreZ,
+                      targetObj.sceneBgZ,
+                      this.camera.fov,
+                      this.camera.aspect
+                    )
+                  : cGeom;
+                cp.childOccMesh.position.set(occGeom.worldX, occGeom.worldY, occZ);
+                cp.childOccMesh.scale.set(occGeom.width, occGeom.height, 1.0);
+              }
+              cp.childOccMesh.visible = !isErased;
+              if (cp.childOccMat) {
+                cp.childOccMat.opacity = isErased ? 0.0 : 1.0;
+              }
+            }
+
+            if (cp.childVeilMesh && cs.veil) {
+              const veilZ = cs.veil.worldZ;
+              if (cs.veil.fullInnerCanvas) {
+                const boreDistBg = Math.max(1.0, tBoreZ - targetObj.sceneBgZ);
+                const veilRatio = (tBoreZ - veilZ) / boreDistBg;
+                const innerW = SCENE_GEOMETRY_SPEC.bgBaseWidth * targetObj.innerScale;
+                const veilScale = (innerW * veilRatio) / SCENE_GEOMETRY_SPEC.fgBaseWidth;
+                cp.childVeilMesh.position.set(0.0, tBoreY * (1.0 - veilRatio), veilZ);
+                cp.childVeilMesh.scale.set(veilScale, veilScale, 1.0);
+              } else {
+                cp.childVeilMesh.position.set(cGeom.worldX, cGeom.worldY, veilZ);
+                cp.childVeilMesh.scale.set(cGeom.width, cGeom.height, 1.0);
+              }
+            }
+          }
         }
       }
 
@@ -8086,6 +8291,14 @@ export class SpatialSceneManager {
         this._gyroTargetPitchDeg = 0;
         this._gyroYawDeg = 0;
         this._gyroPitchDeg = 0;
+        this.pointer.targetX = 0;
+        this.pointer.targetY = 0;
+        this.pointer.x = 0;
+        this.pointer.y = 0;
+        this._hoverNorm.targetX = 0;
+        this._hoverNorm.targetY = 0;
+        this._hoverNorm.x = 0;
+        this._hoverNorm.y = 0;
         this.setCameraPose(this._getSceneRestPose(this.currentSceneId), true);
         this._updateScenePlaneVisibilitiesAndOpacities(this.currentSceneId);
         if (this._sceneNeedsLocalClipping(this.currentSceneId)) {
@@ -8146,7 +8359,7 @@ export class SpatialSceneManager {
             surroundingOpacity,
             flight.portalSpec.id
           );
-          this._updatePortalClippingPlanes();
+          this._updatePortalClippingPlanes(t > 0.88 ? flight.portalSpec.id : null);
         }
 
         if (t >= 1.0) {

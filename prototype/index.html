@@ -108,9 +108,6 @@
       </div>
 
       <div class="top-actions">
-        <button id="info-toggle-btn" class="icon-btn" type="button" aria-label="אודות המרחב והיצירה">
-          אודות
-        </button>
         <button id="fullscreen-btn" class="icon-btn" type="button" aria-label="מסך מלא">
           מסך מלא
         </button>
@@ -182,7 +179,7 @@
                 בתים, ילדות ומרסיי
               </button>
               <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="archive_versions" aria-selected="false">
-                ארכיון v1
+                ארכיון
               </button>
             </div>
           </div>
@@ -207,9 +204,6 @@
             <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe_v3" data-group="binyamin_plan_b" aria-pressed="false">
               Plan B: תמי ויערה
             </button>
-            <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe" data-group="binyamin_plan_b" aria-pressed="false">
-              צינור Plan B
-            </button>
 
             <div class="sidebar-group-heading" data-group-heading="bene_beitcha_home">בנה ביתך ודניה</div>
             <button class="scene-btn scene-pill" type="button" data-scene="bene_beitcha" data-group="bene_beitcha_home" aria-pressed="false">
@@ -226,9 +220,6 @@
             </button>
             <button class="scene-btn scene-pill" type="button" data-scene="humpty_dumpty_booth" data-group="bene_beitcha_home" aria-pressed="false">
               האמפטי דאמפטי בתא
-            </button>
-            <button class="scene-btn scene-pill" type="button" data-scene="humpty_dumpty_bundle" data-group="bene_beitcha_home" aria-pressed="false">
-              צרור עטוף בבד וחבל
             </button>
             <button class="scene-btn scene-pill" type="button" data-scene="denya_model" data-group="bene_beitcha_home" aria-pressed="false">
               דגם בית דניה
@@ -281,6 +272,12 @@
             </button>
 
             <div class="sidebar-group-heading" data-group-heading="archive_versions">ארכיון גרסאות</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe" data-group="archive_versions" aria-pressed="false">
+              צינור Plan B (ארכיון)
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="humpty_dumpty_bundle" data-group="archive_versions" aria-pressed="false">
+              צרור עטוף בבד וחבל (ארכיון)
+            </button>
             <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe_v1" data-group="archive_versions" aria-pressed="false">
               Plan B (גרסה 1)
             </button>
@@ -317,6 +314,13 @@
 
         <!-- Family Beta Workspace Links Slot -->
         <div id="spatial-sidebar-hub-slot" class="sidebar-hub-slot"></div>
+
+        <!-- Curatorial Info Drawer Trigger (Bottom of Sidebar #57) -->
+        <div class="sidebar-section sidebar-info-section">
+          <button id="info-toggle-btn" class="aux-btn sidebar-info-btn" type="button" aria-label="אודות המרחב והיצירה">
+            ℹ️ אודות המרחב והיצירה
+          </button>
+        </div>
       </div>
     </aside>
 

@@ -6580,9 +6580,9 @@
       "portalTransparentRatio": 0.2783,
       "portalShelves": [
         {
-          "id": "cubby_wandering_1",
-          "targetSceneId": "wandering_drawing_1",
-          "labelHe": "שיטוט 1 · רישום משולב על נייר",
+          "id": "cubby_scroll_foot",
+          "targetSceneId": "bene_beitcha_scroll_foot",
+          "labelHe": "מגילה וכף רגל · ׳בנה ביתך׳",
           "innerBoxPx": [
             459.73,
             56.52,
@@ -6860,11 +6860,11 @@
       "portalCubbies": [
         {
           "cubbyId": "row1_col1",
-          "runtimeShelfId": "cubby_wandering_1",
+          "runtimeShelfId": "cubby_scroll_foot",
           "rowIndex": 0,
           "colIndex": 0,
-          "targetSceneId": "wandering_drawing_1",
-          "labelHe": "✏️ שיטוט 1 · רישום משולב על נייר",
+          "targetSceneId": "bene_beitcha_scroll_foot",
+          "labelHe": "📜 מגילה וכף רגל · ׳בנה ביתך׳",
           "hasRemovableOccluder": true,
           "innerBoxPx": [
             459.73,
