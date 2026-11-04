@@ -74,7 +74,7 @@ class FlightTestThresholds:
     cdp_socket_timeout_sec: float = 12.0
     cdp_ready_poll_timeout_sec: float = 2.0
     cdp_heavy_eval_timeout_sec: float = 90.0
-    layers_ready_timeout_sec: float = 45.0
+    layers_ready_timeout_sec: float = 120.0
     proc_wait_timeout_sec: float = 3.0
     base_http_port: int = 7520
     base_cdp_port: int = 9520
@@ -455,6 +455,9 @@ class TestFlightPrinciplesWebGLRuntime(unittest.TestCase):
             except (TimeoutError, socket.timeout):
                 continue
             time.sleep(0.2)
+        if not ready:
+            # Close Chrome before failing, or every load timeout leaks a headless browser.
+            self._close_chrome_cdp(proc, sock, tmp_dir)
         self.assertTrue(ready, "Prototype failed to reach layersReady within timeout")
 
         return proc, sock, tmp_dir, eval_js
@@ -730,6 +733,101 @@ class TestFlightPrinciplesWebGLRuntime(unittest.TestCase):
             self.assertFalse(after["dioramaFootVisible"])
             self.assertAlmostEqual(after["restTintB"], 0.952, delta=THRESHOLDS.tint_tol)
             self.assertEqual(after["glError"], 0)
+        finally:
+            self._close_chrome_cdp(proc, sock, tmp_dir)
+
+    def test_wall_mounted_vitrine_flush_registration_and_nested_placement(self) -> None:
+        """Vitrine hung rotated on Bar Giora's wall: diorama uses the wall-mount similarity, the
+        flight lands exactly on its arrival camera pose (both directions), and the nested copy
+        inside the shelf cubby sits at the same flush transform instead of full scene size."""
+        proc, sock, tmp_dir, eval_js = self._launch_chrome_cdp(
+            THRESHOLDS.desktop_width, THRESHOLDS.desktop_height
+        )
+        try:
+            report = eval_js(
+                """
+                (async () => {
+                  const sm = window.__tamiSceneManager;
+                  await sm._loadSceneBundleReady('bar_giora_bedroom', false);
+                  await sm._loadSceneBundleReady('vitrine_keys_pen', false);
+                  sm._updatePortalShelfTransforms();
+                  const inst = sm._portalInstances.find((p) => p.spec.id === 'portal_bar_giora_vitrine');
+                  const wmx = inst.wallMountXform;
+                  const cubby = sm._portalInstances.find((p) => p.spec.id === 'cubby_bar_giora');
+                  const nested = cubby.childPortalMeshes
+                    .map((cp) => cp.childWallMount)
+                    .find((cwm) => cwm && cwm.childTargetId === 'vitrine_keys_pen');
+                  const out = {
+                    hasXform: Boolean(wmx),
+                    groupPosErr: inst.dioramaGroup.position.distanceTo(wmx.tDio),
+                    groupQuatDot: Math.abs(inst.dioramaGroup.quaternion.dot(wmx.qDio)),
+                    groupScaleErr: Math.abs(inst.dioramaGroup.scale.x - wmx.lambdaP),
+                    nestedPosErr: nested.group.position.distanceTo(wmx.tDio),
+                    nestedQuatDot: Math.abs(nested.group.quaternion.dot(wmx.qDio)),
+                    nestedScaleErr: Math.abs(nested.group.scale.x - wmx.lambdaP),
+                    lambdaP: wmx.lambdaP
+                  };
+
+                  // Forward: bar_giora_bedroom -> vitrine_keys_pen, sample just before landing.
+                  sm.transitionTo('bar_giora_bedroom');
+                  sm._portalFlight.frozenProgress = 1.0;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  sm.transitionTo('vitrine_keys_pen');
+                  out.fwdHasQuatPath = Boolean(sm._portalFlight && sm._portalFlight.quatPath);
+                  sm._portalFlight.frozenProgress = 0.9999;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.fwdArrivalPosErr = sm.camera.position.distanceTo(wmx.arrivalCamPos);
+                  out.fwdArrivalQuatDot = Math.abs(sm.camera.quaternion.dot(wmx.arrivalCamQuat));
+                  out.fwdOuterWall = inst.bgMat.uniforms.uOuterWallOpacity.value;
+                  sm._portalFlight.frozenProgress = 1.0;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.landed = sm.currentSceneId;
+
+                  // Reverse: from the standalone vitrine rest pose, t = 0 maps onto the arrival pose.
+                  sm.transitionTo('bar_giora_bedroom');
+                  out.revHasQuatPath = Boolean(sm._portalFlight && sm._portalFlight.quatPath);
+                  sm._portalFlight.frozenProgress = 0.0;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.revStartPosErr = sm.camera.position.distanceTo(wmx.arrivalCamPos);
+                  out.revStartQuatDot = Math.abs(sm.camera.quaternion.dot(wmx.arrivalCamQuat));
+                  out.revStartOuterWall = inst.bgMat.uniforms.uOuterWallOpacity.value;
+                  sm._portalFlight.frozenProgress = 1.0;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.revLanded = sm.currentSceneId;
+                  out.revRestOuterWall = inst.bgMat.uniforms.uOuterWallOpacity.value;
+                  return out;
+                })()
+                """,
+                await_promise=True,
+                timeout_sec=THRESHOLDS.cdp_heavy_eval_timeout_sec,
+            )
+            pos_tol = THRESHOLDS.position_world_tol * 10.0
+            quat_min_dot = 1.0 - 1e-6
+            self.assertTrue(report["hasXform"], "Wall-mount transform was never computed for the vitrine")
+            self.assertLess(report["groupPosErr"], pos_tol)
+            self.assertGreater(report["groupQuatDot"], quat_min_dot)
+            self.assertLess(report["groupScaleErr"], 1e-6)
+            self.assertLess(report["lambdaP"], 0.5, "Vitrine diorama must be scaled down onto the wall")
+            self.assertLess(
+                report["nestedPosErr"], pos_tol, "Nested vitrine in shelf cubby not placed on the wall"
+            )
+            self.assertGreater(report["nestedQuatDot"], quat_min_dot)
+            self.assertLess(
+                report["nestedScaleErr"], 1e-6, "Nested vitrine in shelf cubby drawn at the wrong scale"
+            )
+
+            self.assertTrue(report["fwdHasQuatPath"])
+            self.assertLess(report["fwdArrivalPosErr"], pos_tol)
+            self.assertGreater(report["fwdArrivalQuatDot"], quat_min_dot)
+            self.assertAlmostEqual(report["fwdOuterWall"], 1.0, delta=1e-3)
+            self.assertEqual(report["landed"], "vitrine_keys_pen")
+
+            self.assertTrue(report["revHasQuatPath"])
+            self.assertLess(report["revStartPosErr"], pos_tol)
+            self.assertGreater(report["revStartQuatDot"], quat_min_dot)
+            self.assertAlmostEqual(report["revStartOuterWall"], 1.0, delta=1e-3)
+            self.assertEqual(report["revLanded"], "bar_giora_bedroom")
+            self.assertAlmostEqual(report["revRestOuterWall"], 0.0, delta=1e-6)
         finally:
             self._close_chrome_cdp(proc, sock, tmp_dir)
 

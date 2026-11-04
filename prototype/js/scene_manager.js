@@ -6527,7 +6527,7 @@ export class SpatialSceneManager {
       new THREE.Euler(wallPitch, wallYaw, rollRad, 'YXZ')
     );
 
-    const [cxH, cyH] = wm.hostBoxCenterInnerPx;
+    const [cxH, cyH] = wm.hostCenterInnerPx;
     const [cxV, cyV] = wm.targetBoxCenterInnerPx;
     const pH0 = new THREE.Vector3(
       0.5 * sH * (cxH - halfInnerW) * rsH,
@@ -6556,6 +6556,7 @@ export class SpatialSceneManager {
     const arrivalCamQuat = qDio.clone().multiply(qTargetRest);
 
     return {
+      hostAnchor: pH0,
       tDio,
       qDio,
       lambdaP,
@@ -6662,25 +6663,38 @@ export class SpatialSceneManager {
       }
     }
 
-    const targetRest = this._getSceneRestPose(inst.targetSceneId);
-    const frontZ = Math.max(targetObj.sceneFgZ, 0.0);
-    const restFrontDist = Math.max(40.0, targetRest.z - frontZ);
-    const effFitZ = typeof geom.effectiveFitZ === 'number' ? geom.effectiveFitZ : geom.fitZ;
-    const lambdaP = (effFitZ + geom.recessDepth) / restFrontDist;
-    const fitCamX = geom.worldX;
-    const fitCamY = geom.worldY;
-    const fitCamZ = geom.worldZ + effFitZ;
+    let lambdaP = 1.0;
+    if (geom.wallMount) {
+      // Wall-mounted dioramas (e.g. the vitrine hung rotated on Bar Giora's wall) sit flush on the
+      // host wall plane with their in-plane roll; the flight camera arrives at the matching pose.
+      const wmx = this._computeWallMountDioramaTransform(geom, inst.hostSceneId);
+      if (!wmx) return;
+      inst.wallMountXform = wmx;
+      lambdaP = wmx.lambdaP;
+      inst.dioramaGroup.scale.setScalar(lambdaP);
+      inst.dioramaGroup.quaternion.copy(wmx.qDio);
+      inst.dioramaGroup.position.copy(wmx.tDio);
+    } else {
+      const targetRest = this._getSceneRestPose(inst.targetSceneId);
+      const frontZ = Math.max(targetObj.sceneFgZ, 0.0);
+      const restFrontDist = Math.max(40.0, targetRest.z - frontZ);
+      const effFitZ = typeof geom.effectiveFitZ === 'number' ? geom.effectiveFitZ : geom.fitZ;
+      lambdaP = (effFitZ + geom.recessDepth) / restFrontDist;
+      const fitCamX = geom.worldX;
+      const fitCamY = geom.worldY;
+      const fitCamZ = geom.worldZ + effFitZ;
 
-    const rollRad = THREE.MathUtils.degToRad(geom.dioramaRollDeg || 0.0);
-    const cosR = Math.cos(rollRad);
-    const sinR = Math.sin(rollRad);
-    inst.dioramaGroup.scale.setScalar(lambdaP);
-    inst.dioramaGroup.rotation.set(0, 0, rollRad);
-    inst.dioramaGroup.position.set(
-      fitCamX - lambdaP * (targetRest.x * cosR - targetRest.y * sinR),
-      fitCamY - lambdaP * (targetRest.x * sinR + targetRest.y * cosR),
-      fitCamZ - lambdaP * targetRest.z
-    );
+      const rollRad = THREE.MathUtils.degToRad(geom.dioramaRollDeg || 0.0);
+      const cosR = Math.cos(rollRad);
+      const sinR = Math.sin(rollRad);
+      inst.dioramaGroup.scale.setScalar(lambdaP);
+      inst.dioramaGroup.rotation.set(0, 0, rollRad);
+      inst.dioramaGroup.position.set(
+        fitCamX - lambdaP * (targetRest.x * cosR - targetRest.y * sinR),
+        fitCamY - lambdaP * (targetRest.x * sinR + targetRest.y * cosR),
+        fitCamZ - lambdaP * targetRest.z
+      );
+    }
     if (inst.dustMat && targetObj.layer3 && targetObj.layer3.material) {
       inst.dustMat.size = targetObj.layer3.material.size * lambdaP;
     }
@@ -6698,6 +6712,9 @@ export class SpatialSceneManager {
         const sourceChildInst = this._portalInstances.find(
           (p) => p.hostSceneId === inst.targetSceneId && p.spec.id === cs.id
         );
+        if (cp.childWallMount) {
+          this._syncNestedWallMount(cp.childWallMount, cs, inst.targetSceneId, sourceChildInst);
+        }
         const cGeom = computePortalWorldGeometry(
           cs,
           targetObj.innerScale,
@@ -6832,6 +6849,66 @@ export class SpatialSceneManager {
         }
       }
     }
+  }
+
+  /**
+   * Places a wall-mounted grandchild diorama (e.g. the vitrine inside the shelf cubby's copy of
+   * Bar Giora) with the same flush wall transform the standalone host uses, expressed in the host
+   * scene's own coordinates (which are the parent dioramaGroup's local coordinates).
+   */
+  _syncNestedWallMount(cwm, childSpec, hostSceneId, sourceChildInst) {
+    const childTargetObj = this.sceneObjects && this.sceneObjects[childSpec.targetSceneId];
+    const wmx = this._computeWallMountDioramaTransform(childSpec, hostSceneId);
+    if (!wmx || !childTargetObj) {
+      cwm.group.visible = false;
+      return;
+    }
+    cwm.group.visible = true;
+    cwm.group.position.copy(wmx.tDio);
+    cwm.group.quaternion.copy(wmx.qDio);
+    cwm.group.scale.setScalar(wmx.lambdaP);
+
+    const pairs = [
+      [cwm.bgMesh, cwm.bgMat, childTargetObj.layer0],
+      [cwm.midMesh, cwm.midMat, childTargetObj.layer1],
+      [cwm.fgMesh, cwm.fgMat, childTargetObj.layer2]
+    ];
+    for (const [mesh, mat, src] of pairs) {
+      if (!mesh || !src) continue;
+      mesh.position.copy(src.position);
+      mesh.rotation.copy(src.rotation);
+      mesh.scale.copy(src.scale);
+      const srcU = src.material && src.material.uniforms;
+      const dstU = mat && mat.uniforms;
+      if (srcU && dstU) {
+        for (const key of ['uDistBg', 'uOpticalCenterLocalX', 'uOpticalCenterLocalY']) {
+          if (srcU[key] && dstU[key]) dstU[key].value = srcU[key].value;
+        }
+      }
+    }
+    if (cwm.bgMat && cwm.bgMat.uniforms && cwm.bgMat.uniforms.uOuterWallOpacity) {
+      const srcOuter =
+        sourceChildInst && sourceChildInst.bgMat && sourceChildInst.bgMat.uniforms
+          ? sourceChildInst.bgMat.uniforms.uOuterWallOpacity.value
+          : 0.0;
+      cwm.bgMat.uniforms.uOuterWallOpacity.value = srcOuter;
+    }
+  }
+
+  _setWallMountOuterWallOpacity(inst, opacity) {
+    if (!inst || !inst.spec || !inst.spec.wallMount) return;
+    inst.wallMountOuterOpacity = opacity;
+    const u = inst.bgMat && inst.bgMat.uniforms;
+    if (u && u.uOuterWallOpacity) u.uOuterWallOpacity.value = opacity;
+    this._syncDioramaMirrorsForScene(inst.hostSceneId);
+  }
+
+  /** Forward/reverse outer-wall reveal for wall-mounted dioramas over `outerWallFadeRangeT`. */
+  _wallMountOuterWallOpacity(spec, t, isReverse) {
+    const range = Array.isArray(spec.outerWallFadeRangeT) ? spec.outerWallFadeRangeT : [0.78, 0.96];
+    const fwdT = isReverse ? 1.0 - t : t;
+    const u = THREE.MathUtils.clamp((fwdT - range[0]) / Math.max(1e-5, range[1] - range[0]), 0.0, 1.0);
+    return u * u * (3.0 - 2.0 * u);
   }
 
   _syncDioramaMirrorsForScene(sceneId) {
@@ -7810,8 +7887,17 @@ export class SpatialSceneManager {
         : typeof spec.fitZ === 'number'
           ? spec.fitZ
           : 80.0;
-    const distAperture = Math.max(effFitZ, camZ - spec.worldZ);
-    const apertureFillRatio = effFitZ / Math.max(1e-4, distAperture);
+    let apertureFillRatio = effFitZ / Math.max(1e-4, Math.max(effFitZ, camZ - spec.worldZ));
+    const wmInst = spec.wallMount
+      ? this._portalInstances.find((p) => p.spec.id === spec.id && p.wallMountXform)
+      : null;
+    if (wmInst) {
+      // Tilted, rolled wall mount: measure fill by true 3D distance to the mounted box rather than Z.
+      const wmx = wmInst.wallMountXform;
+      const dArrival = wmx.arrivalCamPos.distanceTo(wmx.hostAnchor);
+      const dCam = this.camera.position.distanceTo(wmx.hostAnchor);
+      apertureFillRatio = dArrival / Math.max(1e-4, Math.max(dArrival, dCam));
+    }
     const fillStart = SCENE_GEOMETRY_SPEC.portalRimDissolveFillStart;
     const fillT = THREE.MathUtils.clamp(
       (apertureFillRatio - fillStart) / Math.max(1e-5, 1.0 - fillStart),
@@ -8203,7 +8289,7 @@ export class SpatialSceneManager {
     const flightRollDeg = typeof spec.flightRollDeg === 'number' ? spec.flightRollDeg : 0.0;
     const targetRest = this._getSceneRestPose(spec.targetSceneId);
     const effFitZ = typeof spec.effectiveFitZ === 'number' ? spec.effectiveFitZ : spec.fitZ;
-    const toPose = embedDiorama
+    let toPose = embedDiorama
       ? {
           x: spec.worldX,
           y: spec.worldY,
@@ -8215,6 +8301,14 @@ export class SpatialSceneManager {
       : this._computeDirectPortalTargetPose(spec, hostSceneId);
 
     const flightInst = this._portalInstances.find((p) => p.spec.id === spec.id);
+    let quatPath = null;
+    if (embedDiorama && spec.wallMount && flightInst && flightInst.wallMountXform) {
+      // Land exactly on the camera pose that sees the flush, rolled diorama as the standalone
+      // target scene sees itself at rest; orientation slerps alongside position (no Euler lerp).
+      const wmx = flightInst.wallMountXform;
+      toPose = this._poseFromPositionQuat(wmx.arrivalCamPos, wmx.arrivalCamQuat);
+      quatPath = { from: this.camera.quaternion.clone(), to: wmx.arrivalCamQuat.clone() };
+    }
     if (flightInst && flightInst.spec.veil) {
       flightInst.veilFlightStartOpacity = flightInst.veilCurrentOpacity;
     }
@@ -8249,7 +8343,8 @@ export class SpatialSceneManager {
         pitchDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.pitch,
         rollDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.roll || 0
       },
-      toPose
+      toPose,
+      quatPath
     };
     window.__PROTOTYPE_STATE__.isTransitioning = true;
     if (window.__sendDiag) {
@@ -8359,7 +8454,7 @@ export class SpatialSceneManager {
     const sinR = Math.sin(rollRad);
     const dxChild = this.camera.position.x - childRest.x;
     const dyChild = this.camera.position.y - childRest.y;
-    const fromPose = {
+    let fromPose = {
       x: fitCamX + lambdaP * (dxChild * cosR - dyChild * sinR),
       y: fitCamY + lambdaP * (dxChild * sinR + dyChild * cosR),
       z: mappedFromZ,
@@ -8367,6 +8462,28 @@ export class SpatialSceneManager {
       pitchDeg: window.__PROTOTYPE_STATE__.cameraRotationDeg.pitch,
       rollDeg: flightRollDeg
     };
+    let quatPath = null;
+    if (spec.wallMount && inst.wallMountXform) {
+      // Map the visitor's live child-scene camera through the flush wall-mount similarity so
+      // t = 0 shows exactly what they were looking at, then slerp back to the host rest pose.
+      const wmx = inst.wallMountXform;
+      const fromPos = this.camera.position
+        .clone()
+        .applyQuaternion(wmx.qDio)
+        .multiplyScalar(wmx.lambdaP)
+        .add(wmx.tDio);
+      const fromQuat = wmx.qDio.clone().multiply(this.camera.quaternion);
+      fromPose = this._poseFromPositionQuat(fromPos, fromQuat);
+      const toQuat = new THREE.Quaternion().setFromEuler(
+        new THREE.Euler(
+          THREE.MathUtils.degToRad(hostRest.pitchDeg || 0.0),
+          THREE.MathUtils.degToRad(hostRest.yawDeg || 0.0),
+          THREE.MathUtils.degToRad(hostRest.rollDeg || 0.0),
+          'YXZ'
+        )
+      );
+      quatPath = { from: fromQuat, to: toQuat };
+    }
 
     if (inst.spec.veil) {
       inst.veilCurrentOpacity = 0.0;
@@ -8382,6 +8499,10 @@ export class SpatialSceneManager {
     window.__PROTOTYPE_STATE__.isTransitioning = true;
 
     this._applyPoseToCameraObject(fromPose);
+    if (quatPath) {
+      this._applyFlightCameraQuat(quatPath, 0.0);
+      this._setWallMountOuterWallOpacity(inst, 1.0);
+    }
     const initRimAndTint = this._computePortalFlightRimAndTint(spec, fromPose.z, 0.0, true);
     this._applyDioramaInstanceTint(inst, initRimAndTint.tintRgb);
     this._setHostPortalSurroundingOpacity(returnHost, initRimAndTint.rimOpacity, spec.id);
@@ -8397,7 +8518,8 @@ export class SpatialSceneManager {
       startTimeMs: performance.now(),
       durationMs: this._rigSpec.portalFlightDurationMs,
       fromPose,
-      toPose: { ...hostRest }
+      toPose: { ...hostRest },
+      quatPath
     };
     if (window.__sendDiag) {
       window.__sendDiag('portal_reverse_flight_start', {
@@ -9171,6 +9293,27 @@ export class SpatialSceneManager {
     }
   }
 
+  _poseFromPositionQuat(pos, quat) {
+    const e = new THREE.Euler().setFromQuaternion(quat, 'YXZ');
+    return {
+      x: pos.x,
+      y: pos.y,
+      z: pos.z,
+      yawDeg: THREE.MathUtils.radToDeg(e.y),
+      pitchDeg: THREE.MathUtils.radToDeg(e.x),
+      rollDeg: THREE.MathUtils.radToDeg(e.z)
+    };
+  }
+
+  _applyFlightCameraQuat(quatPath, ease) {
+    this.camera.quaternion.slerpQuaternions(quatPath.from, quatPath.to, ease);
+    this.camera.updateMatrixWorld();
+    const rot = window.__PROTOTYPE_STATE__.cameraRotationDeg;
+    rot.yaw = THREE.MathUtils.radToDeg(this.camera.rotation.y);
+    rot.pitch = THREE.MathUtils.radToDeg(this.camera.rotation.x);
+    rot.roll = THREE.MathUtils.radToDeg(this.camera.rotation.z);
+  }
+
   _applyPoseToCameraObject(pose) {
     const rollDeg = typeof pose.rollDeg === 'number' ? pose.rollDeg : 0;
     this.camera.position.set(pose.x, pose.y, pose.z);
@@ -9356,6 +9499,9 @@ export class SpatialSceneManager {
         rollDeg: THREE.MathUtils.lerp(flight.fromPose.rollDeg || 0, flight.toPose.rollDeg || 0, ease)
       };
       this._applyPoseToCameraObject(flightPose);
+      if (flight.quatPath) {
+        this._applyFlightCameraQuat(flight.quatPath, ease);
+      }
 
       const targetObj = this.sceneObjects[flight.targetSceneId];
       const flightInst = this._portalInstances.find((p) => p.spec.id === flight.portalSpec.id);
@@ -9371,6 +9517,7 @@ export class SpatialSceneManager {
         if (flight.embedDiorama) {
           if (flightInst) {
             this._applyDioramaInstanceTint(flightInst, flightInst.spec.dioramaRestTintRgb);
+            this._setWallMountOuterWallOpacity(flightInst, 0.0);
           }
           if (flightInst && flightInst.spec.veil) {
             flightInst.veilCurrentOpacity = flightInst.spec.veil.restOpacity;
@@ -9440,6 +9587,10 @@ export class SpatialSceneManager {
         );
         if (flightInst) {
           this._applyDioramaInstanceTint(flightInst, tintRgb);
+          this._setWallMountOuterWallOpacity(
+            flightInst,
+            this._wallMountOuterWallOpacity(flightInst.spec, t, flight.reverse)
+          );
           if (flightInst.spec.veil) {
             if (flight.reverse) {
               const veilStart = 1.0 - flightInst.spec.veil.dissolveEndProgress;
