@@ -79,6 +79,7 @@ BORE_SIGHT_REQUIRED_SCENES: tuple[str, ...] = (
     "shelf_portal",
     "paper_capsules",
     "tzofen_brick_table",
+    "tzofen_brick_table_v2",
     "bene_beitcha",
     "humpty_dumpty_bundle",
     "humpty_dumpty_booth",
@@ -708,7 +709,8 @@ class TestLiveSceneDepthTopologyGate(unittest.TestCase):
         vbp_bundle = default_vitrine_bedroom_paris_bundle_config()
 
         checks = [
-            ("tzofen_brick_table", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", tz_bundle.tzofen.mid_contact_solve),
+            ("tzofen_brick_table", "fg", "fgZ", "fgDepthAmplitude", "fgDepthTexture", "fgTexture", tz_bundle.tzofen.fg_contact_solve),
+            ("tzofen_brick_table_v2", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", tz_bundle.tzofen_v2.mid_contact_solve),
             ("herzliya_tree_canopy", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", tz_bundle.tree_canopy.mid_contact_solve),
             ("herzliya_tree_canopy", "fg", "fgZ", "fgDepthAmplitude", "fgDepthTexture", "fgTexture", tz_bundle.tree_canopy.fg_contact_solve),
             ("scroll_palm_world", "mid", "midZ", "midDepthAmplitude", "midDepthTexture", "midTexture", sh_bundle.scroll_palm_world.mid_depth_solve),
@@ -755,8 +757,8 @@ class TestLiveSceneDepthTopologyGate(unittest.TestCase):
                 f"{scene_key}.{layer_name} floats off host surface (p95 |ΔZ| = {p95_dz:.2f})!",
             )
 
-        # Verify tzofen_brick_table.fg (380 terracotta mud bricks) rests C0 on mid steel tabletop!
-        tz_block = _extract_js_scene_block(self.js_source, "tzofen_brick_table")
+        # Verify tzofen_brick_table_v2.fg (archived segmented front bricks) rests C0 on mid steel tabletop!
+        tz_block = _extract_js_scene_block(self.js_source, "tzofen_brick_table_v2")
         tz_mid_z = _parse_float_prop(tz_block, "midZ", -340.0)
         tz_mid_amp = _parse_float_prop(tz_block, "midDepthAmplitude", 200.0)
         tz_fg_z = _parse_float_prop(tz_block, "fgZ", -340.0)
@@ -769,8 +771,8 @@ class TestLiveSceneDepthTopologyGate(unittest.TestCase):
         tz_fg_rgba = np.asarray(Image.open(tz_fg_c_path).convert("RGBA"))
         tz_fg_d = np.asarray(Image.open(tz_fg_d_path).convert("L"))
         tz_fg_contact = extract_contact_anchor_mask(
-            tz_fg_rgba[:, :, 3] >= tz_bundle.tzofen.fg_contact_solve.alpha_threshold_u8,
-            tz_bundle.tzofen.fg_contact_solve,
+            tz_fg_rgba[:, :, 3] >= tz_bundle.tzofen_v2.fg_contact_solve.alpha_threshold_u8,
+            tz_bundle.tzofen_v2.fg_contact_solve,
         )
         self.assertTrue(bool(np.any(tz_fg_contact)))
         tz_table_z = compute_world_z_map(tz_mid_d, tz_mid_z, tz_mid_amp, 0.0)
@@ -781,8 +783,75 @@ class TestLiveSceneDepthTopologyGate(unittest.TestCase):
         self.assertLessEqual(
             tz_bricks_p95_dz,
             THRESHOLDS.max_live_contact_p95_dz_world,
-            f"tzofen_brick_table.fg bricks float off steel tabletop (p95 |ΔZ| = {tz_bricks_p95_dz:.2f})!",
+            f"tzofen_brick_table_v2.fg bricks float off steel tabletop (p95 |ΔZ| = {tz_bricks_p95_dz:.2f})!",
         )
+
+    def test_herzliya_lawn_carpet_dynamic_left_reflection_and_contact(self) -> None:
+        from prototype.scroll_purim_carpet_scenes_builder import (
+            default_scroll_purim_carpet_bundle_config,
+        )
+
+        spc_bundle = default_scroll_purim_carpet_bundle_config()
+        spec = spc_bundle.herzliya_lawn_carpet
+        self.assertTrue(spec.reflect_left_mirror)
+
+        block = _extract_js_scene_block(self.js_source, "herzliya_lawn_carpet")
+        self.assertRegex(block, r"\breflectedTrailLayerId\s*:\s*['\"]carpet_earth_trail_reflection['\"]")
+        self.assertRegex(block, r"\breflectedRollLayerId\s*:\s*['\"]carpet_roll_reflection['\"]")
+
+        extras = _extract_extra_layer_blocks(block)
+        for layer_id in (
+            "carpet_earth_trail",
+            "carpet_earth_trail_reflection",
+            "carpet_roll",
+            "carpet_roll_reflection",
+        ):
+            self.assertIn(layer_id, extras, f"Missing {layer_id} in herzliya_lawn_carpet.extraLayers")
+
+        for refl_id in ("carpet_earth_trail_reflection", "carpet_roll_reflection"):
+            self.assertRegex(
+                extras[refl_id],
+                r"\bmirrorLeftEdge\s*:\s*true\b",
+                f"{refl_id} must set `mirrorLeftEdge: true`.",
+            )
+
+        bg_z = _parse_float_prop(block, "bgZ", -350.0)
+        room_amp = _parse_float_prop(block, "roomDepthAmplitude", 114.0)
+        bg_depth_path = _parse_asset_prop(block, "depthTexture")
+        assert bg_depth_path is not None
+        bg_d = np.asarray(Image.open(bg_depth_path).convert("L"))
+        room_z_exp = compute_world_z_map(bg_d, bg_z, room_amp, THRESHOLDS.room_pin_margin_uv)
+
+        for extra_id, solve_cfg in (
+            ("carpet_earth_trail", spec.earth_depth_solve),
+            ("carpet_roll", spec.roll_depth_solve),
+        ):
+            body = extras[extra_id]
+            c_path = _parse_asset_prop(body, "texture")
+            d_path = _parse_asset_prop(body, "depthTexture")
+            assert c_path is not None and d_path is not None
+            rgba = np.asarray(Image.open(c_path).convert("RGBA"))
+            ld = np.asarray(Image.open(d_path).convert("L"))
+            contact = extract_contact_anchor_mask(
+                rgba[:, :, 3] >= solve_cfg.alpha_threshold_u8, solve_cfg
+            )
+            self.assertTrue(bool(np.any(contact)))
+            host_z = extract_layer_window_from_expanded(room_z_exp, rgba.shape[:2])
+            obj_z = compute_world_z_map(
+                ld,
+                _parse_float_prop(body, "zPos", -350.0),
+                _parse_float_prop(body, "depthAmplitude", 165.0),
+                0.0,
+            )
+            p95_dz = float(np.percentile(np.abs(obj_z[contact] - host_z[contact]), 95.0))
+            self.assertLessEqual(
+                p95_dz,
+                THRESHOLDS.max_live_contact_p95_dz_world,
+                f"herzliya_lawn_carpet.{extra_id} floats off lawn (p95 |ΔZ| = {p95_dz:.2f})!",
+            )
+            if extra_id == "carpet_earth_trail":
+                # Verify solid left-edge bleed at x=0 so real & reflected trails join with zero gap
+                self.assertGreaterEqual(int((rgba[:, 0, 3] >= 200).sum()), 80)
 
 
 if __name__ == "__main__":

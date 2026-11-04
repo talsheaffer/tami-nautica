@@ -50,6 +50,7 @@ const PORTAL_SHORT_BADGE_LABELS_HE = Object.freeze({
   portal_denya_to_couch: 'לספה והגיטרה',
   portal_denya_back_to_dining: 'לשולחן האוכל',
   portal_tzofen_tree_window: 'חלון אל העץ',
+  portal_tzofen_v2_tree_window: 'חלון אל העץ',
   portal_wandering1_scroll_world: 'לתוך המגילה',
   portal_scroll_foot_purim_1966: 'אל פורים 1966',
   portal_bar_giora_vitrine: 'אל הוויטרינה',
@@ -60,6 +61,7 @@ const SCENE_BREADCRUMB_LABELS_HE = Object.freeze({
   shelf_portal: 'קיר המדפים',
   paper_capsules: 'קפסולות נייר',
   tzofen_brick_table: 'צופן',
+  tzofen_brick_table_v2: 'צופן (הפרדה)',
   plan_b_pipe_v3: 'תמי ויערה',
   plan_b_pipe: 'צינור Plan B',
   bene_beitcha: 'בנה ביתך',
@@ -1325,7 +1327,7 @@ class SpatialApp {
         this.centerHint.textContent = DENYA_PORTAL_CENTER_HINT_HE;
       } else if (sceneId === 'wandering_drawing_1') {
         this.centerHint.textContent = WANDERING1_SCROLL_HINT_HE;
-      } else if (sceneId === 'tzofen_brick_table') {
+      } else if (sceneId === 'tzofen_brick_table' || sceneId === 'tzofen_brick_table_v2') {
         this.centerHint.textContent = TZOFEN_PORTAL_HINT_HE;
       } else if (sceneId === 'bene_beitcha_scroll_foot') {
         this.centerHint.textContent = SCROLL_FOOT_HINT_HE;

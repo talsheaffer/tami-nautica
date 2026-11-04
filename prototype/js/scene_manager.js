@@ -69,7 +69,13 @@ export const EXHIBITION_GROUPS = Object.freeze([
     id: 'archive_versions',
     titleHe: 'ארכיון גרסאות',
     shortTabHe: 'ארכיון',
-    sceneIds: Object.freeze(['plan_b_pipe', 'humpty_dumpty_bundle', 'plan_b_pipe_v1', 'marseille_mirror_v1'])
+    sceneIds: Object.freeze([
+      'tzofen_brick_table_v2',
+      'plan_b_pipe',
+      'humpty_dumpty_bundle',
+      'plan_b_pipe_v1',
+      'marseille_mirror_v1'
+    ])
   })
 ]);
 
@@ -173,14 +179,6 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
     recessDepth: 160.0
   }),
   Object.freeze({
-    id: 'cubby_paris_table',
-    targetSceneId: 'paris_cite_white_table',
-    labelHe: 'פאריס · שולחן לבן בסיטה',
-    innerBoxPx: Object.freeze([612.21, 732.85, 704.8, 836.48]),
-    worldZ: -284.0,
-    recessDepth: 160.0
-  }),
-  Object.freeze({
     id: 'cubby_plan_b_v3',
     targetSceneId: 'plan_b_pipe_v3',
     labelHe: 'Plan B · תמי ויערה באור הדיפוזי',
@@ -209,6 +207,14 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
       coverageRatio: 0.4869,
       locksPortal: true
     })
+  }),
+  Object.freeze({
+    id: 'cubby_paris_table',
+    targetSceneId: 'paris_cite_white_table',
+    labelHe: 'פאריס · שולחן לבן בסיטה',
+    innerBoxPx: Object.freeze([612.21, 732.85, 704.8, 836.48]),
+    worldZ: -284.0,
+    recessDepth: 160.0
   })
 ]);
 
@@ -372,7 +378,24 @@ const DEFAULT_TZOFEN_PORTAL_SHELVES = Object.freeze([
     labelHe: 'מסגרת החלון הלבנה ב׳צופן׳ · שער אל צמרת העץ בהרצליה',
     shortBadgeHe: 'חלון אל העץ',
     innerBoxPx: Object.freeze([975.0, 146.0, 1126.0, 250.0]),
-    worldZ: -194.26,
+    worldZ: -277.01,
+    recessDepth: 115.0,
+    embedDiorama: true,
+    showFrame: false,
+    restFrameOpacity: 0.0,
+    frameRenderOrder: 5.8
+  })
+]);
+
+const DEFAULT_TZOFEN_V2_PORTAL_SHELVES = Object.freeze([
+  Object.freeze({
+    id: 'portal_tzofen_v2_tree_window',
+    targetSceneId: 'herzliya_tree_canopy',
+    portalMode: 'aperture',
+    labelHe: 'מסגרת החלון הלבנה ב׳צופן׳ (ארכיון) · שער אל צמרת העץ בהרצליה',
+    shortBadgeHe: 'חלון אל העץ',
+    innerBoxPx: Object.freeze([975.0, 146.0, 1126.0, 250.0]),
+    worldZ: -253.09,
     recessDepth: 115.0,
     embedDiorama: true,
     showFrame: false,
@@ -427,19 +450,36 @@ const DEFAULT_BAR_GIORA_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'portal_bar_giora_vitrine',
     targetSceneId: 'vitrine_keys_pen',
-    portalMode: 'crossfade',
     labelHe: 'תיבת הוויטרינה מ׳בנה ביתך׳ · לחצו להתקרבות וסיבוב אל תוך הוויטרינה',
     shortBadgeHe: 'אל הוויטרינה',
     showMicroBadge: false,
-    innerBoxPx: Object.freeze([449.5, 344.2, 662.5, 503.8]),
-    worldZ: -316.37,
+    innerBoxPx: Object.freeze([496.0, 365.0, 614.0, 483.0]),
+    worldZ: -319.01,
     recessDepth: 0.0,
-    embedDiorama: false,
+    embedDiorama: true,
+    keepHostBackdropOpaque: true,
+    outerWallFadeRangeT: Object.freeze([0.78, 0.96]),
     showFrame: false,
     restFrameOpacity: 0.0,
     frameRenderOrder: 5.8,
     rotationDeg: -130.0,
-    flightRollDeg: -130.0
+    flightRollDeg: -130.0,
+    wallMount: Object.freeze({
+      hostCenterInnerPx: Object.freeze([555.0, 424.0]),
+      hostBoxSidePx: 118.0,
+      hostWallZ: -319.01,
+      hostWallSlopeDzDx: -0.1171,
+      hostWallSlopeDzDy: 0.00154,
+      hostWallClearanceWorld: 0.08,
+      hostRefInnerScale: 2.12,
+      targetBoxCenterInnerPx: Object.freeze([749.5, 504.5]),
+      targetBoxSidePx: 864.0,
+      targetPlasterDepthNorm: 0.203922,
+      cavityInnerBoxPx: Object.freeze([352.0, 120.0, 1148.0, 895.0]),
+      cavityFeatherPx: 4.0,
+      inPlaneRollDeg: -130.0,
+      dioramaRenderOrders: Object.freeze({ bg: 2.0, mid: 3.0, fg: 4.0, dust: 4.5 })
+    })
   })
 ]);
 
@@ -546,6 +586,13 @@ export const SCENE_GEOMETRY_SPEC = Object.freeze({
   portalOccluderRegenDelayMs: 60000,
   portalFlightDurationMs: 1150,
   portalFadeStartProgress: 0.75,
+  portalApertureFitSafetyRatio: 0.996,
+  portalRimDissolveFillStart: 0.82,
+  shelfCubbyRestTintRgb: Object.freeze([1.0, 0.978, 0.952]),
+  neutralTintRgb: Object.freeze([1.0, 1.0, 1.0]),
+  backgroundWarmInitialDelayMs: 50,
+  backgroundWarmStepDelayMs: 35,
+  occluderActiveVisitorDeferMs: 5000,
   portalFrameBevelOffsetZ: -0.6,
   portalBaseRenderOrder: 2,
   shelfFgRenderOrder: 15,
@@ -568,6 +615,7 @@ export const SCENE_GEOMETRY_SPEC = Object.freeze({
   friedHousePortalShelves: DEFAULT_FRIED_HOUSE_PORTAL_SHELVES,
   wandering1PortalShelves: DEFAULT_WANDERING1_PORTAL_SHELVES,
   tzofenPortalShelves: DEFAULT_TZOFEN_PORTAL_SHELVES,
+  tzofenV2PortalShelves: DEFAULT_TZOFEN_V2_PORTAL_SHELVES,
   scrollFootPortalShelves: DEFAULT_SCROLL_FOOT_PORTAL_SHELVES,
   barGioraPortalShelves: DEFAULT_BAR_GIORA_PORTAL_SHELVES,
   parisTablePortalShelves: DEFAULT_PARIS_TABLE_PORTAL_SHELVES
@@ -786,11 +834,73 @@ export function computePortalWorldGeometry(
   };
 }
 
+/**
+ * Computes the exact maximum arrival distance d = effectiveFitZ from Z = worldZ at which
+ * all 4 camera frustum corners (accounting for arrival yawDeg, pitchDeg, rollDeg and portal
+ * rotationDeg) lie strictly inside the portal rectangle [-width/2, +width/2] x [-height/2, +height/2].
+ */
+export function computePortalEffectiveFitZ(
+  geom,
+  cameraFovDeg,
+  cameraAspect,
+  arrivalYawDeg = 0.0,
+  arrivalPitchDeg = 0.0,
+  arrivalRollDeg = 0.0,
+  portalRotationDeg = 0.0,
+  safetyRatio = SCENE_GEOMETRY_SPEC.portalApertureFitSafetyRatio
+) {
+  const halfW = Math.max(2.0, (geom.width || 110.0) * 0.5);
+  const halfH = Math.max(2.0, (geom.height || 52.0) * 0.5);
+  const tanHalfFov = Math.max(0.05, Math.tan(THREE.MathUtils.degToRad(cameraFovDeg * 0.5)));
+  const safeAspect = Math.max(0.1, cameraAspect);
+  const tanX = tanHalfFov * safeAspect;
+  const tanY = tanHalfFov;
+
+  const camQuat = new THREE.Quaternion().setFromEuler(
+    new THREE.Euler(
+      THREE.MathUtils.degToRad(arrivalPitchDeg || 0.0),
+      THREE.MathUtils.degToRad(arrivalYawDeg || 0.0),
+      THREE.MathUtils.degToRad(arrivalRollDeg || 0.0),
+      'YXZ'
+    )
+  );
+  const portalRad = THREE.MathUtils.degToRad(portalRotationDeg || 0.0);
+  const cosP = Math.cos(portalRad);
+  const sinP = Math.sin(portalRad);
+
+  let maxAllowedDist = Infinity;
+  const signs = [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1]
+  ];
+  const rayVec = new THREE.Vector3();
+  for (const [sx, sy] of signs) {
+    rayVec.set(sx * tanX, sy * tanY, -1.0).applyQuaternion(camQuat);
+    const negRz = Math.max(0.05, -rayVec.z);
+    const slopeWorldX = rayVec.x / negRz;
+    const slopeWorldY = rayVec.y / negRz;
+    const slopeLocalU = Math.abs(slopeWorldX * cosP + slopeWorldY * sinP);
+    const slopeLocalV = Math.abs(-slopeWorldX * sinP + slopeWorldY * cosP);
+    if (slopeLocalU > 1e-6) {
+      maxAllowedDist = Math.min(maxAllowedDist, halfW / slopeLocalU);
+    }
+    if (slopeLocalV > 1e-6) {
+      maxAllowedDist = Math.min(maxAllowedDist, halfH / slopeLocalV);
+    }
+  }
+  const fallbackFitZ = typeof geom.fitZ === 'number' ? geom.fitZ : 80.0;
+  const rawFit = Number.isFinite(maxAllowedDist) ? maxAllowedDist : fallbackFitZ;
+  return Math.max(SCENE_GEOMETRY_SPEC.cameraNearPlane + 2.0, rawFit * safetyRatio);
+}
+
 const ROOM_DEPTH_VERTEX_SHADER = `
 uniform sampler2D uDepthMap;
 uniform float uDepthAmplitude;
 uniform float uDistBg;
 uniform float uPinMarginUv;
+uniform float uOpticalCenterLocalX;
 uniform float uOpticalCenterLocalY;
 
 varying vec2 vUv;
@@ -815,7 +925,7 @@ void main() {
     // revealing authentic 3D room perspective as soon as camera pose translates, dollies, or rotates.
     float rayScale = (uDistBg - zDisp) / uDistBg;
     vec3 displaced = vec3(
-        position.x * rayScale,
+        uOpticalCenterLocalX + (position.x - uOpticalCenterLocalX) * rayScale,
         uOpticalCenterLocalY + (position.y - uOpticalCenterLocalY) * rayScale,
         zDisp
     );
@@ -832,10 +942,14 @@ precision highp float;
 uniform sampler2D uColorMap;
 uniform float uOpacity;
 uniform float uAlphaCutout;
+uniform vec3 uTint;
 uniform vec3 uClearColor;
 uniform float uFadeToClear;
 uniform float uClipUvMinX;
 uniform float uClipUvMaxX;
+uniform vec4 uCavityUvRect;
+uniform vec2 uCavityFeatherUv;
+uniform float uOuterWallOpacity;
 varying vec2 vUv;
 #include <clipping_planes_pars_fragment>
 
@@ -844,8 +958,21 @@ void main() {
     if (vUv.x < uClipUvMinX || vUv.x > uClipUvMaxX) { discard; }
     vec4 texel = texture2D(uColorMap, vUv);
     if (uAlphaCutout > 0.0 && texel.a < uAlphaCutout) { discard; }
-    vec3 rgb = (uFadeToClear > 0.0) ? mix(texel.rgb, uClearColor, uFadeToClear) : texel.rgb;
+    vec3 tintedRgb = clamp(texel.rgb * uTint, 0.0, 1.0);
+    vec3 rgb = (uFadeToClear > 0.0) ? mix(tintedRgb, uClearColor, uFadeToClear) : tintedRgb;
     float outAlpha = (uAlphaCutout > 0.0 || uFadeToClear > 0.0) ? 1.0 : (texel.a * uOpacity);
+    if (uOuterWallOpacity < 0.9999) {
+        float cavX = smoothstep(uCavityUvRect.x - uCavityFeatherUv.x, uCavityUvRect.x + uCavityFeatherUv.x, vUv.x)
+                   * (1.0 - smoothstep(uCavityUvRect.z - uCavityFeatherUv.x, uCavityUvRect.z + uCavityFeatherUv.x, vUv.x));
+        float cavY = smoothstep(uCavityUvRect.y - uCavityFeatherUv.y, uCavityUvRect.y + uCavityFeatherUv.y, vUv.y)
+                   * (1.0 - smoothstep(uCavityUvRect.w - uCavityFeatherUv.y, uCavityUvRect.w + uCavityFeatherUv.y, vUv.y));
+        float cavityMask = cavX * cavY;
+        float borderFade = smoothstep(0.0, 0.06, vUv.x) * smoothstep(0.0, 0.06, 1.0 - vUv.x)
+                         * smoothstep(0.0, 0.06, vUv.y) * smoothstep(0.0, 0.06, 1.0 - vUv.y);
+        float effBorderFade = mix(borderFade, 1.0, uOuterWallOpacity);
+        outAlpha *= mix(uOuterWallOpacity * effBorderFade, 1.0, cavityMask);
+        if (outAlpha <= 0.0005) { discard; }
+    }
     gl_FragColor = vec4(rgb, outAlpha);
 }
 `;
@@ -864,39 +991,14 @@ precision highp float;
 uniform sampler2D uTexCurrent;
 uniform sampler2D uTexNext;
 uniform float uProgress;
-uniform float uAspect;
-uniform vec2 uPointer;
-uniform float uDisplacementScale;
 
 varying vec2 vUv;
 
-#define PI 3.14159265359
-
 void main() {
-    vec2 uv = vUv;
-    vec2 centeredUv = (uv - 0.5) * vec2(uAspect, 1.0);
-    float dist = length(centeredUv);
-    float envelope = sin(uProgress * PI);
-
-    // Subtle atmospheric depth-glide shimmer complementing real 3D camera kinematic glide
-    float dispMult = uDisplacementScale;
-    float ripple = sin(dist * 14.0 - uProgress * 9.0) * 0.012 * envelope * dispMult;
-    float directionalWarp = cos(uv.y * 8.0 + uv.x * 5.0 + uPointer.x * 1.5) * 0.008 * envelope * dispMult;
-    vec2 displacement = normalize(centeredUv + vec2(0.001)) * ripple + vec2(directionalWarp, -directionalWarp);
-
-    vec2 uvCurrent = uv + displacement * (1.0 - uProgress);
-    vec2 uvNext    = uv - displacement * uProgress;
-
-    vec4 colCurrent = texture2D(uTexCurrent, uvCurrent);
-    vec4 colNext    = texture2D(uTexNext, uvNext);
-
-    float specularFlash = smoothstep(0.35, 0.5, uProgress) * (1.0 - smoothstep(0.5, 0.65, uProgress)) * dispMult;
-    vec3 flashColor = vec3(0.92, 0.94, 0.98) * specularFlash * 0.14 * max(0.0, 1.0 - dist);
-
-    float blendFactor = smoothstep(0.08, 0.92, uProgress);
-    vec4 finalColor = mix(colCurrent, colNext, blendFactor) + vec4(flashColor, 0.0);
-
-    gl_FragColor = finalColor;
+    vec4 colCurrent = texture2D(uTexCurrent, vUv);
+    vec4 colNext    = texture2D(uTexNext, vUv);
+    float blendFactor = smoothstep(0.0, 1.0, clamp(uProgress, 0.0, 1.0));
+    gl_FragColor = mix(colCurrent, colNext, blendFactor);
 }
 `;
 
@@ -1244,7 +1346,7 @@ export class SpatialSceneManager {
     this.onLoadingProgress =
       typeof options.onLoadingProgress === 'function' ? options.onLoadingProgress : null;
 
-    const assetVer = 'v=neural40';
+    const assetVer = 'v=neural41';
     this._assetVer = assetVer;
     this.sceneConfigs = {
       shelf_portal: {
@@ -1851,15 +1953,54 @@ export class SpatialSceneManager {
         bgTexture: `assets/scenes/scene12_tzofen_bg_inpainted.jpg?${assetVer}`,
         depthTexture: `assets/scenes/scene12_tzofen_depth.png?${assetVer}`,
         midTexture: `assets/scenes/scene12_tzofen_mid.png?${assetVer}`,
-        midDepthTexture: `assets/scenes/scene12_tzofen_mid_depth.png?${assetVer}`,
+        fgTexture: `assets/scenes/scene12_tzofen_fg.png?${assetVer}`,
+        fgDepthTexture: `assets/scenes/scene12_tzofen_fg_depth.png?${assetVer}`,
+        fgDepthAmplitude: 175.0,
+        fgPinMarginUv: 0.0,
+        fgSegmentsX: 224,
+        fgSegmentsY: 150,
+        fgDepthTest: false,
+        fgDepthWrite: false,
+        fgExpanded: false,
+        boreSightAtRest: true,
+        bgZ: -350.0,
+        midZ: -260.0,
+        fgZ: -350.0,
+        minInnerScale: 1.88,
+        bgSegmentsX: 224,
+        bgSegmentsY: 150,
+        roomDepthAmplitude: 128.0,
+        initialCameraY: 52.0,
+        initialCameraZ: 755.0,
+        minCameraZ: -85.0,
+        maxCameraZ: 880.0,
+        maxYawDeg: 26.0,
+        maxPitchDeg: 18.0,
+        maxStrafeX: 165.0,
+        maxStrafeY: 95.0,
+        dollySpeedMult: 1.35,
+        midRenderOrder: 6,
+        fgRenderOrder: 8,
+        particleColor: 0xE6D8C2,
+        particleCount: 60,
+        hasReflection: false,
+        portalShelves: []
+      },
+      tzofen_brick_table_v2: {
+        id: 'tzofen_brick_table_v2',
+        title: '׳צופן׳ (2011) — הפרדת לבני חזית ושולחן (ארכיון)',
+        bgTexture: `assets/scenes/scene12_tzofen_v2_bg_inpainted.jpg?${assetVer}`,
+        depthTexture: `assets/scenes/scene12_tzofen_v2_depth.png?${assetVer}`,
+        midTexture: `assets/scenes/scene12_tzofen_v2_mid.png?${assetVer}`,
+        midDepthTexture: `assets/scenes/scene12_tzofen_v2_mid_depth.png?${assetVer}`,
         midDepthAmplitude: 200.0,
         midPinMarginUv: 0.0,
         midSegmentsX: 224,
         midSegmentsY: 150,
         midDepthTest: false,
         midDepthWrite: false,
-        fgTexture: `assets/scenes/scene12_tzofen_fg.png?${assetVer}`,
-        fgDepthTexture: `assets/scenes/scene12_tzofen_fg_depth.png?${assetVer}`,
+        fgTexture: `assets/scenes/scene12_tzofen_v2_fg.png?${assetVer}`,
+        fgDepthTexture: `assets/scenes/scene12_tzofen_v2_fg_depth.png?${assetVer}`,
         fgDepthAmplitude: 230.0,
         fgPinMarginUv: 0.0,
         fgSegmentsX: 224,
@@ -2088,6 +2229,8 @@ export class SpatialSceneManager {
         carpetUnrollRig: {
           trailLayerId: 'carpet_earth_trail',
           rollLayerId: 'carpet_roll',
+          reflectedTrailLayerId: 'carpet_earth_trail_reflection',
+          reflectedRollLayerId: 'carpet_roll_reflection',
           clipUvMinX: 0.0,
           initialClipUvMaxX: 0.156667,
           unrolledClipUvMaxX: 0.903333,
@@ -2095,6 +2238,7 @@ export class SpatialSceneManager {
           rollShiftInnerPxY: 0.0,
           rollShiftWorldZ: 0.0,
           rollTrackWorldZ: -232.235,
+          trailTrackWorldZ: -245.835,
           durationMs: 1450
         },
         extraLayers: [
@@ -2110,6 +2254,7 @@ export class SpatialSceneManager {
             segmentsY: 150,
             renderOrder: 7.2,
             expanded: false,
+            mirrorLeftEdge: false,
             baseOpacity: 1.0,
             excursionBoost: 0.0,
             depthTest: false,
@@ -2129,6 +2274,45 @@ export class SpatialSceneManager {
             segmentsY: 150,
             renderOrder: 7.6,
             expanded: false,
+            mirrorLeftEdge: false,
+            baseOpacity: 1.0,
+            excursionBoost: 0.0,
+            depthTest: false,
+            depthWrite: false
+          },
+          {
+            id: 'carpet_earth_trail_reflection',
+            labelHe: 'השתקפות שובל האדמה המתמשך מעבר לשפת המראה השמאלית',
+            texture: `assets/scenes/scene19_herz_carpet_earth_full.png?${assetVer}`,
+            depthTexture: `assets/scenes/scene19_herz_carpet_earth_full_depth.png?${assetVer}`,
+            zPos: -350.0,
+            depthAmplitude: 165.0,
+            pinMarginUv: 0.0,
+            segmentsX: 224,
+            segmentsY: 150,
+            renderOrder: 7.2,
+            expanded: false,
+            mirrorLeftEdge: true,
+            baseOpacity: 1.0,
+            excursionBoost: 0.0,
+            depthTest: false,
+            depthWrite: false,
+            clipUvMinX: 0.0,
+            clipUvMaxX: 0.156667
+          },
+          {
+            id: 'carpet_roll_reflection',
+            labelHe: 'השתקפות גליל השטיח מעבר לשפת המראה השמאלית',
+            texture: `assets/scenes/scene19_herz_carpet_roll.png?${assetVer}`,
+            depthTexture: `assets/scenes/scene19_herz_carpet_roll_depth.png?${assetVer}`,
+            zPos: -350.0,
+            depthAmplitude: 165.0,
+            pinMarginUv: 0.0,
+            segmentsX: 224,
+            segmentsY: 150,
+            renderOrder: 7.6,
+            expanded: false,
+            mirrorLeftEdge: true,
             baseOpacity: 1.0,
             excursionBoost: 0.0,
             depthTest: false,
@@ -2160,7 +2344,7 @@ export class SpatialSceneManager {
         fgSegmentsY: 150,
         fgDepthTest: false,
         fgDepthWrite: false,
-        fgExpanded: true,
+        fgExpanded: false,
         boreSightAtRest: true,
         bgZ: -350.0,
         midZ: -350.0,
@@ -2229,7 +2413,7 @@ export class SpatialSceneManager {
         extraLayers: [
           {
             id: 'mounted_wall_vitrine',
-            labelHe: 'תיבת הוויטרינה התלויה צמוד לקיר החדר (מסובבת 130° עם צל מקורי)',
+            labelHe: 'צל הוויטרינה התלויה צמוד לקיר החדר (מסובבת 130°)',
             texture: `assets/scenes/scene21_bar_giora_vitrine.png?${assetVer}`,
             depthTexture: `assets/scenes/scene21_bar_giora_vitrine_depth.png?${assetVer}`,
             zPos: -350.0,
@@ -2237,7 +2421,7 @@ export class SpatialSceneManager {
             pinMarginUv: 0.0,
             segmentsX: 224,
             segmentsY: 150,
-            renderOrder: 5.5,
+            renderOrder: 1.5,
             expanded: false,
             baseOpacity: 1.0,
             excursionBoost: 0.0,
@@ -2820,6 +3004,14 @@ export class SpatialSceneManager {
     this.sceneConfigs.tzofen_brick_table.portalShelves = this._normalizePortalShelfSpecs(
       rawTzofenPortals,
       'tzofen_brick_table'
+    );
+    const rawTzofenV2Portals =
+      Array.isArray(options.tzofenV2PortalShelves) && options.tzofenV2PortalShelves.length > 0
+        ? options.tzofenV2PortalShelves
+        : SCENE_GEOMETRY_SPEC.tzofenV2PortalShelves;
+    this.sceneConfigs.tzofen_brick_table_v2.portalShelves = this._normalizePortalShelfSpecs(
+      rawTzofenV2Portals,
+      'tzofen_brick_table_v2'
     );
     const rawScrollFootPortals =
       Array.isArray(options.scrollFootPortalShelves) && options.scrollFootPortalShelves.length > 0
@@ -3564,9 +3756,6 @@ export class SpatialSceneManager {
       const rtH = Math.max(1, Math.round(this.height * dpr));
       if (this.rtCurrent) this.rtCurrent.setSize(rtW, rtH);
       if (this.rtNext) this.rtNext.setSize(rtW, rtH);
-      if (this.transitionMaterial && this.transitionMaterial.uniforms) {
-        this.transitionMaterial.uniforms.uAspect.value = this.camera.aspect;
-      }
       this.applyDynamicWidescreenScaling();
     };
 
@@ -3801,7 +3990,9 @@ export class SpatialSceneManager {
     if (!cfg || !Array.isArray(cfg.portalShelves) || cfg.portalShelves.length === 0) {
       return false;
     }
-    return cfg.portalShelves.some((spec) => spec && spec.embedDiorama !== false);
+    return cfg.portalShelves.some(
+      (spec) => spec && spec.embedDiorama !== false && !spec.wallMount
+    );
   }
 
   _normalizePortalShelfSpecs(rawSpecs, hostSceneId = 'shelf_portal') {
@@ -3957,6 +4148,79 @@ export class SpatialSceneManager {
         }
         const isDirectCrossfadeOrReverse =
           spec.portalMode === 'crossfade' || spec.portalMode === 'reverse_transition';
+        const rotationDeg = typeof spec.rotationDeg === 'number' ? spec.rotationDeg : 0.0;
+        const dioramaRollDeg = typeof spec.dioramaRollDeg === 'number' ? spec.dioramaRollDeg : 0.0;
+        const flightRollDeg = typeof spec.flightRollDeg === 'number' ? spec.flightRollDeg : 0.0;
+        const isPortrait = defaultAspect < 1.0;
+        const arrivalYawDeg =
+          isPortrait && typeof targetCfg.portraitInitialYawDeg === 'number'
+            ? targetCfg.portraitInitialYawDeg
+            : 0.0;
+        const effectiveFitZ = computePortalEffectiveFitZ(
+          geom,
+          defaultFov,
+          defaultAspect,
+          arrivalYawDeg,
+          0.0,
+          flightRollDeg,
+          rotationDeg
+        );
+        const defaultRestTint =
+          hostSceneId === 'shelf_portal'
+            ? SCENE_GEOMETRY_SPEC.shelfCubbyRestTintRgb
+            : SCENE_GEOMETRY_SPEC.neutralTintRgb;
+        const dioramaRestTintRgb =
+          Array.isArray(spec.dioramaRestTintRgb) && spec.dioramaRestTintRgb.length === 3
+            ? [
+                Number(spec.dioramaRestTintRgb[0]),
+                Number(spec.dioramaRestTintRgb[1]),
+                Number(spec.dioramaRestTintRgb[2])
+              ]
+            : [...defaultRestTint];
+        const keepHostBackdropOpaque = Boolean(spec.keepHostBackdropOpaque);
+        const outerWallFadeRangeT =
+          Array.isArray(spec.outerWallFadeRangeT) && spec.outerWallFadeRangeT.length === 2
+            ? [Number(spec.outerWallFadeRangeT[0]), Number(spec.outerWallFadeRangeT[1])]
+            : null;
+        let wallMount = null;
+        if (spec.wallMount && typeof spec.wallMount === 'object') {
+          const wm = spec.wallMount;
+          const orders = wm.dioramaRenderOrders || {};
+          wallMount = {
+            hostCenterInnerPx: Array.isArray(wm.hostCenterInnerPx)
+              ? [Number(wm.hostCenterInnerPx[0]), Number(wm.hostCenterInnerPx[1])]
+              : [750.0, 500.0],
+            hostBoxSidePx: typeof wm.hostBoxSidePx === 'number' ? wm.hostBoxSidePx : 118.0,
+            hostWallZ: typeof wm.hostWallZ === 'number' ? wm.hostWallZ : geom.worldZ,
+            hostWallSlopeDzDx:
+              typeof wm.hostWallSlopeDzDx === 'number' ? wm.hostWallSlopeDzDx : 0.0,
+            hostWallSlopeDzDy:
+              typeof wm.hostWallSlopeDzDy === 'number' ? wm.hostWallSlopeDzDy : 0.0,
+            hostWallClearanceWorld:
+              typeof wm.hostWallClearanceWorld === 'number' ? wm.hostWallClearanceWorld : 0.08,
+            hostRefInnerScale:
+              typeof wm.hostRefInnerScale === 'number' ? wm.hostRefInnerScale : hostMinInner,
+            targetBoxCenterInnerPx: Array.isArray(wm.targetBoxCenterInnerPx)
+              ? [Number(wm.targetBoxCenterInnerPx[0]), Number(wm.targetBoxCenterInnerPx[1])]
+              : [750.0, 500.0],
+            targetBoxSidePx: typeof wm.targetBoxSidePx === 'number' ? wm.targetBoxSidePx : 864.0,
+            targetPlasterDepthNorm:
+              typeof wm.targetPlasterDepthNorm === 'number' ? wm.targetPlasterDepthNorm : 0.2,
+            cavityInnerBoxPx:
+              Array.isArray(wm.cavityInnerBoxPx) && wm.cavityInnerBoxPx.length === 4
+                ? wm.cavityInnerBoxPx.map(Number)
+                : [352.0, 120.0, 1148.0, 895.0],
+            cavityFeatherPx: typeof wm.cavityFeatherPx === 'number' ? wm.cavityFeatherPx : 4.0,
+            inPlaneRollDeg:
+              typeof wm.inPlaneRollDeg === 'number' ? wm.inPlaneRollDeg : rotationDeg,
+            dioramaRenderOrders: {
+              bg: typeof orders.bg === 'number' ? orders.bg : 2.0,
+              mid: typeof orders.mid === 'number' ? orders.mid : 3.0,
+              fg: typeof orders.fg === 'number' ? orders.fg : 4.0,
+              dust: typeof orders.dust === 'number' ? orders.dust : 4.5
+            }
+          };
+        }
         return {
           id: spec.id || `portal_shelf_${idx + 1}`,
           hostSceneId,
@@ -3973,6 +4237,9 @@ export class SpatialSceneManager {
             typeof spec.embedDiorama === 'boolean'
               ? spec.embedDiorama
               : !isDirectCrossfadeOrReverse,
+          keepHostBackdropOpaque,
+          outerWallFadeRangeT,
+          wallMount,
           showFrame:
             typeof spec.showFrame === 'boolean' ? spec.showFrame : !isDirectCrossfadeOrReverse,
           restFrameOpacity:
@@ -3989,9 +4256,10 @@ export class SpatialSceneManager {
                 : 6.5,
           fadeStartProgress:
             typeof spec.fadeStartProgress === 'number' ? spec.fadeStartProgress : undefined,
-          rotationDeg: typeof spec.rotationDeg === 'number' ? spec.rotationDeg : 0.0,
-          dioramaRollDeg: typeof spec.dioramaRollDeg === 'number' ? spec.dioramaRollDeg : 0.0,
-          flightRollDeg: typeof spec.flightRollDeg === 'number' ? spec.flightRollDeg : 0.0,
+          rotationDeg,
+          dioramaRollDeg,
+          flightRollDeg,
+          dioramaRestTintRgb,
           innerBoxPx: Array.isArray(spec.innerBoxPx) ? [...spec.innerBoxPx] : null,
           worldX: Number(geom.worldX.toFixed(3)),
           worldY: Number(geom.worldY.toFixed(3)),
@@ -4000,6 +4268,7 @@ export class SpatialSceneManager {
           height: Number(geom.height.toFixed(3)),
           recessDepth: Number(geom.recessDepth.toFixed(3)),
           fitZ: Number(geom.fitZ.toFixed(3)),
+          effectiveFitZ: Number(effectiveFitZ.toFixed(3)),
           heightFitZ: Number(geom.heightFitZ.toFixed(3)),
           widthFitZ: Number(geom.widthFitZ.toFixed(3)),
           occluder,
@@ -4012,6 +4281,55 @@ export class SpatialSceneManager {
           previewFgDepth: spec.previewFgDepth || null
         };
       });
+  }
+
+  _canonicalizePortalSpecsForComparison(specs) {
+    if (!Array.isArray(specs)) return [];
+    return specs.map((s) => ({
+      id: s.id,
+      hostSceneId: s.hostSceneId,
+      targetSceneId: s.targetSceneId,
+      portalMode: s.portalMode,
+      embedDiorama: s.embedDiorama,
+      keepHostBackdropOpaque: Boolean(s.keepHostBackdropOpaque),
+      outerWallFadeRangeT: s.outerWallFadeRangeT || null,
+      wallMount: s.wallMount || null,
+      showFrame: s.showFrame,
+      restFrameOpacity: s.restFrameOpacity,
+      frameRenderOrder: s.frameRenderOrder,
+      fadeStartProgress: s.fadeStartProgress,
+      rotationDeg: s.rotationDeg,
+      dioramaRollDeg: s.dioramaRollDeg,
+      flightRollDeg: s.flightRollDeg,
+      dioramaRestTintRgb: s.dioramaRestTintRgb,
+      innerBoxPx: s.innerBoxPx,
+      worldZ: s.worldZ,
+      recessDepth: s.recessDepth,
+      occluder: s.occluder
+        ? {
+            texture: s.occluder.texture,
+            depthTexture: s.occluder.depthTexture,
+            depthAmplitude: s.occluder.depthAmplitude,
+            pinMarginUv: s.occluder.pinMarginUv,
+            segmentsX: s.occluder.segmentsX,
+            segmentsY: s.occluder.segmentsY,
+            worldZ: s.occluder.worldZ,
+            renderOrder: s.occluder.renderOrder,
+            fullInnerCanvas: s.occluder.fullInnerCanvas,
+            alphaHitThreshold: s.occluder.alphaHitThreshold,
+            innerBoxPx: s.occluder.innerBoxPx,
+            locksPortal: s.occluder.locksPortal,
+            companionFall: s.occluder.companionFall
+          }
+        : null,
+      veil: s.veil,
+      previewBgTex: s.previewBgTex,
+      previewBgDepth: s.previewBgDepth,
+      previewMidTex: s.previewMidTex,
+      previewMidDepth: s.previewMidDepth,
+      previewFgTex: s.previewFgTex,
+      previewFgDepth: s.previewFgDepth
+    }));
   }
 
   _getSceneRestPose(sceneId) {
@@ -4354,6 +4672,49 @@ export class SpatialSceneManager {
     );
   }
 
+  _getOrCreateSharedUrlTextureEntry(url) {
+    if (!this._sharedUrlTextures) {
+      this._sharedUrlTextures = new Map();
+    }
+    let entry = this._sharedUrlTextures.get(url);
+    if (!entry) {
+      const tex = new THREE.Texture();
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      entry = {
+        url,
+        tex,
+        loaded: false,
+        promise: null
+      };
+      this._sharedUrlTextures.set(url, entry);
+    }
+    return entry;
+  }
+
+  _loadSharedUrlTexture(url, isInitialScene = false) {
+    if (!url) return Promise.resolve(null);
+    const entry = this._getOrCreateSharedUrlTextureEntry(url);
+    if (entry.loaded) return Promise.resolve(entry.tex);
+    if (entry.promise) return entry.promise;
+    entry.promise = new Promise((resolve, reject) => {
+      this._loadTextureIntoSlot(
+        url,
+        entry.tex,
+        () => {
+          entry.loaded = true;
+          resolve(entry.tex);
+        },
+        isInitialScene,
+        (err) => {
+          entry.promise = null;
+          reject(err);
+        }
+      );
+    });
+    return entry.promise;
+  }
+
   _loadSceneTextures(sceneId, isInitialScene = false) {
     const obj = this.sceneObjects[sceneId];
     const cfg = this.sceneConfigs[sceneId];
@@ -4384,19 +4745,33 @@ export class SpatialSceneManager {
         }
       }
     }
+    const sharedUrls = new Set();
     for (const inst of this._portalInstances) {
       if (inst.hostSceneId !== sceneId) continue;
-      if (inst.spec.occluder && inst.spec.occluder.texture && inst.occluderTex) {
-        slots.push({ url: inst.spec.occluder.texture, tex: inst.occluderTex });
+      if (inst.spec.occluder && inst.spec.occluder.texture) {
+        sharedUrls.add(inst.spec.occluder.texture);
       }
-      if (inst.spec.occluder && inst.spec.occluder.depthTexture && inst.occluderDepthTex) {
-        slots.push({ url: inst.spec.occluder.depthTexture, tex: inst.occluderDepthTex });
+      if (inst.spec.occluder && inst.spec.occluder.depthTexture) {
+        sharedUrls.add(inst.spec.occluder.depthTexture);
       }
-      if (inst.spec.veil && inst.spec.veil.texture && inst.veilTex) {
-        slots.push({ url: inst.spec.veil.texture, tex: inst.veilTex });
+      if (inst.spec.veil && inst.spec.veil.texture) {
+        sharedUrls.add(inst.spec.veil.texture);
+      }
+      for (const cp of inst.childPortalMeshes || []) {
+        const cs = cp.childSpec;
+        if (cs && cs.occluder && cs.occluder.texture) {
+          sharedUrls.add(cs.occluder.texture);
+        }
+        if (cs && cs.occluder && cs.occluder.depthTexture) {
+          sharedUrls.add(cs.occluder.depthTexture);
+        }
+        if (cs && cs.veil && cs.veil.texture) {
+          sharedUrls.add(cs.veil.texture);
+        }
       }
     }
-    obj.expectedCount = slots.length;
+    const sharedUrlList = Array.from(sharedUrls);
+    obj.expectedCount = slots.length + sharedUrlList.length;
     obj.loadedCount = 0;
 
     obj.loadPromise = new Promise((resolve, reject) => {
@@ -4443,6 +4818,9 @@ export class SpatialSceneManager {
           isInitialScene,
           handleSlotError
         );
+      }
+      for (const sUrl of sharedUrlList) {
+        this._loadSharedUrlTexture(sUrl, isInitialScene).then(handleSlotDone, handleSlotError);
       }
     });
     return obj.loadPromise;
@@ -4510,13 +4888,18 @@ export class SpatialSceneManager {
           uDepthAmplitude: { value: roomDepthAmplitude },
           uDistBg: { value: this.baseCameraZ - sceneBgZ },
           uPinMarginUv: { value: SCENE_GEOMETRY_SPEC.roomPinMarginUv },
+          uOpticalCenterLocalX: { value: 0.0 },
           uOpticalCenterLocalY: { value: 0.0 },
           uOpacity: { value: 1.0 },
           uAlphaCutout: { value: 0.0 },
+          uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
           uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
           uFadeToClear: { value: 0.0 },
           uClipUvMinX: { value: 0.0 },
-          uClipUvMaxX: { value: 1.0 }
+          uClipUvMaxX: { value: 1.0 },
+          uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+          uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+          uOuterWallOpacity: { value: 1.0 }
         },
         clipping: false,
         depthWrite: true,
@@ -4566,13 +4949,18 @@ export class SpatialSceneManager {
             uDepthAmplitude: { value: cfg.midDepthAmplitude },
             uDistBg: { value: Math.max(1.0, this.baseCameraZ - sceneMidZ) },
             uPinMarginUv: { value: midPinMarginUv },
+            uOpticalCenterLocalX: { value: 0.0 },
             uOpticalCenterLocalY: { value: 0.0 },
             uOpacity: { value: 1.0 },
             uAlphaCutout: { value: midAlphaCutout },
+            uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
             uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
             uFadeToClear: { value: 0.0 },
             uClipUvMinX: { value: 0.0 },
-            uClipUvMaxX: { value: 1.0 }
+            uClipUvMaxX: { value: 1.0 },
+            uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+            uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+            uOuterWallOpacity: { value: 1.0 }
           },
           clipping: false,
           transparent: midAlphaCutout <= 0.0,
@@ -4634,13 +5022,18 @@ export class SpatialSceneManager {
             uDepthAmplitude: { value: cfg.fgDepthAmplitude },
             uDistBg: { value: Math.max(1.0, this.baseCameraZ - sceneFgZ) },
             uPinMarginUv: { value: fgPinMarginUv },
+            uOpticalCenterLocalX: { value: 0.0 },
             uOpticalCenterLocalY: { value: 0.0 },
             uOpacity: { value: 1.0 },
             uAlphaCutout: { value: fgAlphaCutout },
+            uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
             uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
             uFadeToClear: { value: 0.0 },
             uClipUvMinX: { value: 0.0 },
-            uClipUvMaxX: { value: 1.0 }
+            uClipUvMaxX: { value: 1.0 },
+            uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+            uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+            uOuterWallOpacity: { value: 1.0 }
           },
           clipping: false,
           transparent: fgAlphaCutout <= 0.0,
@@ -4725,6 +5118,8 @@ export class SpatialSceneManager {
             typeof elCfg.pinMarginUv === 'number'
               ? elCfg.pinMarginUv
               : SCENE_GEOMETRY_SPEC.depthEdgePinMarginUv;
+          const mirrorLeftEdge = Boolean(elCfg.mirrorLeftEdge);
+          const meshSide = mirrorLeftEdge ? THREE.DoubleSide : THREE.FrontSide;
           const useDepthWrite = Boolean(elCfg.depthWrite);
           const useDepthTest = hasDepthRelief ? elCfg.depthTest !== false : Boolean(elCfg.depthTest);
 
@@ -4744,14 +5139,22 @@ export class SpatialSceneManager {
                 uDepthAmplitude: { value: elCfg.depthAmplitude },
                 uDistBg: { value: Math.max(1.0, this.baseCameraZ - elCfg.zPos) },
                 uPinMarginUv: { value: pinMarginUv },
+                uOpticalCenterLocalX: {
+                  value: mirrorLeftEdge ? -SCENE_GEOMETRY_SPEC.fgBaseWidth : 0.0
+                },
                 uOpticalCenterLocalY: { value: 0.0 },
                 uOpacity: { value: baseOpacity },
                 uAlphaCutout: { value: alphaCutout },
+                uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
                 uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
                 uFadeToClear: { value: 0.0 },
                 uClipUvMinX: { value: clipUvMinX },
-                uClipUvMaxX: { value: clipUvMaxX }
+                uClipUvMaxX: { value: clipUvMaxX },
+                uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+                uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+                uOuterWallOpacity: { value: 1.0 }
               },
+              side: meshSide,
               clipping: false,
               transparent: alphaCutout <= 0.0,
               depthWrite: useDepthWrite,
@@ -4760,6 +5163,7 @@ export class SpatialSceneManager {
           } else {
             elMat = new THREE.MeshBasicMaterial({
               map: elTex,
+              side: meshSide,
               transparent: true,
               opacity: baseOpacity,
               depthWrite: useDepthWrite,
@@ -4781,6 +5185,7 @@ export class SpatialSceneManager {
             zPos: elCfg.zPos,
             renderOrder: elMesh.renderOrder,
             expanded: !!elCfg.expanded,
+            mirrorLeftEdge,
             baseOpacity,
             excursionBoost: typeof elCfg.excursionBoost === 'number' ? elCfg.excursionBoost : 0.0,
             hasDepthRelief,
@@ -4883,22 +5288,23 @@ export class SpatialSceneManager {
     for (const spec of shelves) {
       if (
         spec &&
-        spec.embedDiorama !== false &&
         spec.targetSceneId &&
         this.sceneConfigs[spec.targetSceneId] &&
         !ordered.includes(spec.targetSceneId)
       ) {
         ordered.push(spec.targetSceneId);
-        const childShelves = this.getPortalShelves(spec.targetSceneId);
-        for (const childSpec of childShelves) {
-          if (
-            childSpec &&
-            childSpec.embedDiorama !== false &&
-            childSpec.targetSceneId &&
-            this.sceneConfigs[childSpec.targetSceneId] &&
-            !ordered.includes(childSpec.targetSceneId)
-          ) {
-            ordered.push(childSpec.targetSceneId);
+        if (spec.embedDiorama !== false) {
+          const childShelves = this.getPortalShelves(spec.targetSceneId);
+          for (const childSpec of childShelves) {
+            if (
+              childSpec &&
+              childSpec.embedDiorama !== false &&
+              childSpec.targetSceneId &&
+              this.sceneConfigs[childSpec.targetSceneId] &&
+              !ordered.includes(childSpec.targetSceneId)
+            ) {
+              ordered.push(childSpec.targetSceneId);
+            }
           }
         }
       }
@@ -5008,7 +5414,9 @@ export class SpatialSceneManager {
     if (typeof location !== 'undefined' && location.protocol === 'file:') {
       return;
     }
-    await new Promise((resolve) => setTimeout(resolve, 2800));
+    await new Promise((resolve) =>
+      setTimeout(resolve, SCENE_GEOMETRY_SPEC.backgroundWarmInitialDelayMs)
+    );
     if (this._disposed) return;
 
     let manifestSceneIds = null;
@@ -5091,10 +5499,15 @@ export class SpatialSceneManager {
       if (!manifestSceneIds || manifestSceneIds.has(otherId)) {
         try {
           await this._loadSceneTextures(otherId, false);
+          if (!this._disposed && this.sceneObjects[otherId] && this.sceneObjects[otherId].texturesReady) {
+            this._prewarmSceneGpuResources(otherId);
+          }
         } catch (_) {
           // Scene assets still synthesizing offline; leave loadPromise=null for on-demand retry
         }
-        await new Promise((resolve) => setTimeout(resolve, 320));
+        await new Promise((resolve) =>
+          setTimeout(resolve, SCENE_GEOMETRY_SPEC.backgroundWarmStepDelayMs)
+        );
       }
     }
   }
@@ -5157,7 +5570,8 @@ export class SpatialSceneManager {
     const existingForHost = this._portalInstances.filter((p) => p.hostSceneId === hostSceneId);
     const unchanged =
       existingForHost.length === nextSpecs.length &&
-      JSON.stringify(prevSpecs) === JSON.stringify(nextSpecs);
+      JSON.stringify(this._canonicalizePortalSpecsForComparison(prevSpecs)) ===
+        JSON.stringify(this._canonicalizePortalSpecsForComparison(nextSpecs));
     if (unchanged) {
       return;
     }
@@ -5175,16 +5589,37 @@ export class SpatialSceneManager {
     }
   }
 
-  _resolvePortalTexture(customUrl, defaultUrl, sharedTex, ownedResources) {
+  _resolvePortalTexture(customUrl, defaultUrl, sharedTex) {
     if (!customUrl || customUrl === defaultUrl) {
       return sharedTex;
     }
-    const dedicatedTex = new THREE.Texture();
-    dedicatedTex.minFilter = THREE.LinearFilter;
-    dedicatedTex.magFilter = THREE.LinearFilter;
-    ownedResources.push(dedicatedTex);
-    this._loadTextureIntoSlot(customUrl, dedicatedTex, () => {}, false);
-    return dedicatedTex;
+    const entry = this._getOrCreateSharedUrlTextureEntry(customUrl);
+    this._loadSharedUrlTexture(customUrl, false).catch(() => {});
+    return entry.tex;
+  }
+
+  _computeCavityUvUniforms(wm) {
+    if (!wm || !Array.isArray(wm.cavityInnerBoxPx) || wm.cavityInnerBoxPx.length !== 4) {
+      return {
+        rect: new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
+        feather: new THREE.Vector2(0.001, 0.001)
+      };
+    }
+    const expW = SCENE_GEOMETRY_SPEC.innerFrameWidthPx * SCENE_GEOMETRY_SPEC.bgExpansionFactor;
+    const expH = SCENE_GEOMETRY_SPEC.innerFrameHeightPx * SCENE_GEOMETRY_SPEC.bgExpansionFactor;
+    const ox = 0.5 * (expW - SCENE_GEOMETRY_SPEC.innerFrameWidthPx);
+    const oy = 0.5 * (expH - SCENE_GEOMETRY_SPEC.innerFrameHeightPx);
+    const [x0, y0, x1, y1] = wm.cavityInnerBoxPx;
+    const fPx = Math.max(0.5, typeof wm.cavityFeatherPx === 'number' ? wm.cavityFeatherPx : 4.0);
+    return {
+      rect: new THREE.Vector4(
+        (ox + x0) / expW,
+        1.0 - (oy + y1) / expH,
+        (ox + x1) / expW,
+        1.0 - (oy + y0) / expH
+      ),
+      feather: new THREE.Vector2(fPx / expW, fPx / expH)
+    };
   }
 
   _initPortalShelves(onlyHostSceneId = null) {
@@ -5205,6 +5640,7 @@ export class SpatialSceneManager {
         if (!targetObj || !targetCfg) continue;
 
         const ownedResources = [];
+        const dioramaTintMaterials = [];
         const embedDiorama = spec.embedDiorama !== false;
         const showFrame = spec.showFrame !== false;
 
@@ -5223,12 +5659,18 @@ export class SpatialSceneManager {
         const childPortalMeshes = [];
 
         if (embedDiorama) {
-          clipPlanes = [
-            new THREE.Plane(),
-            new THREE.Plane(),
-            new THREE.Plane(),
-            new THREE.Plane()
-          ];
+          const isWallMount = Boolean(spec.wallMount);
+          clipPlanes = isWallMount
+            ? null
+            : [
+                new THREE.Plane(),
+                new THREE.Plane(),
+                new THREE.Plane(),
+                new THREE.Plane()
+              ];
+          const useLocalClip = Boolean(clipPlanes);
+          const wmCavity = isWallMount ? this._computeCavityUvUniforms(spec.wallMount) : null;
+          const wmOrders = isWallMount ? spec.wallMount.dioramaRenderOrders : null;
 
           dioramaGroup = new THREE.Group();
           const baseOrder = SCENE_GEOMETRY_SPEC.portalBaseRenderOrder;
@@ -5240,26 +5682,22 @@ export class SpatialSceneManager {
           const bgColorTex = this._resolvePortalTexture(
             spec.previewBgTex,
             targetCfg.bgTexture,
-            targetObj.bgTex,
-            ownedResources
+            targetObj.bgTex
           );
           const bgDepthTex = this._resolvePortalTexture(
             spec.previewBgDepth,
             targetCfg.depthTexture,
-            targetObj.depthTex,
-            ownedResources
+            targetObj.depthTex
           );
           const midColorTex = this._resolvePortalTexture(
             spec.previewMidTex,
             targetCfg.midTexture,
-            targetObj.midTex,
-            ownedResources
+            targetObj.midTex
           );
           const fgColorTex = this._resolvePortalTexture(
             spec.previewFgTex,
             targetCfg.fgTexture,
-            targetObj.fgTex,
-            ownedResources
+            targetObj.fgTex
           );
 
           bgMat = new THREE.ShaderMaterial({
@@ -5271,22 +5709,34 @@ export class SpatialSceneManager {
               uDepthAmplitude: { value: targetObj.roomDepthAmplitude },
               uDistBg: { value: this.baseCameraZ - targetObj.sceneBgZ },
               uPinMarginUv: { value: SCENE_GEOMETRY_SPEC.roomPinMarginUv },
+              uOpticalCenterLocalX: { value: 0.0 },
               uOpticalCenterLocalY: { value: 0.0 },
               uOpacity: { value: 1.0 },
               uAlphaCutout: { value: 0.0 },
+              uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
               uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
               uFadeToClear: { value: 0.0 },
               uClipUvMinX: { value: 0.0 },
-              uClipUvMaxX: { value: 1.0 }
+              uClipUvMaxX: { value: 1.0 },
+              uCavityUvRect: {
+                value: wmCavity ? wmCavity.rect : new THREE.Vector4(0.0, 0.0, 1.0, 1.0)
+              },
+              uCavityFeatherUv: {
+                value: wmCavity ? wmCavity.feather : new THREE.Vector2(0.001, 0.001)
+              },
+              uOuterWallOpacity: { value: isWallMount ? 0.0 : 1.0 }
             },
-            clipping: true,
+            clipping: useLocalClip,
             clippingPlanes: clipPlanes,
-            depthWrite: true,
-            depthTest: true,
-            depthFunc: THREE.AlwaysDepth
+            transparent: isWallMount,
+            depthWrite: !isWallMount,
+            depthTest: !isWallMount,
+            depthFunc: isWallMount ? THREE.LessEqualDepth : THREE.AlwaysDepth
           });
+          ownedResources.push(bgMat);
+          dioramaTintMaterials.push(bgMat);
           bgMesh = new THREE.Mesh(targetObj.layer0.geometry, bgMat);
-          bgMesh.renderOrder = baseOrder;
+          bgMesh.renderOrder = wmOrders ? wmOrders.bg : baseOrder;
           dioramaGroup.add(bgMesh);
 
           if (targetObj.reflectionMesh && targetObj.refTex) {
@@ -5304,6 +5754,7 @@ export class SpatialSceneManager {
               clippingPlanes: clipPlanes
             });
             ownedResources.push(refMat);
+            dioramaTintMaterials.push(refMat);
             refMesh = new THREE.Mesh(targetObj.reflectionMesh.geometry, refMat);
             refMesh.renderOrder = baseOrder + 0.5;
             dioramaGroup.add(refMesh);
@@ -5319,15 +5770,20 @@ export class SpatialSceneManager {
                 uDepthAmplitude: { value: targetObj.midDepthAmplitude },
                 uDistBg: { value: Math.max(1.0, this.baseCameraZ - targetObj.sceneMidZ) },
                 uPinMarginUv: { value: targetObj.midPinMarginUv },
+                uOpticalCenterLocalX: { value: 0.0 },
                 uOpticalCenterLocalY: { value: 0.0 },
                 uOpacity: { value: 1.0 },
                 uAlphaCutout: { value: targetObj.midAlphaCutout },
+                uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
                 uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
                 uFadeToClear: { value: 0.0 },
                 uClipUvMinX: { value: 0.0 },
-                uClipUvMaxX: { value: 1.0 }
+                uClipUvMaxX: { value: 1.0 },
+                uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+                uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+                uOuterWallOpacity: { value: 1.0 }
               },
-              clipping: true,
+              clipping: useLocalClip,
               clippingPlanes: clipPlanes,
               transparent: targetObj.midAlphaCutout <= 0.0,
               depthWrite: Boolean(targetCfg.midDepthWrite),
@@ -5345,8 +5801,9 @@ export class SpatialSceneManager {
             });
           }
           ownedResources.push(midMat);
+          dioramaTintMaterials.push(midMat);
           midMesh = new THREE.Mesh(targetObj.layer1.geometry, midMat);
-          midMesh.renderOrder = baseOrder + targetMidOrder;
+          midMesh.renderOrder = wmOrders ? wmOrders.mid : baseOrder + targetMidOrder;
           dioramaGroup.add(midMesh);
 
           if (Array.isArray(targetObj.extraLayers)) {
@@ -5362,15 +5819,23 @@ export class SpatialSceneManager {
                     uDepthAmplitude: { value: extra.depthAmplitude },
                     uDistBg: { value: Math.max(1.0, this.baseCameraZ - extra.zPos) },
                     uPinMarginUv: { value: extra.pinMarginUv },
+                    uOpticalCenterLocalX: {
+                      value: extra.mirrorLeftEdge ? -SCENE_GEOMETRY_SPEC.fgBaseWidth : 0.0
+                    },
                     uOpticalCenterLocalY: { value: 0.0 },
                     uOpacity: { value: extra.baseOpacity },
                     uAlphaCutout: { value: extra.alphaCutout },
+                    uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
                     uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
                     uFadeToClear: { value: 0.0 },
                     uClipUvMinX: { value: 0.0 },
-                    uClipUvMaxX: { value: 1.0 }
+                    uClipUvMaxX: { value: 1.0 },
+                    uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+                    uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+                    uOuterWallOpacity: { value: 1.0 }
                   },
-                  clipping: true,
+                  side: extra.mirrorLeftEdge ? THREE.DoubleSide : THREE.FrontSide,
+                  clipping: useLocalClip,
                   clippingPlanes: clipPlanes,
                   transparent: extra.alphaCutout <= 0.0,
                   depthWrite: Boolean(extra.depthWrite),
@@ -5389,6 +5854,7 @@ export class SpatialSceneManager {
                 });
               }
               ownedResources.push(exMat);
+              dioramaTintMaterials.push(exMat);
               const exMesh = new THREE.Mesh(extra.mesh.geometry, exMat);
               exMesh.renderOrder = baseOrder + extra.renderOrder;
               dioramaGroup.add(exMesh);
@@ -5406,15 +5872,20 @@ export class SpatialSceneManager {
                 uDepthAmplitude: { value: targetObj.fgDepthAmplitude },
                 uDistBg: { value: Math.max(1.0, this.baseCameraZ - targetObj.sceneFgZ) },
                 uPinMarginUv: { value: targetObj.fgPinMarginUv },
+                uOpticalCenterLocalX: { value: 0.0 },
                 uOpticalCenterLocalY: { value: 0.0 },
                 uOpacity: { value: 1.0 },
                 uAlphaCutout: { value: targetObj.fgAlphaCutout },
+                uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
                 uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
                 uFadeToClear: { value: 0.0 },
                 uClipUvMinX: { value: 0.0 },
-                uClipUvMaxX: { value: 1.0 }
+                uClipUvMaxX: { value: 1.0 },
+                uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+                uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+                uOuterWallOpacity: { value: 1.0 }
               },
-              clipping: true,
+              clipping: useLocalClip,
               clippingPlanes: clipPlanes,
               transparent: targetObj.fgAlphaCutout <= 0.0,
               depthWrite: Boolean(targetCfg.fgDepthWrite),
@@ -5432,58 +5903,210 @@ export class SpatialSceneManager {
             });
           }
           ownedResources.push(fgMat);
+          dioramaTintMaterials.push(fgMat);
           fgMesh = new THREE.Mesh(targetObj.layer2.geometry, fgMat);
-          fgMesh.renderOrder = baseOrder + targetFgOrder;
+          fgMesh.renderOrder = wmOrders ? wmOrders.fg : baseOrder + targetFgOrder;
           dioramaGroup.add(fgMesh);
 
           dustMat = targetObj.layer3.material.clone();
           dustMat.clippingPlanes = clipPlanes;
+          if (isWallMount) {
+            dustMat.opacity = 0.0;
+          }
           ownedResources.push(dustMat);
           dustMesh = new THREE.Points(targetObj.layer3.geometry, dustMat);
-          dustMesh.renderOrder =
-            hostSceneId === 'shelf_portal'
+          if (isWallMount) {
+            dustMesh.visible = false;
+          }
+          dustMesh.renderOrder = wmOrders
+            ? wmOrders.dust
+            : hostSceneId === 'shelf_portal'
               ? this._rigSpec.portalDustRenderOrder
               : baseOrder + targetFgOrder + 0.5;
           dioramaGroup.add(dustMesh);
 
-          // If the target scene defines embedded portalShelves (e.g. wandering_drawing_1 has a scroll world aperture
-          // with a pencil drawing veil; fried_house_railing has a window with a wooden shutter occluder),
-          // instantiate representation meshes inside dioramaGroup with clippingPlanes attached so the transition
-          // has zero popping of windows, veils, or occluders.
-          // Child portal representation meshes attached to dioramaGroup
+          // Child portal representation meshes attached to dioramaGroup (with full depth relief & shared URL textures)
           childPortalMeshes.length = 0;
           if (Array.isArray(targetCfg.portalShelves)) {
             for (const childSpec of targetCfg.portalShelves) {
               const childTargetObj = this.sceneObjects[childSpec.targetSceneId];
               const childTargetCfg = this.sceneConfigs[childSpec.targetSceneId];
 
-              // Child diorama preview mesh (embedded background aperture)
               let childDioBgMesh = null;
+              let childWallMount = null;
               if (childSpec.embedDiorama !== false && childTargetObj && childTargetCfg) {
-                const childBgTex = this._resolvePortalTexture(
-                  childSpec.previewBgTex,
-                  childTargetCfg.bgTexture,
-                  childTargetObj.bgTex,
-                  ownedResources
-                );
-                const childBgMat = new THREE.MeshBasicMaterial({
-                  map: childBgTex,
-                  transparent: true,
-                  opacity: 1.0,
-                  depthWrite: false,
-                  depthTest: true,
-                  fog: false,
-                  toneMapped: false,
-                  clippingPlanes: clipPlanes
-                });
-                ownedResources.push(childBgMat);
-                const childBgGeo = this._getSharedPlaneGeo(1, 1, 1, 1);
-                childDioBgMesh = new THREE.Mesh(childBgGeo, childBgMat);
-                childDioBgMesh.renderOrder = baseOrder + 1.5;
-                dioramaGroup.add(childDioBgMesh);
+                if (childSpec.wallMount) {
+                  const cWmGroup = new THREE.Group();
+                  const cWmCav = this._computeCavityUvUniforms(childSpec.wallMount);
+                  const cWmOrders = childSpec.wallMount.dioramaRenderOrders || {
+                    bg: 2.0,
+                    mid: 3.0,
+                    fg: 4.0
+                  };
+                  const cBgMat = new THREE.ShaderMaterial({
+                    vertexShader: ROOM_DEPTH_VERTEX_SHADER,
+                    fragmentShader: ROOM_DEPTH_FRAGMENT_SHADER,
+                    uniforms: {
+                      uColorMap: { value: childTargetObj.bgTex },
+                      uDepthMap: { value: childTargetObj.depthTex },
+                      uDepthAmplitude: { value: childTargetObj.roomDepthAmplitude },
+                      uDistBg: { value: this.baseCameraZ - childTargetObj.sceneBgZ },
+                      uPinMarginUv: { value: SCENE_GEOMETRY_SPEC.roomPinMarginUv },
+                      uOpticalCenterLocalX: { value: 0.0 },
+                      uOpticalCenterLocalY: { value: 0.0 },
+                      uOpacity: { value: 1.0 },
+                      uAlphaCutout: { value: 0.0 },
+                      uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
+                      uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
+                      uFadeToClear: { value: 0.0 },
+                      uClipUvMinX: { value: 0.0 },
+                      uClipUvMaxX: { value: 1.0 },
+                      uCavityUvRect: { value: cWmCav.rect },
+                      uCavityFeatherUv: { value: cWmCav.feather },
+                      uOuterWallOpacity: { value: 0.0 }
+                    },
+                    clipping: useLocalClip,
+                    clippingPlanes: clipPlanes,
+                    transparent: true,
+                    depthWrite: false,
+                    depthTest: false
+                  });
+                  const cBgMesh = new THREE.Mesh(childTargetObj.layer0.geometry, cBgMat);
+                  cBgMesh.renderOrder = baseOrder + cWmOrders.bg;
+                  cWmGroup.add(cBgMesh);
+
+                  let cMidMat = null;
+                  if (childTargetObj.hasMidDepthRelief && childTargetObj.midDepthTex) {
+                    cMidMat = new THREE.ShaderMaterial({
+                      vertexShader: ROOM_DEPTH_VERTEX_SHADER,
+                      fragmentShader: ROOM_DEPTH_FRAGMENT_SHADER,
+                      uniforms: {
+                        uColorMap: { value: childTargetObj.midTex },
+                        uDepthMap: { value: childTargetObj.midDepthTex },
+                        uDepthAmplitude: { value: childTargetObj.midDepthAmplitude },
+                        uDistBg: {
+                          value: Math.max(1.0, this.baseCameraZ - childTargetObj.sceneMidZ)
+                        },
+                        uPinMarginUv: { value: childTargetObj.midPinMarginUv },
+                        uOpticalCenterLocalX: { value: 0.0 },
+                        uOpticalCenterLocalY: { value: 0.0 },
+                        uOpacity: { value: 1.0 },
+                        uAlphaCutout: { value: childTargetObj.midAlphaCutout },
+                        uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
+                        uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
+                        uFadeToClear: { value: 0.0 },
+                        uClipUvMinX: { value: 0.0 },
+                        uClipUvMaxX: { value: 1.0 },
+                        uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+                        uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+                        uOuterWallOpacity: { value: 1.0 }
+                      },
+                      clipping: useLocalClip,
+                      clippingPlanes: clipPlanes,
+                      transparent: true,
+                      depthWrite: false,
+                      depthTest: false
+                    });
+                  } else {
+                    cMidMat = new THREE.MeshBasicMaterial({
+                      map: childTargetObj.midTex,
+                      transparent: true,
+                      depthWrite: false,
+                      depthTest: false,
+                      fog: false,
+                      toneMapped: false,
+                      clippingPlanes: clipPlanes
+                    });
+                  }
+                  const cMidMesh = new THREE.Mesh(childTargetObj.layer1.geometry, cMidMat);
+                  cMidMesh.renderOrder = baseOrder + cWmOrders.mid;
+                  cWmGroup.add(cMidMesh);
+
+                  let cFgMat = null;
+                  if (childTargetObj.hasFgDepthRelief && childTargetObj.fgDepthTex) {
+                    cFgMat = new THREE.ShaderMaterial({
+                      vertexShader: ROOM_DEPTH_VERTEX_SHADER,
+                      fragmentShader: ROOM_DEPTH_FRAGMENT_SHADER,
+                      uniforms: {
+                        uColorMap: { value: childTargetObj.fgTex },
+                        uDepthMap: { value: childTargetObj.fgDepthTex },
+                        uDepthAmplitude: { value: childTargetObj.fgDepthAmplitude },
+                        uDistBg: {
+                          value: Math.max(1.0, this.baseCameraZ - childTargetObj.sceneFgZ)
+                        },
+                        uPinMarginUv: { value: childTargetObj.fgPinMarginUv },
+                        uOpticalCenterLocalX: { value: 0.0 },
+                        uOpticalCenterLocalY: { value: 0.0 },
+                        uOpacity: { value: 1.0 },
+                        uAlphaCutout: { value: childTargetObj.fgAlphaCutout },
+                        uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
+                        uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
+                        uFadeToClear: { value: 0.0 },
+                        uClipUvMinX: { value: 0.0 },
+                        uClipUvMaxX: { value: 1.0 },
+                        uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+                        uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+                        uOuterWallOpacity: { value: 1.0 }
+                      },
+                      clipping: useLocalClip,
+                      clippingPlanes: clipPlanes,
+                      transparent: true,
+                      depthWrite: false,
+                      depthTest: false
+                    });
+                  } else {
+                    cFgMat = new THREE.MeshBasicMaterial({
+                      map: childTargetObj.fgTex,
+                      transparent: true,
+                      depthWrite: false,
+                      depthTest: false,
+                      fog: false,
+                      toneMapped: false,
+                      clippingPlanes: clipPlanes
+                    });
+                  }
+                  const cFgMesh = new THREE.Mesh(childTargetObj.layer2.geometry, cFgMat);
+                  cFgMesh.renderOrder = baseOrder + cWmOrders.fg;
+                  cWmGroup.add(cFgMesh);
+
+                  ownedResources.push(cBgMat, cMidMat, cFgMat);
+                  dioramaTintMaterials.push(cBgMat, cMidMat, cFgMat);
+                  dioramaGroup.add(cWmGroup);
+                  childWallMount = {
+                    group: cWmGroup,
+                    bgMesh: cBgMesh,
+                    bgMat: cBgMat,
+                    midMesh: cMidMesh,
+                    midMat: cMidMat,
+                    fgMesh: cFgMesh,
+                    fgMat: cFgMat,
+                    childTargetId: childSpec.targetSceneId
+                  };
+                } else {
+                  const childBgTex = this._resolvePortalTexture(
+                    childSpec.previewBgTex,
+                    childTargetCfg.bgTexture,
+                    childTargetObj.bgTex
+                  );
+                  const childBgMat = new THREE.MeshBasicMaterial({
+                    map: childBgTex,
+                    transparent: true,
+                    opacity: 1.0,
+                    depthWrite: false,
+                    depthTest: true,
+                    fog: false,
+                    toneMapped: false,
+                    clippingPlanes: clipPlanes
+                  });
+                  ownedResources.push(childBgMat);
+                  dioramaTintMaterials.push(childBgMat);
+                  const childBgGeo = this._getSharedPlaneGeo(1, 1, 1, 1);
+                  childDioBgMesh = new THREE.Mesh(childBgGeo, childBgMat);
+                  childDioBgMesh.renderOrder = baseOrder + 1.5;
+                  dioramaGroup.add(childDioBgMesh);
+                }
               }
 
-              // Child frame line
               let childFrameLine = null;
               if (childSpec.showFrame !== false) {
                 const bevelPts = [
@@ -5513,34 +6136,92 @@ export class SpatialSceneManager {
                 dioramaGroup.add(childFrameLine);
               }
 
-              // Child occluder
               let childOccMesh = null;
               let childOccMat = null;
+              let childOccTex = null;
+              let childOccDepthTex = null;
               if (childSpec.occluder && childSpec.occluder.texture) {
-                const occTex = new THREE.Texture();
-                occTex.minFilter = THREE.LinearFilter;
-                occTex.magFilter = THREE.LinearFilter;
-                ownedResources.push(occTex);
-                this._loadTextureIntoSlot(childSpec.occluder.texture, occTex, () => {}, false);
-                const occGeo = childSpec.occluder.fullInnerCanvas
-                  ? targetObj.layer2.geometry
-                  : new THREE.PlaneGeometry(1, 1);
-                if (!childSpec.occluder.fullInnerCanvas) {
-                  ownedResources.push(occGeo);
+                childOccTex = this._getOrCreateSharedUrlTextureEntry(childSpec.occluder.texture).tex;
+                if (shouldEagerLoadOccluder) {
+                  this._loadSharedUrlTexture(childSpec.occluder.texture, false).catch(() => {});
                 }
                 const isChildOccErased = this._erasedPortalOccluders.has(childSpec.id);
-                childOccMat = new THREE.MeshBasicMaterial({
-                  map: occTex,
-                  transparent: true,
-                  opacity: isChildOccErased ? 0.0 : 1.0,
-                  depthWrite: false,
-                  depthTest: false,
-                  fog: false,
-                  toneMapped: false,
-                  clippingPlanes: clipPlanes
-                });
-                ownedResources.push(childOccMat);
-                childOccMesh = new THREE.Mesh(occGeo, childOccMat);
+                const hasChildOccDepth = Boolean(
+                  childSpec.occluder.fullInnerCanvas &&
+                    childSpec.occluder.depthTexture &&
+                    childSpec.occluder.depthAmplitude > 0.0
+                );
+                if (hasChildOccDepth) {
+                  childOccDepthTex = this._getOrCreateSharedUrlTextureEntry(
+                    childSpec.occluder.depthTexture
+                  ).tex;
+                  if (shouldEagerLoadOccluder) {
+                    this._loadSharedUrlTexture(childSpec.occluder.depthTexture, false).catch(
+                      () => {}
+                    );
+                  }
+                  const occGeo = this._getSharedPlaneGeo(
+                    SCENE_GEOMETRY_SPEC.fgBaseWidth,
+                    SCENE_GEOMETRY_SPEC.fgBaseHeight,
+                    childSpec.occluder.segmentsX,
+                    childSpec.occluder.segmentsY
+                  );
+                  childOccMat = new THREE.ShaderMaterial({
+                    vertexShader: ROOM_DEPTH_VERTEX_SHADER,
+                    fragmentShader: ROOM_DEPTH_FRAGMENT_SHADER,
+                    uniforms: {
+                      uColorMap: { value: childOccTex },
+                      uDepthMap: { value: childOccDepthTex },
+                      uDepthAmplitude: { value: childSpec.occluder.depthAmplitude },
+                      uDistBg: {
+                        value: Math.max(1.0, this.baseCameraZ - childSpec.occluder.worldZ)
+                      },
+                      uPinMarginUv: { value: childSpec.occluder.pinMarginUv },
+                      uOpticalCenterLocalX: { value: 0.0 },
+                      uOpticalCenterLocalY: { value: 0.0 },
+                      uOpacity: { value: isChildOccErased ? 0.0 : 1.0 },
+                      uAlphaCutout: { value: 0.0 },
+                      uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
+                      uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
+                      uFadeToClear: { value: 0.0 },
+                      uClipUvMinX: { value: 0.0 },
+                      uClipUvMaxX: { value: 1.0 },
+                      uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+                      uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+                      uOuterWallOpacity: { value: 1.0 }
+                    },
+                    clipping: useLocalClip,
+                    clippingPlanes: clipPlanes,
+                    transparent: true,
+                    depthWrite: false,
+                    depthTest: false
+                  });
+                  ownedResources.push(childOccMat);
+                  dioramaTintMaterials.push(childOccMat);
+                  childOccMesh = new THREE.Mesh(occGeo, childOccMat);
+                } else {
+                  const occGeo = childSpec.occluder.fullInnerCanvas
+                    ? this._getSharedPlaneGeo(
+                        SCENE_GEOMETRY_SPEC.fgBaseWidth,
+                        SCENE_GEOMETRY_SPEC.fgBaseHeight,
+                        1,
+                        1
+                      )
+                    : this._getSharedPlaneGeo(1, 1, 1, 1);
+                  childOccMat = new THREE.MeshBasicMaterial({
+                    map: childOccTex,
+                    transparent: true,
+                    opacity: isChildOccErased ? 0.0 : 1.0,
+                    depthWrite: false,
+                    depthTest: false,
+                    fog: false,
+                    toneMapped: false,
+                    clippingPlanes: clipPlanes
+                  });
+                  ownedResources.push(childOccMat);
+                  dioramaTintMaterials.push(childOccMat);
+                  childOccMesh = new THREE.Mesh(occGeo, childOccMat);
+                }
                 childOccMesh.visible = !isChildOccErased;
                 childOccMesh.renderOrder =
                   typeof childSpec.occluder.renderOrder === 'number'
@@ -5549,25 +6230,26 @@ export class SpatialSceneManager {
                 dioramaGroup.add(childOccMesh);
               }
 
-              // Child veil
               let childVeilMesh = null;
               let childVeilMat = null;
+              let childVeilTex = null;
               if (childSpec.veil && childSpec.veil.texture) {
-                const veilTex = new THREE.Texture();
-                veilTex.minFilter = THREE.LinearFilter;
-                veilTex.magFilter = THREE.LinearFilter;
-                ownedResources.push(veilTex);
-                this._loadTextureIntoSlot(childSpec.veil.texture, veilTex, () => {}, false);
-                const veilGeo = childSpec.veil.fullInnerCanvas
-                  ? targetObj.layer2.geometry
-                  : new THREE.PlaneGeometry(1, 1);
-                if (!childSpec.veil.fullInnerCanvas) {
-                  ownedResources.push(veilGeo);
+                childVeilTex = this._getOrCreateSharedUrlTextureEntry(childSpec.veil.texture).tex;
+                if (shouldEagerLoadOccluder) {
+                  this._loadSharedUrlTexture(childSpec.veil.texture, false).catch(() => {});
                 }
+                const veilGeo = childSpec.veil.fullInnerCanvas
+                  ? this._getSharedPlaneGeo(
+                      SCENE_GEOMETRY_SPEC.fgBaseWidth,
+                      SCENE_GEOMETRY_SPEC.fgBaseHeight,
+                      1,
+                      1
+                    )
+                  : this._getSharedPlaneGeo(1, 1, 1, 1);
                 const vOp =
                   typeof childSpec.veil.restOpacity === 'number' ? childSpec.veil.restOpacity : 1.0;
                 childVeilMat = new THREE.MeshBasicMaterial({
-                  map: veilTex,
+                  map: childVeilTex,
                   transparent: true,
                   opacity: vOp,
                   depthWrite: false,
@@ -5577,6 +6259,7 @@ export class SpatialSceneManager {
                   clippingPlanes: clipPlanes
                 });
                 ownedResources.push(childVeilMat);
+                dioramaTintMaterials.push(childVeilMat);
                 childVeilMesh = new THREE.Mesh(veilGeo, childVeilMat);
                 childVeilMesh.visible = vOp > 0.005;
                 childVeilMesh.renderOrder =
@@ -5590,11 +6273,15 @@ export class SpatialSceneManager {
                 childSpec,
                 targetSceneId: spec.targetSceneId,
                 childDioBgMesh,
+                childWallMount,
                 childFrameLine,
                 childOccMesh,
                 childOccMat,
+                childOccTex,
+                childOccDepthTex,
                 childVeilMesh,
-                childVeilMat
+                childVeilMat,
+                childVeilTex
               });
             }
           }
@@ -5636,12 +6323,9 @@ export class SpatialSceneManager {
         let occluderDepthTex = null;
         const isErased = this._erasedPortalOccluders.has(spec.id);
         if (spec.occluder && spec.occluder.texture) {
-          occluderTex = new THREE.Texture();
-          occluderTex.minFilter = THREE.LinearFilter;
-          occluderTex.magFilter = THREE.LinearFilter;
-          ownedResources.push(occluderTex);
+          occluderTex = this._getOrCreateSharedUrlTextureEntry(spec.occluder.texture).tex;
           if (shouldEagerLoadOccluder) {
-            this._loadTextureIntoSlot(spec.occluder.texture, occluderTex, () => {}, false);
+            this._loadSharedUrlTexture(spec.occluder.texture, false).catch(() => {});
           }
 
           const hasOccDepth = Boolean(
@@ -5650,17 +6334,11 @@ export class SpatialSceneManager {
               spec.occluder.depthAmplitude > 0.0
           );
           if (hasOccDepth) {
-            occluderDepthTex = new THREE.Texture();
-            occluderDepthTex.minFilter = THREE.LinearFilter;
-            occluderDepthTex.magFilter = THREE.LinearFilter;
-            ownedResources.push(occluderDepthTex);
+            occluderDepthTex = this._getOrCreateSharedUrlTextureEntry(
+              spec.occluder.depthTexture
+            ).tex;
             if (shouldEagerLoadOccluder) {
-              this._loadTextureIntoSlot(
-                spec.occluder.depthTexture,
-                occluderDepthTex,
-                () => {},
-                false
-              );
+              this._loadSharedUrlTexture(spec.occluder.depthTexture, false).catch(() => {});
             }
             const occGeo = this._getSharedPlaneGeo(
               SCENE_GEOMETRY_SPEC.fgBaseWidth,
@@ -5677,13 +6355,18 @@ export class SpatialSceneManager {
                 uDepthAmplitude: { value: spec.occluder.depthAmplitude },
                 uDistBg: { value: Math.max(1.0, this.baseCameraZ - spec.occluder.worldZ) },
                 uPinMarginUv: { value: spec.occluder.pinMarginUv },
+                uOpticalCenterLocalX: { value: 0.0 },
                 uOpticalCenterLocalY: { value: 0.0 },
                 uOpacity: { value: isErased ? 0.0 : 1.0 },
                 uAlphaCutout: { value: 0.0 },
+                uTint: { value: new THREE.Color(1.0, 1.0, 1.0) },
                 uClearColor: { value: new THREE.Color(this._rigSpec.clearColorHex) },
                 uFadeToClear: { value: 0.0 },
                 uClipUvMinX: { value: 0.0 },
-                uClipUvMaxX: { value: 1.0 }
+                uClipUvMaxX: { value: 1.0 },
+                uCavityUvRect: { value: new THREE.Vector4(0.0, 0.0, 1.0, 1.0) },
+                uCavityFeatherUv: { value: new THREE.Vector2(0.001, 0.001) },
+                uOuterWallOpacity: { value: 1.0 }
               },
               clipping: false,
               transparent: true,
@@ -5703,10 +6386,7 @@ export class SpatialSceneManager {
                   1,
                   1
                 )
-              : new THREE.PlaneGeometry(1, 1);
-            if (!spec.occluder.fullInnerCanvas) {
-              ownedResources.push(occGeo);
-            }
+              : this._getSharedPlaneGeo(1, 1, 1, 1);
             occluderMat = new THREE.MeshBasicMaterial({
               map: occluderTex,
               transparent: true,
@@ -5730,12 +6410,9 @@ export class SpatialSceneManager {
         const initVeilOp =
           spec.veil && typeof spec.veil.restOpacity === 'number' ? spec.veil.restOpacity : 1.0;
         if (spec.veil && spec.veil.texture) {
-          veilTex = new THREE.Texture();
-          veilTex.minFilter = THREE.LinearFilter;
-          veilTex.magFilter = THREE.LinearFilter;
-          ownedResources.push(veilTex);
+          veilTex = this._getOrCreateSharedUrlTextureEntry(spec.veil.texture).tex;
           if (shouldEagerLoadOccluder) {
-            this._loadTextureIntoSlot(spec.veil.texture, veilTex, () => {}, false);
+            this._loadSharedUrlTexture(spec.veil.texture, false).catch(() => {});
           }
           const veilGeo = spec.veil.fullInnerCanvas
             ? this._getSharedPlaneGeo(
@@ -5744,10 +6421,7 @@ export class SpatialSceneManager {
                 1,
                 1
               )
-            : new THREE.PlaneGeometry(1, 1);
-          if (!spec.veil.fullInnerCanvas) {
-            ownedResources.push(veilGeo);
-          }
+            : this._getSharedPlaneGeo(1, 1, 1, 1);
           veilMat = new THREE.MeshBasicMaterial({
             map: veilTex,
             transparent: true,
@@ -5764,13 +6438,14 @@ export class SpatialSceneManager {
           hostObj.group.add(veilMesh);
         }
 
-        this._portalInstances.push({
+        const instRecord = {
           spec,
           hostSceneId,
           targetSceneId: spec.targetSceneId,
           embedDiorama,
           showFrame,
           ownedResources,
+          dioramaTintMaterials,
           clipPlanes,
           dioramaGroup,
           bgMesh,
@@ -5803,8 +6478,367 @@ export class SpatialSceneManager {
           veilCurrentOpacity: initVeilOp,
           veilTargetOpacity: initVeilOp,
           veilFlightStartOpacity: initVeilOp,
+          wallMountOuterOpacity: 0.0,
           childPortalMeshes: childPortalMeshes || []
-        });
+        };
+        this._applyDioramaInstanceTint(instRecord, spec.dioramaRestTintRgb);
+        this._portalInstances.push(instRecord);
+      }
+    }
+  }
+
+  _computeWallMountDioramaTransform(spec, hostSceneId) {
+    const wm = spec && spec.wallMount;
+    const hostObj = this.sceneObjects && this.sceneObjects[hostSceneId];
+    const hostCfg = this.sceneConfigs && this.sceneConfigs[hostSceneId];
+    const targetObj = this.sceneObjects && spec && this.sceneObjects[spec.targetSceneId];
+    const targetCfg = this.sceneConfigs && spec && this.sceneConfigs[spec.targetSceneId];
+    if (!wm || !hostObj || !hostCfg || !targetObj || !targetCfg) return null;
+
+    const halfInnerW = 0.5 * SCENE_GEOMETRY_SPEC.innerFrameWidthPx;
+    const halfInnerH = 0.5 * SCENE_GEOMETRY_SPEC.innerFrameHeightPx;
+
+    const sH = hostObj.innerScale;
+    const hostRest = this._getSceneRestPose(hostSceneId);
+    const hBoreY = hostCfg.boreSightAtRest ? hostRest.y : 0.0;
+    const hBoreZ = hostCfg.boreSightAtRest ? hostRest.z : this.baseCameraZ;
+    const distBgH = Math.max(1.0, hBoreZ - hostObj.sceneBgZ);
+    const rsH = (hBoreZ - wm.hostWallZ) / distBgH;
+
+    const sV = targetObj.innerScale;
+    const targetRest = this._getSceneRestPose(spec.targetSceneId);
+    const tBoreY = targetCfg.boreSightAtRest ? targetRest.y : 0.0;
+    const tBoreZ = targetCfg.boreSightAtRest ? targetRest.z : this.baseCameraZ;
+    const distBgV = Math.max(1.0, tBoreZ - targetObj.sceneBgZ);
+    const zPlasterV = targetObj.sceneBgZ + targetObj.roomDepthAmplitude * wm.targetPlasterDepthNorm;
+    const rsV = (tBoreZ - zPlasterV) / distBgV;
+
+    const lambdaP =
+      (wm.hostBoxSidePx * sH * rsH) / Math.max(1e-5, wm.targetBoxSidePx * sV * rsV);
+
+    const refScale = typeof wm.hostRefInnerScale === 'number' && wm.hostRefInnerScale > 0 ? wm.hostRefInnerScale : sH;
+    const scaleRatio = sH / refScale;
+    const dzDx = (wm.hostWallSlopeDzDx || 0.0) / scaleRatio;
+    const dzDy = (wm.hostWallSlopeDzDy || 0.0) / scaleRatio;
+    const wallYaw = Math.atan(-dzDx);
+    const wallPitch = Math.atan(dzDy * Math.cos(wallYaw));
+    const rollRad = THREE.MathUtils.degToRad(wm.inPlaneRollDeg || 0.0);
+    const qDio = new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(wallPitch, wallYaw, rollRad, 'YXZ')
+    );
+
+    const [cxH, cyH] = wm.hostBoxCenterInnerPx;
+    const [cxV, cyV] = wm.targetBoxCenterInnerPx;
+    const pH0 = new THREE.Vector3(
+      0.5 * sH * (cxH - halfInnerW) * rsH,
+      hBoreY + (-0.5 * sH * (cyH - halfInnerH) - hBoreY) * rsH,
+      wm.hostWallZ + (wm.hostWallClearanceWorld || 0.0)
+    );
+    const pV0 = new THREE.Vector3(
+      0.5 * sV * (cxV - halfInnerW) * rsV,
+      tBoreY + (-0.5 * sV * (cyV - halfInnerH) - tBoreY) * rsV,
+      zPlasterV
+    );
+    const tDio = pH0.clone().sub(pV0.clone().applyQuaternion(qDio).multiplyScalar(lambdaP));
+
+    const restLocalVec = new THREE.Vector3(targetRest.x, targetRest.y, targetRest.z);
+    const arrivalCamPos = tDio
+      .clone()
+      .add(restLocalVec.applyQuaternion(qDio).multiplyScalar(lambdaP));
+    const qTargetRest = new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(
+        THREE.MathUtils.degToRad(targetRest.pitchDeg || 0.0),
+        THREE.MathUtils.degToRad(targetRest.yawDeg || 0.0),
+        THREE.MathUtils.degToRad(targetRest.rollDeg || 0.0),
+        'YXZ'
+      )
+    );
+    const arrivalCamQuat = qDio.clone().multiply(qTargetRest);
+
+    return {
+      tDio,
+      qDio,
+      lambdaP,
+      sV,
+      tBoreY,
+      tBoreZ,
+      zPlasterV,
+      arrivalCamPos,
+      arrivalCamQuat
+    };
+  }
+
+  _applyDioramaInstanceTint(inst, rgbArr) {
+    if (!inst || !Array.isArray(inst.dioramaTintMaterials)) return;
+    const tint =
+      Array.isArray(rgbArr) && rgbArr.length === 3
+        ? rgbArr
+        : SCENE_GEOMETRY_SPEC.neutralTintRgb;
+    const r = Number(tint[0]);
+    const g = Number(tint[1]);
+    const b = Number(tint[2]);
+    for (const mat of inst.dioramaTintMaterials) {
+      if (!mat) continue;
+      if (mat.uniforms && mat.uniforms.uTint && mat.uniforms.uTint.value) {
+        mat.uniforms.uTint.value.setRGB(r, g, b);
+      } else if (mat.color && typeof mat.color.setRGB === 'function') {
+        mat.color.setRGB(r, g, b);
+      }
+    }
+  }
+
+  _syncSingleDioramaInstance(inst) {
+    if (!inst || !inst.embedDiorama || !inst.dioramaGroup) return;
+    const hostObj = this.sceneObjects && this.sceneObjects[inst.hostSceneId];
+    const hostCfg = this.sceneConfigs && this.sceneConfigs[inst.hostSceneId];
+    const targetObj = this.sceneObjects && this.sceneObjects[inst.targetSceneId];
+    const targetCfg = this.sceneConfigs && this.sceneConfigs[inst.targetSceneId];
+    if (!hostObj || !hostCfg || !targetObj || !targetCfg) return;
+    const geom = inst.spec;
+
+    inst.bgMesh.position.copy(targetObj.layer0.position);
+    inst.bgMesh.rotation.copy(targetObj.layer0.rotation);
+    inst.bgMesh.scale.copy(targetObj.layer0.scale);
+    if (targetObj.layer0.material && targetObj.layer0.material.uniforms) {
+      inst.bgMat.uniforms.uDistBg.value = targetObj.layer0.material.uniforms.uDistBg.value;
+      inst.bgMat.uniforms.uOpticalCenterLocalY.value =
+        targetObj.layer0.material.uniforms.uOpticalCenterLocalY.value;
+    }
+
+    inst.midMesh.position.copy(targetObj.layer1.position);
+    inst.midMesh.rotation.copy(targetObj.layer1.rotation);
+    inst.midMesh.scale.copy(targetObj.layer1.scale);
+    if (
+      inst.midMat &&
+      inst.midMat.uniforms &&
+      targetObj.layer1.material &&
+      targetObj.layer1.material.uniforms
+    ) {
+      inst.midMat.uniforms.uDistBg.value = targetObj.layer1.material.uniforms.uDistBg.value;
+      inst.midMat.uniforms.uOpticalCenterLocalY.value =
+        targetObj.layer1.material.uniforms.uOpticalCenterLocalY.value;
+    }
+
+    inst.fgMesh.position.copy(targetObj.layer2.position);
+    inst.fgMesh.rotation.copy(targetObj.layer2.rotation);
+    inst.fgMesh.scale.copy(targetObj.layer2.scale);
+    if (
+      inst.fgMat &&
+      inst.fgMat.uniforms &&
+      targetObj.layer2.material &&
+      targetObj.layer2.material.uniforms
+    ) {
+      inst.fgMat.uniforms.uDistBg.value = targetObj.layer2.material.uniforms.uDistBg.value;
+      inst.fgMat.uniforms.uOpticalCenterLocalY.value =
+        targetObj.layer2.material.uniforms.uOpticalCenterLocalY.value;
+    }
+
+    if (inst.refMesh && targetObj.reflectionMesh) {
+      inst.refMesh.position.copy(targetObj.reflectionMesh.position);
+      inst.refMesh.rotation.copy(targetObj.reflectionMesh.rotation);
+      inst.refMesh.scale.copy(targetObj.reflectionMesh.scale);
+    }
+
+    for (const exItem of inst.extraMeshes) {
+      exItem.mesh.position.copy(exItem.sourceExtra.mesh.position);
+      exItem.mesh.rotation.copy(exItem.sourceExtra.mesh.rotation);
+      exItem.mesh.scale.copy(exItem.sourceExtra.mesh.scale);
+      if (
+        exItem.mat &&
+        exItem.mat.uniforms &&
+        exItem.sourceExtra.mesh.material &&
+        exItem.sourceExtra.mesh.material.uniforms
+      ) {
+        exItem.mat.uniforms.uDistBg.value =
+          exItem.sourceExtra.mesh.material.uniforms.uDistBg.value;
+        exItem.mat.uniforms.uOpticalCenterLocalX.value =
+          exItem.sourceExtra.mesh.material.uniforms.uOpticalCenterLocalX.value;
+        exItem.mat.uniforms.uOpticalCenterLocalY.value =
+          exItem.sourceExtra.mesh.material.uniforms.uOpticalCenterLocalY.value;
+        exItem.mat.uniforms.uClipUvMinX.value =
+          exItem.sourceExtra.mesh.material.uniforms.uClipUvMinX.value;
+        exItem.mat.uniforms.uClipUvMaxX.value =
+          exItem.sourceExtra.mesh.material.uniforms.uClipUvMaxX.value;
+      }
+    }
+
+    const targetRest = this._getSceneRestPose(inst.targetSceneId);
+    const frontZ = Math.max(targetObj.sceneFgZ, 0.0);
+    const restFrontDist = Math.max(40.0, targetRest.z - frontZ);
+    const effFitZ = typeof geom.effectiveFitZ === 'number' ? geom.effectiveFitZ : geom.fitZ;
+    const lambdaP = (effFitZ + geom.recessDepth) / restFrontDist;
+    const fitCamX = geom.worldX;
+    const fitCamY = geom.worldY;
+    const fitCamZ = geom.worldZ + effFitZ;
+
+    const rollRad = THREE.MathUtils.degToRad(geom.dioramaRollDeg || 0.0);
+    const cosR = Math.cos(rollRad);
+    const sinR = Math.sin(rollRad);
+    inst.dioramaGroup.scale.setScalar(lambdaP);
+    inst.dioramaGroup.rotation.set(0, 0, rollRad);
+    inst.dioramaGroup.position.set(
+      fitCamX - lambdaP * (targetRest.x * cosR - targetRest.y * sinR),
+      fitCamY - lambdaP * (targetRest.x * sinR + targetRest.y * cosR),
+      fitCamZ - lambdaP * targetRest.z
+    );
+    if (inst.dustMat && targetObj.layer3 && targetObj.layer3.material) {
+      inst.dustMat.size = targetObj.layer3.material.size * lambdaP;
+    }
+    if (inst.dustMesh && targetObj.layer3) {
+      inst.dustMesh.rotation.copy(targetObj.layer3.rotation);
+    }
+
+    if (Array.isArray(inst.childPortalMeshes)) {
+      const tRest = this._getSceneRestPose(inst.targetSceneId);
+      const tBoreY = targetCfg.boreSightAtRest ? tRest.y : 0.0;
+      const tBoreZ = targetCfg.boreSightAtRest ? tRest.z : this.baseCameraZ;
+
+      for (const cp of inst.childPortalMeshes) {
+        const cs = cp.childSpec;
+        const sourceChildInst = this._portalInstances.find(
+          (p) => p.hostSceneId === inst.targetSceneId && p.spec.id === cs.id
+        );
+        const cGeom = computePortalWorldGeometry(
+          cs,
+          targetObj.innerScale,
+          tBoreY,
+          tBoreZ,
+          targetObj.sceneBgZ,
+          this.camera.fov,
+          this.camera.aspect
+        );
+
+        if (cp.childFrameLine) {
+          cp.childFrameLine.position.set(
+            cGeom.worldX,
+            cGeom.worldY,
+            cGeom.worldZ + SCENE_GEOMETRY_SPEC.portalFrameBevelOffsetZ
+          );
+          cp.childFrameLine.rotation.set(0, 0, THREE.MathUtils.degToRad(cs.rotationDeg || 0.0));
+          cp.childFrameLine.scale.set(cGeom.width, cGeom.height, 1.0);
+        }
+
+        if (cp.childDioBgMesh) {
+          const recessZ = cGeom.worldZ - cGeom.recessDepth;
+          cp.childDioBgMesh.position.set(cGeom.worldX, cGeom.worldY, recessZ);
+          cp.childDioBgMesh.scale.set(cGeom.width * 1.5, cGeom.height * 1.5, 1.0);
+        }
+
+        if (cp.childOccMesh && cs.occluder) {
+          const childOccFactor = sourceChildInst
+            ? THREE.MathUtils.clamp(
+                typeof sourceChildInst.occluderAnimFactor === 'number'
+                  ? sourceChildInst.occluderAnimFactor
+                  : 1.0,
+                0.0,
+                1.0
+              )
+            : this._erasedPortalOccluders.has(cs.id)
+              ? 0.0
+              : 1.0;
+
+          if (sourceChildInst && sourceChildInst.occluderMesh) {
+            cp.childOccMesh.position.copy(sourceChildInst.occluderMesh.position);
+            cp.childOccMesh.rotation.copy(sourceChildInst.occluderMesh.rotation);
+            cp.childOccMesh.scale.copy(sourceChildInst.occluderMesh.scale);
+            if (cp.childOccMat && cp.childOccMat.uniforms) {
+              cp.childOccMat.uniforms.uDistBg.value = sourceChildInst.occluderBoreDist;
+              cp.childOccMat.uniforms.uOpticalCenterLocalY.value =
+                sourceChildInst.occluderOpticalCenterLocalY;
+              cp.childOccMat.uniforms.uOpacity.value = childOccFactor;
+            } else if (cp.childOccMat) {
+              cp.childOccMat.opacity = childOccFactor;
+            }
+          } else {
+            const occZ = cs.occluder.worldZ;
+            const liftT = 1.0 - childOccFactor;
+            const scaleBoost =
+              1.0 + (SCENE_GEOMETRY_SPEC.portalOccluderLiftScale - 1.0) * liftT;
+            if (cs.occluder.fullInnerCanvas) {
+              const boreDistBg = Math.max(1.0, tBoreZ - targetObj.sceneBgZ);
+              const ratio = (tBoreZ - occZ) / boreDistBg;
+              const innerW = SCENE_GEOMETRY_SPEC.bgBaseWidth * targetObj.innerScale;
+              const occScale = (innerW * ratio) / SCENE_GEOMETRY_SPEC.fgBaseWidth;
+              cp.childOccMesh.position.set(
+                0.0,
+                tBoreY * (1.0 - ratio),
+                occZ + SCENE_GEOMETRY_SPEC.portalOccluderLiftZ * liftT
+              );
+              cp.childOccMesh.scale.set(occScale * scaleBoost, occScale * scaleBoost, 1.0);
+              if (cp.childOccMat && cp.childOccMat.uniforms) {
+                cp.childOccMat.uniforms.uDistBg.value = Math.max(1.0, tBoreZ - occZ);
+                cp.childOccMat.uniforms.uOpticalCenterLocalY.value =
+                  (tBoreY * ratio) / Math.max(1e-5, occScale);
+                cp.childOccMat.uniforms.uOpacity.value = childOccFactor;
+              } else if (cp.childOccMat) {
+                cp.childOccMat.opacity = childOccFactor;
+              }
+            } else {
+              const occGeom = Array.isArray(cs.occluder.innerBoxPx)
+                ? computePortalWorldGeometry(
+                    { innerBoxPx: cs.occluder.innerBoxPx, worldZ: occZ },
+                    targetObj.innerScale,
+                    tBoreY,
+                    tBoreZ,
+                    targetObj.sceneBgZ,
+                    this.camera.fov,
+                    this.camera.aspect
+                  )
+                : cGeom;
+              cp.childOccMesh.position.set(
+                occGeom.worldX,
+                occGeom.worldY,
+                occZ + SCENE_GEOMETRY_SPEC.portalOccluderLiftZ * liftT
+              );
+              cp.childOccMesh.scale.set(
+                occGeom.width * scaleBoost,
+                occGeom.height * scaleBoost,
+                1.0
+              );
+              if (cp.childOccMat) {
+                cp.childOccMat.opacity = childOccFactor;
+              }
+            }
+          }
+          cp.childOccMesh.visible = childOccFactor > 0.005;
+        }
+
+        if (cp.childVeilMesh && cs.veil) {
+          const veilZ = cs.veil.worldZ;
+          if (sourceChildInst && sourceChildInst.veilMesh) {
+            cp.childVeilMesh.position.copy(sourceChildInst.veilMesh.position);
+            cp.childVeilMesh.rotation.copy(sourceChildInst.veilMesh.rotation);
+            cp.childVeilMesh.scale.copy(sourceChildInst.veilMesh.scale);
+          } else if (cs.veil.fullInnerCanvas) {
+            const boreDistBg = Math.max(1.0, tBoreZ - targetObj.sceneBgZ);
+            const veilRatio = (tBoreZ - veilZ) / boreDistBg;
+            const innerW = SCENE_GEOMETRY_SPEC.bgBaseWidth * targetObj.innerScale;
+            const veilScale = (innerW * veilRatio) / SCENE_GEOMETRY_SPEC.fgBaseWidth;
+            cp.childVeilMesh.position.set(0.0, tBoreY * (1.0 - veilRatio), veilZ);
+            cp.childVeilMesh.scale.set(veilScale, veilScale, 1.0);
+          } else {
+            cp.childVeilMesh.position.set(cGeom.worldX, cGeom.worldY, veilZ);
+            cp.childVeilMesh.scale.set(cGeom.width, cGeom.height, 1.0);
+          }
+          const childVeilOp = sourceChildInst
+            ? sourceChildInst.veilCurrentOpacity
+            : typeof cs.veil.restOpacity === 'number'
+              ? cs.veil.restOpacity
+              : 1.0;
+          if (cp.childVeilMat) {
+            cp.childVeilMat.opacity = childVeilOp;
+          }
+          cp.childVeilMesh.visible = childVeilOp > 0.005;
+        }
+      }
+    }
+  }
+
+  _syncDioramaMirrorsForScene(sceneId) {
+    if (!sceneId || this._portalInstances.length === 0) return;
+    for (const inst of this._portalInstances) {
+      if (inst.embedDiorama && inst.dioramaGroup && inst.targetSceneId === sceneId) {
+        this._syncSingleDioramaInstance(inst);
       }
     }
   }
@@ -5829,6 +6863,16 @@ export class SpatialSceneManager {
           this.camera.fov,
           this.camera.aspect
         );
+        const targetRest = this._getSceneRestPose(spec.targetSceneId);
+        const effFitZ = computePortalEffectiveFitZ(
+          geom,
+          this.camera.fov,
+          this.camera.aspect,
+          targetRest.yawDeg,
+          targetRest.pitchDeg,
+          spec.flightRollDeg || 0.0,
+          spec.rotationDeg || 0.0
+        );
         spec.worldX = Number(geom.worldX.toFixed(3));
         spec.worldY = Number(geom.worldY.toFixed(3));
         spec.worldZ = Number(geom.worldZ.toFixed(3));
@@ -5836,6 +6880,7 @@ export class SpatialSceneManager {
         spec.height = Number(geom.height.toFixed(3));
         spec.recessDepth = Number(geom.recessDepth.toFixed(3));
         spec.fitZ = Number(geom.fitZ.toFixed(3));
+        spec.effectiveFitZ = Number(effFitZ.toFixed(3));
         spec.heightFitZ = Number(geom.heightFitZ.toFixed(3));
         spec.widthFitZ = Number(geom.widthFitZ.toFixed(3));
       }
@@ -5843,173 +6888,13 @@ export class SpatialSceneManager {
 
     if (this._portalInstances.length === 0) return;
 
+    // Pass 1: Update all standalone portal frames, veils, occluders, and companion-fall transforms first
+    // so every target scene's mutable state is current before Pass 2 mirrors it into parent dioramas.
     for (const inst of this._portalInstances) {
       const hostObj = this.sceneObjects[inst.hostSceneId];
       const hostCfg = this.sceneConfigs[inst.hostSceneId];
-      const targetObj = this.sceneObjects[inst.targetSceneId];
-      const targetCfg = this.sceneConfigs[inst.targetSceneId];
-      if (!hostObj || !hostCfg || !targetObj || !targetCfg) continue;
+      if (!hostObj || !hostCfg) continue;
       const geom = inst.spec;
-
-      if (inst.embedDiorama && inst.dioramaGroup) {
-        // Mirror target scene's exact bore-sighted layer transforms inside dioramaGroup
-        inst.bgMesh.position.copy(targetObj.layer0.position);
-        inst.bgMesh.scale.copy(targetObj.layer0.scale);
-        if (targetObj.layer0.material && targetObj.layer0.material.uniforms) {
-          inst.bgMat.uniforms.uDistBg.value = targetObj.layer0.material.uniforms.uDistBg.value;
-          inst.bgMat.uniforms.uOpticalCenterLocalY.value =
-            targetObj.layer0.material.uniforms.uOpticalCenterLocalY.value;
-        }
-        inst.midMesh.position.copy(targetObj.layer1.position);
-        inst.midMesh.scale.copy(targetObj.layer1.scale);
-        if (
-          inst.midMat &&
-          inst.midMat.uniforms &&
-          targetObj.layer1.material &&
-          targetObj.layer1.material.uniforms
-        ) {
-          inst.midMat.uniforms.uDistBg.value = targetObj.layer1.material.uniforms.uDistBg.value;
-          inst.midMat.uniforms.uOpticalCenterLocalY.value =
-            targetObj.layer1.material.uniforms.uOpticalCenterLocalY.value;
-        }
-        inst.fgMesh.position.copy(targetObj.layer2.position);
-        inst.fgMesh.scale.copy(targetObj.layer2.scale);
-        if (
-          inst.fgMat &&
-          inst.fgMat.uniforms &&
-          targetObj.layer2.material &&
-          targetObj.layer2.material.uniforms
-        ) {
-          inst.fgMat.uniforms.uDistBg.value = targetObj.layer2.material.uniforms.uDistBg.value;
-          inst.fgMat.uniforms.uOpticalCenterLocalY.value =
-            targetObj.layer2.material.uniforms.uOpticalCenterLocalY.value;
-        }
-        if (inst.refMesh && targetObj.reflectionMesh) {
-          inst.refMesh.position.copy(targetObj.reflectionMesh.position);
-          inst.refMesh.scale.copy(targetObj.reflectionMesh.scale);
-        }
-        for (const exItem of inst.extraMeshes) {
-          exItem.mesh.position.copy(exItem.sourceExtra.mesh.position);
-          exItem.mesh.scale.copy(exItem.sourceExtra.mesh.scale);
-          if (
-            exItem.mat &&
-            exItem.mat.uniforms &&
-            exItem.sourceExtra.mesh.material &&
-            exItem.sourceExtra.mesh.material.uniforms
-          ) {
-            exItem.mat.uniforms.uDistBg.value =
-              exItem.sourceExtra.mesh.material.uniforms.uDistBg.value;
-            exItem.mat.uniforms.uOpticalCenterLocalY.value =
-              exItem.sourceExtra.mesh.material.uniforms.uOpticalCenterLocalY.value;
-          }
-        }
-
-        const targetRest = this._getSceneRestPose(inst.targetSceneId);
-        const frontZ = Math.max(targetObj.sceneFgZ, 0.0);
-        const restFrontDist = Math.max(40.0, targetRest.z - frontZ);
-        const lambdaP = (geom.fitZ + geom.recessDepth) / restFrontDist;
-        const fitCamX = geom.worldX;
-        const fitCamY = geom.worldY;
-        const fitCamZ = geom.worldZ + geom.fitZ;
-
-        const rollRad = THREE.MathUtils.degToRad(geom.dioramaRollDeg || 0.0);
-        const cosR = Math.cos(rollRad);
-        const sinR = Math.sin(rollRad);
-        inst.dioramaGroup.scale.setScalar(lambdaP);
-        inst.dioramaGroup.rotation.set(0, 0, rollRad);
-        inst.dioramaGroup.position.set(
-          fitCamX - lambdaP * (targetRest.x * cosR - targetRest.y * sinR),
-          fitCamY - lambdaP * (targetRest.x * sinR + targetRest.y * cosR),
-          fitCamZ - lambdaP * targetRest.z
-        );
-        if (inst.dustMat && targetObj.layer3 && targetObj.layer3.material) {
-          inst.dustMat.size = targetObj.layer3.material.size * lambdaP;
-        }
-        if (inst.dustMesh && targetObj.layer3) {
-          inst.dustMesh.rotation.copy(targetObj.layer3.rotation);
-        }
-
-        if (Array.isArray(inst.childPortalMeshes)) {
-          const tRest = this._getSceneRestPose(inst.targetSceneId);
-          const tBoreY = targetCfg.boreSightAtRest ? tRest.y : 0.0;
-          const tBoreZ = targetCfg.boreSightAtRest ? tRest.z : this.baseCameraZ;
-
-          for (const cp of inst.childPortalMeshes) {
-            const cs = cp.childSpec;
-            const cGeom = computePortalWorldGeometry(
-              cs,
-              targetObj.innerScale,
-              tBoreY,
-              tBoreZ,
-              targetObj.sceneBgZ,
-              this.camera.fov,
-              this.camera.aspect
-            );
-
-            if (cp.childFrameLine) {
-              cp.childFrameLine.position.set(
-                cGeom.worldX,
-                cGeom.worldY,
-                cGeom.worldZ + SCENE_GEOMETRY_SPEC.portalFrameBevelOffsetZ
-              );
-              cp.childFrameLine.rotation.set(0, 0, THREE.MathUtils.degToRad(cs.rotationDeg || 0.0));
-              cp.childFrameLine.scale.set(cGeom.width, cGeom.height, 1.0);
-            }
-
-            if (cp.childDioBgMesh) {
-              const recessZ = cGeom.worldZ - cGeom.recessDepth;
-              cp.childDioBgMesh.position.set(cGeom.worldX, cGeom.worldY, recessZ);
-              cp.childDioBgMesh.scale.set(cGeom.width * 1.5, cGeom.height * 1.5, 1.0);
-            }
-
-            if (cp.childOccMesh && cs.occluder) {
-              const occZ = cs.occluder.worldZ;
-              const isErased = this._erasedPortalOccluders.has(cs.id);
-              if (cs.occluder.fullInnerCanvas) {
-                const boreDistBg = Math.max(1.0, tBoreZ - targetObj.sceneBgZ);
-                const ratio = (tBoreZ - occZ) / boreDistBg;
-                const innerW = SCENE_GEOMETRY_SPEC.bgBaseWidth * targetObj.innerScale;
-                const occScale = (innerW * ratio) / SCENE_GEOMETRY_SPEC.fgBaseWidth;
-                cp.childOccMesh.position.set(0.0, tBoreY * (1.0 - ratio), occZ);
-                cp.childOccMesh.scale.set(occScale, occScale, 1.0);
-              } else {
-                const occGeom = Array.isArray(cs.occluder.innerBoxPx)
-                  ? computePortalWorldGeometry(
-                      { innerBoxPx: cs.occluder.innerBoxPx, worldZ: occZ },
-                      targetObj.innerScale,
-                      tBoreY,
-                      tBoreZ,
-                      targetObj.sceneBgZ,
-                      this.camera.fov,
-                      this.camera.aspect
-                    )
-                  : cGeom;
-                cp.childOccMesh.position.set(occGeom.worldX, occGeom.worldY, occZ);
-                cp.childOccMesh.scale.set(occGeom.width, occGeom.height, 1.0);
-              }
-              cp.childOccMesh.visible = !isErased;
-              if (cp.childOccMat) {
-                cp.childOccMat.opacity = isErased ? 0.0 : 1.0;
-              }
-            }
-
-            if (cp.childVeilMesh && cs.veil) {
-              const veilZ = cs.veil.worldZ;
-              if (cs.veil.fullInnerCanvas) {
-                const boreDistBg = Math.max(1.0, tBoreZ - targetObj.sceneBgZ);
-                const veilRatio = (tBoreZ - veilZ) / boreDistBg;
-                const innerW = SCENE_GEOMETRY_SPEC.bgBaseWidth * targetObj.innerScale;
-                const veilScale = (innerW * veilRatio) / SCENE_GEOMETRY_SPEC.fgBaseWidth;
-                cp.childVeilMesh.position.set(0.0, tBoreY * (1.0 - veilRatio), veilZ);
-                cp.childVeilMesh.scale.set(veilScale, veilScale, 1.0);
-              } else {
-                cp.childVeilMesh.position.set(cGeom.worldX, cGeom.worldY, veilZ);
-                cp.childVeilMesh.scale.set(cGeom.width, cGeom.height, 1.0);
-              }
-            }
-          }
-        }
-      }
 
       if (inst.frameLine) {
         inst.frameLine.position.set(
@@ -6024,15 +6909,18 @@ export class SpatialSceneManager {
       if (
         inst.occluderMesh &&
         inst.spec.occluder &&
-        Array.isArray(inst.spec.occluder.innerBoxPx)
+        (Array.isArray(inst.spec.occluder.innerBoxPx) || inst.spec.occluder.fullInnerCanvas)
       ) {
         const hostRest = this._getSceneRestPose(inst.hostSceneId);
         const hostBoreY = hostCfg.boreSightAtRest ? hostRest.y : 0.0;
         const hostBoreZ = hostCfg.boreSightAtRest ? hostRest.z : this.baseCameraZ;
         const occZ = inst.spec.occluder.worldZ;
+        const occBox = Array.isArray(inst.spec.occluder.innerBoxPx)
+          ? inst.spec.occluder.innerBoxPx
+          : inst.spec.innerBoxPx;
         inst.occluderBaseGeom = computePortalWorldGeometry(
           {
-            innerBoxPx: inst.spec.occluder.innerBoxPx,
+            innerBoxPx: occBox,
             worldZ: occZ,
             recessDepth: 0
           },
@@ -6056,7 +6944,7 @@ export class SpatialSceneManager {
           inst.occluderOpticalCenterLocalY =
             (hostBoreY * occRatio) / Math.max(1e-5, occScale);
         }
-        this._applyOccluderInstanceTransform(inst);
+        this._applyOccluderInstanceTransform(inst, true);
       }
 
       if (inst.veilMesh && inst.spec.veil) {
@@ -6077,9 +6965,16 @@ export class SpatialSceneManager {
         }
       }
     }
+
+    // Pass 2: Mirror target scene transforms, companion-fall rotations, carpet rigs, and child portals into embedded dioramas.
+    for (const inst of this._portalInstances) {
+      if (inst.embedDiorama && inst.dioramaGroup) {
+        this._syncSingleDioramaInstance(inst);
+      }
+    }
   }
 
-  _applyOccluderInstanceTransform(inst) {
+  _applyOccluderInstanceTransform(inst, skipMirrorSync = false) {
     if (!inst || !inst.occluderMesh || !inst.occluderMat || !inst.occluderBaseGeom) return;
     const g = inst.occluderBaseGeom;
     const f = THREE.MathUtils.clamp(
@@ -6090,12 +6985,15 @@ export class SpatialSceneManager {
     const liftT = 1.0 - f;
     const scaleBoost = 1.0 + (SCENE_GEOMETRY_SPEC.portalOccluderLiftScale - 1.0) * liftT;
     const hostObj = this.sceneObjects && this.sceneObjects[inst.hostSceneId];
-    const surroundingOp =
-      hostObj && typeof hostObj.portalSurroundingOpacity === 'number'
+    const activePid = hostObj ? hostObj.activeFlightPortalId : null;
+    const applySurrounding = !activePid || activePid === inst.spec.id;
+    const surroundingOp = applySurrounding
+      ? hostObj && typeof hostObj.portalSurroundingOpacity === 'number'
         ? hostObj.portalSurroundingOpacity
         : inst.hostSceneId === 'shelf_portal'
           ? this._portalSurroundingOpacity
-          : 1.0;
+          : 1.0
+      : 1.0;
     const effOpacity = f * surroundingOp;
 
     if (inst.spec.occluder && inst.spec.occluder.fullInnerCanvas) {
@@ -6169,6 +7067,10 @@ export class SpatialSceneManager {
         compExtra.mesh.rotation.set(0, 0, theta);
       }
     }
+
+    if (!skipMirrorSync) {
+      this._syncDioramaMirrorsForScene(inst.hostSceneId);
+    }
   }
 
   _stepPortalOccluderAnimations(nowMs) {
@@ -6200,7 +7102,7 @@ export class SpatialSceneManager {
     const camPos = this.camera.position;
 
     for (const inst of this._portalInstances) {
-      if (!inst.embedDiorama || !inst.dioramaGroup || !inst.dioramaGroup.visible) continue;
+      if (!inst.embedDiorama || !inst.clipPlanes || !inst.dioramaGroup || !inst.dioramaGroup.visible) continue;
       if (unclipPortalId && inst.spec.id === unclipPortalId) {
         for (let i = 0; i < 4; i += 1) {
           inst.clipPlanes[i].set(Z_AXIS_UNIT, 1e6);
@@ -6398,6 +7300,7 @@ export class SpatialSceneManager {
         return {
           mesh: extra.mesh,
           tex: extra.tex,
+          mirrorLeftEdge: Boolean(extra.mirrorLeftEdge),
           basePosX: extra.basePosX || 0,
           basePosY: extra.basePosY || 0,
           basePosZ: extra.basePosZ !== undefined ? extra.basePosZ : extra.zPos,
@@ -6409,34 +7312,41 @@ export class SpatialSceneManager {
     return null;
   }
 
-  _applyCarpetUnrollTransform(sceneId) {
+  _applyCarpetUnrollTransform(sceneId, skipMirrorSync = false) {
     const cfg = this.sceneConfigs && sceneId ? this.sceneConfigs[sceneId] : null;
     if (!cfg || !cfg.carpetUnrollRig) return;
     const st = this._getCarpetUnrollState(sceneId);
     if (!st) return;
     const rig = cfg.carpetUnrollRig;
     const u = THREE.MathUtils.clamp(st.progress, 0.0, 1.0);
+    const initMax = typeof rig.initialClipUvMaxX === 'number' ? rig.initialClipUvMaxX : 0.25;
+    const fullMax = typeof rig.unrolledClipUvMaxX === 'number' ? rig.unrolledClipUvMaxX : 1.0;
+    const minX = typeof rig.clipUvMinX === 'number' ? rig.clipUvMinX : 0.0;
+    const clipMaxX = THREE.MathUtils.lerp(initMax, fullMax, u);
 
-    const trailRec = this._resolveCarpetMeshRecord(sceneId, rig.trailLayerId);
-    if (
-      trailRec &&
-      trailRec.mesh &&
-      trailRec.mesh.material &&
-      trailRec.mesh.material.uniforms &&
-      trailRec.mesh.material.uniforms.uClipUvMaxX
-    ) {
-      const initMax = typeof rig.initialClipUvMaxX === 'number' ? rig.initialClipUvMaxX : 0.25;
-      const fullMax = typeof rig.unrolledClipUvMaxX === 'number' ? rig.unrolledClipUvMaxX : 1.0;
-      const minX = typeof rig.clipUvMinX === 'number' ? rig.clipUvMinX : 0.0;
-      trailRec.mesh.material.uniforms.uClipUvMinX.value = minX;
-      trailRec.mesh.material.uniforms.uClipUvMaxX.value = THREE.MathUtils.lerp(initMax, fullMax, u);
+    for (const tLayerId of [rig.trailLayerId, rig.reflectedTrailLayerId]) {
+      if (!tLayerId) continue;
+      const trailRec = this._resolveCarpetMeshRecord(sceneId, tLayerId);
+      if (
+        trailRec &&
+        trailRec.mesh &&
+        trailRec.mesh.material &&
+        trailRec.mesh.material.uniforms &&
+        trailRec.mesh.material.uniforms.uClipUvMaxX
+      ) {
+        trailRec.mesh.material.uniforms.uClipUvMinX.value = minX;
+        trailRec.mesh.material.uniforms.uClipUvMaxX.value = clipMaxX;
+      }
     }
 
-    const rollRec = this._resolveCarpetMeshRecord(sceneId, rig.rollLayerId);
-    if (rollRec && rollRec.mesh) {
-      const shiftPxX = typeof rig.rollShiftInnerPxX === 'number' ? rig.rollShiftInnerPxX : 0.0;
-      const shiftPxY = typeof rig.rollShiftInnerPxY === 'number' ? rig.rollShiftInnerPxY : 0.0;
-      const shiftZ = typeof rig.rollShiftWorldZ === 'number' ? rig.rollShiftWorldZ : 0.0;
+    const shiftPxX = typeof rig.rollShiftInnerPxX === 'number' ? rig.rollShiftInnerPxX : 0.0;
+    const shiftPxY = typeof rig.rollShiftInnerPxY === 'number' ? rig.rollShiftInnerPxY : 0.0;
+    const shiftZ = typeof rig.rollShiftWorldZ === 'number' ? rig.rollShiftWorldZ : 0.0;
+
+    for (const rLayerId of [rig.rollLayerId, rig.reflectedRollLayerId]) {
+      if (!rLayerId) continue;
+      const rollRec = this._resolveCarpetMeshRecord(sceneId, rLayerId);
+      if (!rollRec || !rollRec.mesh) continue;
       let boreRayScale = 1.0;
       if (cfg.boreSightAtRest && typeof rig.rollTrackWorldZ === 'number') {
         const restPose = this._getSceneRestPose(sceneId);
@@ -6447,7 +7357,9 @@ export class SpatialSceneManager {
           1.5
         );
       }
+      const xSign = rollRec.mirrorLeftEdge ? -1.0 : 1.0;
       const worldDx =
+        xSign *
         (shiftPxX / SCENE_GEOMETRY_SPEC.innerFrameWidthPx) *
         rollRec.planeWorldW *
         boreRayScale *
@@ -6462,6 +7374,10 @@ export class SpatialSceneManager {
         rollRec.basePosY + worldDy,
         rollRec.basePosZ + shiftZ * u
       );
+    }
+
+    if (!skipMirrorSync) {
+      this._syncDioramaMirrorsForScene(sceneId);
     }
   }
 
@@ -6504,40 +7420,53 @@ export class SpatialSceneManager {
     this._raycaster.setFromCamera(ndc, this.camera);
 
     const rollRec = this._resolveCarpetMeshRecord(this.currentSceneId, rig.rollLayerId);
+    const reflRollRec = rig.reflectedRollLayerId
+      ? this._resolveCarpetMeshRecord(this.currentSceneId, rig.reflectedRollLayerId)
+      : null;
     const trailRec = this._resolveCarpetMeshRecord(this.currentSceneId, rig.trailLayerId);
+    const reflTrailRec = rig.reflectedTrailLayerId
+      ? this._resolveCarpetMeshRecord(this.currentSceneId, rig.reflectedTrailLayerId)
+      : null;
+    const rollTrackZ = typeof rig.rollTrackWorldZ === 'number' ? rig.rollTrackWorldZ : null;
+    const trailTrackZ = typeof rig.trailTrackWorldZ === 'number' ? rig.trailTrackWorldZ : null;
     const candidates = [
-      rollRec ? { rec: rollRec, clipped: false } : null,
-      trailRec ? { rec: trailRec, clipped: true } : null
+      rollRec ? { rec: rollRec, clipped: false, trackZ: rollTrackZ } : null,
+      reflRollRec ? { rec: reflRollRec, clipped: false, trackZ: rollTrackZ } : null,
+      trailRec ? { rec: trailRec, clipped: true, trackZ: trailTrackZ } : null,
+      reflTrailRec ? { rec: reflTrailRec, clipped: true, trackZ: trailTrackZ } : null
     ].filter(Boolean);
 
-    for (const { rec, clipped } of candidates) {
+    for (const { rec, clipped, trackZ } of candidates) {
       if (!rec.mesh || !rec.mesh.visible || !rec.tex) continue;
       const sampler = this._getTextureSampler(rec.tex, 512);
       if (!sampler) continue;
 
       if (
-        !clipped &&
         cfg.boreSightAtRest &&
-        typeof rig.rollTrackWorldZ === 'number' &&
+        typeof trackZ === 'number' &&
         rec.planeWorldW > 1e-4 &&
         rec.planeWorldH > 1e-4
       ) {
         const restPose = this._getSceneRestPose(this.currentSceneId);
         const distPlane = Math.max(1.0, restPose.z - rec.basePosZ);
         const boreRayScale = THREE.MathUtils.clamp(
-          (restPose.z - rig.rollTrackWorldZ) / distPlane,
+          (restPose.z - trackZ) / distPlane,
           0.2,
           1.5
         );
-        const planeHit = this._intersectPlaneZ(clientX, clientY, rig.rollTrackWorldZ);
+        const planeHit = this._intersectPlaneZ(clientX, clientY, trackZ);
         if (planeHit) {
           const optY = cfg.boreSightAtRest ? restPose.y - rec.basePosY : 0.0;
-          const localWorldX = (planeHit[0] - rec.mesh.position.x) / boreRayScale;
+          const shiftDx = rec.mesh.position.x - rec.basePosX;
+          const localWorldX = (planeHit[0] - shiftDx) / boreRayScale;
           const localWorldY =
             optY + (planeHit[1] - rec.mesh.position.y - optY) / boreRayScale;
-          const uvX = localWorldX / rec.planeWorldW + 0.5;
+          const uvX = rec.mirrorLeftEdge
+            ? -0.5 - localWorldX / rec.planeWorldW
+            : localWorldX / rec.planeWorldW + 0.5;
           const uvY = localWorldY / rec.planeWorldH + 0.5;
-          if (uvX >= 0.0 && uvX <= 1.0 && uvY >= 0.0 && uvY <= 1.0) {
+          const inClipRange = !clipped || (uvX >= minUvX && uvX <= maxUvX);
+          if (inClipRange && uvX >= 0.0 && uvX <= 1.0 && uvY >= 0.0 && uvY <= 1.0) {
             const sample = sampler.sampleAtUv(uvX, uvY);
             if (sample.a >= 24) {
               return true;
@@ -6734,13 +7663,40 @@ export class SpatialSceneManager {
           this._portalFlight.portalSpec &&
           this._portalFlight.portalSpec.id === spec.id) ||
         this._pendingPortalFlightId === spec.id;
-      if (activeFlightOnSamePortal) {
-        this._scheduleOccluderRegen(spec, 2000);
+      const activeVisitorInsideTarget =
+        (spec.targetSceneId && this.currentSceneId === spec.targetSceneId) ||
+        this._portalOriginStack.some(
+          (e) =>
+            e &&
+            (e.portalId === spec.id ||
+              (spec.targetSceneId && e.hostSceneId === spec.targetSceneId))
+        );
+      if (activeFlightOnSamePortal || activeVisitorInsideTarget) {
+        this._scheduleOccluderRegen(spec, SCENE_GEOMETRY_SPEC.occluderActiveVisitorDeferMs);
         return;
       }
       this.restoreSinglePortalOccluder(spec.id, { autoRegenerated: true });
     }, delayMs);
     this._occluderRegenTimers.set(spec.id, timerId);
+  }
+
+  _ensurePortalOpenForEmergence(portalIdOrSpec) {
+    const spec = this._findPortalSpec(portalIdOrSpec);
+    if (!spec || !spec.occluder) return;
+    const wasLocked = !this._erasedPortalOccluders.has(spec.id);
+    this._erasedPortalOccluders.add(spec.id);
+    this._occluderAnimations.delete(spec.id);
+    this._scheduleOccluderRegen(spec);
+    const inst = this._portalInstances.find((p) => p.spec.id === spec.id);
+    if (inst) {
+      inst.occluderAnimFactor = 0.0;
+      this._applyOccluderInstanceTransform(inst);
+    }
+    if (wasLocked) {
+      const hostSceneId = spec.hostSceneId || this.currentSceneId;
+      const hostErasedCount = this.getErasedPortalOccluderCount(hostSceneId);
+      this.onPortalUnlock(spec, hostErasedCount);
+    }
   }
 
   erasePortalOccluder(portalIdOrSpec) {
@@ -6847,11 +7803,44 @@ export class SpatialSceneManager {
     return restoredIds.length;
   }
 
+  _computePortalFlightRimAndTint(spec, camZ, ease, isReverse = false) {
+    const effFitZ =
+      typeof spec.effectiveFitZ === 'number'
+        ? spec.effectiveFitZ
+        : typeof spec.fitZ === 'number'
+          ? spec.fitZ
+          : 80.0;
+    const distAperture = Math.max(effFitZ, camZ - spec.worldZ);
+    const apertureFillRatio = effFitZ / Math.max(1e-4, distAperture);
+    const fillStart = SCENE_GEOMETRY_SPEC.portalRimDissolveFillStart;
+    const fillT = THREE.MathUtils.clamp(
+      (apertureFillRatio - fillStart) / Math.max(1e-5, 1.0 - fillStart),
+      0.0,
+      1.0
+    );
+    const rimDissolve = fillT * fillT * (3.0 - 2.0 * fillT);
+    const rimOpacity = 1.0 - rimDissolve;
+
+    const restTint =
+      Array.isArray(spec.dioramaRestTintRgb) && spec.dioramaRestTintRgb.length === 3
+        ? spec.dioramaRestTintRgb
+        : SCENE_GEOMETRY_SPEC.neutralTintRgb;
+    const neutral = SCENE_GEOMETRY_SPEC.neutralTintRgb;
+    const chromaProgress = isReverse ? 1.0 - ease : ease;
+    const tintRgb = [
+      THREE.MathUtils.lerp(restTint[0], neutral[0], chromaProgress),
+      THREE.MathUtils.lerp(restTint[1], neutral[1], chromaProgress),
+      THREE.MathUtils.lerp(restTint[2], neutral[2], chromaProgress)
+    ];
+    return { rimOpacity, tintRgb, apertureFillRatio };
+  }
+
   _setHostPortalSurroundingOpacity(hostSceneId, opacity, activePortalId = null) {
     const hostObj = this.sceneObjects && this.sceneObjects[hostSceneId];
     if (!hostObj) return;
     const clampedOp = THREE.MathUtils.clamp(opacity, 0.0, 1.0);
     hostObj.portalSurroundingOpacity = clampedOp;
+    hostObj.activeFlightPortalId = activePortalId;
     if (hostSceneId === 'shelf_portal') {
       this._portalSurroundingOpacity = clampedOp;
     }
@@ -6861,11 +7850,11 @@ export class SpatialSceneManager {
       hostObj.layer0.material.uniforms &&
       hostObj.layer0.material.uniforms.uFadeToClear
     ) {
-      // Keep hostObj.layer0 opaque (transparent = false) so it ALWAYS renders in the opaque pass
-      // BEFORE diorama.bgMesh (renderOrder = 2, AlwaysDepth) and diorama.pipe_shell (renderOrder = 3).
+      // Keep hostObj.layer0 opaque and at full natural luminance (uFadeToClear = 0.0):
+      // never darken the host scene toward clearColorHex (0x121314) during portal flight.
       hostObj.layer0.material.transparent = false;
       hostObj.layer0.material.uniforms.uOpacity.value = 1.0;
-      hostObj.layer0.material.uniforms.uFadeToClear.value = 1.0 - clampedOp;
+      hostObj.layer0.material.uniforms.uFadeToClear.value = 0.0;
     }
     if (hostObj.layer1 && hostObj.layer1.material) {
       if (hostObj.layer1.material.uniforms && hostObj.layer1.material.uniforms.uOpacity) {
@@ -6919,7 +7908,8 @@ export class SpatialSceneManager {
     }
     for (const inst of this._portalInstances) {
       if (inst.hostSceneId !== hostSceneId) continue;
-      const isSelected = activePortalId && inst.spec.id === activePortalId;
+      const isSelected = Boolean(activePortalId && inst.spec.id === activePortalId);
+      const inSpecificFlight = Boolean(activePortalId);
       const restFrameOp =
         typeof inst.spec.restFrameOpacity === 'number' ? inst.spec.restFrameOpacity : 0.24;
       if (inst.dioramaGroup) {
@@ -6928,22 +7918,28 @@ export class SpatialSceneManager {
             this.sceneObjects[inst.targetSceneId].texturesReady
         );
         const allowVisible = inst.hostSceneId === 'shelf_portal' ? true : targetReady;
-        inst.dioramaGroup.visible = isSelected ? true : allowVisible && clampedOp > 0.02;
+        inst.dioramaGroup.visible = isSelected
+          ? true
+          : inSpecificFlight
+            ? allowVisible
+            : allowVisible && clampedOp > 0.02;
       }
+      const frameScale = isSelected || !inSpecificFlight ? clampedOp : 1.0;
       if (inst.frameLine) {
-        inst.frameLine.visible = clampedOp > 0.02 && (isSelected || restFrameOp > 0.001);
+        inst.frameLine.visible = frameScale > 0.02 && (isSelected || restFrameOp > 0.001);
       }
       if (inst.frameMat) {
-        inst.frameMat.opacity = (isSelected ? 0.92 : restFrameOp) * clampedOp;
+        inst.frameMat.opacity = (isSelected ? 0.92 : restFrameOp) * frameScale;
       }
       if (inst.dustMat) {
-        inst.dustMat.opacity = isSelected ? 0.28 : 0.28 * clampedOp;
+        inst.dustMat.opacity = isSelected || inSpecificFlight ? 0.28 : 0.28 * clampedOp;
       }
       if (inst.occluderMesh && inst.occluderMat) {
-        this._applyOccluderInstanceTransform(inst);
+        this._applyOccluderInstanceTransform(inst, true);
       }
       if (inst.veilMesh && inst.veilMat && inst.spec.veil) {
-        const effVeilOp = inst.veilCurrentOpacity * clampedOp;
+        const veilScale = isSelected || !inSpecificFlight ? clampedOp : 1.0;
+        const effVeilOp = inst.veilCurrentOpacity * veilScale;
         inst.veilMat.opacity = effVeilOp;
         inst.veilMesh.visible = effVeilOp > 0.005;
       }
@@ -7104,6 +8100,9 @@ export class SpatialSceneManager {
       throw new Error(`Cannot prewarm GPU resources for scene "${sceneId}" before its textures load`);
     }
     if (obj.gpuPrewarmed) return;
+    if (this.hasPortalShelves(sceneId)) {
+      this._ensurePortalShelvesInitialized(sceneId);
+    }
     const textures = [
       obj.bgTex,
       obj.depthTex,
@@ -7119,6 +8118,9 @@ export class SpatialSceneManager {
     for (const inst of this._portalInstances) {
       if (inst.hostSceneId === sceneId) {
         textures.push(inst.occluderTex, inst.occluderDepthTex, inst.veilTex);
+        for (const cp of inst.childPortalMeshes || []) {
+          textures.push(cp.childOccTex, cp.childOccDepthTex, cp.childVeilTex);
+        }
       }
     }
     for (const tex of textures) {
@@ -7126,7 +8128,11 @@ export class SpatialSceneManager {
         this.renderer.initTexture(tex);
       }
     }
+    const prevClip = this.renderer.localClippingEnabled;
+    const needsClip = this._sceneNeedsLocalClipping(sceneId);
+    this.renderer.localClippingEnabled = needsClip;
     this.renderer.compile(obj.scene, this.camera);
+    this.renderer.localClippingEnabled = prevClip;
     obj.gpuPrewarmed = true;
   }
 
@@ -7180,8 +8186,8 @@ export class SpatialSceneManager {
     if (this.hasPortalShelves(spec.targetSceneId)) {
       this._ensurePortalShelvesInitialized(spec.targetSceneId);
       this._setHostPortalSurroundingOpacity(spec.targetSceneId, 1.0, null);
-      this._updatePortalShelfTransforms();
     }
+    this._updatePortalShelfTransforms();
     if (this.canvas) {
       this.canvas.style.cursor = 'default';
     }
@@ -7196,11 +8202,12 @@ export class SpatialSceneManager {
     const embedDiorama = spec.embedDiorama !== false;
     const flightRollDeg = typeof spec.flightRollDeg === 'number' ? spec.flightRollDeg : 0.0;
     const targetRest = this._getSceneRestPose(spec.targetSceneId);
+    const effFitZ = typeof spec.effectiveFitZ === 'number' ? spec.effectiveFitZ : spec.fitZ;
     const toPose = embedDiorama
       ? {
           x: spec.worldX,
           y: spec.worldY,
-          z: spec.worldZ + spec.fitZ,
+          z: spec.worldZ + effFitZ,
           yawDeg: targetRest.yawDeg,
           pitchDeg: targetRest.pitchDeg,
           rollDeg: flightRollDeg
@@ -7210,6 +8217,15 @@ export class SpatialSceneManager {
     const flightInst = this._portalInstances.find((p) => p.spec.id === spec.id);
     if (flightInst && flightInst.spec.veil) {
       flightInst.veilFlightStartOpacity = flightInst.veilCurrentOpacity;
+    }
+    if (embedDiorama && flightInst) {
+      const initRimAndTint = this._computePortalFlightRimAndTint(
+        spec,
+        this.camera.position.z,
+        0.0,
+        false
+      );
+      this._applyDioramaInstanceTint(flightInst, initRimAndTint.tintRgb);
     }
 
     const flightDurationMs = embedDiorama
@@ -7241,7 +8257,7 @@ export class SpatialSceneManager {
         portal: spec.id,
         from: hostSceneId,
         to: spec.targetSceneId,
-        fitZ: spec.fitZ,
+        fitZ: effFitZ,
         toZ: Number(toPose.z.toFixed(2)),
         rollDeg: flightRollDeg,
         embedDiorama
@@ -7257,6 +8273,7 @@ export class SpatialSceneManager {
       return false;
     }
 
+    this._ensurePortalShelvesInitialized(returnHost);
     const embedDiorama = spec.embedDiorama !== false;
     const inst = this._portalInstances.find(
       (p) => p.hostSceneId === returnHost && p.spec.id === spec.id
@@ -7266,7 +8283,7 @@ export class SpatialSceneManager {
     }
 
     this._prewarmSceneGpuResources(returnHost);
-    this._ensurePortalShelvesInitialized(returnHost);
+    this._ensurePortalOpenForEmergence(spec);
     this._updatePortalShelfTransforms();
 
     this._foldActiveGyroIntoPose();
@@ -7327,10 +8344,11 @@ export class SpatialSceneManager {
     const childRest = this._getSceneRestPose(spec.targetSceneId);
     const frontZ = Math.max(childObj.sceneFgZ, 0.0);
     const restFrontDist = Math.max(40.0, childRest.z - frontZ);
-    const lambdaP = (spec.fitZ + spec.recessDepth) / restFrontDist;
+    const effFitZ = typeof spec.effectiveFitZ === 'number' ? spec.effectiveFitZ : spec.fitZ;
+    const lambdaP = (effFitZ + spec.recessDepth) / restFrontDist;
     const fitCamX = spec.worldX;
     const fitCamY = spec.worldY;
-    const fitCamZ = spec.worldZ + spec.fitZ;
+    const fitCamZ = spec.worldZ + effFitZ;
 
     const mappedFromZ = Math.max(
       spec.worldZ + SCENE_GEOMETRY_SPEC.cameraNearPlane + 3.0,
@@ -7364,8 +8382,10 @@ export class SpatialSceneManager {
     window.__PROTOTYPE_STATE__.isTransitioning = true;
 
     this._applyPoseToCameraObject(fromPose);
-    this._setHostPortalSurroundingOpacity(returnHost, 0.0, spec.id);
-    this._updatePortalClippingPlanes(spec.id);
+    const initRimAndTint = this._computePortalFlightRimAndTint(spec, fromPose.z, 0.0, true);
+    this._applyDioramaInstanceTint(inst, initRimAndTint.tintRgb);
+    this._setHostPortalSurroundingOpacity(returnHost, initRimAndTint.rimOpacity, spec.id);
+    this._updatePortalClippingPlanes(null);
 
     this._portalFlight = {
       reverse: true,
@@ -7429,7 +8449,7 @@ export class SpatialSceneManager {
         ariaLabelHe: 'חזרה מן המגילה אל מרחב ׳שיטוט ברישום 1׳'
       };
     }
-    if (hostSceneId === 'tzofen_brick_table') {
+    if (hostSceneId === 'tzofen_brick_table' || hostSceneId === 'tzofen_brick_table_v2') {
       return {
         hostSceneId,
         buttonLabelHe: '← חזרה אל ׳צופן׳ והשולחן',
@@ -7484,11 +8504,8 @@ export class SpatialSceneManager {
     if (returnPortalId) {
       const hostShelves = this.getPortalShelves(returnHost);
       const portalSpec = hostShelves.find((s) => s.id === returnPortalId);
-      if (
-        portalSpec &&
-        portalSpec.targetSceneId === this.currentSceneId &&
-        !this.isPortalLocked(portalSpec)
-      ) {
+      if (portalSpec && portalSpec.targetSceneId === this.currentSceneId) {
+        this._ensurePortalOpenForEmergence(portalSpec);
         if (this._startReversePortalFlight(portalSpec, returnHost)) {
           return true;
         }
@@ -7639,24 +8656,27 @@ export class SpatialSceneManager {
           const exScale =
             ((innerWorldWidthAtBg * exRatio) / SCENE_GEOMETRY_SPEC.fgBaseWidth) * exExpMult;
           const exCenterY = boreY * (1.0 - exRatio);
-          extra.basePosX = 0;
+          extra.planeWorldW = SCENE_GEOMETRY_SPEC.fgBaseWidth * exScale;
+          extra.planeWorldH = SCENE_GEOMETRY_SPEC.fgBaseHeight * exScale;
+          extra.basePosX = extra.mirrorLeftEdge ? -extra.planeWorldW : 0;
           extra.basePosY = exCenterY;
           extra.basePosZ = extra.zPos;
           extra.baseScale = exScale;
-          extra.planeWorldW = SCENE_GEOMETRY_SPEC.fgBaseWidth * exScale;
-          extra.planeWorldH = SCENE_GEOMETRY_SPEC.fgBaseHeight * exScale;
-          extra.mesh.scale.set(exScale, exScale, 1.0);
-          extra.mesh.position.set(0, exCenterY, extra.zPos);
+          extra.mesh.scale.set(extra.mirrorLeftEdge ? -exScale : exScale, exScale, 1.0);
+          extra.mesh.position.set(extra.basePosX, exCenterY, extra.zPos);
           extra.mesh.rotation.set(0, 0, 0);
           if (extra.mesh.material && extra.mesh.material.uniforms) {
             extra.mesh.material.uniforms.uDistBg.value = Math.max(1.0, boreZ - extra.zPos);
+            extra.mesh.material.uniforms.uOpticalCenterLocalX.value = extra.mirrorLeftEdge
+              ? -SCENE_GEOMETRY_SPEC.fgBaseWidth
+              : 0.0;
             extra.mesh.material.uniforms.uOpticalCenterLocalY.value =
               (boreY * exRatio) / Math.max(1e-5, exScale);
           }
         }
       }
       if (cfg.carpetUnrollRig) {
-        this._applyCarpetUnrollTransform(key);
+        this._applyCarpetUnrollTransform(key, true);
       }
     }
 
@@ -7711,10 +8731,7 @@ export class SpatialSceneManager {
       uniforms: {
         uTexCurrent: { value: null },
         uTexNext: { value: null },
-        uProgress: { value: 0.0 },
-        uAspect: { value: this.width / this.height },
-        uPointer: { value: new THREE.Vector2(0, 0) },
-        uDisplacementScale: { value: 1.0 }
+        uProgress: { value: 0.0 }
       },
       depthWrite: false,
       depthTest: false
@@ -7803,7 +8820,6 @@ export class SpatialSceneManager {
   transitionTo(nextSceneId, options = {}) {
     if (!nextSceneId) return false;
     if (this.currentSceneId === nextSceneId && !this._pendingTransitionSceneId) return false;
-    if (this.isTransitioning || this._portalFlight) return false;
     if (!this.sceneConfigs[nextSceneId]) return false;
 
     if (this.currentSceneId === nextSceneId && this._pendingTransitionSceneId) {
@@ -7812,27 +8828,129 @@ export class SpatialSceneManager {
       this.onSceneChange(this.currentSceneId);
       return true;
     }
-
-    if (!options.keepPortalOrigin && !options.preservePortalStack) {
-      this._portalOriginStack.length = 0;
-      this._syncPortalOriginFromStack();
+    if (
+      this.isTransitioning ||
+      this._portalFlight ||
+      this._pendingPortalFlightId ||
+      this._pendingTransitionSceneId
+    ) {
+      return false;
     }
+
     if (this.hoveredPortalId !== null) {
       this.hoveredPortalId = null;
       this.onPortalHover(null, 0, 0);
     }
 
+    const handleAsyncBundleFailure = () => {
+      if (this._pendingTransitionSceneId === nextSceneId) {
+        this._pendingTransitionSceneId = null;
+        window.__PROTOTYPE_STATE__.isTransitioning = false;
+        this.onSceneChange(this.currentSceneId);
+        const hint = document.getElementById('center-hint');
+        if (hint) {
+          hint.textContent = 'המרחב עדיין בבנייה ברקע — נסו שוב בעוד רגע';
+          hint.classList.remove('hidden');
+        }
+      }
+    };
+
+    const originSceneId = this.currentSceneId;
+    const allowPortalFlight = options.forceCrossDissolve !== true;
+    const fwdSpec = allowPortalFlight
+      ? this.getPortalShelves(originSceneId).find(
+          (s) => s && s.portalMode !== 'reverse_transition' && s.targetSceneId === nextSceneId
+        )
+      : null;
+
+    if (fwdSpec) {
+      if (this.isPortalLocked(fwdSpec)) {
+        this.erasePortalOccluder(fwdSpec);
+      }
+      this.onSceneChange(nextSceneId);
+      if (this._isSceneBundleReady(nextSceneId)) {
+        this._updatePortalShelfTransforms();
+        return this._startPortalFlight(fwdSpec);
+      }
+      this._pendingTransitionSceneId = nextSceneId;
+      window.__PROTOTYPE_STATE__.isTransitioning = true;
+      this._loadSceneBundleReady(nextSceneId, false)
+        .then(() => {
+          if (
+            this._pendingTransitionSceneId === nextSceneId &&
+            this.currentSceneId === originSceneId &&
+            !this.isTransitioning &&
+            !this._portalFlight
+          ) {
+            this._pendingTransitionSceneId = null;
+            this._updatePortalShelfTransforms();
+            this._startPortalFlight(fwdSpec);
+          }
+        })
+        .catch(handleAsyncBundleFailure);
+      return true;
+    }
+
+    const revSpec = allowPortalFlight
+      ? this.getPortalShelves(nextSceneId).find(
+          (s) => s && s.portalMode !== 'reverse_transition' && s.targetSceneId === originSceneId
+        )
+      : null;
+
+    if (revSpec) {
+      const ancIdx = this._portalOriginStack.findIndex((e) => e.hostSceneId === nextSceneId);
+      if (ancIdx >= 0) {
+        this._portalOriginStack.length = ancIdx;
+      } else if (!options.keepPortalOrigin && !options.preservePortalStack) {
+        this._portalOriginStack.length = 0;
+      }
+      this._syncPortalOriginFromStack();
+      this._ensurePortalOpenForEmergence(revSpec);
+
+      const hostObj = this.sceneObjects[nextSceneId];
+      const originObj = this.sceneObjects[originSceneId];
+      if (hostObj && hostObj.texturesReady && originObj && originObj.texturesReady) {
+        this._warmPortalTargetScenes(nextSceneId);
+        if (this._startReversePortalFlight(revSpec, nextSceneId)) {
+          return true;
+        }
+      }
+      this.onSceneChange(nextSceneId);
+      this._pendingTransitionSceneId = nextSceneId;
+      window.__PROTOTYPE_STATE__.isTransitioning = true;
+      Promise.all([
+        this._loadSceneBundleReady(nextSceneId, false),
+        this._loadSceneTextures(originSceneId, false)
+      ])
+        .then(() => {
+          if (
+            this._pendingTransitionSceneId === nextSceneId &&
+            this.currentSceneId === originSceneId &&
+            !this.isTransitioning &&
+            !this._portalFlight
+          ) {
+            this._pendingTransitionSceneId = null;
+            this._ensurePortalOpenForEmergence(revSpec);
+            if (!this._startReversePortalFlight(revSpec, nextSceneId)) {
+              this._beginShaderTransition(nextSceneId);
+            }
+          }
+        })
+        .catch(handleAsyncBundleFailure);
+      return true;
+    }
+
+    if (!options.keepPortalOrigin && !options.preservePortalStack) {
+      this._portalOriginStack.length = 0;
+      this._syncPortalOriginFromStack();
+    }
     this.onSceneChange(nextSceneId);
 
     // Full Bundle Preloading (#27): only begin revealing nextSceneId once ALL of its
     // own layers AND every embedded portal diorama inside it are decoded and GPU-prewarmed.
     if (this._isSceneBundleReady(nextSceneId)) {
       this._pendingTransitionSceneId = null;
-      this._loadSceneBundleReady(nextSceneId, false).then(() => {
-        if (!this._disposed && !this.isTransitioning) {
-          this._beginShaderTransition(nextSceneId);
-        }
-      });
+      this._beginShaderTransition(nextSceneId);
       return true;
     }
 
@@ -7845,18 +8963,7 @@ export class SpatialSceneManager {
           this._beginShaderTransition(nextSceneId);
         }
       })
-      .catch(() => {
-        if (this._pendingTransitionSceneId === nextSceneId) {
-          this._pendingTransitionSceneId = null;
-          window.__PROTOTYPE_STATE__.isTransitioning = false;
-          this.onSceneChange(this.currentSceneId);
-          const hint = document.getElementById('center-hint');
-          if (hint) {
-            hint.textContent = 'המרחב עדיין בבנייה ברקע — נסו שוב בעוד רגע';
-            hint.classList.remove('hidden');
-          }
-        }
-      });
+      .catch(handleAsyncBundleFailure);
     return true;
   }
 
@@ -8262,6 +9369,9 @@ export class SpatialSceneManager {
 
       const completePortalFlight = () => {
         if (flight.embedDiorama) {
+          if (flightInst) {
+            this._applyDioramaInstanceTint(flightInst, flightInst.spec.dioramaRestTintRgb);
+          }
           if (flightInst && flightInst.spec.veil) {
             flightInst.veilCurrentOpacity = flightInst.spec.veil.restOpacity;
             flightInst.veilTargetOpacity = flightInst.spec.veil.restOpacity;
@@ -8322,55 +9432,39 @@ export class SpatialSceneManager {
       };
 
       if (flight.embedDiorama) {
-        if (flight.reverse) {
-          const revFadeStart = 0.16;
-          const revFadeEnd = 0.88;
-          const revT = THREE.MathUtils.clamp(
-            (t - revFadeStart) / Math.max(1e-5, revFadeEnd - revFadeStart),
-            0.0,
-            1.0
-          );
-          const surroundingOpacity = revT * revT * (3.0 - 2.0 * revT);
-          if (flightInst && flightInst.spec.veil) {
-            const veilStart = 1.0 - flightInst.spec.veil.dissolveEndProgress;
-            const vt = THREE.MathUtils.clamp(
-              (t - veilStart) / Math.max(1e-5, 1.0 - veilStart),
-              0.0,
-              1.0
-            );
-            flightInst.veilCurrentOpacity =
-              flightInst.spec.veil.restOpacity * (vt * vt * (3.0 - 2.0 * vt));
+        const { rimOpacity, tintRgb } = this._computePortalFlightRimAndTint(
+          flight.portalSpec,
+          flightPose.z,
+          ease,
+          flight.reverse
+        );
+        if (flightInst) {
+          this._applyDioramaInstanceTint(flightInst, tintRgb);
+          if (flightInst.spec.veil) {
+            if (flight.reverse) {
+              const veilStart = 1.0 - flightInst.spec.veil.dissolveEndProgress;
+              const vt = THREE.MathUtils.clamp(
+                (t - veilStart) / Math.max(1e-5, 1.0 - veilStart),
+                0.0,
+                1.0
+              );
+              flightInst.veilCurrentOpacity =
+                flightInst.spec.veil.restOpacity * (vt * vt * (3.0 - 2.0 * vt));
+            } else {
+              const veilEnd = Math.max(0.08, flightInst.spec.veil.dissolveEndProgress);
+              const vt = THREE.MathUtils.clamp(t / veilEnd, 0.0, 1.0);
+              const veilEase = vt * vt * (3.0 - 2.0 * vt);
+              flightInst.veilCurrentOpacity =
+                flightInst.veilFlightStartOpacity * (1.0 - veilEase);
+            }
           }
-          this._setHostPortalSurroundingOpacity(
-            flight.hostSceneId,
-            surroundingOpacity,
-            flight.portalSpec.id
-          );
-          this._updatePortalClippingPlanes(t < revFadeStart ? flight.portalSpec.id : null);
-        } else {
-          const fadeStart =
-            typeof flight.portalSpec.fadeStartProgress === 'number'
-              ? flight.portalSpec.fadeStartProgress
-              : this._rigSpec.portalFadeStartProgress;
-          const fadeT = THREE.MathUtils.clamp(
-            (t - fadeStart) / Math.max(1e-5, 1.0 - fadeStart),
-            0.0,
-            1.0
-          );
-          const surroundingOpacity = 1.0 - fadeT * fadeT * (3.0 - 2.0 * fadeT);
-          if (flightInst && flightInst.spec.veil) {
-            const veilEnd = Math.max(0.08, flightInst.spec.veil.dissolveEndProgress);
-            const vt = THREE.MathUtils.clamp(t / veilEnd, 0.0, 1.0);
-            const veilEase = vt * vt * (3.0 - 2.0 * vt);
-            flightInst.veilCurrentOpacity = flightInst.veilFlightStartOpacity * (1.0 - veilEase);
-          }
-          this._setHostPortalSurroundingOpacity(
-            flight.hostSceneId,
-            surroundingOpacity,
-            flight.portalSpec.id
-          );
-          this._updatePortalClippingPlanes(t > 0.88 ? flight.portalSpec.id : null);
         }
+        this._setHostPortalSurroundingOpacity(
+          flight.hostSceneId,
+          rimOpacity,
+          flight.portalSpec.id
+        );
+        this._updatePortalClippingPlanes(null);
 
         if (t >= 1.0) {
           completePortalFlight();
@@ -8412,7 +9506,7 @@ export class SpatialSceneManager {
               ...this._clampPoseForScene(flight.targetSceneId, {
                 x: childBase.x,
                 y: childBase.y,
-                z: childBase.z + SCENE_GEOMETRY_SPEC.transitionGlideInOffsetZ * ease,
+                z: childBase.z,
                 yawDeg: childBase.yawDeg * (1.0 - ease),
                 pitchDeg: childBase.pitchDeg * (1.0 - ease),
                 rollDeg: childRollDeg
@@ -8432,8 +9526,6 @@ export class SpatialSceneManager {
             this.transitionMaterial.uniforms.uTexCurrent.value = this.rtCurrent.texture;
             this.transitionMaterial.uniforms.uTexNext.value = this.rtNext.texture;
             this.transitionMaterial.uniforms.uProgress.value = blendProgress;
-            this.transitionMaterial.uniforms.uPointer.value.set(0.0, 0.0);
-            this.transitionMaterial.uniforms.uDisplacementScale.value = 1.0;
             this.renderer.render(this.transitionScene, this.transitionCamera);
           }
         } else {
@@ -8463,15 +9555,11 @@ export class SpatialSceneManager {
 
             const targetRest = this._getSceneRestPose(flight.targetSceneId);
             const inRollDeg = -(flight.flightRollDeg || 0.0) * (1.0 - ease);
-            const glideOffsetZ =
-              flight.targetSceneId === 'vitrine_keys_pen'
-                ? 0.0
-                : SCENE_GEOMETRY_SPEC.transitionGlideInOffsetZ;
             const inPose = {
               ...this._clampPoseForScene(flight.targetSceneId, {
                 x: targetRest.x,
                 y: targetRest.y,
-                z: targetRest.z + glideOffsetZ * (1.0 - ease),
+                z: targetRest.z,
                 yawDeg: targetRest.yawDeg,
                 pitchDeg: targetRest.pitchDeg,
                 rollDeg: inRollDeg
@@ -8486,25 +9574,12 @@ export class SpatialSceneManager {
             this.renderer.setRenderTarget(this.rtNext);
             this.renderer.render(this.sceneObjects[flight.targetSceneId].scene, this.camera);
 
-            const flightNormYaw = THREE.MathUtils.clamp(
-              flightPose.yawDeg / SCENE_GEOMETRY_SPEC.maxYawDeg,
-              -1,
-              1
-            );
-            const flightNormPitch = THREE.MathUtils.clamp(
-              flightPose.pitchDeg / SCENE_GEOMETRY_SPEC.maxPitchDeg,
-              -1,
-              1
-            );
             this._applyPoseToCameraObject(flightPose);
 
             this.renderer.setRenderTarget(null);
             this.transitionMaterial.uniforms.uTexCurrent.value = this.rtCurrent.texture;
             this.transitionMaterial.uniforms.uTexNext.value = this.rtNext.texture;
             this.transitionMaterial.uniforms.uProgress.value = blendProgress;
-            this.transitionMaterial.uniforms.uPointer.value.set(flightNormYaw, flightNormPitch);
-            this.transitionMaterial.uniforms.uDisplacementScale.value =
-              flight.targetSceneId === 'vitrine_keys_pen' ? 0.0 : 1.0;
             this.renderer.render(this.transitionScene, this.transitionCamera);
           }
         }
@@ -8556,6 +9631,7 @@ export class SpatialSceneManager {
       const veilDamping = 1.0 - Math.pow(1.0 - 0.14, dampingFrameScale);
       for (const inst of this._portalInstances) {
         if (!inst.veilMesh || !inst.veilMat || !inst.spec.veil) continue;
+        const prevVeilOp = inst.veilCurrentOpacity;
         inst.veilCurrentOpacity +=
           (inst.veilTargetOpacity - inst.veilCurrentOpacity) * veilDamping;
         const hostObj = this.sceneObjects[inst.hostSceneId];
@@ -8566,6 +9642,9 @@ export class SpatialSceneManager {
         const effOp = inst.veilCurrentOpacity * surroundingOp;
         inst.veilMat.opacity = effOp;
         inst.veilMesh.visible = effOp > 0.005;
+        if (Math.abs(inst.veilCurrentOpacity - prevVeilOp) > 1e-4) {
+          this._syncDioramaMirrorsForScene(inst.hostSceneId);
+        }
       }
     }
 
@@ -8625,7 +9704,9 @@ export class SpatialSceneManager {
       });
       this._applyPoseToCameraObject(outPose);
       this._updateScenePlaneVisibilitiesAndOpacities(this.currentSceneId);
-      if (this._sceneNeedsLocalClipping(this.currentSceneId)) {
+      const curNeedsClip = this._sceneNeedsLocalClipping(this.currentSceneId);
+      this.renderer.localClippingEnabled = curNeedsClip;
+      if (curNeedsClip) {
         this._updatePortalClippingPlanes();
       }
       this.renderer.setRenderTarget(this.rtCurrent);
@@ -8665,7 +9746,9 @@ export class SpatialSceneManager {
       });
       this._applyPoseToCameraObject(inPose);
       this._updateScenePlaneVisibilitiesAndOpacities(this.targetSceneId);
-      if (this._sceneNeedsLocalClipping(this.targetSceneId)) {
+      const nextNeedsClip = this._sceneNeedsLocalClipping(this.targetSceneId);
+      this.renderer.localClippingEnabled = nextNeedsClip;
+      if (nextNeedsClip) {
         this._updatePortalClippingPlanes();
       }
       this.renderer.setRenderTarget(this.rtNext);
@@ -8675,7 +9758,6 @@ export class SpatialSceneManager {
       this.transitionMaterial.uniforms.uTexCurrent.value = this.rtCurrent.texture;
       this.transitionMaterial.uniforms.uTexNext.value = this.rtNext.texture;
       this.transitionMaterial.uniforms.uProgress.value = this.transitionProgress;
-      this.transitionMaterial.uniforms.uPointer.value.set(normYaw, normPitch);
       this.renderer.render(this.transitionScene, this.transitionCamera);
 
       if (this.transitionProgress >= 1.0) {
@@ -8696,7 +9778,9 @@ export class SpatialSceneManager {
         window.__PROTOTYPE_STATE__.isTransitioning = false;
       }
     } else {
-      if (this._sceneNeedsLocalClipping(this.currentSceneId)) {
+      const needsClip = this._sceneNeedsLocalClipping(this.currentSceneId);
+      this.renderer.localClippingEnabled = needsClip;
+      if (needsClip) {
         this._updatePortalClippingPlanes();
       }
       this.renderer.setRenderTarget(null);
@@ -8913,6 +9997,13 @@ export class SpatialSceneManager {
       if (!cand.mesh || !cand.mesh.visible || !cand.tex) continue;
       const hits = this._raycaster.intersectObject(cand.mesh, false);
       if (hits.length > 0 && hits[0].uv) {
+        const hitUvX = hits[0].uv.x;
+        const uniforms = cand.mesh.material && cand.mesh.material.uniforms;
+        if (uniforms) {
+          const clipMinX = uniforms.uClipUvMinX ? uniforms.uClipUvMinX.value : 0.0;
+          const clipMaxX = uniforms.uClipUvMaxX ? uniforms.uClipUvMaxX.value : 1.0;
+          if (hitUvX < clipMinX || hitUvX > clipMaxX) continue;
+        }
         const sampler = this._getTextureSampler(cand.tex, sampleMaxDim);
         if (sampler) {
           const sample = sampler.sampleAtUv(hits[0].uv.x, hits[0].uv.y);
@@ -9291,6 +10382,23 @@ export class SpatialSceneManager {
       }
     }
     this.sceneObjects = {};
+
+    if (this._sharedUrlTextures) {
+      for (const entry of this._sharedUrlTextures.values()) {
+        if (entry && entry.tex && typeof entry.tex.dispose === 'function') {
+          entry.tex.dispose();
+        }
+      }
+      this._sharedUrlTextures.clear();
+    }
+    if (this._sharedPlaneGeos) {
+      for (const geo of this._sharedPlaneGeos.values()) {
+        if (geo && typeof geo.dispose === 'function') {
+          geo.dispose();
+        }
+      }
+      this._sharedPlaneGeos.clear();
+    }
 
     if (this._dustSpriteTexture) {
       this._dustSpriteTexture.dispose();

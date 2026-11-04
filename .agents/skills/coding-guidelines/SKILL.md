@@ -42,6 +42,13 @@ Read [`references/depth_topology_principles.md`](references/depth_topology_princ
 - **Occlusion Discontinuity ($C^{-1}$)**: Free silhouettes occluding distant backgrounds MUST sit on separate alpha-matted/cutout layers with outward `EDT`-extrapolated depth (zero rubber-sheeting) over ghost-free LaMa/harmonic-cleaned `layer0` room depth maps.
 - **Verification**: Run `python3 -m unittest tests/test_depth_principles.py` alongside desktop/mobile off-axis visual checks to verify zero wall detachment and zero floor-floating artifacts.
 
+### 2C. 3D Portal Flight & Scene Transition Laws (Mandatory for Every Transition & Portal)
+
+Read [`references/flight_transition_principles.md`](references/flight_transition_principles.md) whenever modifying camera flights, portals, transitions, preloading, or interactive scene state:
+- **Pure 3D Flight (Zero Distortion Effects)**: Never use `ripple`, `directionalWarp`, or `specularFlash` effects; transitions between portal-connected scenes always execute real 3D camera flight (forward and reverse).
+- **Continuous Motion, Clipping & Hue**: Keep portal frustum clip planes active across the entire $t \in [0, 1]$ flight up to rotated-frustum `effectiveFitZ` (zero mid-flight unclip snaps), never darken `layer0` toward clear color (`uFadeToClear = 0`), and interpolate any cubby-to-scene hue adaptation (`uTint` / `dioramaRestTintRgb`) smoothly via $C^2$ easing.
+- **Advance Preloading & Bijective State Consistency**: Preload and GPU-prewarm all target layers, occluders, veils, and child portals in advance via shared URL textures, and mirror 100% of mutable scene state—including `companionFall` `position` **and** `rotation`, depth-displaced child occluders, dissolve factors, and carpet unroll rigs—in strict two-pass order (`tests/test_flight_principles.py`).
+
 ## 3. Read-Only Safety & Governance Integrity
 
 - Preserve 100% read-only guarantees tested in `tests/test_governance.py` (`TestReadOnlySafetyGuardrails`).

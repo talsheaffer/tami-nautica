@@ -482,6 +482,8 @@ class HerzliyaCarpetSceneSpec:
     earth_depth_solve: ContactAnchoredLayerDepthConfig
     roll_depth_solve: ContactAnchoredLayerDepthConfig
     camera_rig: SceneCameraRigSpec
+    reflect_left_mirror: bool = True
+    unroll_duration_ms: int = 1450
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -523,6 +525,8 @@ class HerzliyaCarpetSceneSpec:
             "earth_depth_solve": self.earth_depth_solve.to_dict(),
             "roll_depth_solve": self.roll_depth_solve.to_dict(),
             "camera_rig": self.camera_rig.to_dict(),
+            "reflect_left_mirror": self.reflect_left_mirror,
+            "unroll_duration_ms": self.unroll_duration_ms,
         }
 
     @classmethod
@@ -569,6 +573,8 @@ class HerzliyaCarpetSceneSpec:
             earth_depth_solve=ContactAnchoredLayerDepthConfig.from_dict(data["earth_depth_solve"]),
             roll_depth_solve=ContactAnchoredLayerDepthConfig.from_dict(data["roll_depth_solve"]),
             camera_rig=SceneCameraRigSpec.from_dict(data["camera_rig"]),
+            reflect_left_mirror=bool(data["reflect_left_mirror"]),
+            unroll_duration_ms=int(data["unroll_duration_ms"]),
         )
 
 
@@ -2701,17 +2707,36 @@ def build_herzliya_lawn_carpet_scene(
     carpet_unroll_spec = {
         "earthLayerId": "carpet_earth_trail",
         "rollLayerId": "carpet_roll",
+        "reflectedEarthLayerId": "carpet_earth_trail_reflection" if spec.reflect_left_mirror else None,
+        "reflectedRollLayerId": "carpet_roll_reflection" if spec.reflect_left_mirror else None,
         "startCenterX": spec.start_center_x_px,
         "endCenterX": spec.end_center_x_px,
         "deltaInnerPx": delta_inner_px,
         "startUvX": start_uv_x,
         "endUvX": end_uv_x,
         "rollTrackWorldZ": roll_track_world_z,
+        "trailTrackWorldZ": round(start_lawn_z, 3),
+        "durationMs": spec.unroll_duration_ms,
         "rollBoxInnerPx": roll_box,
         "earthBoxInnerPx": earth_box,
         "startLawnWorldZ": round(start_lawn_z, 3),
         "endLawnWorldZ": round(end_lawn_z, 3),
         "deltaWorldZ": delta_world_z,
+    }
+    carpet_unroll_rig = {
+        "trailLayerId": "carpet_earth_trail",
+        "rollLayerId": "carpet_roll",
+        "reflectedTrailLayerId": "carpet_earth_trail_reflection" if spec.reflect_left_mirror else None,
+        "reflectedRollLayerId": "carpet_roll_reflection" if spec.reflect_left_mirror else None,
+        "clipUvMinX": 0.0,
+        "initialClipUvMaxX": start_uv_x,
+        "unrolledClipUvMaxX": end_uv_x,
+        "rollShiftInnerPxX": delta_inner_px,
+        "rollShiftInnerPxY": 0.0,
+        "rollShiftWorldZ": 0.0,
+        "rollTrackWorldZ": roll_track_world_z,
+        "trailTrackWorldZ": round(start_lawn_z, 3),
+        "durationMs": spec.unroll_duration_ms,
     }
     print(
         f"  -> Saved {pfx}_* (mid_cov={mid_cov:.4f}, roll_box={roll_box}, "
@@ -2732,10 +2757,13 @@ def build_herzliya_lawn_carpet_scene(
             "segmentsY": 150,
             "renderOrder": 7.2,
             "expanded": False,
+            "mirrorLeftEdge": False,
             "baseOpacity": 1.0,
             "excursionBoost": 0.0,
             "depthTest": False,
             "depthWrite": False,
+            "clipUvMinX": 0.0,
+            "clipUvMaxX": start_uv_x,
             "initialClipUvMaxX": start_uv_x,
         },
         {
@@ -2750,6 +2778,7 @@ def build_herzliya_lawn_carpet_scene(
             "segmentsY": 150,
             "renderOrder": 7.6,
             "expanded": False,
+            "mirrorLeftEdge": False,
             "baseOpacity": 1.0,
             "excursionBoost": 0.0,
             "depthTest": False,
@@ -2757,6 +2786,51 @@ def build_herzliya_lawn_carpet_scene(
             "rollBoxInnerPx": roll_box,
         },
     ]
+    if spec.reflect_left_mirror:
+        extra_layers.extend(
+            [
+                {
+                    "id": "carpet_earth_trail_reflection",
+                    "labelHe": "השתקפות שובל האדמה המתמשך מעבר לשפת המראה השמאלית",
+                    "texture": f"assets/scenes/{pfx}_earth_full.png",
+                    "depthTexture": f"assets/scenes/{pfx}_earth_full_depth.png",
+                    "zPos": spec.earth_depth_solve.layer_z,
+                    "depthAmplitude": spec.earth_depth_solve.layer_depth_amplitude,
+                    "pinMarginUv": 0.0,
+                    "segmentsX": 224,
+                    "segmentsY": 150,
+                    "renderOrder": 7.2,
+                    "expanded": False,
+                    "mirrorLeftEdge": True,
+                    "baseOpacity": 1.0,
+                    "excursionBoost": 0.0,
+                    "depthTest": False,
+                    "depthWrite": False,
+                    "clipUvMinX": 0.0,
+                    "clipUvMaxX": start_uv_x,
+                    "initialClipUvMaxX": start_uv_x,
+                },
+                {
+                    "id": "carpet_roll_reflection",
+                    "labelHe": "השתקפות גליל השטיח מעבר לשפת המראה השמאלית",
+                    "texture": f"assets/scenes/{pfx}_roll.png",
+                    "depthTexture": f"assets/scenes/{pfx}_roll_depth.png",
+                    "zPos": spec.roll_depth_solve.layer_z,
+                    "depthAmplitude": spec.roll_depth_solve.layer_depth_amplitude,
+                    "pinMarginUv": 0.0,
+                    "segmentsX": 224,
+                    "segmentsY": 150,
+                    "renderOrder": 7.6,
+                    "expanded": False,
+                    "mirrorLeftEdge": True,
+                    "baseOpacity": 1.0,
+                    "excursionBoost": 0.0,
+                    "depthTest": False,
+                    "depthWrite": False,
+                    "rollBoxInnerPx": roll_box,
+                },
+            ]
+        )
 
     return {
         "id": spec.scene_id,
@@ -2802,6 +2876,7 @@ def build_herzliya_lawn_carpet_scene(
         "midCoverageRatio": round(mid_cov, 4),
         "fgCoverageRatio": 0.0,
         "carpetUnrollSpec": carpet_unroll_spec,
+        "carpetUnrollRig": carpet_unroll_rig,
         "extraLayers": extra_layers,
         "depthTopologyVerification": {
             "mid": mid_verify,

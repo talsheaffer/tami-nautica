@@ -340,6 +340,7 @@ def default_beta_feedback_config(*, enabled: bool = True) -> BetaFeedbackConfig:
             "scroll_palm_world",
             "humpty_dumpty_bundle",
             "tzofen_brick_table",
+            "tzofen_brick_table_v2",
             "herzliya_tree_canopy",
             "wiki",
             "catalog",

@@ -1,0 +1,738 @@
+#!/usr/bin/env python3
+r"""
+tests/test_flight_principles.py — Automated 3D Portal Flight & Scene Transition Invariant Gate
+
+Enforces the 5 mandatory laws recorded in
+`.agents/skills/coding-guidelines/references/flight_transition_principles.md`:
+  1. Law 1 (Pure 3D Flight — Zero Distortion/Flash Effects): `TRANSITION_FRAGMENT_SHADER` and
+     portal flight pipelines contain zero synthetic `ripple`, `directionalWarp`, or `specularFlash`
+     distortions.
+  2. Law 2 ($C^2$ Camera Kinematics & Rotated-Frustum `effectiveFitZ` Registration): arrival pose
+     accounts for yaw/pitch/roll so 100% of the rotated frustum lies strictly inside the portal
+     aperture with zero 1-frame clip-plane snaps, and UI transitions between portal-connected
+     scenes execute true 3D portal flight.
+  3. Law 3 (Chromatic & Radiometric Continuity): host `layer0` never fades toward `clearColor`
+     (`uFadeToClear == 0.0`), overhanging front rims dissolve strictly via physical aperture fill
+     ratio $\rho(Z_{\text{cam}})$, and `uTint` interpolates smoothly across $t \in [0, 1]$.
+  4. Law 4 (Eager Advance Bundle & GPU Prewarming): outgoing direct portals, occluders, occluder
+     depth maps, and veils are tracked in shared URL textures and prewarmed in advance;
+     `updatePortalShelves` is idempotent across viewport scaling.
+  5. Law 5 (Bijective Scene State Isomorphism): companion-fall positions AND 3D Euler rotations
+     (`scroll_black_rod` at `-95°`), depth-displaced child occluders (`scene17_scroll_foot_occluder`),
+     live dissolve animations, carpet rigs, and active-visitor occluder lock deferrals stay 100%
+     consistent between standalone scenes and embedded dioramas.
+"""
+
+from __future__ import annotations
+
+import json
+import math
+import os
+import re
+import shutil
+import socket
+import struct
+import subprocess
+import tempfile
+import time
+import unittest
+import urllib.request
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+REPO_ROOT: Path = Path(__file__).resolve().parent.parent
+PROTOTYPE_DIR: Path = REPO_ROOT / "prototype"
+SCENE_MANAGER_JS: Path = PROTOTYPE_DIR / "js" / "scene_manager.js"
+MANIFEST_JSON: Path = PROTOTYPE_DIR / "assets" / "scenes" / "scene_manifest.json"
+FLIGHT_PRINCIPLES_DOC: Path = (
+    REPO_ROOT
+    / ".agents"
+    / "skills"
+    / "coding-guidelines"
+    / "references"
+    / "flight_transition_principles.md"
+)
+SKILL_DOC: Path = REPO_ROOT / ".agents" / "skills" / "coding-guidelines" / "SKILL.md"
+RULES_DOC: Path = REPO_ROOT / ".agents" / "rules" / "coding_guidelines.md"
+CHROME_BIN: str = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+
+@dataclass(frozen=True)
+class FlightTestThresholds:
+    """Canonical numerical tolerances and timeouts for flight transition invariant tests."""
+
+    desktop_width: int = 1440
+    desktop_height: int = 900
+    desktop_fov_deg: float = 42.0
+    mobile_width: int = 390
+    mobile_height: int = 844
+    mobile_fov_deg: float = 56.0
+    mobile_portrait_yaw_deg: float = 7.5
+    node_timeout_sec: float = 8.0
+    cdp_connect_timeout_sec: float = 14.0
+    cdp_socket_timeout_sec: float = 12.0
+    cdp_ready_poll_timeout_sec: float = 2.0
+    cdp_heavy_eval_timeout_sec: float = 90.0
+    layers_ready_timeout_sec: float = 45.0
+    proc_wait_timeout_sec: float = 3.0
+    base_http_port: int = 7520
+    base_cdp_port: int = 9520
+    expected_rod_fall_deg: float = -95.0
+    rotation_rad_tol: float = 1e-4
+    position_world_tol: float = 1e-3
+    tint_tol: float = 2e-3
+    unclipped_plane_sentinel: float = 1e5
+    active_visitor_regen_probe_ms: int = 30
+    active_visitor_wait_sec: float = 0.12
+
+
+THRESHOLDS = FlightTestThresholds()
+
+
+class TestFlightPrinciplesStaticAndPureMath(unittest.TestCase):
+    """Static specification, shader purity, and pure frustum math verification."""
+
+    def test_flight_principles_documented_and_wired(self) -> None:
+        self.assertTrue(
+            FLIGHT_PRINCIPLES_DOC.is_file(),
+            f"Missing canonical flight transition principles doc: {FLIGHT_PRINCIPLES_DOC}",
+        )
+        doc_text = FLIGHT_PRINCIPLES_DOC.read_text(encoding="utf-8")
+        for required_phrase in (
+            "Law 1 — Pure 3D Camera Flight",
+            "Law 2 — $C^2$ Camera Kinematics",
+            "Law 3 — Chromatic & Radiometric Continuity",
+            "Law 4 — Eager Advance Bundle & GPU Prewarming",
+            "Law 5 — Bijective Scene State Isomorphism",
+        ):
+            self.assertIn(required_phrase, doc_text)
+
+        skill_text = SKILL_DOC.read_text(encoding="utf-8")
+        self.assertIn("references/flight_transition_principles.md", skill_text)
+        self.assertIn("tests/test_flight_principles.py", skill_text)
+
+        rules_text = RULES_DOC.read_text(encoding="utf-8")
+        self.assertIn("flight_transition_principles.md", rules_text)
+        self.assertIn("tests/test_flight_principles.py", rules_text)
+
+    def test_transition_shader_pure_flight_no_distortion_effects(self) -> None:
+        js_text = SCENE_MANAGER_JS.read_text(encoding="utf-8")
+        match = re.search(
+            r"const\s+TRANSITION_FRAGMENT_SHADER\s*=\s*`([^`]*)`",
+            js_text,
+            flags=re.DOTALL,
+        )
+        self.assertIsNotNone(match, "Could not locate TRANSITION_FRAGMENT_SHADER in scene_manager.js")
+        shader_body = match.group(1) if match else ""
+
+        for forbidden_token in (
+            "ripple",
+            "directionalWarp",
+            "specularFlash",
+            "uDisplacementScale",
+            "uPointer",
+            "sin(dist",
+        ):
+            self.assertNotIn(
+                forbidden_token,
+                shader_body,
+                f"Forbidden shader distortion token '{forbidden_token}' found in TRANSITION_FRAGMENT_SHADER",
+            )
+            self.assertNotIn(
+                forbidden_token,
+                js_text,
+                f"Forbidden distortion uniform/symbol '{forbidden_token}' still present in scene_manager.js",
+            )
+
+        # Ensure uTint exists in ROOM_DEPTH_FRAGMENT_SHADER and in every ROOM_DEPTH_FRAGMENT_SHADER material
+        self.assertIn("uniform vec3 uTint;", js_text)
+        shader_mat_blocks = js_text.split("fragmentShader: ROOM_DEPTH_FRAGMENT_SHADER")
+        self.assertGreaterEqual(len(shader_mat_blocks) - 1, 10)
+        for idx, tail in enumerate(shader_mat_blocks[1:], start=1):
+            window = tail[:1200]
+            self.assertIn(
+                "uTint:",
+                window,
+                f"ShaderMaterial #{idx} using ROOM_DEPTH_FRAGMENT_SHADER is missing uTint uniform",
+            )
+
+    def test_effective_fit_z_contains_rotated_mobile_and_rolled_frustums(self) -> None:
+        node_bin = shutil.which("node")
+        self.assertIsNotNone(node_bin, "node binary required for pure JS geometry verification")
+
+        manifest = json.loads(MANIFEST_JSON.read_text(encoding="utf-8"))
+        manifest_shelf_ids = [
+            p["id"] for p in manifest["scenes"]["shelf_portal"]["portalShelves"]
+        ]
+
+        node_script = f"""
+import {{
+  SCENE_GEOMETRY_SPEC,
+  computePortalWorldGeometry,
+  computePortalEffectiveFitZ
+}} from {json.dumps(SCENE_MANAGER_JS.as_uri())};
+import fs from 'node:fs';
+
+const src = fs.readFileSync({json.dumps(str(SCENE_MANAGER_JS))}, 'utf8');
+const shelfBlock = src.match(/const DEFAULT_SHELF_PORTAL_SHELVES = Object\\.freeze\\(\\[(.*?)\\n\\]\\);/s);
+if (!shelfBlock) {{
+  throw new Error('Could not locate DEFAULT_SHELF_PORTAL_SHELVES in scene_manager.js');
+}}
+const defaultIds = [...shelfBlock[1].matchAll(/id:\\s*'([^']+)'/g)].map((m) => m[1]);
+
+const aspectMobile = {THRESHOLDS.mobile_width} / {THRESHOLDS.mobile_height};
+const fovMobile = {THRESHOLDS.mobile_fov_deg};
+const geom = computePortalWorldGeometry(
+  {{ innerBoxPx: [838.36, 431.55, 930.94, 521.36], worldZ: -284.0, recessDepth: 160.0 }},
+  1.15,
+  -44.0,
+  380.0,
+  -350.0,
+  fovMobile,
+  aspectMobile
+);
+const effMobileYaw = computePortalEffectiveFitZ(
+  geom,
+  fovMobile,
+  aspectMobile,
+  {THRESHOLDS.mobile_portrait_yaw_deg},
+  0.0,
+  0.0,
+  0.0
+);
+const effDesktopZero = computePortalEffectiveFitZ(
+  geom,
+  {THRESHOLDS.desktop_fov_deg},
+  {THRESHOLDS.desktop_width} / {THRESHOLDS.desktop_height},
+  0.0,
+  0.0,
+  0.0,
+  0.0
+);
+
+// Project all 4 frustum corners onto aperture plane z = geom.worldZ from z = geom.worldZ + effMobileYaw
+const deg = Math.PI / 180.0;
+const yaw = {THRESHOLDS.mobile_portrait_yaw_deg} * deg;
+const cy = Math.cos(yaw);
+const sy = Math.sin(yaw);
+const tanY = Math.tan(0.5 * fovMobile * deg);
+const tanX = tanY * aspectMobile;
+let maxRatioX = 0;
+let maxRatioY = 0;
+for (const sx of [-1, 1]) {{
+  for (const sySign of [-1, 1]) {{
+    const vx = sx * tanX;
+    const vy = sySign * tanY;
+    const vz = -1.0;
+    // YXZ with pitch=0, roll=0 -> Ry(yaw)
+    const dx = cy * vx + sy * vz;
+    const dy = vy;
+    const dz = -sy * vx + cy * vz;
+    const tHit = -effMobileYaw / dz;
+    const hitX = dx * tHit;
+    const hitY = dy * tHit;
+    maxRatioX = Math.max(maxRatioX, Math.abs(hitX) / (0.5 * geom.width));
+    maxRatioY = Math.max(maxRatioY, Math.abs(hitY) / (0.5 * geom.height));
+  }}
+}}
+
+console.log(JSON.stringify({{
+  defaultIds,
+  fitZ: geom.fitZ,
+  effMobileYaw,
+  effDesktopZero,
+  maxRatioX,
+  maxRatioY,
+  safetyRatio: SCENE_GEOMETRY_SPEC.portalApertureFitSafetyRatio
+}}));
+"""
+        proc = subprocess.run(
+            [node_bin or "node", "--input-type=module", "-e", node_script],
+            capture_output=True,
+            text=True,
+            stdin=subprocess.DEVNULL,
+            timeout=THRESHOLDS.node_timeout_sec,
+            check=False,
+        )
+        self.assertEqual(
+            proc.returncode,
+            0,
+            f"Node pure geometry evaluation failed:\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}",
+        )
+        payload = json.loads(proc.stdout.strip())
+        self.assertEqual(
+            payload["defaultIds"],
+            manifest_shelf_ids,
+            "DEFAULT_SHELF_PORTAL_SHELVES order must match scene_manifest.json 1:1",
+        )
+        self.assertLess(
+            payload["effMobileYaw"],
+            payload["fitZ"],
+            "Rotated mobile arrival yaw must pull effectiveFitZ closer than unrotated fitZ",
+        )
+        self.assertLessEqual(payload["maxRatioX"], 1.0)
+        self.assertLessEqual(payload["maxRatioY"], 1.0)
+        self.assertAlmostEqual(
+            max(payload["maxRatioX"], payload["maxRatioY"]),
+            payload["safetyRatio"],
+            places=5,
+        )
+
+
+class TestFlightPrinciplesWebGLRuntime(unittest.TestCase):
+    """Empirical headless Chrome WebGL2 verification of flight continuity & scene state isomorphism."""
+
+    server: Any = None
+    http_port: int = 0
+    server_thread: Any = None
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        if not os.path.exists(CHROME_BIN):
+            raise unittest.SkipTest(f"Chrome binary not found at {CHROME_BIN}")
+
+        from prototype.serve import find_free_port, start_server_thread
+
+        cls.http_port = find_free_port(THRESHOLDS.base_http_port)
+        cls.server, cls.http_port, cls.server_thread = start_server_thread(
+            port=cls.http_port, directory=str(PROTOTYPE_DIR)
+        )
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        if cls.server is not None:
+            cls.server.shutdown()
+            cls.server.server_close()
+
+    def _launch_chrome_cdp(self, width: int, height: int) -> tuple[Any, ...]:
+        from prototype.serve import find_free_port
+
+        cdp_port = find_free_port(THRESHOLDS.base_cdp_port)
+        tmp_dir = tempfile.mkdtemp(prefix="tami_flight_test_")
+        url = f"http://127.0.0.1:{self.http_port}/index.html?fastLoad=1"
+        cmd = [
+            CHROME_BIN,
+            "--headless=new",
+            "--disable-extensions",
+            f"--user-data-dir={tmp_dir}",
+            f"--window-size={width},{height}",
+            "--use-gl=angle",
+            "--use-angle=swiftshader",
+            "--enable-webgl",
+            "--ignore-gpu-blocklist",
+            "--no-sandbox",
+            "--disable-gpu-sandbox",
+            f"--remote-debugging-port={cdp_port}",
+            url,
+        ]
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            stdin=subprocess.DEVNULL,
+        )
+        sock: socket.socket | None = None
+        try:
+            tabs = None
+            t0 = time.time()
+            while time.time() - t0 < THRESHOLDS.cdp_connect_timeout_sec:
+                try:
+                    with urllib.request.urlopen(
+                        f"http://127.0.0.1:{cdp_port}/json", timeout=2.0
+                    ) as resp:
+                        cand = json.loads(resp.read())
+                        if [t for t in cand if "index.html" in t.get("url", "")]:
+                            tabs = cand
+                            break
+                except Exception:
+                    time.sleep(0.2)
+
+            self.assertIsNotNone(tabs, "Chrome CDP /json did not respond in time")
+            target_tabs = [t for t in (tabs or []) if "index.html" in t.get("url", "")]
+            ws_url = target_tabs[0]["webSocketDebuggerUrl"]
+            host_port, ws_path = ws_url.replace("ws://", "").split("/", 1)
+            host, port_str = host_port.split(":")
+
+            sock = socket.create_connection((host, int(port_str)), timeout=8.0)
+            handshake = (
+                f"GET /{ws_path} HTTP/1.1\r\n"
+                f"Host: {host}:{port_str}\r\n"
+                f"Upgrade: websocket\r\n"
+                f"Connection: Upgrade\r\n"
+                f"Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n"
+                f"Sec-WebSocket-Version: 13\r\n\r\n"
+            )
+            sock.sendall(handshake.encode("utf-8"))
+            hs_resp = sock.recv(4096)
+            self.assertIn(b"101", hs_resp)
+        except Exception:
+            if sock is not None:
+                sock.close()
+            proc.terminate()
+            try:
+                proc.wait(timeout=THRESHOLDS.proc_wait_timeout_sec)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+            raise
+
+        msg_counter = {"id": 1}
+
+        def eval_js(
+            expression: str,
+            await_promise: bool = False,
+            timeout_sec: float = THRESHOLDS.cdp_socket_timeout_sec,
+        ) -> Any:
+            assert sock is not None
+            mid = msg_counter["id"]
+            msg_counter["id"] += 1
+            raw = json.dumps(
+                {
+                    "id": mid,
+                    "method": "Runtime.evaluate",
+                    "params": {
+                        "expression": expression,
+                        "returnByValue": True,
+                        "awaitPromise": await_promise,
+                    },
+                }
+            ).encode("utf-8")
+            frame = bytearray([0x81])
+            n = len(raw)
+            if n < 126:
+                frame.append(0x80 | n)
+            elif n < 65536:
+                frame.append(0x80 | 126)
+                frame.extend(struct.pack(">H", n))
+            else:
+                frame.append(0x80 | 127)
+                frame.extend(struct.pack(">Q", n))
+            mask_key = b"\x21\x43\x65\x87"
+            frame.extend(mask_key)
+            frame.extend(b ^ mask_key[i % 4] for i, b in enumerate(raw))
+            sock.sendall(bytes(frame))
+
+            sock.settimeout(timeout_sec)
+            deadline = time.time() + timeout_sec
+            while time.time() < deadline:
+                hdr = sock.recv(2)
+                if not hdr:
+                    raise RuntimeError("CDP WebSocket closed unexpectedly")
+                plen = hdr[1] & 0x7F
+                if plen == 126:
+                    plen = struct.unpack(">H", sock.recv(2))[0]
+                elif plen == 127:
+                    plen = struct.unpack(">Q", sock.recv(8))[0]
+                buf = bytearray()
+                while len(buf) < plen:
+                    chunk = sock.recv(plen - len(buf))
+                    if not chunk:
+                        raise RuntimeError("CDP WebSocket truncated frame")
+                    buf.extend(chunk)
+                if (hdr[0] & 0x0F) == 0x8:
+                    raise RuntimeError("CDP WebSocket received close frame")
+                parsed = json.loads(buf.decode("utf-8", errors="replace"))
+                if parsed.get("id") == mid:
+                    if "exceptionDetails" in parsed.get("result", {}):
+                        raise AssertionError(f"JS exception: {parsed['result']['exceptionDetails']}")
+                    return parsed.get("result", {}).get("result", {}).get("value")
+            raise TimeoutError(f"CDP command {mid} timed out")
+
+        # Wait until initial scene layersReady
+        t_ready = time.time()
+        ready = False
+        while time.time() - t_ready < THRESHOLDS.layers_ready_timeout_sec:
+            # Headless SwiftShader can block the page's main thread for several seconds while
+            # decoding/uploading the texture set, so a single unanswered poll is not a failure.
+            try:
+                if eval_js(
+                    "Boolean(window.__PROTOTYPE_STATE__ && window.__PROTOTYPE_STATE__.layersReady)",
+                    timeout_sec=THRESHOLDS.cdp_ready_poll_timeout_sec,
+                ):
+                    ready = True
+                    break
+            except (TimeoutError, socket.timeout):
+                continue
+            time.sleep(0.2)
+        self.assertTrue(ready, "Prototype failed to reach layersReady within timeout")
+
+        return proc, sock, tmp_dir, eval_js
+
+    def _close_chrome_cdp(self, proc: Any, sock: Any, tmp_dir: str) -> None:
+        if sock is not None:
+            try:
+                sock.close()
+            except OSError:
+                pass
+        proc.terminate()
+        try:
+            proc.wait(timeout=THRESHOLDS.proc_wait_timeout_sec)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
+    def test_scroll_foot_flight_continuity_and_dropped_rod_state_consistency(self) -> None:
+        proc, sock, tmp_dir, eval_js = self._launch_chrome_cdp(
+            THRESHOLDS.desktop_width, THRESHOLDS.desktop_height
+        )
+        try:
+            # 1. Verify bundle preloading includes outgoing portal purim_costume_1966 AND
+            #    updatePortalShelves is idempotent after applyDynamicWidescreenScaling.
+            prep_report = eval_js(
+                """
+                (async () => {
+                  const sm = window.__tamiSceneManager;
+                  await sm._loadSceneBundleReady('bene_beitcha_scroll_foot', false);
+                  const reqIds = sm._getRequiredBundleSceneIds('bene_beitcha_scroll_foot');
+                  const beforeInst = sm._portalInstances.find((p) => p.spec.id === 'cubby_scroll_foot');
+                  const rawManifest = await fetch('assets/scenes/scene_manifest.json').then((r) => r.json());
+                  sm.applyDynamicWidescreenScaling();
+                  sm.updatePortalShelves(rawManifest.scenes.shelf_portal.portalShelves, 'shelf_portal');
+                  const afterInst = sm._portalInstances.find((p) => p.spec.id === 'cubby_scroll_foot');
+                  return {
+                    reqIds,
+                    purimReady: Boolean(sm.sceneObjects.purim_costume_1966.texturesReady),
+                    sameCubbyInstanceAfterManifestSync: beforeInst === afterInst,
+                    childOccUsesDepthShader: Boolean(
+                      afterInst.childPortalMeshes[0] &&
+                      afterInst.childPortalMeshes[0].childOccMat &&
+                      afterInst.childPortalMeshes[0].childOccMat.uniforms &&
+                      afterInst.childPortalMeshes[0].childOccMat.uniforms.uDepthMap
+                    )
+                  };
+                })()
+                """,
+                await_promise=True,
+                timeout_sec=THRESHOLDS.cdp_heavy_eval_timeout_sec,
+            )
+            self.assertIn("purim_costume_1966", prep_report["reqIds"])
+            self.assertTrue(prep_report["purimReady"])
+            self.assertTrue(
+                prep_report["sameCubbyInstanceAfterManifestSync"],
+                "updatePortalShelves tore down and rebuilt live cubbies despite identical canonical specs",
+            )
+            self.assertTrue(
+                prep_report["childOccUsesDepthShader"],
+                "Embedded diorama child occluder (ceramic foot) must use depth-displaced ShaderMaterial",
+            )
+
+            # 2. Launch forward flight from shelf_portal into bene_beitcha_scroll_foot via transitionTo()
+            #    and sample frozenProgress across [0.0, 0.35, 0.78, 0.88, 0.96].
+            fwd_samples = eval_js(
+                """
+                (() => {
+                  const sm = window.__tamiSceneManager;
+                  const started = sm.transitionTo('bene_beitcha_scroll_foot');
+                  const isPortalFlight = Boolean(sm._portalFlight && !sm._portalFlight.reverse);
+                  const cubbyInst = sm._portalInstances.find((p) => p.spec.id === 'cubby_scroll_foot');
+                  const samples = [];
+                  for (const fp of [0.0, 0.35, 0.78, 0.88, 0.96]) {
+                    sm._portalFlight.frozenProgress = fp;
+                    sm.animate();
+                    cancelAnimationFrame(sm.animId);
+                    const tint = cubbyInst.bgMat.uniforms.uTint.value;
+                    samples.push({
+                      t: fp,
+                      camZ: sm.camera.position.z,
+                      fadeToClear: sm.sceneObjects.shelf_portal.layer0.material.uniforms.uFadeToClear.value,
+                      rimOp: sm.sceneObjects.shelf_portal.portalSurroundingOpacity,
+                      maxClipConst: Math.max(...cubbyInst.clipPlanes.map((pl) => Math.abs(pl.constant))),
+                      tint: [tint.r, tint.g, tint.b]
+                    });
+                  }
+                  // Land at t = 1.0
+                  sm._portalFlight.frozenProgress = 1.0;
+                  sm.animate();
+                  cancelAnimationFrame(sm.animId);
+                  return {
+                    started,
+                    isPortalFlight,
+                    landedScene: sm.currentSceneId,
+                    samples
+                  };
+                })()
+                """,
+                timeout_sec=THRESHOLDS.cdp_heavy_eval_timeout_sec,
+            )
+            self.assertTrue(fwd_samples["started"])
+            self.assertTrue(
+                fwd_samples["isPortalFlight"],
+                "transitionTo('bene_beitcha_scroll_foot') from shelf_portal must use 3D _portalFlight",
+            )
+            self.assertEqual(fwd_samples["landedScene"], "bene_beitcha_scroll_foot")
+
+            prev_blue = 0.0
+            for sample in fwd_samples["samples"]:
+                self.assertEqual(
+                    sample["fadeToClear"],
+                    0.0,
+                    f"Host layer0 uFadeToClear darkened toward black at t={sample['t']}",
+                )
+                self.assertLess(
+                    sample["maxClipConst"],
+                    THRESHOLDS.unclipped_plane_sentinel,
+                    f"Portal clip planes snapped off at t={sample['t']}",
+                )
+                self.assertGreaterEqual(
+                    sample["tint"][2] + 1e-6,
+                    prev_blue,
+                    f"uTint blue channel failed monotonic warm->neutral progression at t={sample['t']}",
+                )
+                prev_blue = sample["tint"][2]
+
+            self.assertAlmostEqual(
+                fwd_samples["samples"][0]["tint"][2], 0.952, delta=THRESHOLDS.tint_tol
+            )
+            self.assertAlmostEqual(
+                fwd_samples["samples"][-1]["tint"][2], 1.0, delta=0.01
+            )
+
+            # 3. Verify active-visitor occluder regen deferral while inside bene_beitcha_scroll_foot
+            regen_deferred = eval_js(
+                f"""
+                (async () => {{
+                  const sm = window.__tamiSceneManager;
+                  const cubbySpec = sm._findPortalSpec('cubby_scroll_foot');
+                  sm._scheduleOccluderRegen(cubbySpec, {THRESHOLDS.active_visitor_regen_probe_ms});
+                  await new Promise((r) => setTimeout(r, {int(THRESHOLDS.active_visitor_wait_sec * 1000)}));
+                  return {{
+                    stillUnlockedWhileVisiting: !sm.isPortalLocked('cubby_scroll_foot'),
+                    currentScene: sm.currentSceneId
+                  }};
+                }})()
+                """,
+                await_promise=True,
+            )
+            self.assertTrue(
+                regen_deferred["stillUnlockedWhileVisiting"],
+                "cubby_scroll_foot occluder regenerated and locked the cubby while visitor was inside target scene",
+            )
+
+            # 4. Drop the ceramic foot + black rod inside bene_beitcha_scroll_foot, then verify
+            #    bijective 3D rotation & position consistency across reverse flight and resize!
+            expected_rad = math.radians(THRESHOLDS.expected_rod_fall_deg)
+            rod_report = eval_js(
+                """
+                (() => {
+                  const sm = window.__tamiSceneManager;
+                  sm.erasePortalOccluder('portal_scroll_foot_purim_1966');
+                  // Advance dissolve animation past completion (500ms > 420ms)
+                  const futureNow = performance.now() + 600.0;
+                  sm._stepPortalOccluderAnimations(futureNow);
+
+                  const standaloneRod = sm.sceneObjects.bene_beitcha_scroll_foot.extraLayers.find(
+                    (el) => el.id === 'scroll_black_rod'
+                  ).mesh;
+                  const cubbyInst = sm._portalInstances.find((p) => p.spec.id === 'cubby_scroll_foot');
+                  const dioramaRod = cubbyInst.extraMeshes.find(
+                    (ex) => ex.sourceExtra.id === 'scroll_black_rod'
+                  ).mesh;
+                  const dioramaFoot = cubbyInst.childPortalMeshes[0].childOccMesh;
+
+                  const beforeReverse = {
+                    standaloneRotZ: standaloneRod.rotation.z,
+                    dioramaRotZ: dioramaRod.rotation.z,
+                    posDiff: standaloneRod.position.distanceTo(dioramaRod.position),
+                    dioramaFootVisible: dioramaFoot.visible
+                  };
+
+                  // Trigger reverse flight back to shelf_portal via transitionTo('shelf_portal')
+                  const revStarted = sm.transitionTo('shelf_portal');
+                  const revIsPortalFlight = Boolean(sm._portalFlight && sm._portalFlight.reverse);
+                  const revFlightRotations = [];
+                  for (const fp of [0.02, 0.5, 0.95]) {
+                    sm._portalFlight.frozenProgress = fp;
+                    sm.animate();
+                    cancelAnimationFrame(sm.animId);
+                    revFlightRotations.push({
+                      t: fp,
+                      dioramaRotZ: dioramaRod.rotation.z,
+                      posDiff: standaloneRod.position.distanceTo(dioramaRod.position),
+                      dioramaFootVisible: dioramaFoot.visible,
+                      maxClipConst: Math.max(...cubbyInst.clipPlanes.map((pl) => Math.abs(pl.constant))),
+                      fadeToClear: sm.sceneObjects.shelf_portal.layer0.material.uniforms.uFadeToClear.value
+                    });
+                  }
+
+                  // Complete reverse flight onto shelf_portal AND stress-test viewport resize
+                  sm._portalFlight.frozenProgress = 1.0;
+                  sm.animate();
+                  cancelAnimationFrame(sm.animId);
+                  sm.applyDynamicWidescreenScaling();
+
+                  const canvas = document.querySelector('canvas#spatial-canvas');
+                  const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+
+                  return {
+                    beforeReverse,
+                    revStarted,
+                    revIsPortalFlight,
+                    revFlightRotations,
+                    afterLandingAndResize: {
+                      currentScene: sm.currentSceneId,
+                      standaloneRotZ: standaloneRod.rotation.z,
+                      dioramaRotZ: dioramaRod.rotation.z,
+                      posDiff: standaloneRod.position.distanceTo(dioramaRod.position),
+                      dioramaFootVisible: dioramaFoot.visible,
+                      restTintB: cubbyInst.bgMat.uniforms.uTint.value.b,
+                      glError: gl ? gl.getError() : -1
+                    }
+                  };
+                })()
+                """,
+                timeout_sec=THRESHOLDS.cdp_heavy_eval_timeout_sec,
+            )
+
+            self.assertAlmostEqual(
+                rod_report["beforeReverse"]["standaloneRotZ"],
+                expected_rad,
+                delta=THRESHOLDS.rotation_rad_tol,
+            )
+            self.assertAlmostEqual(
+                rod_report["beforeReverse"]["dioramaRotZ"],
+                expected_rad,
+                delta=THRESHOLDS.rotation_rad_tol,
+                msg="Dropped black rod rotation in cubby diorama did not match standalone scene",
+            )
+            self.assertLessEqual(
+                rod_report["beforeReverse"]["posDiff"], THRESHOLDS.position_world_tol
+            )
+            self.assertFalse(rod_report["beforeReverse"]["dioramaFootVisible"])
+
+            self.assertTrue(rod_report["revStarted"])
+            self.assertTrue(
+                rod_report["revIsPortalFlight"],
+                "transitionTo('shelf_portal') from bene_beitcha_scroll_foot must use reverse 3D _portalFlight",
+            )
+
+            for step in rod_report["revFlightRotations"]:
+                self.assertAlmostEqual(
+                    step["dioramaRotZ"],
+                    expected_rad,
+                    delta=THRESHOLDS.rotation_rad_tol,
+                    msg=f"Black rod snapped vertical during reverse flight at t={step['t']}",
+                )
+                self.assertLessEqual(step["posDiff"], THRESHOLDS.position_world_tol)
+                self.assertFalse(step["dioramaFootVisible"])
+                self.assertEqual(step["fadeToClear"], 0.0)
+                self.assertLess(step["maxClipConst"], THRESHOLDS.unclipped_plane_sentinel)
+
+            after = rod_report["afterLandingAndResize"]
+            self.assertEqual(after["currentScene"], "shelf_portal")
+            self.assertAlmostEqual(
+                after["dioramaRotZ"],
+                expected_rad,
+                delta=THRESHOLDS.rotation_rad_tol,
+                msg="Black rod snapped vertical after landing on shelf_portal / resizing viewport",
+            )
+            self.assertLessEqual(after["posDiff"], THRESHOLDS.position_world_tol)
+            self.assertFalse(after["dioramaFootVisible"])
+            self.assertAlmostEqual(after["restTintB"], 0.952, delta=THRESHOLDS.tint_tol)
+            self.assertEqual(after["glError"], 0)
+        finally:
+            self._close_chrome_cdp(proc, sock, tmp_dir)
+
+
+if __name__ == "__main__":
+    unittest.main()

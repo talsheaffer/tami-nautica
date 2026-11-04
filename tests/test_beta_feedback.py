@@ -69,6 +69,7 @@ class TestBetaConfigSSOT(unittest.TestCase):
             "humpty_dumpty_bundle",
             "humpty_dumpty_booth",
             "tzofen_brick_table",
+            "tzofen_brick_table_v2",
             "herzliya_tree_canopy",
             "bene_beitcha_scroll_foot",
             "purim_costume_1966",

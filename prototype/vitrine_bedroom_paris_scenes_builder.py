@@ -109,6 +109,19 @@ class VitrineKeysPenSceneSpec:
     source_relpath: str
     pen_shadow_heal_box_inner: tuple[int, int, int, int]
     plaster_wall_luma_exclude: float
+    fg_outer_fringe_dist_px: float
+    fg_outer_fringe_luma_min: float
+    fg_outer_fringe_rmb_max: float
+    fg_outer_aa_sigma_px: float
+    fg_joint_close_width_px: int
+    fg_joint_max_luma: float
+    cavity_erode_px: int
+    cavity_plaster_feather_px: float
+    plaster_grain_patch_y0y1x0x1: tuple[int, int, int, int]
+    plaster_grain_sigma_px: float
+    plaster_grain_strength: float
+    bedroom_plaster_clamp_box_xyxy: tuple[float, float, float, float]
+    bedroom_plaster_smooth_sigma_px: float
     fg_sam_prompts: tuple[SamPointGroupPrompt, ...]
     mid_sam_prompts: tuple[SamPointGroupPrompt, ...]
     bg_inpaint_dilation_px: int
@@ -131,6 +144,19 @@ class VitrineKeysPenSceneSpec:
             "source_relpath": self.source_relpath,
             "pen_shadow_heal_box_inner": list(self.pen_shadow_heal_box_inner),
             "plaster_wall_luma_exclude": self.plaster_wall_luma_exclude,
+            "fg_outer_fringe_dist_px": self.fg_outer_fringe_dist_px,
+            "fg_outer_fringe_luma_min": self.fg_outer_fringe_luma_min,
+            "fg_outer_fringe_rmb_max": self.fg_outer_fringe_rmb_max,
+            "fg_outer_aa_sigma_px": self.fg_outer_aa_sigma_px,
+            "fg_joint_close_width_px": self.fg_joint_close_width_px,
+            "fg_joint_max_luma": self.fg_joint_max_luma,
+            "cavity_erode_px": self.cavity_erode_px,
+            "cavity_plaster_feather_px": self.cavity_plaster_feather_px,
+            "plaster_grain_patch_y0y1x0x1": list(self.plaster_grain_patch_y0y1x0x1),
+            "plaster_grain_sigma_px": self.plaster_grain_sigma_px,
+            "plaster_grain_strength": self.plaster_grain_strength,
+            "bedroom_plaster_clamp_box_xyxy": list(self.bedroom_plaster_clamp_box_xyxy),
+            "bedroom_plaster_smooth_sigma_px": self.bedroom_plaster_smooth_sigma_px,
             "fg_sam_prompts": [p.to_dict() for p in self.fg_sam_prompts],
             "mid_sam_prompts": [p.to_dict() for p in self.mid_sam_prompts],
             "bg_inpaint_dilation_px": self.bg_inpaint_dilation_px,
@@ -149,6 +175,8 @@ class VitrineKeysPenSceneSpec:
     def from_dict(cls, data: dict[str, Any]) -> VitrineKeysPenSceneSpec:
         ps = data["pen_shadow_heal_box_inner"]
         kb = data["knob_box_inner"]
+        gp = data["plaster_grain_patch_y0y1x0x1"]
+        cb = data["bedroom_plaster_clamp_box_xyxy"]
         return cls(
             scene_id=str(data["scene_id"]),
             title_he=str(data["title_he"]),
@@ -157,6 +185,24 @@ class VitrineKeysPenSceneSpec:
             source_relpath=str(data["source_relpath"]),
             pen_shadow_heal_box_inner=(int(ps[0]), int(ps[1]), int(ps[2]), int(ps[3])),
             plaster_wall_luma_exclude=float(data["plaster_wall_luma_exclude"]),
+            fg_outer_fringe_dist_px=float(data["fg_outer_fringe_dist_px"]),
+            fg_outer_fringe_luma_min=float(data["fg_outer_fringe_luma_min"]),
+            fg_outer_fringe_rmb_max=float(data["fg_outer_fringe_rmb_max"]),
+            fg_outer_aa_sigma_px=float(data["fg_outer_aa_sigma_px"]),
+            fg_joint_close_width_px=int(data["fg_joint_close_width_px"]),
+            fg_joint_max_luma=float(data["fg_joint_max_luma"]),
+            cavity_erode_px=int(data["cavity_erode_px"]),
+            cavity_plaster_feather_px=float(data["cavity_plaster_feather_px"]),
+            plaster_grain_patch_y0y1x0x1=(int(gp[0]), int(gp[1]), int(gp[2]), int(gp[3])),
+            plaster_grain_sigma_px=float(data["plaster_grain_sigma_px"]),
+            plaster_grain_strength=float(data["plaster_grain_strength"]),
+            bedroom_plaster_clamp_box_xyxy=(
+                float(cb[0]),
+                float(cb[1]),
+                float(cb[2]),
+                float(cb[3]),
+            ),
+            bedroom_plaster_smooth_sigma_px=float(data["bedroom_plaster_smooth_sigma_px"]),
             fg_sam_prompts=tuple(SamPointGroupPrompt.from_dict(p) for p in data["fg_sam_prompts"]),
             mid_sam_prompts=tuple(SamPointGroupPrompt.from_dict(p) for p in data["mid_sam_prompts"]),
             bg_inpaint_dilation_px=int(data["bg_inpaint_dilation_px"]),
@@ -186,22 +232,26 @@ class BarGioraBedroomSceneSpec:
     vitrine_wall_side_px: float
     vitrine_rotation_deg: float
     vitrine_flight_roll_deg: float
-    wall_camera_focal_px: float
-    wall_vanishing_point_xy: tuple[float, float]
-    vitrine_indoor_rgb_scale: tuple[float, float, float]
+    host_wall_z_world: float
+    host_wall_slope_dz_dx: float
+    host_wall_slope_dz_dy: float
+    host_wall_clearance_world: float
+    target_vitrine_center_inner_xy: tuple[float, float]
+    target_vitrine_box_side_px: float
+    target_plaster_depth_u8: int
+    cavity_inner_box_px: tuple[float, float, float, float]
+    cavity_feather_px: float
+    shadow_hollow_inner_box_px: tuple[float, float, float, float]
+    shadow_hollow_feather_px: float
+    outer_wall_fade_range_t: tuple[float, float]
     vitrine_shadow_ray_offset_src_xy: tuple[float, float]
     vitrine_shadow_attenuation_floor: float
     vitrine_shadow_gain: float
     vitrine_shadow_max_alpha_norm: float
-    vitrine_shadow_blur_sigma_px: float
+    vitrine_shadow_meas_sigma_px: float
+    vitrine_shadow_downsample_sigma_px: float
     vitrine_shadow_handoff_margin_px: int
     vitrine_shadow_plaster_rgb_scale: tuple[float, float, float]
-    vitrine_frame_relief_world: float
-    vitrine_knob_relief_world: float
-    vitrine_cavity_back_relief_world: float
-    vitrine_items_min_relief_world: float
-    vitrine_items_max_relief_world: float
-    vitrine_contact_rim_taper_px: float
     portal_id: str
     target_scene_id: str
     portal_label_he: str
@@ -231,22 +281,26 @@ class BarGioraBedroomSceneSpec:
             "vitrine_wall_side_px": self.vitrine_wall_side_px,
             "vitrine_rotation_deg": self.vitrine_rotation_deg,
             "vitrine_flight_roll_deg": self.vitrine_flight_roll_deg,
-            "wall_camera_focal_px": self.wall_camera_focal_px,
-            "wall_vanishing_point_xy": list(self.wall_vanishing_point_xy),
-            "vitrine_indoor_rgb_scale": list(self.vitrine_indoor_rgb_scale),
+            "host_wall_z_world": self.host_wall_z_world,
+            "host_wall_slope_dz_dx": self.host_wall_slope_dz_dx,
+            "host_wall_slope_dz_dy": self.host_wall_slope_dz_dy,
+            "host_wall_clearance_world": self.host_wall_clearance_world,
+            "target_vitrine_center_inner_xy": list(self.target_vitrine_center_inner_xy),
+            "target_vitrine_box_side_px": self.target_vitrine_box_side_px,
+            "target_plaster_depth_u8": self.target_plaster_depth_u8,
+            "cavity_inner_box_px": list(self.cavity_inner_box_px),
+            "cavity_feather_px": self.cavity_feather_px,
+            "shadow_hollow_inner_box_px": list(self.shadow_hollow_inner_box_px),
+            "shadow_hollow_feather_px": self.shadow_hollow_feather_px,
+            "outer_wall_fade_range_t": list(self.outer_wall_fade_range_t),
             "vitrine_shadow_ray_offset_src_xy": list(self.vitrine_shadow_ray_offset_src_xy),
             "vitrine_shadow_attenuation_floor": self.vitrine_shadow_attenuation_floor,
             "vitrine_shadow_gain": self.vitrine_shadow_gain,
             "vitrine_shadow_max_alpha_norm": self.vitrine_shadow_max_alpha_norm,
-            "vitrine_shadow_blur_sigma_px": self.vitrine_shadow_blur_sigma_px,
+            "vitrine_shadow_meas_sigma_px": self.vitrine_shadow_meas_sigma_px,
+            "vitrine_shadow_downsample_sigma_px": self.vitrine_shadow_downsample_sigma_px,
             "vitrine_shadow_handoff_margin_px": self.vitrine_shadow_handoff_margin_px,
             "vitrine_shadow_plaster_rgb_scale": list(self.vitrine_shadow_plaster_rgb_scale),
-            "vitrine_frame_relief_world": self.vitrine_frame_relief_world,
-            "vitrine_knob_relief_world": self.vitrine_knob_relief_world,
-            "vitrine_cavity_back_relief_world": self.vitrine_cavity_back_relief_world,
-            "vitrine_items_min_relief_world": self.vitrine_items_min_relief_world,
-            "vitrine_items_max_relief_world": self.vitrine_items_max_relief_world,
-            "vitrine_contact_rim_taper_px": self.vitrine_contact_rim_taper_px,
             "portal_id": self.portal_id,
             "target_scene_id": self.target_scene_id,
             "portal_label_he": self.portal_label_he,
@@ -268,8 +322,10 @@ class BarGioraBedroomSceneSpec:
         sf = data["scaled_full_wh"]
         cy = data["crop_y_range"]
         mc = data["vitrine_wall_center_xy"]
-        vp = data["wall_vanishing_point_xy"]
-        irs = data["vitrine_indoor_rgb_scale"]
+        tc = data["target_vitrine_center_inner_xy"]
+        cb = data["cavity_inner_box_px"]
+        shb = data["shadow_hollow_inner_box_px"]
+        owf = data["outer_wall_fade_range_t"]
         sro = data["vitrine_shadow_ray_offset_src_xy"]
         spr = data["vitrine_shadow_plaster_rgb_scale"]
         return cls(
@@ -285,22 +341,31 @@ class BarGioraBedroomSceneSpec:
             vitrine_wall_side_px=float(data["vitrine_wall_side_px"]),
             vitrine_rotation_deg=float(data["vitrine_rotation_deg"]),
             vitrine_flight_roll_deg=float(data["vitrine_flight_roll_deg"]),
-            wall_camera_focal_px=float(data["wall_camera_focal_px"]),
-            wall_vanishing_point_xy=(float(vp[0]), float(vp[1])),
-            vitrine_indoor_rgb_scale=(float(irs[0]), float(irs[1]), float(irs[2])),
+            host_wall_z_world=float(data["host_wall_z_world"]),
+            host_wall_slope_dz_dx=float(data["host_wall_slope_dz_dx"]),
+            host_wall_slope_dz_dy=float(data["host_wall_slope_dz_dy"]),
+            host_wall_clearance_world=float(data["host_wall_clearance_world"]),
+            target_vitrine_center_inner_xy=(float(tc[0]), float(tc[1])),
+            target_vitrine_box_side_px=float(data["target_vitrine_box_side_px"]),
+            target_plaster_depth_u8=int(data["target_plaster_depth_u8"]),
+            cavity_inner_box_px=(float(cb[0]), float(cb[1]), float(cb[2]), float(cb[3])),
+            cavity_feather_px=float(data["cavity_feather_px"]),
+            shadow_hollow_inner_box_px=(
+                float(shb[0]),
+                float(shb[1]),
+                float(shb[2]),
+                float(shb[3]),
+            ),
+            shadow_hollow_feather_px=float(data["shadow_hollow_feather_px"]),
+            outer_wall_fade_range_t=(float(owf[0]), float(owf[1])),
             vitrine_shadow_ray_offset_src_xy=(float(sro[0]), float(sro[1])),
             vitrine_shadow_attenuation_floor=float(data["vitrine_shadow_attenuation_floor"]),
             vitrine_shadow_gain=float(data["vitrine_shadow_gain"]),
             vitrine_shadow_max_alpha_norm=float(data["vitrine_shadow_max_alpha_norm"]),
-            vitrine_shadow_blur_sigma_px=float(data["vitrine_shadow_blur_sigma_px"]),
+            vitrine_shadow_meas_sigma_px=float(data["vitrine_shadow_meas_sigma_px"]),
+            vitrine_shadow_downsample_sigma_px=float(data["vitrine_shadow_downsample_sigma_px"]),
             vitrine_shadow_handoff_margin_px=int(data["vitrine_shadow_handoff_margin_px"]),
             vitrine_shadow_plaster_rgb_scale=(float(spr[0]), float(spr[1]), float(spr[2])),
-            vitrine_frame_relief_world=float(data["vitrine_frame_relief_world"]),
-            vitrine_knob_relief_world=float(data["vitrine_knob_relief_world"]),
-            vitrine_cavity_back_relief_world=float(data["vitrine_cavity_back_relief_world"]),
-            vitrine_items_min_relief_world=float(data["vitrine_items_min_relief_world"]),
-            vitrine_items_max_relief_world=float(data["vitrine_items_max_relief_world"]),
-            vitrine_contact_rim_taper_px=float(data["vitrine_contact_rim_taper_px"]),
             portal_id=str(data["portal_id"]),
             target_scene_id=str(data["target_scene_id"]),
             portal_label_he=str(data["portal_label_he"]),
@@ -586,6 +651,276 @@ class VitrineBedroomParisBundleConfig:
 
 
 # ============================================================================
+# Shared Vitrine <-> Bar Giora 3D Wall Geometry & Cast Shadow Primitives
+# ============================================================================
+
+
+def _fit_quadratic_wall_illumination(
+    luma_f32: np.ndarray,
+    unshadowed_mask: np.ndarray,
+) -> np.ndarray:
+    """Fits a smooth 2D quadratic polynomial illumination field to unshadowed museum plaster."""
+    h, w = luma_f32.shape
+    yy, xx = np.mgrid[0:h, 0:w]
+    xn = (xx.astype(np.float64) - 0.5 * w) / float(w)
+    yn = (yy.astype(np.float64) - 0.5 * h) / float(h)
+    design_full = np.stack([np.ones_like(xn), xn, yn, xn * xn, xn * yn, yn * yn], axis=-1)
+    coeffs, _, _, _ = np.linalg.lstsq(
+        design_full[unshadowed_mask], luma_f32[unshadowed_mask].astype(np.float64), rcond=None
+    )
+    fitted = np.tensordot(design_full, coeffs, axes=([-1], [0]))
+    return np.clip(fitted, 1.0, 255.0).astype(np.float32)
+
+
+def _compute_vitrine_wall_mount_homography_2700_to_1500(
+    cfg: VitrineBedroomParisBundleConfig,
+) -> np.ndarray:
+    """
+    Constructs the exact 3x3 projective homography `H_exp_to_bg` mapping pixel `(x_exp, y_exp)`
+    on Scene 20's flat `2700x1800` plaster plane (`target_plaster_depth_u8`) through the exact
+    Three.js 3D similarity transform `(T_dio, R_dio, lambda_p)` onto Scene 21's bore-sighted
+    `1500x1000` Bar Giora bedroom wall plane.
+    """
+    vspec = cfg.vitrine_keys_pen
+    bspec = cfg.bar_giora_bedroom
+    iw, ih = cfg.inner_dimensions.width, cfg.inner_dimensions.height
+    ox, oy = cfg.inner_offset_xy
+
+    half_inner_w = 0.5 * float(iw)
+    half_inner_h = 0.5 * float(ih)
+
+    s_h = float(bspec.camera_rig.min_inner_scale)
+    bore_z_h = float(bspec.camera_rig.initial_camera_z)
+    bg_z_h = float(bspec.mid_depth_solve.bg_z)
+    dist_bg_h = bore_z_h - bg_z_h
+
+    s_v = float(vspec.camera_rig.min_inner_scale)
+    bore_y_v = float(vspec.camera_rig.initial_camera_y)
+    bore_z_v = float(vspec.camera_rig.initial_camera_z)
+    bg_z_v = float(vspec.mid_depth_solve.bg_z)
+    amp_v = float(vspec.mid_depth_solve.room_depth_amplitude)
+    dist_bg_v = bore_z_v - bg_z_v
+
+    d_plaster = float(bspec.target_plaster_depth_u8) / 255.0
+    z_plaster_v = bg_z_v + amp_v * d_plaster
+
+    rs_h = (bore_z_h - float(bspec.host_wall_z_world)) / dist_bg_h
+    rs_v = (bore_z_v - z_plaster_v) / dist_bg_v
+
+    lambda_p = (float(bspec.vitrine_wall_side_px) * s_h * rs_h) / (
+        float(bspec.target_vitrine_box_side_px) * s_v * rs_v
+    )
+
+    yaw = math.atan(-float(bspec.host_wall_slope_dz_dx))
+    pitch = math.atan(float(bspec.host_wall_slope_dz_dy) * math.cos(yaw))
+    roll = math.radians(float(bspec.vitrine_rotation_deg))
+
+    cy_a, sy_a = math.cos(yaw), math.sin(yaw)
+    cp_a, sp_a = math.cos(pitch), math.sin(pitch)
+    cr_a, sr_a = math.cos(roll), math.sin(roll)
+
+    ry_mat = np.array([[cy_a, 0.0, sy_a], [0.0, 1.0, 0.0], [-sy_a, 0.0, cy_a]], dtype=np.float64)
+    rx_mat = np.array([[1.0, 0.0, 0.0], [0.0, cp_a, -sp_a], [0.0, sp_a, cp_a]], dtype=np.float64)
+    rz_mat = np.array([[cr_a, -sr_a, 0.0], [sr_a, cr_a, 0.0], [0.0, 0.0, 1.0]], dtype=np.float64)
+    r_dio = ry_mat @ rx_mat @ rz_mat
+
+    cx_h, cy_h = bspec.vitrine_wall_center_xy
+    cx_v, cy_v = bspec.target_vitrine_center_inner_xy
+    p_h0 = np.array(
+        [
+            0.5 * s_h * (float(cx_h) - half_inner_w) * rs_h,
+            -0.5 * s_h * (float(cy_h) - half_inner_h) * rs_h,
+            float(bspec.host_wall_z_world) + float(bspec.host_wall_clearance_world),
+        ],
+        dtype=np.float64,
+    )
+    p_v0 = np.array(
+        [
+            0.5 * s_v * (float(cx_v) - half_inner_w) * rs_v,
+            bore_y_v + (-0.5 * s_v * (float(cy_v) - half_inner_h) - bore_y_v) * rs_v,
+            z_plaster_v,
+        ],
+        dtype=np.float64,
+    )
+    t_dio = p_h0 - lambda_p * (r_dio @ p_v0)
+
+    a_v = np.array([0.5 * s_v * rs_v, 0.0, 0.0], dtype=np.float64)
+    b_v = np.array([0.0, -0.5 * s_v * rs_v, 0.0], dtype=np.float64)
+    c_v = np.array(
+        [
+            0.5 * s_v * (-float(ox) - half_inner_w) * rs_v,
+            bore_y_v + (-0.5 * s_v * (-float(oy) - half_inner_h) - bore_y_v) * rs_v,
+            z_plaster_v,
+        ],
+        dtype=np.float64,
+    )
+
+    a_h = lambda_p * (r_dio @ a_v)
+    b_h = lambda_p * (r_dio @ b_v)
+    c_h = t_dio + lambda_p * (r_dio @ c_v)
+
+    k_proj = dist_bg_h / (0.5 * s_h)
+    m_cam = np.array(
+        [
+            [k_proj, 0.0, -half_inner_w, half_inner_w * bore_z_h],
+            [0.0, -k_proj, -half_inner_h, half_inner_h * bore_z_h],
+            [0.0, 0.0, -1.0, bore_z_h],
+        ],
+        dtype=np.float64,
+    )
+    p_cols = np.column_stack([np.append(a_h, 0.0), np.append(b_h, 0.0), np.append(c_h, 1.0)])
+    h_exp_to_bg = m_cam @ p_cols
+    h_exp_to_bg = h_exp_to_bg / h_exp_to_bg[2, 2]
+    return h_exp_to_bg.astype(np.float64)
+
+
+def _synthesize_vitrine_cast_shadow_alpha_2700(
+    vitrine_src_np: np.ndarray,
+    box_solid_inner: np.ndarray,
+    cfg: VitrineBedroomParisBundleConfig,
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Measures the authentic gallery spotlight cast shadow on the `1500x1000` museum vitrine
+    plaster and completes it smoothly across the full `2700x1800` collar via swept-box
+    envelope + 360° wall-contact crevice AO. Returns `(shadow_alpha_2700, unshadowed_plaster_inner)`.
+    """
+    bspec = cfg.bar_giora_bedroom
+    iw, ih = cfg.inner_dimensions.width, cfg.inner_dimensions.height
+    ew, eh = cfg.expanded_dimensions.width, cfg.expanded_dimensions.height
+    ox, oy = cfg.inner_offset_xy
+
+    vluma = (
+        0.299 * vitrine_src_np[:, :, 0].astype(np.float32)
+        + 0.587 * vitrine_src_np[:, :, 1].astype(np.float32)
+        + 0.114 * vitrine_src_np[:, :, 2].astype(np.float32)
+    )
+
+    yy_s, xx_s = np.mgrid[0:ih, 0:iw]
+    unshadowed_plaster = (
+        (xx_s < 296)
+        | (yy_s < 64)
+        | ((xx_s > 1200) & (yy_s < 192))
+        | ((yy_s > 952) & (xx_s < 545))
+    ) & (~ndi.binary_dilation(box_solid_inner, iterations=8))
+    wall_ref_luma = _fit_quadratic_wall_illumination(vluma, unshadowed_plaster)
+    atten_meas_src = np.clip((wall_ref_luma - vluma) / np.maximum(wall_ref_luma, 1.0), 0.0, 1.0)
+    atten_meas_src[ndi.binary_dilation(box_solid_inner, iterations=4)] = 0.0
+
+    box_solid_2700 = np.zeros((eh, ew), dtype=np.bool_)
+    box_solid_2700[oy : oy + ih, ox : ox + iw] = box_solid_inner
+
+    dx_ray, dy_ray = bspec.vitrine_shadow_ray_offset_src_xy
+    swept_env = np.zeros((eh, ew), dtype=np.float32)
+    box_solid_f = box_solid_2700.astype(np.float32)
+    n_sweep = 48
+    for step_idx in range(1, n_sweep + 1):
+        s_frac = float(step_idx) / float(n_sweep)
+        m_shift = np.array(
+            [[1.0, 0.0, s_frac * dx_ray], [0.0, 1.0, s_frac * dy_ray]], dtype=np.float32
+        )
+        shifted = cv2.warpAffine(
+            box_solid_f,
+            m_shift,
+            (ew, eh),
+            flags=cv2.INTER_LINEAR,
+            borderMode=cv2.BORDER_CONSTANT,
+            borderValue=0.0,
+        )
+        swept_env = np.maximum(swept_env, shifted * (1.0 - 0.34 * s_frac))
+    swept_env = ndi.gaussian_filter(swept_env, sigma=24.0).astype(np.float32)
+
+    swept_inner = swept_env[oy : oy + ih, ox : ox + iw]
+    calib_zone = (
+        (swept_inner > 0.30)
+        & (~ndi.binary_dilation(box_solid_inner, iterations=8))
+        & (xx_s >= 600)
+        & (xx_s <= iw - 40)
+        & (yy_s >= 230)
+        & (yy_s <= ih - 30)
+    )
+    if not np.any(calib_zone):
+        raise RuntimeError("Vitrine shadow calibration zone is empty.")
+    calib_scale = float(
+        np.median(atten_meas_src[calib_zone] / np.maximum(swept_inner[calib_zone], 1e-4))
+    )
+    swept_atten_2700 = np.clip(swept_env * calib_scale, 0.0, 1.0)
+
+    atten_meas_2700 = np.zeros((eh, ew), dtype=np.float32)
+    atten_meas_2700[oy : oy + ih, ox : ox + iw] = ndi.gaussian_filter(
+        atten_meas_src, sigma=float(bspec.vitrine_shadow_meas_sigma_px)
+    )
+
+    hm = float(max(8, bspec.vitrine_shadow_handoff_margin_px))
+    rx = np.clip(
+        np.minimum(xx_s.astype(np.float32), float(iw - 1) - xx_s.astype(np.float32)) / hm, 0.0, 1.0
+    )
+    ry = np.clip(
+        np.minimum(yy_s.astype(np.float32), float(ih - 1) - yy_s.astype(np.float32)) / hm, 0.0, 1.0
+    )
+    dist_from_box = ndi.distance_transform_edt(~box_solid_inner).astype(np.float32)
+    r_box = np.clip((dist_from_box - 4.0) / 6.0, 0.0, 1.0)
+    w_inner = (
+        (0.5 - 0.5 * np.cos(np.pi * rx))
+        * (0.5 - 0.5 * np.cos(np.pi * ry))
+        * (0.5 - 0.5 * np.cos(np.pi * r_box))
+    )
+    w_inner = np.where(swept_inner > 0.012, w_inner, 0.0).astype(np.float32)
+    w_meas_2700 = np.zeros((eh, ew), dtype=np.float32)
+    w_meas_2700[oy : oy + ih, ox : ox + iw] = w_inner
+
+    atten_combined = w_meas_2700 * atten_meas_2700 + (1.0 - w_meas_2700) * swept_atten_2700
+    soft_toe = glsl_smoothstep(0.004, bspec.vitrine_shadow_attenuation_floor, atten_combined)
+    dir_shadow_2700 = np.clip(
+        atten_combined * soft_toe * bspec.vitrine_shadow_gain,
+        0.0,
+        bspec.vitrine_shadow_max_alpha_norm,
+    ).astype(np.float32)
+
+    dist_box_2700 = ndi.distance_transform_edt(~box_solid_2700).astype(np.float32)
+    crevice_ao_2700 = (0.28 * np.exp(-0.5 * (dist_box_2700 / 9.5) ** 2)).astype(np.float32)
+    sh_alpha_2700 = np.clip(np.maximum(dir_shadow_2700, crevice_ao_2700), 0.0, 0.46).astype(
+        np.float32
+    )
+    return sh_alpha_2700, unshadowed_plaster
+
+
+def _extract_vitrine_solid_box_mask(mid_u8: np.ndarray, fg_u8: np.ndarray) -> np.ndarray:
+    """Computes the solid filled 1500x1000 vitrine footprint mask from neural SAM `mid` + `fg` masks."""
+    frame_closed = (
+        cv2.morphologyEx(
+            ((fg_u8 >= 96) | (mid_u8 >= 96)).astype(np.uint8),
+            cv2.MORPH_CLOSE,
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)),
+        )
+        > 0
+    )
+    box_solid = ndi.binary_fill_holes(frame_closed)
+    if float(box_solid.mean()) < 0.42:
+        raise RuntimeError(
+            f"Vitrine solid cavity fill failed (coverage={float(box_solid.mean()):.3f} < 0.42)."
+        )
+    return box_solid
+
+
+def _build_seamless_plaster_grain_2700(
+    vitrine_luma_inner: np.ndarray,
+    expanded_wh: tuple[int, int],
+    spec: VitrineKeysPenSceneSpec,
+) -> np.ndarray:
+    """Extracts a shadow-free plaster pore micro-grain patch and tiles it seamlessly across 2700x1800."""
+    ew, eh = expanded_wh
+    gy0, gy1, gx0, gx1 = spec.plaster_grain_patch_y0y1x0x1
+    patch = vitrine_luma_inner[gy0:gy1, gx0:gx1].astype(np.float32)
+    patch_hp = patch - ndi.gaussian_filter(patch, sigma=float(spec.plaster_grain_sigma_px))
+    quad_y = np.concatenate([patch_hp, patch_hp[::-1, :]], axis=0)
+    quad_xy = np.concatenate([quad_y, quad_y[:, ::-1]], axis=1)
+    reps_y = int(math.ceil(float(eh) / float(quad_xy.shape[0])))
+    reps_x = int(math.ceil(float(ew) / float(quad_xy.shape[1])))
+    tiled = np.tile(quad_xy, (reps_y, reps_x))[:eh, :ew]
+    return (tiled * float(spec.plaster_grain_strength)).astype(np.float32)
+
+
+# ============================================================================
 # Scene 20 Builder: `vitrine_keys_pen` (`scene20_vitrine_*`)
 # ============================================================================
 
@@ -598,13 +933,17 @@ def build_vitrine_keys_pen_scene(
     lama_inpainter: LamaOcclusionInpainter,
 ) -> dict[str, Any]:
     spec = cfg.vitrine_keys_pen
+    bspec = cfg.bar_giora_bedroom
     iw, ih = cfg.inner_dimensions.width, cfg.inner_dimensions.height
     ew, eh = cfg.expanded_dimensions.width, cfg.expanded_dimensions.height
     ox, oy = cfg.inner_offset_xy
     scenes_dir = project_root / cfg.scenes_output_relpath
     scenes_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"\n[Scene 20: {spec.scene_id}] Building 3-layer museum vitrine scene (mirror edges)...")
+    print(
+        f"\n[Scene 20: {spec.scene_id}] Building 3-layer museum vitrine scene "
+        f"(aligned Bar Giora plaster & shadow, 1500x1000 C0 wooden frame)..."
+    )
     src_img = (
         Image.open(project_root / spec.source_relpath)
         .convert("RGB")
@@ -626,8 +965,50 @@ def build_vitrine_keys_pen_scene(
         min_component_area_px=80,
         max_pinhole_fill_px=120,
     )
-    luma = 0.299 * src_np[:, :, 0] + 0.587 * src_np[:, :, 1] + 0.114 * src_np[:, :, 2]
-    fg_u8 = np.where((luma > spec.plaster_wall_luma_exclude) | (mid_u8 >= 128), np.uint8(0), fg_raw_u8)
+    luma = (
+        0.299 * src_np[:, :, 0].astype(np.float32)
+        + 0.587 * src_np[:, :, 1].astype(np.float32)
+        + 0.114 * src_np[:, :, 2].astype(np.float32)
+    )
+    fg_u8 = np.where(
+        (luma > spec.plaster_wall_luma_exclude) | (mid_u8 >= 128), np.uint8(0), fg_raw_u8
+    )
+    if spec.fg_joint_close_width_px > 1:
+        fg_solid = fg_u8 >= 195
+        closed_joints = ndi.binary_closing(
+            fg_solid, structure=np.ones((1, int(spec.fg_joint_close_width_px)), dtype=bool)
+        )
+        _kx0, ky0, _kx1, ky1 = spec.knob_box_inner
+        not_knob_band = np.ones_like(fg_solid, dtype=bool)
+        not_knob_band[ky0:ky1, :] = False
+        joint_bridge = (
+            closed_joints
+            & (~fg_solid)
+            & not_knob_band
+            & (luma < float(spec.fg_joint_max_luma))
+            & (mid_u8 < 64)
+        )
+        fg_u8 = np.where(joint_bridge, np.uint8(255), fg_u8)
+
+    box_solid_inner = _extract_vitrine_solid_box_mask(mid_u8, fg_u8)
+
+    # Strip 1px neutral museum-plaster fringe along the outer wooden rim only
+    dist_from_outer_plaster = ndi.distance_transform_edt(box_solid_inner).astype(np.float32)
+    rmb = src_np[:, :, 0].astype(np.float32) - src_np[:, :, 2].astype(np.float32)
+    outer_plaster_fringe = (
+        (dist_from_outer_plaster <= float(spec.fg_outer_fringe_dist_px))
+        & (luma > float(spec.fg_outer_fringe_luma_min))
+        & (rmb < float(spec.fg_outer_fringe_rmb_max))
+    )
+    fg_u8 = np.where(outer_plaster_fringe, np.uint8(0), fg_u8)
+    if spec.fg_outer_aa_sigma_px > 0.0:
+        fg_aa = ndi.gaussian_filter(fg_u8.astype(np.float32), sigma=float(spec.fg_outer_aa_sigma_px))
+        outer_rim_band = (
+            (dist_from_outer_plaster <= float(spec.fg_outer_fringe_dist_px) + 1.5)
+            & (fg_u8 > 0)
+            & (fg_u8 < 225)
+        )
+        fg_u8 = np.where(outer_rim_band, np.clip(np.rint(fg_aa), 0, 255).astype(np.uint8), fg_u8)
 
     mid_rgb = decontaminate_matte_edge_rgb(src_np, mid_u8)
     mid_canvas = _prune_unanchored_cutout_islands(
@@ -639,28 +1020,19 @@ def build_vitrine_keys_pen_scene(
         solve_cfg=spec.mid_depth_solve,
     )
     fg_rgb = decontaminate_matte_edge_rgb(src_np, fg_u8)
-    fg_inner_canvas = _prune_tiny_alpha_specks_rgba(
+    fg_canvas = _prune_tiny_alpha_specks_rgba(
         Image.fromarray(np.dstack([fg_rgb, fg_u8]), mode="RGBA"),
         min_area_px=spec.fg_depth_solve.min_component_area_px,
         alpha_thresh_u8=spec.fg_depth_solve.alpha_threshold_u8,
     )
 
     _assert_border_alpha_contract(mid_canvas, f"{spec.scene_id}.mid")
-    _assert_border_alpha_contract(fg_inner_canvas, f"{spec.scene_id}.fg_inner")
-    mid_np = np.asarray(mid_canvas, dtype=np.uint8)
-    fg_inner_np = np.asarray(fg_inner_canvas, dtype=np.uint8)
-
-    fg_2700_np = _mirror_reflect_rect_to_canvas(fg_inner_np, (ew, eh), (ox, oy))
-    fg_2700_np[:2, :, :] = 0
-    fg_2700_np[-2:, :, :] = 0
-    fg_2700_np[:, :2, :] = 0
-    fg_2700_np[:, -2:, :] = 0
-    fg_canvas = Image.fromarray(fg_2700_np, mode="RGBA")
     _assert_border_alpha_contract(fg_canvas, f"{spec.scene_id}.fg")
+    mid_np = np.asarray(mid_canvas, dtype=np.uint8)
     fg_np = np.asarray(fg_canvas, dtype=np.uint8)
 
     # Inpaint pink shelf, pen, keys, pen cast shadow, and outer frame out of inner cavity/wall
-    bg_hole = np.where((mid_np[:, :, 3] >= 16) | (fg_inner_np[:, :, 3] >= 16), 255, 0).astype(np.uint8)
+    bg_hole = np.where((mid_np[:, :, 3] >= 16) | (fg_np[:, :, 3] >= 16), 255, 0).astype(np.uint8)
     sx0, sy0, sx1, sy1 = spec.pen_shadow_heal_box_inner
     shadow_dark = (luma[sy0:sy1, sx0:sx1] < 38.0) & (src_np[sy0:sy1, sx0:sx1, 2] < 62)
     bg_hole[sy0:sy1, sx0:sx1] = np.where(shadow_dark, 255, bg_hole[sy0:sy1, sx0:sx1])
@@ -675,10 +1047,8 @@ def build_vitrine_keys_pen_scene(
         roi_context_margin_px=cfg.lama_roi_context_margin_px,
     )
     clean_inner_np = np.asarray(clean_inner_rgb, dtype=np.uint8)
-    bg_inpainted_rgb = Image.fromarray(
-        _mirror_reflect_rect_to_canvas(clean_inner_np, (ew, eh), (ox, oy)),
-        mode="RGB",
-    )
+    museum_bg_2700_np = _mirror_reflect_rect_to_canvas(clean_inner_np, (ew, eh), (ox, oy))
+    museum_bg_2700_rgb = Image.fromarray(museum_bg_2700_np, mode="RGB")
 
     master_2700_rgb = Image.fromarray(
         _mirror_reflect_rect_to_canvas(src_np, (ew, eh), (ox, oy)),
@@ -689,18 +1059,97 @@ def build_vitrine_keys_pen_scene(
     ).astype(np.uint8)
 
     inpainted_room_depth_u8 = np.asarray(
-        depth_estimator.build_smoothed_room_depth_uint8(bg_inpainted_rgb), dtype=np.uint8
+        depth_estimator.build_smoothed_room_depth_uint8(museum_bg_2700_rgb), dtype=np.uint8
     )
     bg_depth_healed_u8 = clean_room_depth_under_cutouts(
         room_depth=inpainted_room_depth_u8,
         cutout_layers=(mid_np, fg_np),
         cfg=spec.room_depth_clean,
     )
-    bg_depth_clean_u8 = _mirror_reflect_rect_to_canvas(
+    bg_depth_mirrored_u8 = _mirror_reflect_rect_to_canvas(
         bg_depth_healed_u8[oy : oy + ih, ox : ox + iw],
         (ew, eh),
         (ox, oy),
     )
+
+    # Flatten outer plaster depth to an exact physical plane (`target_plaster_depth_u8`) while
+    # preserving genuine neural cavity depth inside the recessed dark-blue vitrine interior.
+    box_solid_2700 = np.zeros((eh, ew), dtype=np.bool_)
+    box_solid_2700[oy : oy + ih, ox : ox + iw] = box_solid_inner
+    eroded_cavity_2700 = ndi.binary_erosion(box_solid_2700, iterations=int(spec.cavity_erode_px))
+    dist_outside_cavity = ndi.distance_transform_edt(~eroded_cavity_2700).astype(np.float32)
+    w_cavity_2700 = 1.0 - glsl_smoothstep(
+        0.0, float(spec.cavity_plaster_feather_px), dist_outside_cavity
+    )
+
+    plaster_depth_f = float(bspec.target_plaster_depth_u8)
+    bg_depth_clean_u8 = np.clip(
+        np.rint(
+            w_cavity_2700 * bg_depth_mirrored_u8.astype(np.float32)
+            + (1.0 - w_cavity_2700) * plaster_depth_f
+        ),
+        0,
+        255,
+    ).astype(np.uint8)
+
+    # Align outer plaster & cast shadow across the entire 2700x1800 canvas with Bar Giora's bedroom wall
+    sh_alpha_2700, _ = _synthesize_vitrine_cast_shadow_alpha_2700(src_np, box_solid_inner, cfg)
+    h_exp_to_bg = _compute_vitrine_wall_mount_homography_2700_to_1500(cfg)
+
+    fw, fh = bspec.scaled_full_wh
+    cy0, cy1 = bspec.crop_y_range
+    bedroom_full_np = np.asarray(
+        Image.open(project_root / bspec.bedroom_source_relpath)
+        .convert("RGB")
+        .resize((fw, fh), Image.Resampling.LANCZOS),
+        dtype=np.uint8,
+    )
+    bedroom_inner_f = bedroom_full_np[cy0:cy1, :, :].astype(np.float32)
+    smooth_bedroom_plaster = ndi.gaussian_filter(
+        bedroom_inner_f,
+        sigma=(
+            float(spec.bedroom_plaster_smooth_sigma_px),
+            float(spec.bedroom_plaster_smooth_sigma_px),
+            0.0,
+        ),
+    )
+
+    yy_e, xx_e = np.mgrid[0:eh, 0:ew].astype(np.float64)
+    denom = h_exp_to_bg[2, 0] * xx_e + h_exp_to_bg[2, 1] * yy_e + h_exp_to_bg[2, 2]
+    map_bg_x = (h_exp_to_bg[0, 0] * xx_e + h_exp_to_bg[0, 1] * yy_e + h_exp_to_bg[0, 2]) / denom
+    map_bg_y = (h_exp_to_bg[1, 0] * xx_e + h_exp_to_bg[1, 1] * yy_e + h_exp_to_bg[1, 2]) / denom
+    cx0, cy0_clamp, cx1, cy1_clamp = spec.bedroom_plaster_clamp_box_xyxy
+    map_bg_x_clamped = np.clip(map_bg_x, cx0, cx1).astype(np.float32)
+    map_bg_y_clamped = np.clip(map_bg_y, cy0_clamp, cy1_clamp).astype(np.float32)
+
+    lit_plaster_2700 = cv2.remap(
+        smooth_bedroom_plaster,
+        map_bg_x_clamped,
+        map_bg_y_clamped,
+        interpolation=cv2.INTER_LINEAR,
+        borderMode=cv2.BORDER_REPLICATE,
+    )
+    sh_rgb_scale = np.asarray(bspec.vitrine_shadow_plaster_rgb_scale, dtype=np.float32)[
+        None, None, :
+    ]
+    shadow_rgb_2700 = lit_plaster_2700 * sh_rgb_scale
+    grain_2700 = _build_seamless_plaster_grain_2700(luma, (ew, eh), spec)[:, :, None]
+    sh_a = sh_alpha_2700[:, :, None]
+    plaster_with_shadow_2700 = (
+        (1.0 - sh_a) * lit_plaster_2700
+        + sh_a * shadow_rgb_2700
+        + (1.0 - 0.55 * sh_a) * grain_2700
+    )
+    w_cav_3 = w_cavity_2700[:, :, None]
+    aligned_bg_2700_u8 = np.clip(
+        np.rint(
+            w_cav_3 * museum_bg_2700_np.astype(np.float32)
+            + (1.0 - w_cav_3) * plaster_with_shadow_2700
+        ),
+        0.0,
+        255.0,
+    ).astype(np.uint8)
+    bg_inpainted_rgb = Image.fromarray(aligned_bg_2700_u8, mode="RGB")
 
     mid_da2 = compute_room_relative_neural_protrusion(
         raw_neural_depth_expanded=raw_intact_depth_u8,
@@ -718,45 +1167,12 @@ def build_vitrine_keys_pen_scene(
     fg_prot = np.full((ih, iw), spec.frame_protrusion_norm, dtype=np.float32)
     kx0, ky0, kx1, ky1 = spec.knob_box_inner
     fg_prot[ky0:ky1, kx0:kx1] = spec.knob_protrusion_norm
-    fg_inner_solve_cfg = ContactAnchoredLayerDepthConfig(
-        bg_z=spec.fg_depth_solve.bg_z,
-        room_depth_amplitude=spec.fg_depth_solve.room_depth_amplitude,
-        room_pin_margin_uv=spec.fg_depth_solve.room_pin_margin_uv,
-        layer_z=spec.fg_depth_solve.layer_z,
-        layer_depth_amplitude=spec.fg_depth_solve.layer_depth_amplitude,
-        layer_pin_margin_uv=0.0,
-        contact_boxes=tuple(
-            ContactAnchorBox(
-                x0=b.x0 - ox,
-                y0=b.y0 - oy,
-                x1=b.x1 - ox,
-                y1=b.y1 - oy,
-                mode=b.mode,
-                band_px=b.band_px,
-            )
-            for b in spec.fg_depth_solve.contact_boxes
-        ),
-        neural_relief_amplitude=spec.fg_depth_solve.neural_relief_amplitude,
-        contact_relief_taper_px=spec.fg_depth_solve.contact_relief_taper_px,
-        enforce_front_of_host=spec.fg_depth_solve.enforce_front_of_host,
-        alpha_threshold_u8=spec.fg_depth_solve.alpha_threshold_u8,
-        min_component_area_px=spec.fg_depth_solve.min_component_area_px,
-    )
-    fg_inner_solved = solve_contact_anchored_layer_depth(
+    fg_solved = solve_contact_anchored_layer_depth(
         room_depth_expanded=bg_depth_clean_u8,
-        cutout_rgba=fg_inner_np,
-        cfg=fg_inner_solve_cfg,
+        cutout_rgba=fg_np,
+        cfg=spec.fg_depth_solve,
         neural_protrusion_norm=fg_prot,
     )
-    fg_mirrored_d_norm = (
-        _mirror_reflect_rect_to_canvas(fg_inner_solved.depth_u8, (ew, eh), (ox, oy)).astype(np.float32)
-        / 255.0
-    )
-    fg_opaque_2700 = fg_np[:, :, 3] >= spec.fg_depth_solve.alpha_threshold_u8
-    fg_depth_2700_u8 = np.rint(
-        extrapolate_depth_outward_edt(fg_mirrored_d_norm, fg_opaque_2700) * 255.0
-    ).astype(np.uint8)
-    fg_contact_2700 = extract_contact_anchor_mask(fg_opaque_2700, spec.fg_depth_solve)
 
     mid_verify = _verify_and_gate_layer_topology(
         f"{spec.scene_id}.mid",
@@ -773,8 +1189,8 @@ def build_vitrine_keys_pen_scene(
         f"{spec.scene_id}.fg",
         bg_depth_clean_u8,
         fg_np,
-        fg_depth_2700_u8,
-        fg_contact_2700,
+        fg_solved.depth_u8,
+        fg_solved.contact_mask,
         spec.fg_depth_solve,
         cfg.topology_verification,
         cfg.edt_rim_probe_px,
@@ -782,12 +1198,14 @@ def build_vitrine_keys_pen_scene(
     )
 
     pfx = spec.asset_prefix
-    bg_inpainted_rgb.save(scenes_dir / f"{pfx}_bg_inpainted.jpg", quality=spec.bg_jpeg_quality, optimize=True)
+    bg_inpainted_rgb.save(
+        scenes_dir / f"{pfx}_bg_inpainted.jpg", quality=spec.bg_jpeg_quality, optimize=True
+    )
     Image.fromarray(bg_depth_clean_u8, mode="L").save(scenes_dir / f"{pfx}_depth.png")
     mid_canvas.save(scenes_dir / f"{pfx}_mid.png")
     Image.fromarray(mid_solved.depth_u8, mode="L").save(scenes_dir / f"{pfx}_mid_depth.png")
     fg_canvas.save(scenes_dir / f"{pfx}_fg.png")
-    Image.fromarray(fg_depth_2700_u8, mode="L").save(scenes_dir / f"{pfx}_fg_depth.png")
+    Image.fromarray(fg_solved.depth_u8, mode="L").save(scenes_dir / f"{pfx}_fg_depth.png")
 
     rig = spec.camera_rig
     return {
@@ -814,7 +1232,7 @@ def build_vitrine_keys_pen_scene(
         "fgSegmentsY": 150,
         "fgDepthTest": False,
         "fgDepthWrite": False,
-        "fgExpanded": True,
+        "fgExpanded": False,
         "boreSightAtRest": True,
         "bgZ": spec.mid_depth_solve.bg_z,
         "midZ": spec.mid_depth_solve.layer_z,
@@ -849,90 +1267,25 @@ def build_vitrine_keys_pen_scene(
 # ============================================================================
 
 
-def _fit_quadratic_wall_illumination(
-    luma_f32: np.ndarray,
-    unshadowed_mask: np.ndarray,
-) -> np.ndarray:
-    """Fits a smooth 2D quadratic polynomial illumination field to unshadowed museum plaster."""
-    h, w = luma_f32.shape
-    yy, xx = np.mgrid[0:h, 0:w]
-    xn = (xx.astype(np.float64) - 0.5 * w) / float(w)
-    yn = (yy.astype(np.float64) - 0.5 * h) / float(h)
-    design_full = np.stack([np.ones_like(xn), xn, yn, xn * xn, xn * yn, yn * yn], axis=-1)
-    coeffs, _, _, _ = np.linalg.lstsq(
-        design_full[unshadowed_mask], luma_f32[unshadowed_mask].astype(np.float64), rcond=None
-    )
-    fitted = np.tensordot(design_full, coeffs, axes=([-1], [0]))
-    return np.clip(fitted, 1.0, 255.0).astype(np.float32)
-
-
-def _build_wall_perspective_homography(
-    src_center_xy: tuple[float, float],
-    src_box_side_px: float,
-    inner_wh: tuple[int, int],
-    spec: BarGioraBedroomSceneSpec,
-) -> tuple[np.ndarray, float]:
-    """
-    Constructs the exact 3x3 pinhole perspective homography mapping the padded museum vitrine
-    plane (`src_center_xy`) onto the receding 3D Bar Giora bedroom wall plane at
-    `spec.vitrine_wall_center_xy`, rotated in-plane by `spec.vitrine_rotation_deg` (`-130°` CW)
-    and foreshortened toward the wall's horizontal vanishing point `spec.wall_vanishing_point_xy`.
-    Returns `(H_wall_3x3, horiz_foreshortening_factor)`.
-    """
-    iw, _ = inner_wh
-    f = float(spec.wall_camera_focal_px)
-    vp_x, vp_y = spec.wall_vanishing_point_xy
-    cx_cam = 0.5 * float(iw)
-    cy_cam = float(vp_y)
-
-    k_mat = np.array([[f, 0.0, cx_cam], [0.0, f, cy_cam], [0.0, 0.0, 1.0]], dtype=np.float64)
-    k_inv = np.linalg.inv(k_mat)
-
-    u_raw = k_inv @ np.array([vp_x, vp_y, 1.0], dtype=np.float64)
-    u_hat = u_raw / np.linalg.norm(u_raw)
-    v_hat = np.array([0.0, 1.0, 0.0], dtype=np.float64)
-
-    dst_cx, dst_cy = spec.vitrine_wall_center_xy
-    p0 = k_inv @ np.array([dst_cx, dst_cy, 1.0], dtype=np.float64)
-
-    s_world = float(spec.vitrine_wall_side_px) / (f * float(src_box_side_px))
-    theta = math.radians(float(spec.vitrine_rotation_deg))
-    alpha = math.cos(theta)
-    beta = math.sin(theta)
-
-    # Matches OpenCV getRotationMatrix2D(center, angle_deg, 1.0) on wall tangent plane (u_hat, v_hat)
-    col_x = s_world * (alpha * u_hat - beta * v_hat)
-    col_y = s_world * (beta * u_hat + alpha * v_hat)
-    sx0, sy0 = src_center_xy
-    col_t = p0 - col_x * sx0 - col_y * sy0
-
-    h_wall = k_mat @ np.column_stack([col_x, col_y, col_t])
-    h_wall = h_wall / h_wall[2, 2]
-    horiz_foreshortening = float(u_hat[0] - p0[0] * u_hat[2])
-    return h_wall.astype(np.float64), horiz_foreshortening
-
-
-def _build_flush_wall_perspective_vitrine(
+def _build_flush_wall_shadow_layer(
     vitrine_src_1500_img: Image.Image,
     clean_bedroom_inner_np: np.ndarray,
     bg_depth_clean_u8: np.ndarray,
     cfg: VitrineBedroomParisBundleConfig,
-    depth_estimator: DepthAnythingEstimator,
     sam_extractor: SamBoxMaskExtractor,
-) -> tuple[Image.Image, np.ndarray, np.ndarray, np.ndarray, list[float], float]:
+) -> tuple[Image.Image, np.ndarray, np.ndarray]:
     """
-    Synthesizes Scene 21's wall-mounted vitrine (`#53` & `#54`):
-      1. Segments the dark-wood vitrine cleanly via SAM + edge decontamination (zero white museum plaster rim).
-      2. Extracts the authentic museum cast wall shadow via quadratic plaster illumination + swept-box
-         completion past the bottom-right DSLR crop so zero straight crop edge exists, tinted with
-         darkened local Bar Giora bedroom plaster RGB for seamless blending (`#53`).
-      3. Perspective-warps box + shadow + 3D relief onto the receding 3D Bar Giora wall plane (`H_wall`).
-      4. Solves world-Z depth directly on top of `Z_world_wall(x, y)` (`ΔZ = 0` across 100% of shadow
-         and 360° wooden box contact rim) so the vitrine is flush against and parallel to the wall (`#54`).
+    Synthesizes Scene 21's pure wall-contact cast shadow & perimeter crevice AO layer
+    (`scene21_bar_giora_vitrine.png` + `scene21_bar_giora_vitrine_depth.png`) strictly outside
+    the embedded 3D `vitrine_keys_pen` diorama (`alpha == 0` inside the vitrine opening, zero
+    duplicate box RGB) via the exact Three.js 3D homography `H_exp_to_bg`, anchored C0-flush
+    to `Z_world_wall(x, y) + 0.05`.
     """
     spec = cfg.bar_giora_bedroom
     vspec = cfg.vitrine_keys_pen
     iw, ih = cfg.inner_dimensions.width, cfg.inner_dimensions.height
+    ew, eh = cfg.expanded_dimensions.width, cfg.expanded_dimensions.height
+    ox, oy = cfg.inner_offset_xy
 
     vsrc_np = np.asarray(vitrine_src_1500_img, dtype=np.uint8)
     vluma = (
@@ -940,7 +1293,6 @@ def _build_flush_wall_perspective_vitrine(
         + 0.587 * vsrc_np[:, :, 1].astype(np.float32)
         + 0.114 * vsrc_np[:, :, 2].astype(np.float32)
     )
-
     vit_mid_u8 = _segment_prompt_union_u8(
         rgb_image=vitrine_src_1500_img,
         prompts=vspec.mid_sam_prompts,
@@ -956,241 +1308,75 @@ def _build_flush_wall_perspective_vitrine(
         max_pinhole_fill_px=120,
     )
     vit_fg_u8 = np.where(vluma > vspec.plaster_wall_luma_exclude, np.uint8(0), vit_fg_raw_u8)
+    box_solid_inner = _extract_vitrine_solid_box_mask(vit_mid_u8, vit_fg_u8)
 
-    frame_closed = cv2.morphologyEx(
-        ((vit_fg_u8 >= 96) | (vit_mid_u8 >= 96)).astype(np.uint8),
-        cv2.MORPH_CLOSE,
-        cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)),
-    ) > 0
-    box_solid_src = ndi.binary_fill_holes(frame_closed)
-    if float(box_solid_src.mean()) < 0.42:
-        raise RuntimeError(
-            f"Vitrine solid cavity fill failed (coverage={float(box_solid_src.mean()):.3f} < 0.42)."
-        )
+    sh_alpha_2700, _ = _synthesize_vitrine_cast_shadow_alpha_2700(vsrc_np, box_solid_inner, cfg)
 
-    box_inner_core = ndi.binary_erosion(box_solid_src, iterations=2)
-    box_alpha_src = np.where(
-        box_inner_core,
-        np.uint8(255),
-        np.where(box_solid_src, np.maximum(vit_fg_u8, np.uint8(210)), vit_fg_u8),
+    # Zero out shadow strictly inside the opaque wooden frame interior so mounted_wall_vitrine
+    # is a pure hollow cast-shadow + 360° contact-AO ring (zero duplicate vitrine box).
+    hx0, hy0, hx1, hy1 = spec.shadow_hollow_inner_box_px
+    hollow_core_2700 = np.zeros((eh, ew), dtype=np.bool_)
+    hollow_core_2700[
+        int(round(oy + hy0)) : int(round(oy + hy1)),
+        int(round(ox + hx0)) : int(round(ox + hx1)),
+    ] = True
+    dist_outside_hollow = ndi.distance_transform_edt(~hollow_core_2700).astype(np.float32)
+    w_outer_ring = glsl_smoothstep(0.0, float(spec.shadow_hollow_feather_px), dist_outside_hollow)
+    sh_ring_2700 = sh_alpha_2700 * w_outer_ring
+    if spec.vitrine_shadow_downsample_sigma_px > 0.0:
+        sh_ring_2700 = ndi.gaussian_filter(
+            sh_ring_2700, sigma=float(spec.vitrine_shadow_downsample_sigma_px)
+        ).astype(np.float32)
+
+    h_exp_to_bg = _compute_vitrine_wall_mount_homography_2700_to_1500(cfg)
+    warped_sh_norm = cv2.warpPerspective(
+        sh_ring_2700,
+        h_exp_to_bg,
+        (iw, ih),
+        flags=cv2.INTER_LINEAR,
+        borderMode=cv2.BORDER_CONSTANT,
+        borderValue=0.0,
     )
-    box_rgb_decontam = decontaminate_matte_edge_rgb(vsrc_np, box_alpha_src).astype(np.float32)
-    rgb_scale = np.asarray(spec.vitrine_indoor_rgb_scale, dtype=np.float32)[None, None, :]
-    box_rgb_src = np.clip(np.rint(box_rgb_decontam * rgb_scale), 0.0, 255.0).astype(np.uint8)
+    warped_sh_norm = np.clip(warped_sh_norm, 0.0, 0.46).astype(np.float32)
 
-    bys, bxs = np.where(box_solid_src)
-    box_cx_src = 0.5 * float(int(bxs.min()) + int(bxs.max()))
-    box_cy_src = 0.5 * float(int(bys.min()) + int(bys.max()))
-    src_box_side_px = 0.5 * float((int(bxs.max()) - int(bxs.min())) + (int(bys.max()) - int(bys.min())))
-
-    # Measure authentic directional cast wall shadow on museum plaster & complete bottom-right DSLR crop
-    yy_s, xx_s = np.mgrid[0:ih, 0:iw]
-    unshadowed_plaster = (
-        (xx_s < 296)
-        | (yy_s < 64)
-        | ((xx_s > 1200) & (yy_s < 192))
-        | ((yy_s > 952) & (xx_s < 545))
-    ) & (~ndi.binary_dilation(box_solid_src, iterations=8))
-    wall_ref_luma = _fit_quadratic_wall_illumination(vluma, unshadowed_plaster)
-    atten_meas_src = np.clip((wall_ref_luma - vluma) / np.maximum(wall_ref_luma, 1.0), 0.0, 1.0)
-    atten_meas_src[ndi.binary_dilation(box_solid_src, iterations=4)] = 0.0
-
-    pad_tl = 120
-    pad_br_x, pad_br_y = 480, 480
-    pw, ph = iw + pad_tl + pad_br_x, ih + pad_tl + pad_br_y
-
-    box_solid_pad = np.zeros((ph, pw), dtype=np.bool_)
-    box_solid_pad[pad_tl : pad_tl + ih, pad_tl : pad_tl + iw] = box_solid_src
-    box_rgb_pad = np.zeros((ph, pw, 3), dtype=np.uint8)
-    box_rgb_pad[pad_tl : pad_tl + ih, pad_tl : pad_tl + iw] = box_rgb_src
-    box_alpha_pad = np.zeros((ph, pw), dtype=np.uint8)
-    box_alpha_pad[pad_tl : pad_tl + ih, pad_tl : pad_tl + iw] = box_alpha_src
-
-    dx_ray, dy_ray = spec.vitrine_shadow_ray_offset_src_xy
-    swept_env = np.zeros((ph, pw), dtype=np.float32)
-    box_solid_f = box_solid_pad.astype(np.float32)
-    n_sweep = 48
-    for step_idx in range(1, n_sweep + 1):
-        s_frac = float(step_idx) / float(n_sweep)
-        m_shift = np.array(
-            [[1.0, 0.0, s_frac * dx_ray], [0.0, 1.0, s_frac * dy_ray]], dtype=np.float32
-        )
-        shifted = cv2.warpAffine(
-            box_solid_f, m_shift, (pw, ph), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=0.0
-        )
-        swept_env = np.maximum(swept_env, shifted * (1.0 - 0.34 * s_frac))
-    swept_env = ndi.gaussian_filter(swept_env, sigma=24.0).astype(np.float32)
-
-    swept_inner = swept_env[pad_tl : pad_tl + ih, pad_tl : pad_tl + iw]
-    calib_zone = (
-        (swept_inner > 0.30)
-        & (~ndi.binary_dilation(box_solid_src, iterations=8))
-        & (xx_s >= 600)
-        & (xx_s <= iw - 40)
-        & (yy_s >= 230)
-        & (yy_s <= ih - 30)
+    smooth_plaster = ndi.gaussian_filter(
+        clean_bedroom_inner_np.astype(np.float32),
+        sigma=(
+            float(vspec.bedroom_plaster_smooth_sigma_px),
+            float(vspec.bedroom_plaster_smooth_sigma_px),
+            0.0,
+        ),
     )
-    if not np.any(calib_zone):
-        raise RuntimeError("Vitrine shadow calibration zone is empty.")
-    calib_scale = float(np.median(atten_meas_src[calib_zone] / np.maximum(swept_inner[calib_zone], 1e-4)))
-    swept_atten_pad = np.clip(swept_env * calib_scale, 0.0, 1.0)
-
-    atten_meas_pad = np.zeros((ph, pw), dtype=np.float32)
-    atten_meas_pad[pad_tl : pad_tl + ih, pad_tl : pad_tl + iw] = ndi.gaussian_filter(
-        atten_meas_src, sigma=14.0
-    )
-
-    # Smooth cosine handoff from real measured museum plaster shadow to calibrated swept completion
-    hm = float(max(8, spec.vitrine_shadow_handoff_margin_px))
-    rx = np.clip((float(iw - 1) - xx_s.astype(np.float32)) / hm, 0.0, 1.0)
-    ry = np.clip((float(ih - 1) - yy_s.astype(np.float32)) / hm, 0.0, 1.0)
-    dist_from_box = ndi.distance_transform_edt(~box_solid_src).astype(np.float32)
-    r_box = np.clip((dist_from_box - 4.0) / 6.0, 0.0, 1.0)
-    w_inner = (0.5 - 0.5 * np.cos(np.pi * rx)) * (0.5 - 0.5 * np.cos(np.pi * ry)) * (
-        0.5 - 0.5 * np.cos(np.pi * r_box)
-    )
-    w_inner = np.where(swept_inner > 0.012, w_inner, 0.0).astype(np.float32)
-    w_meas_pad = np.zeros((ph, pw), dtype=np.float32)
-    w_meas_pad[pad_tl : pad_tl + ih, pad_tl : pad_tl + iw] = w_inner
-
-    atten_combined = w_meas_pad * atten_meas_pad + (1.0 - w_meas_pad) * swept_atten_pad
-    soft_toe = glsl_smoothstep(0.004, spec.vitrine_shadow_attenuation_floor, atten_combined)
-    dir_shadow_pad = np.clip(
-        atten_combined * soft_toe * spec.vitrine_shadow_gain,
-        0.0,
-        spec.vitrine_shadow_max_alpha_norm,
-    ).astype(np.float32)
-    # Tight 1.4px wall-contact crevice occlusion around all 4 wooden sides so unshadowed rim sits flush
-    dist_box_pad = ndi.distance_transform_edt(~box_solid_pad).astype(np.float32)
-    crevice_ao_pad = (0.28 * np.exp(-0.5 * (dist_box_pad / 9.5) ** 2)).astype(np.float32)
-
-    # 3D relief map inside the vitrine (world Z units forward of the bedroom wall plane)
-    vit_da2 = depth_estimator.predict_depth(vitrine_src_1500_img).astype(np.float32)
-    mid_mask_src = vit_mid_u8 >= 96
-    if np.any(mid_mask_src):
-        d_lo, d_hi = np.percentile(vit_da2[mid_mask_src], [10.0, 95.0])
-        mid_norm = np.clip((vit_da2 - float(d_lo)) / max(1e-4, float(d_hi - d_lo)), 0.0, 1.0)
-    else:
-        mid_norm = np.zeros_like(vit_da2)
-
-    relief_src = np.zeros((ih, iw), dtype=np.float32)
-    relief_src[box_solid_src] = spec.vitrine_cavity_back_relief_world
-    items_relief = spec.vitrine_items_min_relief_world + mid_norm * (
-        spec.vitrine_items_max_relief_world - spec.vitrine_items_min_relief_world
-    )
-    w_mid = (vit_mid_u8.astype(np.float32) / 255.0)
-    relief_src = np.where(
-        box_solid_src,
-        (1.0 - w_mid) * relief_src + w_mid * items_relief,
-        0.0,
-    )
-    frame_only_w = np.clip((vit_fg_u8.astype(np.float32) - vit_mid_u8.astype(np.float32)) / 255.0, 0.0, 1.0)
-    relief_src = np.where(
-        box_solid_src,
-        np.maximum(relief_src, frame_only_w * spec.vitrine_frame_relief_world),
-        0.0,
-    )
-    kx0, ky0, kx1, ky1 = vspec.knob_box_inner
-    knob_w = (vit_fg_u8[ky0:ky1, kx0:kx1].astype(np.float32) / 255.0)
-    relief_src[ky0:ky1, kx0:kx1] = np.maximum(
-        relief_src[ky0:ky1, kx0:kx1], knob_w * spec.vitrine_knob_relief_world
-    )
-    relief_src = ndi.gaussian_filter(relief_src, sigma=1.8).astype(np.float32)
-    relief_pad = np.zeros((ph, pw), dtype=np.float32)
-    relief_pad[pad_tl : pad_tl + ih, pad_tl : pad_tl + iw] = relief_src
-
-    # Perspective-warp vitrine box + cast shadow + relief onto receding 3D Bar Giora wall plane
-    h_wall, horiz_foreshortening = _build_wall_perspective_homography(
-        src_center_xy=(pad_tl + box_cx_src, pad_tl + box_cy_src),
-        src_box_side_px=src_box_side_px,
-        inner_wh=(iw, ih),
-        spec=spec,
-    )
-    warped_box_rgb = cv2.warpPerspective(
-        box_rgb_pad, h_wall, (iw, ih), flags=cv2.INTER_LANCZOS4, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0)
-    )
-    warped_box_a_u8 = cv2.warpPerspective(
-        box_alpha_pad, h_wall, (iw, ih), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=0
-    )
-    warped_dir_sh = cv2.warpPerspective(
-        dir_shadow_pad, h_wall, (iw, ih), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=0.0
-    )
-    warped_crevice_ao = cv2.warpPerspective(
-        crevice_ao_pad, h_wall, (iw, ih), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=0.0
-    )
-    warped_relief = cv2.warpPerspective(
-        relief_pad, h_wall, (iw, ih), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=0.0
-    )
-
-    if spec.vitrine_shadow_blur_sigma_px > 0.0:
-        warped_dir_sh = ndi.gaussian_filter(warped_dir_sh, sigma=spec.vitrine_shadow_blur_sigma_px).astype(
-            np.float32
-        )
-    warped_crevice_ao = ndi.gaussian_filter(warped_crevice_ao, sigma=0.7).astype(np.float32)
-    warped_sh_norm = np.clip(np.maximum(warped_dir_sh, warped_crevice_ao), 0.0, 0.46).astype(np.float32)
-
-    # Local darkened Bar Giora plaster RGB for 100% seamless alpha transition into the wall (#53)
-    smooth_plaster = ndi.gaussian_filter(clean_bedroom_inner_np.astype(np.float32), sigma=(4.0, 4.0, 0.0))
     sh_rgb_scale = np.asarray(spec.vitrine_shadow_plaster_rgb_scale, dtype=np.float32)[None, None, :]
     shadow_rgb = np.clip(smooth_plaster * sh_rgb_scale, 0.0, 255.0)
 
-    a_box = (warped_box_a_u8.astype(np.float32) / 255.0)[:, :, None]
-    a_sh = np.clip(warped_sh_norm, 0.0, 1.0)[:, :, None]
-    a_out = a_box + a_sh * (1.0 - a_box)
-    rgb_out = (a_box * warped_box_rgb.astype(np.float32) + a_sh * (1.0 - a_box) * shadow_rgb) / np.maximum(
-        a_out, 1e-6
-    )
-
     out_rgba = np.zeros((ih, iw, 4), dtype=np.uint8)
-    out_rgba[:, :, :3] = np.clip(np.rint(rgb_out), 0.0, 255.0).astype(np.uint8)
-    out_rgba[:, :, 3] = np.clip(np.rint(a_out[:, :, 0] * 255.0), 0.0, 255.0).astype(np.uint8)
+    out_rgba[:, :, :3] = np.clip(np.rint(shadow_rgb), 0.0, 255.0).astype(np.uint8)
+    out_rgba[:, :, 3] = np.clip(np.rint(warped_sh_norm * 255.0), 0.0, 255.0).astype(np.uint8)
+    out_rgba[out_rgba[:, :, 3] == 0, :3] = 0
     out_rgba[:2, :, :] = 0
     out_rgba[-2:, :, :] = 0
     out_rgba[:, :2, :] = 0
     out_rgba[:, -2:, :] = 0
 
-    # Solve 3D depth flush & parallel to the receding bedroom wall Z_world_wall(x, y) (#54)
     vsolve = spec.vitrine_depth_solve
     room_z_exp = compute_world_z_map(
         bg_depth_clean_u8, vsolve.bg_z, vsolve.room_depth_amplitude, vsolve.room_pin_margin_uv
     )
     z_world_wall = extract_layer_window_from_expanded(room_z_exp, (ih, iw))
-
-    warped_box_solid = warped_box_a_u8 >= 140
-    eroded_box = ndi.binary_erosion(warped_box_solid, iterations=3)
-    dist_inside_rim = ndi.distance_transform_edt(eroded_box).astype(np.float32)
-    w_box_contact = glsl_smoothstep(0.0, float(spec.vitrine_contact_rim_taper_px), dist_inside_rim)
-
-    z_world_vit = z_world_wall + 0.05 + w_box_contact * warped_relief
+    z_world_sh = z_world_wall + 0.05
     d_norm = np.clip(
-        (z_world_vit - float(vsolve.layer_z)) / float(vsolve.layer_depth_amplitude),
+        (z_world_sh - float(vsolve.layer_z)) / float(vsolve.layer_depth_amplitude),
         0.0,
         1.0,
     ).astype(np.float32)
     active_mask = out_rgba[:, :, 3] >= vsolve.alpha_threshold_u8
-    vit_depth_u8 = np.rint(extrapolate_depth_outward_edt(d_norm, active_mask) * 255.0).astype(np.uint8)
-    vit_contact_mask = extract_contact_anchor_mask(active_mask, vsolve)
-    vit_world_z = compute_world_z_map(vit_depth_u8, vsolve.layer_z, vsolve.layer_depth_amplitude, 0.0)
-
-    cx_dst, cy_dst = spec.vitrine_wall_center_xy
-    half_w = round(0.5 * spec.vitrine_wall_side_px * horiz_foreshortening + 2.0, 1)
-    half_h = round(0.5 * spec.vitrine_wall_side_px + 2.0, 1)
-    portal_box = [
-        round(cx_dst - half_w, 1),
-        round(cy_dst - half_h, 1),
-        round(cx_dst + half_w, 1),
-        round(cy_dst + half_h, 1),
-    ]
-    portal_world_z = round(float(np.median(vit_world_z[warped_box_solid])), 2)
-
-    return (
-        Image.fromarray(out_rgba, mode="RGBA"),
-        vit_depth_u8,
-        vit_contact_mask,
-        vit_world_z,
-        portal_box,
-        portal_world_z,
+    vit_depth_u8 = np.rint(extrapolate_depth_outward_edt(d_norm, active_mask) * 255.0).astype(
+        np.uint8
     )
+    vit_contact_mask = extract_contact_anchor_mask(active_mask, vsolve)
+
+    return Image.fromarray(out_rgba, mode="RGBA"), vit_depth_u8, vit_contact_mask
 
 
 def build_bar_giora_bedroom_scene(
@@ -1424,7 +1610,7 @@ def build_bar_giora_bedroom_scene(
     ).astype(np.uint8)
     fg_contact_2700 = extract_contact_anchor_mask(fg_opaque_2700, spec.fg_depth_solve)
 
-    # 6. Build flush wall-perspective vitrine + authentic cast shadow (#53 & #54)
+    # 6. Build flush wall-anchored cast-shadow layer under the 3D embedded vitrine
     vitrine_src_1500_img = (
         Image.open(project_root / spec.vitrine_source_relpath)
         .convert("RGB")
@@ -1434,15 +1620,11 @@ def build_bar_giora_bedroom_scene(
         vitrine_canvas,
         vit_depth_u8,
         vit_contact_mask,
-        _vit_world_z,
-        portal_box,
-        portal_world_z,
-    ) = _build_flush_wall_perspective_vitrine(
+    ) = _build_flush_wall_shadow_layer(
         vitrine_src_1500_img=vitrine_src_1500_img,
         clean_bedroom_inner_np=clean_full_np[cy0:cy1, :, :],
         bg_depth_clean_u8=bg_depth_clean_u8,
         cfg=cfg,
-        depth_estimator=depth_estimator,
         sam_extractor=sam_extractor,
     )
     _assert_border_alpha_contract(vitrine_canvas, f"{spec.scene_id}.mounted_wall_vitrine")
@@ -1493,11 +1675,19 @@ def build_bar_giora_bedroom_scene(
     Image.fromarray(vit_depth_u8, mode="L").save(scenes_dir / f"{pfx}_vitrine_depth.png")
 
     vit_tight_box = _tight_alpha_bbox(vitrine_np, 20)
+    mcx, mcy = spec.vitrine_wall_center_xy
+    half_side = 0.5 * spec.vitrine_wall_side_px
+    portal_inner_box = [
+        round(mcx - half_side, 1),
+        round(mcy - half_side, 1),
+        round(mcx + half_side, 1),
+        round(mcy + half_side, 1),
+    ]
 
     extra_layers = [
         {
             "id": "mounted_wall_vitrine",
-            "labelHe": "תיבת הוויטרינה התלויה צמוד לקיר החדר (מסובבת 130° עם צל מקורי)",
+            "labelHe": "צל הוויטרינה התלויה צמוד לקיר החדר (מסובבת 130°)",
             "texture": f"assets/scenes/{pfx}_vitrine.png",
             "depthTexture": f"assets/scenes/{pfx}_vitrine_depth.png",
             "zPos": spec.vitrine_depth_solve.layer_z,
@@ -1505,7 +1695,7 @@ def build_bar_giora_bedroom_scene(
             "pinMarginUv": 0.0,
             "segmentsX": 224,
             "segmentsY": 150,
-            "renderOrder": 5.5,
+            "renderOrder": 1.5,
             "expanded": False,
             "baseOpacity": 1.0,
             "excursionBoost": 0.0,
@@ -1517,19 +1707,36 @@ def build_bar_giora_bedroom_scene(
         {
             "id": spec.portal_id,
             "targetSceneId": spec.target_scene_id,
-            "portalMode": "crossfade",
             "labelHe": spec.portal_label_he,
             "shortBadgeHe": spec.portal_short_badge_he,
             "showMicroBadge": False,
-            "innerBoxPx": [449.5, 344.2, 662.5, 503.8],
-            "worldZ": portal_world_z,
+            "innerBoxPx": portal_inner_box,
+            "worldZ": spec.host_wall_z_world,
             "recessDepth": 0.0,
-            "embedDiorama": False,
+            "embedDiorama": True,
+            "keepHostBackdropOpaque": True,
+            "outerWallFadeRangeT": list(spec.outer_wall_fade_range_t),
             "showFrame": False,
             "restFrameOpacity": 0.0,
             "frameRenderOrder": 5.8,
             "rotationDeg": spec.vitrine_rotation_deg,
             "flightRollDeg": spec.vitrine_flight_roll_deg,
+            "wallMount": {
+                "hostCenterInnerPx": list(spec.vitrine_wall_center_xy),
+                "hostBoxSidePx": spec.vitrine_wall_side_px,
+                "hostWallZ": spec.host_wall_z_world,
+                "hostWallSlopeDzDx": spec.host_wall_slope_dz_dx,
+                "hostWallSlopeDzDy": spec.host_wall_slope_dz_dy,
+                "hostWallClearanceWorld": spec.host_wall_clearance_world,
+                "hostRefInnerScale": spec.camera_rig.min_inner_scale,
+                "targetBoxCenterInnerPx": list(spec.target_vitrine_center_inner_xy),
+                "targetBoxSidePx": spec.target_vitrine_box_side_px,
+                "targetPlasterDepthNorm": round(float(spec.target_plaster_depth_u8) / 255.0, 6),
+                "cavityInnerBoxPx": list(spec.cavity_inner_box_px),
+                "cavityFeatherPx": spec.cavity_feather_px,
+                "inPlaneRollDeg": spec.vitrine_rotation_deg,
+                "dioramaRenderOrders": {"bg": 2.0, "mid": 3.0, "fg": 4.0, "dust": 4.5},
+            },
         }
     ]
 
@@ -2349,6 +2556,19 @@ def default_vitrine_bedroom_paris_bundle_config() -> VitrineBedroomParisBundleCo
             source_relpath="media/museum_press/rgma_bene_beitcha_vitrine_keys_pen_2026_e5e92bc1.jpg",
             pen_shadow_heal_box_inner=(620, 248, 835, 535),
             plaster_wall_luma_exclude=155.0,
+            fg_outer_fringe_dist_px=4.0,
+            fg_outer_fringe_luma_min=92.0,
+            fg_outer_fringe_rmb_max=16.0,
+            fg_outer_aa_sigma_px=0.55,
+            fg_joint_close_width_px=13,
+            fg_joint_max_luma=95.0,
+            cavity_erode_px=22,
+            cavity_plaster_feather_px=8.0,
+            plaster_grain_patch_y0y1x0x1=(16, 176, 16, 256),
+            plaster_grain_sigma_px=3.5,
+            plaster_grain_strength=0.30,
+            bedroom_plaster_clamp_box_xyxy=(425.0, 312.0, 755.0, 514.0),
+            bedroom_plaster_smooth_sigma_px=6.0,
             fg_sam_prompts=(
                 _pg(
                     (308, 72, 396, 946),
@@ -2461,11 +2681,10 @@ def default_vitrine_bedroom_paris_bundle_config() -> VitrineBedroomParisBundleCo
                 layer_depth_amplitude=195.0,
                 layer_pin_margin_uv=0.0,
                 contact_boxes=(
-                    ContactAnchorBox(x0=906, y0=472, x1=936, y1=1346, mode="left_band", band_px=10),
-                    ContactAnchorBox(x0=1760, y0=472, x1=1792, y1=1346, mode="right_band", band_px=10),
+                    ContactAnchorBox(x0=308, y0=78, x1=1192, y1=936, mode="perimeter_rim", band_px=8),
                 ),
                 neural_relief_amplitude=42.0,
-                contact_relief_taper_px=10.0,
+                contact_relief_taper_px=12.0,
                 enforce_front_of_host=True,
                 alpha_threshold_u8=20,
                 min_component_area_px=80,
@@ -2498,22 +2717,26 @@ def default_vitrine_bedroom_paris_bundle_config() -> VitrineBedroomParisBundleCo
             vitrine_wall_side_px=118.0,
             vitrine_rotation_deg=-130.0,
             vitrine_flight_roll_deg=-130.0,
-            wall_camera_focal_px=1167.0,
-            wall_vanishing_point_xy=(2104.0, 298.0),
-            vitrine_indoor_rgb_scale=(0.88, 0.90, 0.92),
+            host_wall_z_world=-319.01,
+            host_wall_slope_dz_dx=-0.11710,
+            host_wall_slope_dz_dy=0.00154,
+            host_wall_clearance_world=0.08,
+            target_vitrine_center_inner_xy=(749.5, 504.5),
+            target_vitrine_box_side_px=864.0,
+            target_plaster_depth_u8=52,
+            cavity_inner_box_px=(352.0, 120.0, 1148.0, 895.0),
+            cavity_feather_px=4.0,
+            shadow_hollow_inner_box_px=(336.0, 106.0, 1164.0, 910.0),
+            shadow_hollow_feather_px=6.0,
+            outer_wall_fade_range_t=(0.78, 0.96),
             vitrine_shadow_ray_offset_src_xy=(265.0, 302.0),
             vitrine_shadow_attenuation_floor=0.042,
             vitrine_shadow_gain=1.10,
             vitrine_shadow_max_alpha_norm=0.42,
-            vitrine_shadow_blur_sigma_px=3.6,
+            vitrine_shadow_meas_sigma_px=18.0,
+            vitrine_shadow_downsample_sigma_px=2.2,
             vitrine_shadow_handoff_margin_px=32,
             vitrine_shadow_plaster_rgb_scale=(0.22, 0.21, 0.20),
-            vitrine_frame_relief_world=6.2,
-            vitrine_knob_relief_world=7.5,
-            vitrine_cavity_back_relief_world=1.4,
-            vitrine_items_min_relief_world=2.8,
-            vitrine_items_max_relief_world=4.8,
-            vitrine_contact_rim_taper_px=3.5,
             portal_id="portal_bar_giora_vitrine",
             target_scene_id="vitrine_keys_pen",
             portal_label_he="תיבת הוויטרינה מ׳בנה ביתך׳ · לחצו להתקרבות וסיבוב אל תוך הוויטרינה",
@@ -2716,13 +2939,13 @@ def default_vitrine_bedroom_paris_bundle_config() -> VitrineBedroomParisBundleCo
                 layer_depth_amplitude=175.0,
                 layer_pin_margin_uv=0.0,
                 contact_boxes=(
-                    ContactAnchorBox(x0=415, y0=320, x1=655, y1=535, mode="perimeter_rim", band_px=3),
+                    ContactAnchorBox(x0=335, y0=295, x1=670, y1=600, mode="all_opaque", band_px=4),
                 ),
-                neural_relief_amplitude=6.5,
-                contact_relief_taper_px=12.0,
+                neural_relief_amplitude=0.0,
+                contact_relief_taper_px=1.0,
                 enforce_front_of_host=True,
                 alpha_threshold_u8=20,
-                min_component_area_px=80,
+                min_component_area_px=40,
             ),
             camera_rig=SceneCameraRigSpec(
                 min_inner_scale=2.12,
