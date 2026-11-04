@@ -21,7 +21,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(24, 26, 31, 0.88);
+  background: rgba(var(--bg-panel-rgb), 0.88);
   border: 1px solid rgba(244, 239, 234, 0.16);
   border-radius: 999px;
   padding: 4px 10px;
@@ -31,7 +31,7 @@ body {
 
 .portal-font-picker-label {
   font-weight: 600;
-  color: #E6B980;
+  color: var(--accent-soft);
 }
 
 .portal-font-picker-select {
@@ -70,13 +70,13 @@ body {
 
 .photo-tag.person-filterable:hover,
 .photo-tag.person-filterable.active-person {
-  border-color: rgba(196, 155, 113, 0.75);
-  background: rgba(196, 155, 113, 0.22);
-  color: #F8E3C4;
+  border-color: rgba(var(--accent-rgb), 0.75);
+  background: rgba(var(--accent-rgb), 0.22);
+  color: var(--accent-pale);
 }
 
 .icon-btn {
-  background: rgba(24, 26, 31, 0.88);
+  background: rgba(var(--bg-panel-rgb), 0.88);
   border: 1px solid rgba(244, 239, 234, 0.16);
   color: #F4EFEA;
   font-family: inherit;
@@ -92,7 +92,7 @@ body {
 }
 
 .icon-btn:hover {
-  border-color: #C49B71;
+  border-color: var(--accent-gold);
   color: #fff;
 }
 
@@ -104,7 +104,7 @@ body {
   background: rgba(16, 17, 21, 0.94);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid rgba(196, 155, 113, 0.28);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.28);
   padding: 12px 22px;
   display: flex;
   justify-content: space-between;
@@ -127,9 +127,9 @@ body {
 }
 
 .portal-secret-chip {
-  background: rgba(196, 155, 113, 0.16);
-  border: 1px solid rgba(196, 155, 113, 0.5);
-  color: #F2D2A2;
+  background: rgba(var(--accent-rgb), 0.16);
+  border: 1px solid rgba(var(--accent-rgb), 0.5);
+  color: var(--accent-soft);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 10px;
@@ -160,8 +160,8 @@ body {
 }
 
 .portal-nav-link.active {
-  background: rgba(196, 155, 113, 0.22);
-  border-color: rgba(196, 155, 113, 0.6);
+  background: rgba(var(--accent-rgb), 0.22);
+  border-color: rgba(var(--accent-rgb), 0.6);
   color: #F7E2C2;
   font-weight: 600;
 }
@@ -189,7 +189,7 @@ body {
   top: 78px;
   max-height: calc(100vh - 96px);
   overflow-y: auto;
-  background: #191B20;
+  background: var(--bg-raised);
   border: 1px solid rgba(244, 239, 234, 0.12);
   border-radius: 14px;
   padding: 16px;
@@ -212,16 +212,16 @@ body {
 
 .portal-input:focus {
   outline: none;
-  border-color: #C49B71;
+  border-color: var(--accent-gold);
 }
 
 .wiki-sec-title {
   font-size: 0.78rem;
   font-weight: 700;
-  color: #C49B71;
+  color: var(--accent-gold);
   margin-bottom: 6px;
   padding-bottom: 4px;
-  border-bottom: 1px solid rgba(196, 155, 113, 0.2);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.2);
 }
 
 .wiki-nav-list {
@@ -254,8 +254,8 @@ body {
 }
 
 .wiki-nav-item.active {
-  background: rgba(196, 155, 113, 0.18);
-  border-color: rgba(196, 155, 113, 0.5);
+  background: rgba(var(--accent-rgb), 0.18);
+  border-color: rgba(var(--accent-rgb), 0.5);
   color: #F8E3C2;
   font-weight: 600;
 }
@@ -267,7 +267,7 @@ body {
 }
 
 .wiki-article-card {
-  background: #191B20;
+  background: var(--bg-raised);
   border: 1px solid rgba(244, 239, 234, 0.12);
   border-radius: 16px;
   padding: 28px 34px;
@@ -321,16 +321,16 @@ body {
 
 .wiki-markdown-body h1 {
   font-size: 1.65rem;
-  color: #F6DFC0;
+  color: var(--accent-pale);
   margin: 0 0 10px 0;
 }
 
 .wiki-markdown-body h2 {
   font-size: 1.26rem;
-  color: #E6B980;
+  color: var(--accent-soft);
   margin: 26px 0 10px 0;
   padding-bottom: 6px;
-  border-bottom: 1px solid rgba(196, 155, 113, 0.22);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.22);
 }
 
 .wiki-markdown-body h3 {
@@ -349,7 +349,7 @@ body {
 
 .wiki-markdown-body p:hover,
 .wiki-markdown-body li:hover {
-  background: rgba(196, 155, 113, 0.06);
+  background: rgba(var(--accent-rgb), 0.06);
 }
 
 .wiki-markdown-body ul,
@@ -365,8 +365,8 @@ body {
 }
 
 .wiki-markdown-body blockquote {
-  border-inline-start: 3px solid #C49B71;
-  background: rgba(196, 155, 113, 0.08);
+  border-inline-start: 3px solid var(--accent-gold);
+  background: rgba(var(--accent-rgb), 0.08);
   padding: 12px 16px;
   border-radius: 8px;
   margin: 14px 0;
@@ -400,8 +400,8 @@ body {
 }
 
 .wiki-markdown-body th {
-  background: rgba(196, 155, 113, 0.14);
-  color: #F4D8B0;
+  background: rgba(var(--accent-rgb), 0.14);
+  color: var(--accent-soft);
 }
 
 .wiki-markdown-body a {
@@ -469,19 +469,19 @@ body {
 }
 
 .wiki-markdown-body a.wiki-cite-ref:hover {
-  background: rgba(196, 155, 113, 0.32);
+  background: rgba(var(--accent-rgb), 0.32);
   color: #FFF6E8;
 }
 
 .wiki-footnotes-section {
   margin-top: 32px;
   padding-top: 20px;
-  border-top: 1px solid rgba(196, 155, 113, 0.32);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.32);
 }
 
 .wiki-footnotes-heading {
   font-size: 1.16rem !important;
-  color: #F4D8B0 !important;
+  color: var(--accent-soft) !important;
   margin: 0 0 14px 0 !important;
   border-bottom: none !important;
   padding-bottom: 0 !important;
@@ -507,8 +507,8 @@ body {
 }
 
 .wiki-footnote-item:hover {
-  background: rgba(196, 155, 113, 0.08) !important;
-  border-color: rgba(196, 155, 113, 0.28);
+  background: rgba(var(--accent-rgb), 0.08) !important;
+  border-color: rgba(var(--accent-rgb), 0.28);
 }
 
 .wiki-markdown-body a.wiki-fn-backref {
@@ -516,32 +516,32 @@ body {
   margin-inline-start: 6px;
   padding: 1px 6px;
   border-radius: 5px;
-  background: rgba(196, 155, 113, 0.16);
-  border: 1px solid rgba(196, 155, 113, 0.38);
-  color: #F2D2A2;
+  background: rgba(var(--accent-rgb), 0.16);
+  border: 1px solid rgba(var(--accent-rgb), 0.38);
+  color: var(--accent-soft);
   font-size: 0.78rem;
   text-decoration: none;
 }
 
 .wiki-markdown-body a.wiki-fn-backref:hover {
-  background: rgba(196, 155, 113, 0.34);
+  background: rgba(var(--accent-rgb), 0.34);
   color: #fff;
 }
 
 @keyframes wikiFootnotePulse {
   0% {
-    background: rgba(230, 185, 128, 0.36);
-    box-shadow: 0 0 0 2px rgba(230, 185, 128, 0.65);
+    background: rgba(var(--accent-soft-rgb), 0.36);
+    box-shadow: 0 0 0 2px rgba(var(--accent-soft-rgb), 0.65);
   }
   100% {
     background: rgba(255, 255, 255, 0.03);
-    box-shadow: 0 0 0 0 rgba(230, 185, 128, 0);
+    box-shadow: 0 0 0 0 rgba(var(--accent-soft-rgb), 0);
   }
 }
 
 .wiki-fn-highlight {
   animation: wikiFootnotePulse 2.1s ease-out;
-  border-color: #E6B980 !important;
+  border-color: var(--accent-soft) !important;
 }
 
 .wiki-unverified-badge {
@@ -566,7 +566,7 @@ body {
 
 .upload-panel {
   background: linear-gradient(145deg, rgba(32, 29, 25, 0.92), rgba(22, 24, 29, 0.95));
-  border: 1.5px solid rgba(196, 155, 113, 0.45);
+  border: 1.5px solid rgba(var(--accent-rgb), 0.45);
   border-radius: 16px;
   padding: 20px 24px;
   display: flex;
@@ -588,7 +588,7 @@ body {
 }
 
 .upload-dropzone {
-  border: 2px dashed rgba(196, 155, 113, 0.55);
+  border: 2px dashed rgba(var(--accent-rgb), 0.55);
   background: rgba(16, 18, 22, 0.68);
   border-radius: 12px;
   padding: 22px;
@@ -599,8 +599,8 @@ body {
 
 .upload-dropzone:hover,
 .upload-dropzone.dragover {
-  background: rgba(196, 155, 113, 0.14);
-  border-color: #E6B980;
+  background: rgba(var(--accent-rgb), 0.14);
+  border-color: var(--accent-soft);
 }
 
 .upload-preview-strip {
@@ -642,7 +642,7 @@ body {
 }
 
 .portal-card {
-  background: #191B20;
+  background: var(--bg-raised);
   border: 1px solid rgba(244, 239, 234, 0.12);
   border-radius: 14px;
   padding: 18px 20px;
@@ -658,7 +658,7 @@ body {
 }
 
 .portal-photo-card {
-  background: #191B20;
+  background: var(--bg-raised);
   border: 1px solid rgba(244, 239, 234, 0.12);
   border-radius: 13px;
   overflow: hidden;
@@ -669,7 +669,7 @@ body {
 
 .portal-photo-card:hover,
 .portal-photo-card.focused-media {
-  border-color: #C49B71;
+  border-color: var(--accent-gold);
   transform: translateY(-2px);
 }
 
@@ -692,7 +692,7 @@ body {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: rgba(14, 16, 20, 0.85);
+  background: rgba(var(--bg-deep-rgb), 0.85);
   border: 1px solid rgba(244, 239, 234, 0.2);
   color: #E8E2DA;
   font-size: 0.7rem;
@@ -739,8 +739,8 @@ body {
 }
 
 .photo-tag.place {
-  background: rgba(196, 155, 113, 0.16);
-  color: #F2D2A2;
+  background: rgba(var(--accent-rgb), 0.16);
+  color: var(--accent-soft);
 }
 
 .photo-card-actions {
@@ -763,7 +763,7 @@ body {
 }
 
 .photo-card-actions button:hover {
-  border-color: #C49B71;
+  border-color: var(--accent-gold);
   color: #fff;
 }
 
@@ -786,7 +786,7 @@ body {
 
 .portal-modal {
   background: #1A1C22;
-  border: 1px solid rgba(196, 155, 113, 0.5);
+  border: 1px solid rgba(var(--accent-rgb), 0.5);
   border-radius: 16px;
   padding: 20px 22px;
   width: min(560px, 100%);
@@ -825,7 +825,7 @@ body {
   top: 8px;
   left: 8px;
   z-index: 3;
-  background: rgba(14, 16, 20, 0.86);
+  background: rgba(var(--bg-deep-rgb), 0.86);
   border: 1px solid rgba(244, 239, 234, 0.34);
   color: #F4EFEA;
   font-family: inherit;
@@ -838,20 +838,20 @@ body {
 }
 
 .photo-select-btn:hover {
-  border-color: #E6B980;
-  background: rgba(24, 27, 34, 0.96);
+  border-color: var(--accent-soft);
+  background: rgba(var(--bg-panel-rgb), 0.96);
 }
 
 .photo-select-btn.selected {
-  background: #C49B71;
+  background: var(--accent-gold);
   border-color: #F5DFBB;
   color: #121316;
   font-weight: 700;
 }
 
 .portal-photo-card.selected-for-studio {
-  border-color: #E6B980;
-  box-shadow: 0 0 0 2px rgba(230, 185, 128, 0.35);
+  border-color: var(--accent-soft);
+  box-shadow: 0 0 0 2px rgba(var(--accent-soft-rgb), 0.35);
 }
 
 /* Sticky Bottom Multi-Select Action Bar */
@@ -865,7 +865,7 @@ body {
   background: rgba(20, 22, 28, 0.96);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(230, 185, 128, 0.65);
+  border: 1px solid rgba(var(--accent-soft-rgb), 0.65);
   border-radius: 16px;
   padding: 10px 16px;
   box-shadow: 0 14px 38px rgba(0, 0, 0, 0.65);
@@ -910,7 +910,7 @@ body {
   height: 44px;
   border-radius: 7px;
   overflow: hidden;
-  border: 1px solid rgba(230, 185, 128, 0.55);
+  border: 1px solid rgba(var(--accent-soft-rgb), 0.55);
   flex-shrink: 0;
 }
 
@@ -963,13 +963,13 @@ body {
 }
 
 .studio-mode-card:hover {
-  border-color: rgba(230, 185, 128, 0.55);
+  border-color: rgba(var(--accent-soft-rgb), 0.55);
 }
 
 .studio-mode-card.active {
-  background: rgba(196, 155, 113, 0.18);
-  border-color: #E6B980;
-  box-shadow: 0 0 0 1px rgba(230, 185, 128, 0.35);
+  background: rgba(var(--accent-rgb), 0.18);
+  border-color: var(--accent-soft);
+  box-shadow: 0 0 0 1px rgba(var(--accent-soft-rgb), 0.35);
 }
 
 .studio-mode-title {

@@ -11,7 +11,7 @@
   --text-secondary: #A6ACB2;
   --accent-gold: #C49B71;
   --accent-blue: #8A9EA7;
-  --accent-gold-glow: rgba(196, 155, 113, 0.35);
+  --accent-gold-glow: rgba(var(--accent-rgb), 0.35);
 }
 
 * {
@@ -162,7 +162,7 @@ canvas#spatial-canvas {
   height: 38px;
   max-height: 38px;
   box-sizing: border-box;
-  background: rgba(18, 19, 23, 0.78);
+  background: rgba(var(--bg-deep-rgb), 0.78);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--panel-border);
@@ -180,19 +180,52 @@ canvas#spatial-canvas {
    Only expands horizontally, never vertically.
    Child containers are single-line/flex-nowrap to eliminate any layout oscillation or flickering. */
 @media (min-width: 861px) {
+  /* Collapsed = just the history arrows. Everything else is hidden whole
+     (zero width), never clipped mid-text. Expanded = full natural content width. */
   .spatial-nav-bar {
-    max-width: 140px;
+    max-width: 100%;
     opacity: 0.65;
-    background: rgba(18, 19, 23, 0.55);
+    background: rgba(var(--bg-deep-rgb), 0.55);
+  }
+
+  .spatial-nav-bar .spatial-breadcrumb-list {
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition: max-width 0.28s ease, opacity 0.18s ease;
+  }
+
+  .spatial-nav-bar:not(:hover):not(:focus-within) .spatial-outgoing-portals,
+  .spatial-nav-bar:not(:hover):not(:focus-within) .portal-return-btn {
+    display: none;
+  }
+
+  .spatial-nav-bar .spatial-history-btns {
+    padding-inline-end: 0;
+    border-inline-end-width: 0;
+    transition: padding 0.28s ease;
   }
 
   .spatial-nav-bar:hover,
   .spatial-nav-bar:focus-within {
-    max-width: min(100%, 1160px);
     opacity: 1;
-    background: rgba(18, 19, 23, 0.90);
-    border-color: rgba(196, 155, 113, 0.45);
+    background: rgba(var(--bg-deep-rgb), 0.90);
+    border-color: rgba(var(--accent-rgb), 0.45);
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  .spatial-nav-bar:hover .spatial-breadcrumb-list,
+  .spatial-nav-bar:focus-within .spatial-breadcrumb-list {
+    max-width: 1000px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .spatial-nav-bar:hover .spatial-history-btns,
+  .spatial-nav-bar:focus-within .spatial-history-btns {
+    padding-inline-end: 8px;
+    border-inline-end-width: 1px;
   }
 }
 
@@ -272,7 +305,7 @@ body.beta-drawer-open .spatial-nav-bar {
 }
 
 .spatial-crumb-sep {
-  color: rgba(196, 155, 113, 0.72);
+  color: rgba(var(--accent-rgb), 0.72);
   font-size: 0.82rem;
   font-weight: 600;
   padding: 0 1px;
@@ -294,15 +327,15 @@ body.beta-drawer-open .spatial-nav-bar {
 }
 
 .spatial-crumb-btn:hover {
-  color: #F6E6CE;
-  background: rgba(196, 155, 113, 0.16);
-  border-color: rgba(196, 155, 113, 0.42);
+  color: var(--accent-pale);
+  background: rgba(var(--accent-rgb), 0.16);
+  border-color: rgba(var(--accent-rgb), 0.42);
 }
 
 .spatial-crumb-current {
-  color: #F6E6CE;
-  background: rgba(196, 155, 113, 0.18);
-  border: 1px solid rgba(196, 155, 113, 0.48);
+  color: var(--accent-pale);
+  background: rgba(var(--accent-rgb), 0.18);
+  border: 1px solid rgba(var(--accent-rgb), 0.48);
   font-family: var(--font-heading);
   font-size: 0.79rem;
   font-weight: 600;
@@ -339,8 +372,8 @@ body.beta-drawer-open .spatial-nav-bar {
 }
 
 .spatial-portal-chip {
-  background: rgba(196, 155, 113, 0.14);
-  border: 1px solid rgba(196, 155, 113, 0.44);
+  background: rgba(var(--accent-rgb), 0.14);
+  border: 1px solid rgba(var(--accent-rgb), 0.44);
   color: #F3DFC1;
   font-family: var(--font-heading);
   font-size: 0.74rem;
@@ -366,7 +399,7 @@ body.beta-drawer-open .spatial-nav-bar {
 
 .spatial-portal-chip:hover {
   background: var(--accent-gold);
-  border-color: #F5D7A8;
+  border-color: var(--accent-soft);
   color: #15110a;
   font-weight: 600;
 }
@@ -430,8 +463,8 @@ body.beta-drawer-open .portal-hover-plaque {
   background: rgba(15, 16, 19, 0.65);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(230, 185, 128, 0.35);
-  color: #F3E5D0;
+  border: 1px solid rgba(var(--accent-soft-rgb), 0.35);
+  color: var(--accent-pale);
   font-family: var(--font-heading);
   font-size: 0.75rem;
   font-weight: 500;
@@ -476,7 +509,7 @@ body.beta-drawer-open .portal-hover-plaque {
 .portal-micro-badge:focus-visible {
   opacity: 1;
   background: var(--accent-gold);
-  border-color: #F5D7A8;
+  border-color: var(--accent-soft);
   color: #15110a;
   font-weight: 600;
   box-shadow: 0 4px 16px var(--accent-gold-glow);
@@ -496,7 +529,7 @@ body.beta-drawer-open .portal-hover-plaque {
   z-index: 16;
   pointer-events: none;
   transform: translate(-50%, calc(-100% - 14px));
-  background: rgba(16, 17, 20, 0.92);
+  background: rgba(var(--bg-deep-rgb), 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--accent-gold);
@@ -513,7 +546,7 @@ body.beta-drawer-open .portal-hover-plaque {
 .portal-hover-plaque .plaque-title {
   font-size: 0.84rem;
   font-weight: 600;
-  color: #F6E6CE;
+  color: var(--accent-pale);
 }
 
 .portal-hover-plaque .plaque-cta {
@@ -523,16 +556,16 @@ body.beta-drawer-open .portal-hover-plaque {
 
 /* Hamburger Toggle Button in Top Bar (physical left edge) */
 .sidebar-toggle-btn {
-  border-color: rgba(196, 155, 113, 0.44);
+  border-color: rgba(var(--accent-rgb), 0.44);
   background: rgba(22, 23, 27, 0.86);
   font-weight: 500;
   gap: 8px;
 }
 
 .sidebar-toggle-btn.active {
-  background: rgba(196, 155, 113, 0.24);
+  background: rgba(var(--accent-rgb), 0.24);
   border-color: var(--accent-gold);
-  color: #F6E6CE;
+  color: var(--accent-pale);
 }
 
 .hamburger-lines {
@@ -557,7 +590,7 @@ body.beta-drawer-open .portal-hover-plaque {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--accent-gold);
-  color: #F5DEC0;
+  color: var(--accent-pale);
   font-family: var(--font-heading);
   font-size: 0.76rem;
   font-weight: 600;
@@ -587,7 +620,7 @@ body.beta-drawer-open .portal-hover-plaque {
   height: 100%;
   height: 100dvh;
   z-index: 36;
-  background: rgba(16, 17, 20, 0.94);
+  background: rgba(var(--bg-deep-rgb), 0.94);
   backdrop-filter: blur(26px);
   -webkit-backdrop-filter: blur(26px);
   border-right: 1px solid rgba(230, 232, 234, 0.14);
@@ -646,7 +679,7 @@ body.beta-drawer-open .portal-hover-plaque {
 .sidebar-close-btn:hover {
   color: #fff;
   border-color: var(--accent-gold);
-  background: rgba(196, 155, 113, 0.16);
+  background: rgba(var(--accent-rgb), 0.16);
 }
 
 .sidebar-scroll {
@@ -670,7 +703,7 @@ body.beta-drawer-open .portal-hover-plaque {
   font-family: var(--font-heading);
   font-size: 0.72rem;
   font-weight: 600;
-  color: rgba(196, 155, 113, 0.85);
+  color: rgba(var(--accent-rgb), 0.85);
   letter-spacing: 0.4px;
 }
 
@@ -705,14 +738,14 @@ body.beta-drawer-open .portal-hover-plaque {
 }
 
 .exhibition-tab-btn.active {
-  background: rgba(196, 155, 113, 0.2);
-  border-color: rgba(196, 155, 113, 0.62);
-  color: #F6E6CE;
+  background: rgba(var(--accent-rgb), 0.2);
+  border-color: rgba(var(--accent-rgb), 0.62);
+  color: var(--accent-pale);
   font-weight: 600;
 }
 
 .exhibition-tab-btn.portal-origin-highlight:not(.active) {
-  border-color: rgba(196, 155, 113, 0.42);
+  border-color: rgba(var(--accent-rgb), 0.42);
   color: #EBD0AC;
 }
 
@@ -787,9 +820,9 @@ body.beta-drawer-open .portal-hover-plaque {
 }
 
 .scene-btn.active {
-  background: rgba(196, 155, 113, 0.22);
-  border-color: rgba(196, 155, 113, 0.58);
-  color: #F8E8CF;
+  background: rgba(var(--accent-rgb), 0.22);
+  border-color: rgba(var(--accent-rgb), 0.58);
+  color: var(--accent-pale);
   font-weight: 600;
 }
 
@@ -816,8 +849,8 @@ body.beta-drawer-open .portal-hover-plaque {
 .aux-btn:hover,
 .aux-btn.active {
   color: var(--text-primary);
-  border-color: rgba(196, 155, 113, 0.55);
-  background: rgba(196, 155, 113, 0.16);
+  border-color: rgba(var(--accent-rgb), 0.55);
+  background: rgba(var(--accent-rgb), 0.16);
 }
 
 /* Global Beta Typography Selector in Left Sidebar */
@@ -847,9 +880,9 @@ body.beta-drawer-open .portal-hover-plaque {
 }
 
 .beta-font-chip.active {
-  background: rgba(196, 155, 113, 0.22);
+  background: rgba(var(--accent-rgb), 0.22);
   border-color: var(--accent-gold);
-  color: #F8E8CF;
+  color: var(--accent-pale);
   font-weight: 600;
 }
 
@@ -869,8 +902,8 @@ body.beta-drawer-open .portal-hover-plaque {
   font-size: 0.82rem;
   font-weight: 500;
   color: var(--accent-gold);
-  border-color: rgba(196, 155, 113, 0.38);
-  background: rgba(196, 155, 113, 0.08);
+  border-color: rgba(var(--accent-rgb), 0.38);
+  background: rgba(var(--accent-rgb), 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -878,7 +911,7 @@ body.beta-drawer-open .portal-hover-plaque {
 }
 
 .sidebar-info-btn:hover {
-  background: rgba(196, 155, 113, 0.18);
+  background: rgba(var(--accent-rgb), 0.18);
   border-color: var(--accent-gold);
   color: #FFF;
 }
@@ -978,7 +1011,7 @@ body.beta-drawer-open .portal-hover-plaque {
 
 .story-card.active-story {
   border-color: var(--accent-gold);
-  box-shadow: 0 0 18px rgba(196, 155, 113, 0.18);
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.18);
 }
 
 .story-card a {
@@ -1016,7 +1049,7 @@ body.beta-drawer-open .portal-hover-plaque {
   flex-direction: column;
   gap: 4px;
   text-decoration: none !important;
-  background: rgba(16, 17, 20, 0.72);
+  background: rgba(var(--bg-deep-rgb), 0.72);
   border: 1px solid var(--panel-border);
   border-radius: 8px;
   padding: 5px;
@@ -1115,7 +1148,7 @@ body.beta-drawer-open .portal-hover-plaque {
 .spinner {
   width: 48px;
   height: 48px;
-  border: 3px solid rgba(196, 155, 113, 0.2);
+  border: 3px solid rgba(var(--accent-rgb), 0.2);
   border-top-color: var(--accent-gold);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -1147,8 +1180,8 @@ body.beta-drawer-open .portal-hover-plaque {
   font-size: 0.92rem;
   font-weight: 500;
   color: var(--accent-gold);
-  background: rgba(196, 155, 113, 0.12);
-  border: 1px solid rgba(196, 155, 113, 0.45);
+  background: rgba(var(--accent-rgb), 0.12);
+  border: 1px solid rgba(var(--accent-rgb), 0.45);
   padding: 6px 18px;
   border-radius: 999px;
   box-shadow: 0 0 16px rgba(245, 208, 144, 0.25);

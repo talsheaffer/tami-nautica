@@ -6,6 +6,7 @@
 import { SpatialSceneManager, EXHIBITION_GROUPS } from './scene_manager.js';
 import { BetaFeedbackOverlay } from './feedback_overlay.js';
 import { mountBetaFontChipSelector } from './beta_font.js';
+import { mountThemeSelector, mountUiStyleSelector } from './theme.js';
 
 export { EXHIBITION_GROUPS };
 
@@ -179,6 +180,8 @@ class SpatialApp {
 
     this._initLoadingScreenRotation();
     mountBetaFontChipSelector(this.betaFontSelectorEl);
+    mountThemeSelector(document.getElementById('theme-selector'));
+    mountUiStyleSelector(document.getElementById('ui-style-selector'));
     this.initSceneManager();
     this._buildPortalMicroBadges();
     this.updateActiveSceneUI(this.manager.currentSceneId);

@@ -9,10 +9,16 @@
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/feedback.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/ui_styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>70</text></svg>">
   <script>
     (function () {
       try {
+        var savedTheme = localStorage.getItem('tami70_theme');
+        document.documentElement.setAttribute('data-theme', savedTheme || 'ocean');
+        var savedUi = localStorage.getItem('tami70_ui_style');
+        document.documentElement.setAttribute('data-ui', savedUi || 'glass-light');
         var savedFont = localStorage.getItem('tami70_beta_font');
         if (savedFont) {
           document.documentElement.setAttribute('data-beta-font', savedFont);
@@ -313,6 +319,18 @@
         <div class="sidebar-section" id="beta-font-section">
           <span class="sidebar-section-label">גופן תצוגה (בחירה לבטא — חל בכל האתר)</span>
           <div id="beta-font-selector" class="beta-font-selector" role="group" aria-label="בחירת גופן תצוגה"></div>
+        </div>
+
+        <!-- UI Design Style Picker -->
+        <div class="sidebar-section" id="ui-style-section">
+          <span class="sidebar-section-label">עיצוב ממשק</span>
+          <div id="ui-style-selector" class="ui-style-selector" role="group" aria-label="בחירת עיצוב ממשק"></div>
+        </div>
+
+        <!-- UI Color Scheme Picker (bottom of sidebar) -->
+        <div class="sidebar-section" id="theme-section">
+          <span class="sidebar-section-label">ערכת צבעים</span>
+          <div id="theme-selector" class="theme-selector" role="group" aria-label="בחירת ערכת צבעים"></div>
         </div>
 
         <!-- Family Beta Workspace Links Slot -->
