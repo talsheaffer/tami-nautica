@@ -2694,7 +2694,7 @@ def default_vitrine_bedroom_paris_bundle_config() -> VitrineBedroomParisBundleCo
                 initial_camera_y=-4.0,
                 initial_camera_z=525.0,
                 min_camera_z=-85.0,
-                max_camera_z=685.0,
+                max_camera_z=1400.0,
                 max_yaw_deg=22.0,
                 max_pitch_deg=15.5,
                 max_strafe_x=125.0,
@@ -2718,7 +2718,11 @@ def default_vitrine_bedroom_paris_bundle_config() -> VitrineBedroomParisBundleCo
             vitrine_rotation_deg=-130.0,
             vitrine_flight_roll_deg=-130.0,
             host_wall_z_world=-319.01,
-            host_wall_slope_dz_dx=-0.11710,
+            # Measured from the framed painting hanging on the same wall: its top/bottom frame edges
+            # meet at vanishing point (2051, 322) inner px; with the rest-camera focal
+            # f = (boreZ - bgZ) / (0.5 * innerScale) = 773.6 px this gives dz/dx = -f / (2051 - 750)
+            # (wall yaw 30.7 deg). The neural depth map flattens this wall to ~6.7 deg.
+            host_wall_slope_dz_dx=-0.5944,
             host_wall_slope_dz_dy=0.00154,
             host_wall_clearance_world=0.08,
             target_vitrine_center_inner_xy=(749.5, 504.5),

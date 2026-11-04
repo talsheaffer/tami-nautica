@@ -765,7 +765,11 @@ class TestFlightPrinciplesWebGLRuntime(unittest.TestCase):
                     nestedPosErr: nested.group.position.distanceTo(wmx.tDio),
                     nestedQuatDot: Math.abs(nested.group.quaternion.dot(wmx.qDio)),
                     nestedScaleErr: Math.abs(nested.group.scale.x - wmx.lambdaP),
-                    lambdaP: wmx.lambdaP
+                    lambdaP: wmx.lambdaP,
+                    wallYawDeg: (() => {
+                      const n = wmx.tDio.clone().set(0, 0, 1).applyQuaternion(wmx.qDio);
+                      return (Math.atan2(n.x, n.z) * 180.0) / Math.PI;
+                    })()
                   };
 
                   // Forward: bar_giora_bedroom -> vitrine_keys_pen, sample just before landing.
@@ -808,6 +812,9 @@ class TestFlightPrinciplesWebGLRuntime(unittest.TestCase):
             self.assertGreater(report["groupQuatDot"], quat_min_dot)
             self.assertLess(report["groupScaleErr"], 1e-6)
             self.assertLess(report["lambdaP"], 0.5, "Vitrine diorama must be scaled down onto the wall")
+            # The wall under the painting recedes ~30.7 deg (measured from the painting's vanishing
+            # point); the neural depth map alone flattens it to ~6.7 deg, which reads as not flush.
+            self.assertAlmostEqual(report["wallYawDeg"], 30.7, delta=1.5)
             self.assertLess(
                 report["nestedPosErr"], pos_tol, "Nested vitrine in shelf cubby not placed on the wall"
             )

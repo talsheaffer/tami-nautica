@@ -9901,7 +9901,7 @@
       "initialCameraZ": 525.0,
       "portraitInitialYawDeg": 0.0,
       "minCameraZ": -85.0,
-      "maxCameraZ": 685.0,
+      "maxCameraZ": 1400.0,
       "maxYawDeg": 22.0,
       "maxPitchDeg": 15.5,
       "maxStrafeX": 125.0,
@@ -10001,9 +10001,9 @@
       "midCoverageRatio": 0.2005,
       "fgCoverageRatio": 0.1748,
       "mountedVitrineTightBoxPx": [
-        412,
-        339,
-        641,
+        406,
+        335,
+        635,
         509
       ],
       "extraLayers": [
@@ -10058,7 +10058,7 @@
             ],
             "hostBoxSidePx": 118.0,
             "hostWallZ": -319.01,
-            "hostWallSlopeDzDx": -0.1171,
+            "hostWallSlopeDzDx": -0.5944,
             "hostWallSlopeDzDy": 0.00154,
             "hostWallClearanceWorld": 0.08,
             "hostRefInnerScale": 2.12,
