@@ -408,17 +408,39 @@ const DEFAULT_SCROLL_FOOT_PORTAL_SHELVES = Object.freeze([
   Object.freeze({
     id: 'portal_scroll_foot_purim_1966',
     targetSceneId: 'purim_costume_1966',
-    portalMode: 'crossfade',
     labelHe: 'תמי ועדה מחופשות בפורים (~1966) · לחצו על התצלום להיכנס לגינה',
     shortBadgeHe: 'אל פורים 1966',
     showMicroBadge: false,
     innerBoxPx: Object.freeze([706.0, 774.0, 883.0, 939.0]),
     worldZ: -274.29,
     recessDepth: 0.0,
-    embedDiorama: false,
+    embedDiorama: true,
+    keepHostBackdropOpaque: true,
+    outerWallFadeRangeT: Object.freeze([0.78, 0.96]),
     showFrame: false,
     restFrameOpacity: 0.0,
     frameRenderOrder: 6.8,
+    // Purim print lies tilted on the scroll floor: embed Scene 18 on its real surface (flat at
+    // rest, full relief at landing) so the camera swerves to meet it head-on (pure 3D flight).
+    wallMount: Object.freeze({
+      hostLayerId: 'pinned_purim_photo',
+      pointPairsInnerPx: Object.freeze([
+        [[346.8, 100.0], [737.282, 833.823]],
+        [[750.0, 100.0], [777.323, 823.427]],
+        [[1153.2, 100.0], [817.089, 813.101]],
+        [[346.8, 500.0], [750.763, 867.543]],
+        [[750.0, 500.0], [791.562, 856.819]],
+        [[1153.2, 500.0], [832.076, 846.169]],
+        [[346.8, 900.0], [764.799, 902.652]],
+        [[750.0, 900.0], [806.385, 891.582]],
+        [[1153.2, 900.0], [847.676, 880.591]]
+      ]),
+      hostWallClearanceWorld: 0.08,
+      flatAtRest: true,
+      cavityInnerBoxPx: Object.freeze([246.0, 0.0, 1254.0, 1000.0]),
+      cavityFeatherPx: 4.0,
+      dioramaRenderOrders: Object.freeze({ bg: 6.55, mid: 6.6, fg: 6.65, dust: 6.7 })
+    }),
     occluder: Object.freeze({
       texture: 'assets/scenes/scene17_scroll_foot_occluder.png',
       depthTexture: 'assets/scenes/scene17_scroll_foot_occluder_depth.png',
@@ -4211,6 +4233,14 @@ export class SpatialSceneManager {
                 ? wm.cavityInnerBoxPx.map(Number)
                 : [352.0, 120.0, 1148.0, 895.0],
             cavityFeatherPx: typeof wm.cavityFeatherPx === 'number' ? wm.cavityFeatherPx : 4.0,
+            hostLayerId: typeof wm.hostLayerId === 'string' ? wm.hostLayerId : null,
+            pointPairsInnerPx: Array.isArray(wm.pointPairsInnerPx)
+              ? wm.pointPairsInnerPx.map((pair) => [
+                  [Number(pair[0][0]), Number(pair[0][1])],
+                  [Number(pair[1][0]), Number(pair[1][1])]
+                ])
+              : null,
+            flatAtRest: Boolean(wm.flatAtRest),
             inPlaneRollDeg:
               typeof wm.inPlaneRollDeg === 'number' ? wm.inPlaneRollDeg : rotationDeg,
             dioramaRenderOrders: {
@@ -4791,6 +4821,10 @@ export class SpatialSceneManager {
                     ? this.sceneObjects[inst.hostSceneId].portalSurroundingOpacity
                     : 1.0;
                 inst.dioramaGroup.visible = hostOp > 0.02;
+                anyDioramaRevealed = true;
+              }
+              // Surface mounts sample the host layer's depth map, so place them once the host loads.
+              if (inst.hostSceneId === sceneId && inst.spec.wallMount && inst.dioramaGroup) {
                 anyDioramaRevealed = true;
               }
             }
@@ -6498,48 +6532,65 @@ export class SpatialSceneManager {
     const halfInnerW = 0.5 * SCENE_GEOMETRY_SPEC.innerFrameWidthPx;
     const halfInnerH = 0.5 * SCENE_GEOMETRY_SPEC.innerFrameHeightPx;
 
-    const sH = hostObj.innerScale;
-    const hostRest = this._getSceneRestPose(hostSceneId);
-    const hBoreY = hostCfg.boreSightAtRest ? hostRest.y : 0.0;
-    const hBoreZ = hostCfg.boreSightAtRest ? hostRest.z : this.baseCameraZ;
-    const distBgH = Math.max(1.0, hBoreZ - hostObj.sceneBgZ);
-    const rsH = (hBoreZ - wm.hostWallZ) / distBgH;
-
     const sV = targetObj.innerScale;
     const targetRest = this._getSceneRestPose(spec.targetSceneId);
     const tBoreY = targetCfg.boreSightAtRest ? targetRest.y : 0.0;
     const tBoreZ = targetCfg.boreSightAtRest ? targetRest.z : this.baseCameraZ;
-    const distBgV = Math.max(1.0, tBoreZ - targetObj.sceneBgZ);
-    const zPlasterV = targetObj.sceneBgZ + targetObj.roomDepthAmplitude * wm.targetPlasterDepthNorm;
-    const rsV = (tBoreZ - zPlasterV) / distBgV;
 
-    const lambdaP =
-      (wm.hostBoxSidePx * sH * rsH) / Math.max(1e-5, wm.targetBoxSidePx * sV * rsV);
+    let tDio;
+    let qDio;
+    let lambdaP;
+    let pH0;
+    let zPlasterV;
+    let restMatrix = null;
+    if (Array.isArray(wm.pointPairsInnerPx) && wm.pointPairsInnerPx.length >= 3) {
+      // Surface mount (e.g. the Purim photo lying tilted on the scroll floor): fit the similarity
+      // from matched target-frame points onto the host layer's real displaced 3D surface.
+      const fit = this._fitSurfaceMountSimilarity(wm, hostObj, targetObj);
+      if (!fit) return null;
+      ({ tDio, qDio, lambdaP, restMatrix } = fit);
+      pH0 = fit.hostCentroid;
+      zPlasterV = targetObj.sceneBgZ;
+    } else {
+      const sH = hostObj.innerScale;
+      const hostRest = this._getSceneRestPose(hostSceneId);
+      const hBoreY = hostCfg.boreSightAtRest ? hostRest.y : 0.0;
+      const hBoreZ = hostCfg.boreSightAtRest ? hostRest.z : this.baseCameraZ;
+      const distBgH = Math.max(1.0, hBoreZ - hostObj.sceneBgZ);
+      const rsH = (hBoreZ - wm.hostWallZ) / distBgH;
 
-    const refScale = typeof wm.hostRefInnerScale === 'number' && wm.hostRefInnerScale > 0 ? wm.hostRefInnerScale : sH;
-    const scaleRatio = sH / refScale;
-    const dzDx = (wm.hostWallSlopeDzDx || 0.0) / scaleRatio;
-    const dzDy = (wm.hostWallSlopeDzDy || 0.0) / scaleRatio;
-    const wallYaw = Math.atan(-dzDx);
-    const wallPitch = Math.atan(dzDy * Math.cos(wallYaw));
-    const rollRad = THREE.MathUtils.degToRad(wm.inPlaneRollDeg || 0.0);
-    const qDio = new THREE.Quaternion().setFromEuler(
-      new THREE.Euler(wallPitch, wallYaw, rollRad, 'YXZ')
-    );
+      const distBgV = Math.max(1.0, tBoreZ - targetObj.sceneBgZ);
+      zPlasterV = targetObj.sceneBgZ + targetObj.roomDepthAmplitude * wm.targetPlasterDepthNorm;
+      const rsV = (tBoreZ - zPlasterV) / distBgV;
 
-    const [cxH, cyH] = wm.hostCenterInnerPx;
-    const [cxV, cyV] = wm.targetBoxCenterInnerPx;
-    const pH0 = new THREE.Vector3(
-      0.5 * sH * (cxH - halfInnerW) * rsH,
-      hBoreY + (-0.5 * sH * (cyH - halfInnerH) - hBoreY) * rsH,
-      wm.hostWallZ + (wm.hostWallClearanceWorld || 0.0)
-    );
-    const pV0 = new THREE.Vector3(
-      0.5 * sV * (cxV - halfInnerW) * rsV,
-      tBoreY + (-0.5 * sV * (cyV - halfInnerH) - tBoreY) * rsV,
-      zPlasterV
-    );
-    const tDio = pH0.clone().sub(pV0.clone().applyQuaternion(qDio).multiplyScalar(lambdaP));
+      lambdaP =
+        (wm.hostBoxSidePx * sH * rsH) / Math.max(1e-5, wm.targetBoxSidePx * sV * rsV);
+
+      const refScale = typeof wm.hostRefInnerScale === 'number' && wm.hostRefInnerScale > 0 ? wm.hostRefInnerScale : sH;
+      const scaleRatio = sH / refScale;
+      const dzDx = (wm.hostWallSlopeDzDx || 0.0) / scaleRatio;
+      const dzDy = (wm.hostWallSlopeDzDy || 0.0) / scaleRatio;
+      const wallYaw = Math.atan(-dzDx);
+      const wallPitch = Math.atan(dzDy * Math.cos(wallYaw));
+      const rollRad = THREE.MathUtils.degToRad(wm.inPlaneRollDeg || 0.0);
+      qDio = new THREE.Quaternion().setFromEuler(
+        new THREE.Euler(wallPitch, wallYaw, rollRad, 'YXZ')
+      );
+
+      const [cxH, cyH] = wm.hostCenterInnerPx;
+      const [cxV, cyV] = wm.targetBoxCenterInnerPx;
+      pH0 = new THREE.Vector3(
+        0.5 * sH * (cxH - halfInnerW) * rsH,
+        hBoreY + (-0.5 * sH * (cyH - halfInnerH) - hBoreY) * rsH,
+        wm.hostWallZ + (wm.hostWallClearanceWorld || 0.0)
+      );
+      const pV0 = new THREE.Vector3(
+        0.5 * sV * (cxV - halfInnerW) * rsV,
+        tBoreY + (-0.5 * sV * (cyV - halfInnerH) - tBoreY) * rsV,
+        zPlasterV
+      );
+      tDio = pH0.clone().sub(pV0.clone().applyQuaternion(qDio).multiplyScalar(lambdaP));
+    }
 
     const restLocalVec = new THREE.Vector3(targetRest.x, targetRest.y, targetRest.z);
     const arrivalCamPos = tDio
@@ -6557,6 +6608,7 @@ export class SpatialSceneManager {
 
     return {
       hostAnchor: pH0,
+      restMatrix,
       tDio,
       qDio,
       lambdaP,
@@ -6567,6 +6619,191 @@ export class SpatialSceneManager {
       arrivalCamPos,
       arrivalCamQuat
     };
+  }
+
+  /** Bilinear red-channel sample (0..1) of a loaded texture image at uv (flipY convention). */
+  _sampleTextureRed(tex, uvx, uvy) {
+    const img = tex && tex.image;
+    const w = img && (img.naturalWidth || img.width);
+    const h = img && (img.naturalHeight || img.height);
+    if (!w || !h) return null;
+    if (!tex.userData) tex.userData = {};
+    if (!tex.userData.redSampler || tex.userData.redSampler.img !== img) {
+      const cv = document.createElement('canvas');
+      cv.width = w;
+      cv.height = h;
+      const ctx = cv.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, w, h);
+      tex.userData.redSampler = { img, w, h, data: ctx.getImageData(0, 0, w, h).data };
+    }
+    const { w: sw, h: sh, data } = tex.userData.redSampler;
+    const fx = THREE.MathUtils.clamp(uvx * sw - 0.5, 0, sw - 1);
+    const fy = THREE.MathUtils.clamp((1.0 - uvy) * sh - 0.5, 0, sh - 1);
+    const x0 = Math.floor(fx);
+    const y0 = Math.floor(fy);
+    const x1 = Math.min(sw - 1, x0 + 1);
+    const y1 = Math.min(sh - 1, y0 + 1);
+    const ax = fx - x0;
+    const ay = fy - y0;
+    const r = (x, y) => data[(y * sw + x) * 4] / 255.0;
+    return (
+      (r(x0, y0) * (1 - ax) + r(x1, y0) * ax) * (1 - ay) +
+      (r(x0, y1) * (1 - ax) + r(x1, y1) * ax) * ay
+    );
+  }
+
+  /**
+   * World position of a host layer's rendered surface at inner-frame pixel (px, py), evaluating
+   * ROOM_DEPTH_VERTEX_SHADER's displacement on the CPU so mounts sit on the real relief.
+   */
+  _sampleLayerSurfaceWorldPoint(layer, px, py) {
+    const mesh = layer && layer.mesh;
+    const u = mesh && mesh.material && mesh.material.uniforms;
+    const params = mesh && mesh.geometry && mesh.geometry.parameters;
+    if (!mesh || !params) return null;
+    const uvx = px / SCENE_GEOMETRY_SPEC.innerFrameWidthPx;
+    const uvy = 1.0 - py / SCENE_GEOMETRY_SPEC.innerFrameHeightPx;
+    const lx = (uvx - 0.5) * params.width;
+    const ly = (uvy - 0.5) * params.height;
+    let displaced = new THREE.Vector3(lx, ly, 0.0);
+    if (layer.hasDepthRelief && u && u.uDepthMap) {
+      const raw = this._sampleTextureRed(layer.depthTex, uvx, uvy);
+      if (raw === null) return null;
+      const pinMargin = u.uPinMarginUv ? u.uPinMarginUv.value : 0.0;
+      const ss = (e, x) => {
+        const t = THREE.MathUtils.clamp(x / e, 0.0, 1.0);
+        return t * t * (3.0 - 2.0 * t);
+      };
+      const pin =
+        pinMargin > 1e-5
+          ? ss(pinMargin, uvx) * ss(pinMargin, 1.0 - uvx) * ss(pinMargin, uvy) * ss(pinMargin, 1.0 - uvy)
+          : 1.0;
+      const zDisp = raw * u.uDepthAmplitude.value * pin;
+      const distBg = Math.max(1.0, u.uDistBg.value);
+      const rayScale = (distBg - zDisp) / distBg;
+      const ocx = u.uOpticalCenterLocalX.value;
+      const ocy = u.uOpticalCenterLocalY.value;
+      displaced = new THREE.Vector3(
+        ocx + (lx - ocx) * rayScale,
+        ocy + (ly - ocy) * rayScale,
+        zDisp
+      );
+    }
+    mesh.updateWorldMatrix(true, false);
+    return displaced.applyMatrix4(mesh.matrixWorld);
+  }
+
+  /**
+   * Surface mount fit for a print lying in the host scene (the Purim photo on the scroll floor).
+   *
+   * Rest: an affine map A0 sends the target frame (flat at z = bgZ) onto the parallelogram that lies
+   * on the host rest camera's rays through four photo corners, so at rest the embedded scene
+   * projects pixel-exactly onto the printed photo. Its depth along the rays is pinned to the host
+   * layer's real displaced surface at the photo centre.
+   * Landing: the closest similarity S1 (uniform scale + rotation) to A0, because only a similarity
+   * keeps the arrival camera's view identical to the standalone target scene.
+   */
+  _fitSurfaceMountSimilarity(wm, hostObj, targetObj) {
+    const layer = Array.isArray(hostObj.extraLayers)
+      ? hostObj.extraLayers.find((el) => el && el.id === wm.hostLayerId)
+      : null;
+    const u = layer && layer.mesh && layer.mesh.material && layer.mesh.material.uniforms;
+    const params = layer && layer.mesh && layer.mesh.geometry && layer.mesh.geometry.parameters;
+    if (!layer || !u || !params) return null;
+    const sV = targetObj.innerScale;
+    const halfW = 0.5 * SCENE_GEOMETRY_SPEC.innerFrameWidthPx;
+    const halfH = 0.5 * SCENE_GEOMETRY_SPEC.innerFrameHeightPx;
+    const pairs = wm.pointPairsInnerPx;
+    const tOf = ([tu, tv]) => new THREE.Vector2(0.5 * sV * (tu - halfW), -0.5 * sV * (tv - halfH));
+
+    // Corner pairs of the target grid (min/max u, v) and the pair nearest the centre.
+    const byTarget = (fu, fv) =>
+      pairs.reduce((best, pr) => (fu(pr[0]) + fv(pr[0]) < fu(best[0]) + fv(best[0]) ? pr : best));
+    const c00 = byTarget((t) => t[0], (t) => t[1]);
+    const c10 = byTarget((t) => -t[0], (t) => t[1]);
+    const c01 = byTarget((t) => t[0], (t) => -t[1]);
+    const c11 = byTarget((t) => -t[0], (t) => -t[1]);
+    const tMid = new THREE.Vector2(
+      0.5 * (c00[0][0] + c11[0][0]),
+      0.5 * (c00[0][1] + c11[0][1])
+    );
+    const cMid = pairs.reduce((best, pr) =>
+      Math.hypot(pr[0][0] - tMid.x, pr[0][1] - tMid.y) <
+      Math.hypot(best[0][0] - tMid.x, best[0][1] - tMid.y)
+        ? pr
+        : best
+    );
+
+    // Rays from the layer's optical centre (the host rest camera) through the flat layer points.
+    layer.mesh.updateWorldMatrix(true, false);
+    const mw = layer.mesh.matrixWorld;
+    const apex = new THREE.Vector3(
+      u.uOpticalCenterLocalX.value,
+      u.uOpticalCenterLocalY.value,
+      Math.max(1.0, u.uDistBg.value)
+    ).applyMatrix4(mw);
+    const rayTo = ([hx, hy]) => {
+      const lx = (hx / SCENE_GEOMETRY_SPEC.innerFrameWidthPx - 0.5) * params.width;
+      const ly = (0.5 - hy / SCENE_GEOMETRY_SPEC.innerFrameHeightPx) * params.height;
+      return new THREE.Vector3(lx, ly, 0.0).applyMatrix4(mw).sub(apex);
+    };
+    const r00 = rayTo(c00[1]);
+    const r10 = rayTo(c10[1]);
+    const r01 = rayTo(c01[1]);
+    const r11 = rayTo(c11[1]);
+    // Parallelogram: P00 + P11 = P10 + P01, with d00 = 1  ->  d11 r11 - d10 r10 - d01 r01 = -r00.
+    const m = new THREE.Matrix3().set(
+      r11.x, -r10.x, -r01.x,
+      r11.y, -r10.y, -r01.y,
+      r11.z, -r10.z, -r01.z
+    );
+    if (Math.abs(m.determinant()) < 1e-9) return null;
+    const d = r00.clone().negate().applyMatrix3(m.clone().invert());
+    const P00 = r00.clone();
+    const P11 = r11.clone().multiplyScalar(d.x);
+    const P10 = r10.clone().multiplyScalar(d.y);
+    const P01 = r01.clone().multiplyScalar(d.z);
+
+    // Pin the depth along the rays to the host layer's displaced surface at the photo centre.
+    const surfMid = this._sampleLayerSurfaceWorldPoint(layer, cMid[1][0], cMid[1][1]);
+    if (!surfMid) return null;
+    const rMid = rayTo(cMid[1]);
+    const nPlane = new THREE.Vector3().crossVectors(P10.clone().sub(P00), P01.clone().sub(P00));
+    const kPlane = P00.dot(nPlane) / Math.max(1e-9, rMid.dot(nPlane));
+    const kSurf = surfMid.clone().sub(apex).length() / Math.max(1e-9, rMid.length());
+    const depthScale = kSurf / Math.max(1e-9, kPlane);
+    for (const P of [P00, P10, P01, P11]) P.multiplyScalar(depthScale).add(apex);
+
+    // Affine A0: target (x, y, z) -> host, with z measured from the target bg plane.
+    const t00 = tOf(c00[0]);
+    const t10 = tOf(c10[0]);
+    const t01 = tOf(c01[0]);
+    const U = P10.clone().sub(P00).multiplyScalar(1 / (t10.x - t00.x));
+    const W = P01.clone().sub(P00).multiplyScalar(1 / (t01.y - t00.y));
+    const lambdaP = 0.5 * (U.length() + W.length());
+    const e1 = U.clone().normalize();
+    const e2 = W.clone().addScaledVector(e1, -W.dot(e1)).normalize();
+    const e3 = new THREE.Vector3().crossVectors(e1, e2);
+    const N = e3.clone().multiplyScalar(lambdaP);
+    const lift = wm.hostWallClearanceWorld || 0.0;
+    // Host point for target (x, y, bgZ): P00 + U (x - t00.x) + W (y - t00.y).
+    const origin = P00.clone()
+      .addScaledVector(U, -t00.x)
+      .addScaledVector(W, -t00.y)
+      .addScaledVector(N, -targetObj.sceneBgZ)
+      .addScaledVector(e3, lift);
+    const restMatrix = new THREE.Matrix4().makeBasis(U, W, N).setPosition(origin);
+
+    // Landing similarity S1: same centre, orthonormalized axes, uniform scale.
+    const qDio = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(e1, e2, e3));
+    const tc = new THREE.Vector3(
+      0.5 * (t00.x + tOf(c11[0]).x),
+      0.5 * (t00.y + tOf(c11[0]).y),
+      targetObj.sceneBgZ
+    );
+    const hostCentroid = tc.clone().applyMatrix4(restMatrix);
+    const tDio = hostCentroid.clone().sub(tc.clone().applyQuaternion(qDio).multiplyScalar(lambdaP));
+    return { tDio, qDio, lambdaP, hostCentroid, restMatrix };
   }
 
   _applyDioramaInstanceTint(inst, rgbArr) {
@@ -6668,12 +6905,27 @@ export class SpatialSceneManager {
       // Wall-mounted dioramas (e.g. the vitrine hung rotated on Bar Giora's wall) sit flush on the
       // host wall plane with their in-plane roll; the flight camera arrives at the matching pose.
       const wmx = this._computeWallMountDioramaTransform(geom, inst.hostSceneId);
-      if (!wmx) return;
+      if (!wmx) {
+        // Never show an unplaced (identity, full-scale) diorama; retry on the next sync.
+        inst.wallMountXform = null;
+        inst.hiddenUnplaced = true;
+        inst.dioramaGroup.visible = false;
+        return;
+      }
       inst.wallMountXform = wmx;
+      if (inst.hiddenUnplaced) {
+        inst.hiddenUnplaced = false;
+        inst.dioramaGroup.visible = Boolean(targetObj.texturesReady);
+      }
+      if (geom.wallMount.flatAtRest) {
+        this._applyMountReliefToMaterials(
+          [inst.bgMat, inst.midMat, inst.fgMat],
+          targetObj,
+          this._mountReliefScale(inst)
+        );
+      }
       lambdaP = wmx.lambdaP;
-      inst.dioramaGroup.scale.setScalar(lambdaP);
-      inst.dioramaGroup.quaternion.copy(wmx.qDio);
-      inst.dioramaGroup.position.copy(wmx.tDio);
+      this._applyMountGroupTransform(inst.dioramaGroup, wmx, this._mountReliefScale(inst));
     } else {
       const targetRest = this._getSceneRestPose(inst.targetSceneId);
       const frontZ = Math.max(targetObj.sceneFgZ, 0.0);
@@ -6864,9 +7116,9 @@ export class SpatialSceneManager {
       return;
     }
     cwm.group.visible = true;
-    cwm.group.position.copy(wmx.tDio);
-    cwm.group.quaternion.copy(wmx.qDio);
-    cwm.group.scale.setScalar(wmx.lambdaP);
+    const nestedSettle =
+      childSpec.wallMount.flatAtRest && sourceChildInst ? this._mountReliefScale(sourceChildInst) : 0.0;
+    this._applyMountGroupTransform(cwm.group, wmx, childSpec.wallMount.flatAtRest ? nestedSettle : 1.0);
 
     const pairs = [
       [cwm.bgMesh, cwm.bgMat, childTargetObj.layer0],
@@ -6893,6 +7145,72 @@ export class SpatialSceneManager {
           : 0.0;
       cwm.bgMat.uniforms.uOuterWallOpacity.value = srcOuter;
     }
+    if (childSpec.wallMount.flatAtRest) {
+      const rs = sourceChildInst ? this._mountReliefScale(sourceChildInst) : 0.0;
+      this._applyMountReliefToMaterials([cwm.bgMat, cwm.midMat, cwm.fgMat], childTargetObj, rs);
+    }
+  }
+
+  /**
+   * Depth-relief scale for `flatAtRest` mounts (the Purim photo reads as a flat print on the floor
+   * at rest and gains its full 3D garden relief exactly at landing, so t=0 and t=1 both register).
+   */
+  _applyMountReliefToMaterials(mats, targetObj, reliefScale) {
+    const [bgMat, midMat, fgMat] = mats;
+    const set = (mat, amp) => {
+      const u = mat && mat.uniforms;
+      if (u && u.uDepthAmplitude && typeof amp === 'number') u.uDepthAmplitude.value = amp * reliefScale;
+    };
+    set(bgMat, targetObj.roomDepthAmplitude);
+    set(midMat, targetObj.midDepthAmplitude);
+    set(fgMat, targetObj.fgDepthAmplitude);
+  }
+
+  _mountReliefScale(inst) {
+    const wm = inst && inst.spec && inst.spec.wallMount;
+    if (!wm || !wm.flatAtRest) return 1.0;
+    return typeof inst.reliefScale === 'number' ? inst.reliefScale : 0.0;
+  }
+
+  _setWallMountReliefScale(inst, reliefScale) {
+    const wm = inst && inst.spec && inst.spec.wallMount;
+    if (!wm || !wm.flatAtRest) return;
+    inst.reliefScale = THREE.MathUtils.clamp(reliefScale, 0.0, 1.0);
+    const targetObj = this.sceneObjects && this.sceneObjects[inst.targetSceneId];
+    if (targetObj) {
+      this._applyMountReliefToMaterials([inst.bgMat, inst.midMat, inst.fgMat], targetObj, inst.reliefScale);
+    }
+    if (inst.wallMountXform && inst.dioramaGroup) {
+      this._applyMountGroupTransform(inst.dioramaGroup, inst.wallMountXform, inst.reliefScale);
+    }
+  }
+
+  /**
+   * Places a mount group. Surface mounts blend element-wise from the rest affine map (pixel-exact
+   * on the print) to the landing similarity as `settle` goes 0 -> 1; other mounts use the similarity.
+   */
+  _applyMountGroupTransform(group, wmx, settle) {
+    if (!wmx.restMatrix) {
+      group.matrixAutoUpdate = true;
+      group.position.copy(wmx.tDio);
+      group.quaternion.copy(wmx.qDio);
+      group.scale.setScalar(wmx.lambdaP);
+      return;
+    }
+    const sim = new THREE.Matrix4().compose(
+      wmx.tDio,
+      wmx.qDio,
+      new THREE.Vector3(wmx.lambdaP, wmx.lambdaP, wmx.lambdaP)
+    );
+    const k = THREE.MathUtils.clamp(settle, 0.0, 1.0);
+    const a = wmx.restMatrix.elements;
+    const b = sim.elements;
+    const out = new THREE.Matrix4();
+    for (let i = 0; i < 16; i++) out.elements[i] = a[i] * (1.0 - k) + b[i] * k;
+    group.matrixAutoUpdate = false;
+    group.matrix.copy(out);
+    group.matrix.decompose(group.position, group.quaternion, group.scale);
+    group.matrixWorldNeedsUpdate = true;
   }
 
   _setWallMountOuterWallOpacity(inst, opacity) {
@@ -8003,8 +8321,9 @@ export class SpatialSceneManager {
           this.sceneObjects[inst.targetSceneId] &&
             this.sceneObjects[inst.targetSceneId].texturesReady
         );
-        const allowVisible = inst.hostSceneId === 'shelf_portal' ? true : targetReady;
-        inst.dioramaGroup.visible = isSelected
+        const placed = !inst.spec.wallMount || Boolean(inst.wallMountXform);
+        const allowVisible = placed && (inst.hostSceneId === 'shelf_portal' ? true : targetReady);
+        inst.dioramaGroup.visible = placed && isSelected
           ? true
           : inSpecificFlight
             ? allowVisible
@@ -8501,6 +8820,7 @@ export class SpatialSceneManager {
     this._applyPoseToCameraObject(fromPose);
     if (quatPath) {
       this._applyFlightCameraQuat(quatPath, 0.0);
+      this._setWallMountReliefScale(inst, 1.0);
       this._setWallMountOuterWallOpacity(inst, 1.0);
     }
     const initRimAndTint = this._computePortalFlightRimAndTint(spec, fromPose.z, 0.0, true);
@@ -9517,6 +9837,7 @@ export class SpatialSceneManager {
         if (flight.embedDiorama) {
           if (flightInst) {
             this._applyDioramaInstanceTint(flightInst, flightInst.spec.dioramaRestTintRgb);
+            this._setWallMountReliefScale(flightInst, 0.0);
             this._setWallMountOuterWallOpacity(flightInst, 0.0);
           }
           if (flightInst && flightInst.spec.veil) {
@@ -9587,6 +9908,7 @@ export class SpatialSceneManager {
         );
         if (flightInst) {
           this._applyDioramaInstanceTint(flightInst, tintRgb);
+          this._setWallMountReliefScale(flightInst, flight.reverse ? 1.0 - ease : ease);
           this._setWallMountOuterWallOpacity(
             flightInst,
             this._wallMountOuterWallOpacity(flightInst.spec, t, flight.reverse)

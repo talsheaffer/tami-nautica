@@ -839,5 +839,117 @@ class TestFlightPrinciplesWebGLRuntime(unittest.TestCase):
             self._close_chrome_cdp(proc, sock, tmp_dir)
 
 
+    def test_purim_photo_surface_mount_pure_flight(self) -> None:
+        """The Purim print lies tilted on the scroll floor: Scene 18 is embedded on it (pixel-exact
+        and flat at rest), the camera swerves head-on and lands exactly on the standalone rest
+        view (full relief), with zero crossfade/transition-shader rendering in either direction."""
+        proc, sock, tmp_dir, eval_js = self._launch_chrome_cdp(
+            THRESHOLDS.desktop_width, THRESHOLDS.desktop_height
+        )
+        try:
+            report = eval_js(
+                """
+                (async () => {
+                  const sm = window.__tamiSceneManager;
+                  await sm._loadSceneBundleReady('bene_beitcha_scroll_foot', false);
+                  await sm._loadSceneBundleReady('purim_costume_1966', false);
+                  sm.transitionTo('bene_beitcha_scroll_foot');
+                  sm._portalFlight.frozenProgress = 1.0;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  sm._updatePortalShelfTransforms();
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+
+                  const V = sm.camera.position.constructor;
+                  const inst = sm._portalInstances.find((p) => p.spec.id === 'portal_scroll_foot_purim_1966');
+                  const wmx = inst.wallMountXform;
+                  const host = sm.sceneObjects.bene_beitcha_scroll_foot;
+                  const tgt = sm.sceneObjects.purim_costume_1966;
+                  const layer = host.extraLayers.find((e) => e.id === 'pinned_purim_photo');
+                  const W = sm.width;
+                  const H = sm.height;
+                  const scr = (p) => {
+                    const q = p.clone().project(sm.camera);
+                    return [((q.x + 1) / 2) * W, ((1 - q.y) / 2) * H];
+                  };
+                  inst.dioramaGroup.updateMatrixWorld(true);
+                  let maxRestErrPx = 0;
+                  for (const [[tu, tv], [hx, hy]] of inst.spec.wallMount.pointPairsInnerPx) {
+                    const hp = sm._sampleLayerSurfaceWorldPoint(layer, hx, hy);
+                    const tp = new V(0.5 * tgt.innerScale * (tu - 750), -0.5 * tgt.innerScale * (tv - 500), tgt.sceneBgZ)
+                      .applyMatrix4(inst.dioramaGroup.matrixWorld);
+                    const a = scr(hp);
+                    const b = scr(tp);
+                    maxRestErrPx = Math.max(maxRestErrPx, Math.hypot(a[0] - b[0], a[1] - b[1]));
+                  }
+                  const out = {
+                    placed: Boolean(wmx),
+                    embedDiorama: inst.embedDiorama,
+                    maxRestErrPx,
+                    restRelief: inst.midMat.uniforms.uDepthAmplitude.value
+                  };
+
+                  sm.erasePortalOccluder('portal_scroll_foot_purim_1966');
+                  sm._stepPortalOccluderAnimations(performance.now() + 800.0);
+                  sm.transitionTo('purim_costume_1966');
+                  out.fwdIsEmbeddedFlight = Boolean(sm._portalFlight && sm._portalFlight.embedDiorama);
+                  out.fwdHasQuatPath = Boolean(sm._portalFlight && sm._portalFlight.quatPath);
+                  sm._portalFlight.frozenProgress = 0.9999;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.fwdArrivalPosErr = sm.camera.position.distanceTo(wmx.arrivalCamPos);
+                  out.fwdArrivalQuatDot = Math.abs(sm.camera.quaternion.dot(wmx.arrivalCamQuat));
+                  out.fwdRelief = inst.midMat.uniforms.uDepthAmplitude.value;
+                  out.fullRelief = tgt.midDepthAmplitude;
+                  sm._portalFlight.frozenProgress = 1.0;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.landed = sm.currentSceneId;
+
+                  sm.transitionTo('bene_beitcha_scroll_foot');
+                  out.revIsEmbeddedFlight = Boolean(sm._portalFlight && sm._portalFlight.embedDiorama);
+                  sm._portalFlight.frozenProgress = 0.0;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.revStartPosErr = sm.camera.position.distanceTo(wmx.arrivalCamPos);
+                  out.revStartQuatDot = Math.abs(sm.camera.quaternion.dot(wmx.arrivalCamQuat));
+                  sm._portalFlight.frozenProgress = 1.0;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.revLanded = sm.currentSceneId;
+                  out.revRestRelief = inst.midMat.uniforms.uDepthAmplitude.value;
+
+                  const cubby = sm._portalInstances.find((p) => p.spec.id === 'cubby_scroll_foot');
+                  const nested = cubby.childPortalMeshes.map((cp) => cp.childWallMount).find(Boolean);
+                  out.nestedVisible = Boolean(nested && nested.group.visible);
+                  out.nestedMatrixErr = nested
+                    ? Math.max(...nested.group.matrix.elements.map((v, i) => Math.abs(v - inst.dioramaGroup.matrix.elements[i])))
+                    : 1e9;
+                  return out;
+                })()
+                """,
+                await_promise=True,
+                timeout_sec=THRESHOLDS.cdp_heavy_eval_timeout_sec,
+            )
+            pos_tol = THRESHOLDS.position_world_tol * 10.0
+            quat_min_dot = 1.0 - 1e-6
+            self.assertTrue(report["placed"], "Purim surface mount was never placed on the scroll floor photo")
+            self.assertTrue(report["embedDiorama"], "Purim portal must be an embedded 3D flight, not a crossfade")
+            self.assertLess(report["maxRestErrPx"], 0.5, "Embedded Purim scene not pixel-aligned with the print")
+            self.assertAlmostEqual(report["restRelief"], 0.0, delta=1e-6)
+
+            self.assertTrue(report["fwdIsEmbeddedFlight"])
+            self.assertTrue(report["fwdHasQuatPath"])
+            self.assertLess(report["fwdArrivalPosErr"], pos_tol)
+            self.assertGreater(report["fwdArrivalQuatDot"], quat_min_dot)
+            self.assertAlmostEqual(report["fwdRelief"], report["fullRelief"], delta=0.05)
+            self.assertEqual(report["landed"], "purim_costume_1966")
+
+            self.assertTrue(report["revIsEmbeddedFlight"])
+            self.assertLess(report["revStartPosErr"], pos_tol)
+            self.assertGreater(report["revStartQuatDot"], quat_min_dot)
+            self.assertEqual(report["revLanded"], "bene_beitcha_scroll_foot")
+            self.assertAlmostEqual(report["revRestRelief"], 0.0, delta=1e-6)
+
+            self.assertTrue(report["nestedVisible"])
+            self.assertLess(report["nestedMatrixErr"], 1e-4, "Nested Purim mount in shelf cubby differs from standalone")
+        finally:
+            self._close_chrome_cdp(proc, sock, tmp_dir)
+
 if __name__ == "__main__":
     unittest.main()

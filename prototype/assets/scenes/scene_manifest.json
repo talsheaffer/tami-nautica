@@ -9450,7 +9450,6 @@
         {
           "id": "portal_scroll_foot_purim_1966",
           "targetSceneId": "purim_costume_1966",
-          "portalMode": "crossfade",
           "labelHe": "תמי ועדה מחופשות בפורים (~1966) · לחצו על התצלום להיכנס לגינה",
           "shortBadgeHe": "אל פורים 1966",
           "showMicroBadge": false,
@@ -9462,10 +9461,125 @@
           ],
           "worldZ": -274.29,
           "recessDepth": 0.0,
-          "embedDiorama": false,
+          "embedDiorama": true,
+          "keepHostBackdropOpaque": true,
+          "outerWallFadeRangeT": [
+            0.78,
+            0.96
+          ],
           "showFrame": false,
           "restFrameOpacity": 0.0,
           "frameRenderOrder": 6.8,
+          "wallMount": {
+            "hostLayerId": "pinned_purim_photo",
+            "pointPairsInnerPx": [
+              [
+                [
+                  346.8,
+                  100.0
+                ],
+                [
+                  737.282,
+                  833.823
+                ]
+              ],
+              [
+                [
+                  750.0,
+                  100.0
+                ],
+                [
+                  777.323,
+                  823.427
+                ]
+              ],
+              [
+                [
+                  1153.2,
+                  100.0
+                ],
+                [
+                  817.089,
+                  813.101
+                ]
+              ],
+              [
+                [
+                  346.8,
+                  500.0
+                ],
+                [
+                  750.763,
+                  867.543
+                ]
+              ],
+              [
+                [
+                  750.0,
+                  500.0
+                ],
+                [
+                  791.562,
+                  856.819
+                ]
+              ],
+              [
+                [
+                  1153.2,
+                  500.0
+                ],
+                [
+                  832.076,
+                  846.169
+                ]
+              ],
+              [
+                [
+                  346.8,
+                  900.0
+                ],
+                [
+                  764.799,
+                  902.652
+                ]
+              ],
+              [
+                [
+                  750.0,
+                  900.0
+                ],
+                [
+                  806.385,
+                  891.582
+                ]
+              ],
+              [
+                [
+                  1153.2,
+                  900.0
+                ],
+                [
+                  847.676,
+                  880.591
+                ]
+              ]
+            ],
+            "hostWallClearanceWorld": 0.08,
+            "flatAtRest": true,
+            "cavityInnerBoxPx": [
+              246.0,
+              0.0,
+              1254.0,
+              1000.0
+            ],
+            "cavityFeatherPx": 4.0,
+            "dioramaRenderOrders": {
+              "bg": 6.55,
+              "mid": 6.6,
+              "fg": 6.65,
+              "dust": 6.7
+            }
+          },
           "occluder": {
             "texture": "assets/scenes/scene17_scroll_foot_occluder.png",
             "depthTexture": "assets/scenes/scene17_scroll_foot_occluder_depth.png",

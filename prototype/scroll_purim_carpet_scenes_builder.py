@@ -1287,6 +1287,52 @@ def _build_pinned_purim_photo_rgba(
     return Image.fromarray(out_rgba, mode="RGBA")
 
 
+def compute_purim_photo_mount_point_pairs(
+    cfg: ScrollPurimCarpetBundleConfig,
+    grid_fracs: Sequence[float] = (0.1, 0.5, 0.9),
+) -> list[list[list[float]]]:
+    """
+    Exact correspondences between Scene 18's inner frame and the Purim print pinned on Scene 17's
+    scroll floor. Both are warped from the same source photo, so the map is the homography chain
+    rectified-purim -> source (inverse of `src_inner_quad_xy`) -> card (`photo_src_outer_quad_xy`)
+    -> scroll inner px (`photo_dst_quad_inner_xy`). Returns `[[target_px, host_px], ...]` pairs
+    sampled on a grid strictly inside the photo, for the runtime similarity fit (`wallMount`).
+    """
+    scroll = cfg.bene_beitcha_scroll_foot
+    purim = cfg.purim_costume_1966
+    rw, rh = purim.rectified_full_wh
+    h_inner = cv2.getPerspectiveTransform(
+        np.asarray(purim.src_inner_quad_xy, dtype=np.float32),
+        np.asarray([[0, 0], [rw - 1, 0], [rw - 1, rh - 1], [0, rh - 1]], dtype=np.float32),
+    )
+    ww, wh = scroll.photo_work_wh
+    work_q = np.asarray([[0, 0], [ww - 1, 0], [ww - 1, wh - 1], [0, wh - 1]], dtype=np.float32)
+    h_outer = cv2.getPerspectiveTransform(
+        np.asarray(scroll.photo_src_outer_quad_xy, dtype=np.float32), work_q
+    )
+    h_dst = cv2.getPerspectiveTransform(
+        work_q, np.asarray(scroll.photo_dst_quad_inner_xy, dtype=np.float32)
+    )
+    h_rect_to_host = h_dst @ h_outer @ np.linalg.inv(h_inner)
+    dx, _ = purim.inner_dest_xy
+    cy0, cy1 = purim.rectified_crop_y_range
+    iw = float(rw)
+    ih = float(cy1 - cy0)
+    pairs: list[list[list[float]]] = []
+    for fv in grid_fracs:
+        for fu in grid_fracs:
+            tu = float(dx) + fu * iw
+            tv = fv * ih
+            hp = h_rect_to_host @ np.array([tu - dx, tv + cy0, 1.0])
+            pairs.append(
+                [
+                    [round(tu, 3), round(tv, 3)],
+                    [round(float(hp[0] / hp[2]), 3), round(float(hp[1] / hp[2]), 3)],
+                ]
+            )
+    return pairs
+
+
 def build_bene_beitcha_scroll_foot_scene(
     project_root: Path,
     cfg: ScrollPurimCarpetBundleConfig,
@@ -1740,17 +1786,34 @@ def build_bene_beitcha_scroll_foot_scene(
         {
             "id": spec.portal_id,
             "targetSceneId": spec.target_scene_id,
-            "portalMode": "crossfade",
             "labelHe": spec.portal_label_he,
             "shortBadgeHe": spec.portal_short_badge_he,
             "showMicroBadge": False,
             "innerBoxPx": photo_inner_box_px,
             "worldZ": photo_world_z,
             "recessDepth": 0.0,
-            "embedDiorama": False,
+            # Pure 3D flight into the tilted print: Scene 18 is embedded on the photo's real
+            # surface (flat at rest, full relief at landing) and the camera swerves head-on.
+            "embedDiorama": True,
+            "keepHostBackdropOpaque": True,
+            "outerWallFadeRangeT": [0.78, 0.96],
             "showFrame": False,
             "restFrameOpacity": 0.0,
             "frameRenderOrder": 6.8,
+            "wallMount": {
+                "hostLayerId": "pinned_purim_photo",
+                "pointPairsInnerPx": compute_purim_photo_mount_point_pairs(cfg),
+                "hostWallClearanceWorld": 0.08,
+                "flatAtRest": True,
+                "cavityInnerBoxPx": [
+                    float(cfg.purim_costume_1966.inner_dest_xy[0]),
+                    0.0,
+                    float(cfg.purim_costume_1966.inner_dest_xy[0] + cfg.purim_costume_1966.rectified_full_wh[0]),
+                    float(cfg.purim_costume_1966.rectified_crop_y_range[1] - cfg.purim_costume_1966.rectified_crop_y_range[0]),
+                ],
+                "cavityFeatherPx": 4.0,
+                "dioramaRenderOrders": {"bg": 6.55, "mid": 6.6, "fg": 6.65, "dust": 6.7},
+            },
             "occluder": {
                 "texture": f"assets/scenes/{pfx}_occluder.png",
                 "depthTexture": f"assets/scenes/{pfx}_occluder_depth.png",
