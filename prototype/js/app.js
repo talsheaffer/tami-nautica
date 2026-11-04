@@ -931,7 +931,7 @@ class SpatialApp {
       });
     }
 
-    // Outgoing portals from current scene + sibling scenes in the same series (#29)
+    // Outgoing portals from current scene (#29). Sibling-series chips were dropped to keep the bar uncrowded.
     if (!this.spatialOutgoingPortals) return;
     this.spatialOutgoingPortals.innerHTML = '';
 
@@ -970,34 +970,6 @@ class SpatialApp {
           } else {
             this.manager.flyIntoPortalShelf(spec.id);
           }
-        });
-        this.spatialOutgoingPortals.appendChild(chip);
-      }
-    }
-
-    // Show sibling sub-scenes when inside a multi-scene series via portal (or inside wandering_drawings)
-    const showSiblings =
-      matchedGroup &&
-      matchedGroup.sceneIds.length > 1 &&
-      (portalStack.length > 0 || matchedGroup.id === 'wandering_drawings');
-    const siblingIds = showSiblings
-      ? matchedGroup.sceneIds.filter((id) => id !== sceneId && !outgoingTargetIds.has(id))
-      : [];
-
-    if (siblingIds.length > 0) {
-      const sibLabel = document.createElement('span');
-      sibLabel.className = 'spatial-portal-label';
-      sibLabel.textContent = 'באותה סדרה:';
-      this.spatialOutgoingPortals.appendChild(sibLabel);
-
-      for (const sibId of siblingIds) {
-        const chip = document.createElement('button');
-        chip.type = 'button';
-        chip.className = 'spatial-portal-chip sibling-chip';
-        chip.setAttribute('data-sibling-scene', sibId);
-        chip.textContent = this._getSceneShortLabelHe(sibId);
-        chip.addEventListener('click', () => {
-          this.manager.transitionTo(sibId);
         });
         this.spatialOutgoingPortals.appendChild(chip);
       }
