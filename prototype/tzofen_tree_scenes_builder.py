@@ -753,7 +753,9 @@ def default_tzofen_tree_bundle_config() -> TzofenTreeBundleConfig:
         room_depth_amplitude=128.0,
         fg_depth_amplitude=175.0,
         room_pin_margin_uv=0.045,
-        window_portal_inner_box_px=(975.0, 146.0, 1126.0, 250.0),
+        # Aperture spans the plaster opening plus a 2-4 px tuck under the frame posts, top bar and
+        # plank, which stay on `fg` and hide the portal's edges.
+        window_portal_inner_box_px=(978.0, 148.0, 1126.0, 254.0),
         window_frame_sample_box_px=(967, 139, 1138, 248),
         portal_z_clearance_behind_frame=2.5,
         portal_recess_depth=115.0,
@@ -1531,11 +1533,25 @@ def _extract_unified_tzofen_cutout_and_room(
         preserve_open_box_px=cfg.window_portal_inner_box_px,
         alpha_threshold_u8=alpha_thr,
     )
+    # Open only the plaster wall seen through the window frame. The frame posts, the white plank and
+    # the terracotta bricks standing in front of the opening stay on `fg`, so they occlude the
+    # treetop portal exactly as in the photograph (a hard rectangle cut used to erase them).
     wx0, wy0, wx1, wy1 = cfg.window_portal_inner_box_px
-    alpha_u8[
-        int(np.ceil(wy0)) + 1 : int(np.floor(wy1)),
-        int(np.ceil(wx0)) + 1 : int(np.floor(wx1)),
-    ] = 0
+    bx0, by0 = int(np.ceil(wx0)), int(np.ceil(wy0))
+    bx1, by1 = int(np.floor(wx1)), int(np.floor(wy1))
+    win_wall = (luma[by0:by1, bx0:bx1] > ucfg.wall_like_luma_min) & (
+        r_minus_b[by0:by1, bx0:bx1] >= ucfg.wall_like_rb_min
+    )
+    win_wall = ndi.binary_opening(win_wall, iterations=1)
+    win_labels, n_win = ndi.label(win_wall)
+    if n_win == 0:
+        raise RuntimeError("Tzofen window opening contains no plaster-wall pixels to open.")
+    win_sizes = ndi.sum(win_wall, win_labels, index=np.arange(1, n_win + 1))
+    win_wall = win_labels == (int(np.argmax(win_sizes)) + 1)
+    win_open = ndi.gaussian_filter(win_wall.astype(np.float32), sigma=0.6)
+    alpha_u8[by0:by1, bx0:bx1] = np.clip(
+        np.round(alpha_u8[by0:by1, bx0:bx1].astype(np.float32) * (1.0 - win_open)), 0, 255
+    ).astype(np.uint8)
 
     refl_rgb, refl_a_u8 = _reflect_bottom_legs_into_collar(
         rgb_u8=tz_pad,

@@ -215,6 +215,14 @@ const DEFAULT_SHELF_PORTAL_SHELVES = Object.freeze([
     innerBoxPx: Object.freeze([612.21, 732.85, 704.8, 836.48]),
     worldZ: -284.0,
     recessDepth: 160.0
+  }),
+  Object.freeze({
+    id: 'cubby_tzofen',
+    targetSceneId: 'tzofen_brick_table',
+    labelHe: '׳צופן׳ · שולחן הברזל ולבני הבוץ',
+    innerBoxPx: Object.freeze([464.33, 734.58, 559.79, 835.9]),
+    worldZ: -284.0,
+    recessDepth: 160.0
   })
 ]);
 
@@ -377,7 +385,7 @@ const DEFAULT_TZOFEN_PORTAL_SHELVES = Object.freeze([
     portalMode: 'aperture',
     labelHe: 'מסגרת החלון הלבנה ב׳צופן׳ · שער אל צמרת העץ בהרצליה',
     shortBadgeHe: 'חלון אל העץ',
-    innerBoxPx: Object.freeze([975.0, 146.0, 1126.0, 250.0]),
+    innerBoxPx: Object.freeze([978.0, 148.0, 1126.0, 254.0]),
     worldZ: -277.01,
     recessDepth: 115.0,
     embedDiorama: true,
@@ -394,7 +402,7 @@ const DEFAULT_TZOFEN_V2_PORTAL_SHELVES = Object.freeze([
     portalMode: 'aperture',
     labelHe: 'מסגרת החלון הלבנה ב׳צופן׳ (ארכיון) · שער אל צמרת העץ בהרצליה',
     shortBadgeHe: 'חלון אל העץ',
-    innerBoxPx: Object.freeze([975.0, 146.0, 1126.0, 250.0]),
+    innerBoxPx: Object.freeze([978.0, 148.0, 1126.0, 254.0]),
     worldZ: -253.09,
     recessDepth: 115.0,
     embedDiorama: true,
@@ -1368,7 +1376,7 @@ export class SpatialSceneManager {
     this.onLoadingProgress =
       typeof options.onLoadingProgress === 'function' ? options.onLoadingProgress : null;
 
-    const assetVer = 'v=neural41';
+    const assetVer = 'v=neural42';
     this._assetVer = assetVer;
     this.sceneConfigs = {
       shelf_portal: {
@@ -6987,7 +6995,11 @@ export class SpatialSceneManager {
           cp.childFrameLine.scale.set(cGeom.width, cGeom.height, 1.0);
         }
 
-        if (cp.childDioBgMesh) {
+        const nestedMirror = this._ensureNestedDioramaMirror(inst, cp, sourceChildInst);
+        if (nestedMirror) {
+          this._syncNestedDioramaMirror(inst, nestedMirror);
+          if (cp.childDioBgMesh) cp.childDioBgMesh.visible = false;
+        } else if (cp.childDioBgMesh) {
           const recessZ = cGeom.worldZ - cGeom.recessDepth;
           cp.childDioBgMesh.position.set(cGeom.worldX, cGeom.worldY, recessZ);
           cp.childDioBgMesh.scale.set(cGeom.width * 1.5, cGeom.height * 1.5, 1.0);
@@ -7098,6 +7110,137 @@ export class SpatialSceneManager {
             cp.childVeilMat.opacity = childVeilOp;
           }
           cp.childVeilMesh.visible = childVeilOp > 0.005;
+        }
+      }
+    }
+  }
+
+  /**
+   * Builds (once) a mirror of a grandchild portal's live diorama inside a parent diorama — e.g. the
+   * treetop seen through the Tzofen window, inside the shelf cubby's copy of Tzofen — so the cubby
+   * shows exactly what the standalone scene shows at landing (Law 5). Geometry and textures are
+   * shared with the source; materials are cloned so they can carry their own clip planes.
+   */
+  _ensureNestedDioramaMirror(parentInst, cp, sourceChildInst) {
+    if (cp.nestedMirror) return cp.nestedMirror;
+    if (
+      !parentInst.dioramaGroup ||
+      !sourceChildInst ||
+      !sourceChildInst.embedDiorama ||
+      !sourceChildInst.dioramaGroup ||
+      sourceChildInst.spec.wallMount ||
+      cp.childWallMount
+    ) {
+      return null;
+    }
+    const planes = [new THREE.Plane(), new THREE.Plane(), new THREE.Plane(), new THREE.Plane()];
+    const allPlanes = Array.isArray(parentInst.clipPlanes)
+      ? parentInst.clipPlanes.concat(planes)
+      : planes;
+    const parentHostObj = this.sceneObjects[parentInst.targetSceneId];
+    const orderOffset =
+      parentInst.bgMesh.renderOrder - ((parentHostObj && parentHostObj.layer0.renderOrder) || 0);
+
+    const group = new THREE.Group();
+    const pairs = [];
+    for (const src of sourceChildInst.dioramaGroup.children) {
+      if (!(src.isMesh || src.isPoints) || !src.material) continue;
+      const mat = src.material.clone();
+      if (src.material.uniforms) {
+        for (const key of Object.keys(src.material.uniforms)) {
+          const v = src.material.uniforms[key].value;
+          if (v && v.isTexture) mat.uniforms[key].value = v;
+        }
+        mat.clipping = true;
+      }
+      mat.clippingPlanes = allPlanes;
+      const dst = src.isPoints ? new THREE.Points(src.geometry, mat) : new THREE.Mesh(src.geometry, mat);
+      dst.renderOrder = src.renderOrder + orderOffset;
+      group.add(dst);
+      pairs.push({ src, dst });
+      if (Array.isArray(parentInst.ownedResources)) parentInst.ownedResources.push(mat);
+    }
+    parentInst.dioramaGroup.add(group);
+    cp.nestedMirror = { group, pairs, planes, sourceInst: sourceChildInst };
+    return cp.nestedMirror;
+  }
+
+  _syncNestedDioramaMirror(parentInst, mirror) {
+    const srcGroup = mirror.sourceInst.dioramaGroup;
+    mirror.group.position.copy(srcGroup.position);
+    mirror.group.quaternion.copy(srcGroup.quaternion);
+    mirror.group.scale.copy(srcGroup.scale);
+    const parentTint =
+      parentInst.bgMat && parentInst.bgMat.uniforms && parentInst.bgMat.uniforms.uTint
+        ? parentInst.bgMat.uniforms.uTint.value
+        : null;
+    const parentScale = parentInst.dioramaGroup.scale.x;
+    for (const { src, dst } of mirror.pairs) {
+      dst.position.copy(src.position);
+      dst.quaternion.copy(src.quaternion);
+      dst.scale.copy(src.scale);
+      dst.visible = src.visible;
+      const su = src.material.uniforms;
+      const du = dst.material.uniforms;
+      if (su && du) {
+        for (const key of Object.keys(su)) {
+          const v = su[key].value;
+          if (!du[key] || (v && v.isTexture)) continue;
+          if (v && typeof v.copy === 'function') du[key].value.copy(v);
+          else du[key].value = v;
+        }
+        if (parentTint && du.uTint) du.uTint.value.multiply(parentTint);
+      } else {
+        if (typeof src.material.opacity === 'number') dst.material.opacity = src.material.opacity;
+        if (typeof src.material.size === 'number') dst.material.size = src.material.size * parentScale;
+        if (src.material.color && dst.material.color) {
+          dst.material.color.copy(src.material.color);
+          if (parentTint) dst.material.color.multiply(parentTint);
+        }
+      }
+    }
+  }
+
+  /** Window-aperture frustum planes for nested mirrors, from the live camera (world space). */
+  _updateNestedMirrorClipPlanes() {
+    const camPos = this.camera.position;
+    for (const inst of this._portalInstances) {
+      if (!inst.dioramaGroup || !Array.isArray(inst.childPortalMeshes)) continue;
+      let groupUpdated = false;
+      for (const cp of inst.childPortalMeshes) {
+        const mirror = cp.nestedMirror;
+        if (!mirror) continue;
+        if (!groupUpdated) {
+          inst.dioramaGroup.updateMatrixWorld(true);
+          groupUpdated = true;
+        }
+        const s = mirror.sourceInst.spec;
+        const rotRad = THREE.MathUtils.degToRad(s.rotationDeg || 0.0);
+        const cosA = Math.cos(rotRad);
+        const sinA = Math.sin(rotRad);
+        const corner = (lx, ly) =>
+          inst.dioramaGroup.localToWorld(
+            new THREE.Vector3(s.worldX + lx * cosA - ly * sinA, s.worldY + lx * sinA + ly * cosA, s.worldZ)
+          );
+        const hw = s.width * 0.5;
+        const hh = s.height * 0.5;
+        const tl = corner(-hw, hh);
+        const tr = corner(hw, hh);
+        const br = corner(hw, -hh);
+        const bl = corner(-hw, -hh);
+        const interior = inst.dioramaGroup.localToWorld(
+          new THREE.Vector3(s.worldX, s.worldY, s.worldZ - (s.recessDepth || 0.0) - 12.0)
+        );
+        const edges = [
+          [tl, tr],
+          [tr, br],
+          [br, bl],
+          [bl, tl]
+        ];
+        for (let i = 0; i < 4; i += 1) {
+          const plane = mirror.planes[i];
+          plane.setFromCoplanarPoints(camPos, edges[i][0], edges[i][1]);
+          if (plane.distanceToPoint(interior) < 0) plane.negate();
         }
       }
     }
@@ -7546,6 +7689,7 @@ export class SpatialSceneManager {
         }
       }
     }
+    this._updateNestedMirrorClipPlanes();
   }
 
   _raycastPortalShelfAtClient(clientX, clientY) {

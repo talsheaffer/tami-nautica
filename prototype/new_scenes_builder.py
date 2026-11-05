@@ -1831,6 +1831,20 @@ def default_new_scenes_bundle_config() -> NewScenesBundleConfig:
                 ),
             ),
             PortalCubbySpec(
+                cubby_id="row7_col0",
+                runtime_shelf_id="cubby_tzofen",
+                row_index=6,
+                col_index=0,
+                target_scene_id="tzofen_brick_table",
+                label_he="🧱 ׳צופן׳ · שולחן הברזל ולבני הבוץ",
+                aperture_bounds_px=BoundingBoxPrompt(x0=11, y0=1289, x1=163, y1=1451),
+                backplane_sam_prompt=SamPointGroupPrompt(
+                    box=BoundingBoxPrompt(x0=11, y0=1289, x1=163, y1=1451),
+                    points_xy=((87.0, 1370.0),),
+                    point_labels=(1,),
+                ),
+            ),
+            PortalCubbySpec(
                 cubby_id="row5_green_center",
                 runtime_shelf_id="cubby_plan_b_v3",
                 row_index=4,

@@ -6575,9 +6575,9 @@
       "midDepthTexture": "assets/scenes/scene9_shelf_portal_mid_depth.png",
       "fgTexture": "assets/scenes/scene9_shelf_portal_fg.png",
       "fgDepthTexture": "assets/scenes/scene9_shelf_portal_fg_depth.png",
-      "fgCoverageRatio": 0.0738,
-      "midCoverageRatio": 0.0212,
-      "portalTransparentRatio": 0.2783,
+      "fgCoverageRatio": 0.0722,
+      "midCoverageRatio": 0.0144,
+      "portalTransparentRatio": 0.2945,
       "portalShelves": [
         {
           "id": "cubby_scroll_foot",
@@ -6865,6 +6865,19 @@
             732.85,
             704.8,
             836.48
+          ],
+          "worldZ": -284.0,
+          "recessDepth": 160.0
+        },
+        {
+          "id": "cubby_tzofen",
+          "targetSceneId": "tzofen_brick_table",
+          "labelHe": "׳צופן׳ · שולחן הברזל ולבני הבוץ",
+          "innerBoxPx": [
+            464.33,
+            734.58,
+            559.79,
+            835.9
           ],
           "worldZ": -284.0,
           "recessDepth": 160.0
@@ -7659,6 +7672,69 @@
             "worldY": -239.117,
             "width": 87.853,
             "height": 97.13
+          }
+        },
+        {
+          "cubbyId": "row7_col0",
+          "runtimeShelfId": "cubby_tzofen",
+          "rowIndex": 6,
+          "colIndex": 0,
+          "targetSceneId": "tzofen_brick_table",
+          "labelHe": "🧱 ׳צופן׳ · שולחן הברזל ולבני הבוץ",
+          "hasRemovableOccluder": false,
+          "innerBoxPx": [
+            464.33,
+            734.58,
+            559.79,
+            835.9
+          ],
+          "boxPx2700": [
+            1068.33,
+            1138.58,
+            1155.79,
+            1231.9
+          ],
+          "pixelBoundsSource": {
+            "x0": 11,
+            "y0": 1289,
+            "x1": 163,
+            "y1": 1451
+          },
+          "fullCubbyBackplaneBoundsPxSource": {
+            "x0": 11,
+            "y0": 1289,
+            "x1": 163,
+            "y1": 1451
+          },
+          "uvExpandedTopLeftOrigin": {
+            "u0": 0.395678,
+            "v0": 0.632542,
+            "u1": 0.428072,
+            "v1": 0.68439
+          },
+          "uvExpandedWebglBottomLeftOrigin": {
+            "u0": 0.395678,
+            "v0": 0.31561,
+            "u1": 0.428072,
+            "v1": 0.367458
+          },
+          "worldRectAperture": {
+            "worldX": -199.868,
+            "worldY": -239.601,
+            "width": 73.47,
+            "height": 78.394
+          },
+          "worldRectFullBackplane": {
+            "worldX": -199.868,
+            "worldY": -239.601,
+            "width": 73.47,
+            "height": 78.394
+          },
+          "worldRectBleedBehindRim": {
+            "worldX": -199.868,
+            "worldY": -239.601,
+            "width": 90.27,
+            "height": 95.194
           }
         }
       ]
@@ -8940,10 +9016,10 @@
           "labelHe": "מסגרת החלון הלבנה ב׳צופן׳ · שער אל צמרת העץ בהרצליה",
           "shortBadgeHe": "חלון אל העץ",
           "innerBoxPx": [
-            975.0,
-            146.0,
+            978.0,
+            148.0,
             1126.0,
-            250.0
+            254.0
           ],
           "worldZ": -277.01,
           "recessDepth": 115.0,
@@ -8961,7 +9037,7 @@
       "bgExpandedHeight": 1800,
       "bgExpansionFactor": 1.8,
       "midCoverageRatio": 0.0,
-      "fgCoverageRatio": 0.4082,
+      "fgCoverageRatio": 0.4117,
       "windowFrameMedianWorldZ": -274.51,
       "fgAnchorHost": "bg_depth (scene12_tzofen_depth.png)",
       "authenticPhotoBoxExpanded": [
@@ -8990,20 +9066,20 @@
       },
       "portalWorldZ": -277.01,
       "portalInnerBoxPx": [
-        975.0,
-        146.0,
+        978.0,
+        148.0,
         1126.0,
-        250.0
+        254.0
       ],
       "portalRecessDepth": 115.0,
       "topologyVerification": {
         "fg": {
           "contact_pixel_count": 5094,
-          "opaque_pixel_count": 612237,
-          "rim_probe_pixel_count": 73440,
+          "opaque_pixel_count": 617493,
+          "rim_probe_pixel_count": 73469,
           "max_abs_contact_dz_world": 0.3411712646484375,
           "p95_abs_contact_dz_world": 0.301971435546875,
-          "mean_abs_contact_dz_world": 0.17914333939552307,
+          "mean_abs_contact_dz_world": 0.1781657487154007,
           "max_abs_rim_jump_world": 0.0,
           "p95_abs_rim_jump_world": 0.0,
           "min_signed_dz_vs_host_world": -1.6627349853515625,
@@ -9069,10 +9145,10 @@
           "labelHe": "מסגרת החלון הלבנה ב׳צופן׳ (ארכיון) · שער אל צמרת העץ בהרצליה",
           "shortBadgeHe": "חלון אל העץ",
           "innerBoxPx": [
-            975.0,
-            146.0,
+            978.0,
+            148.0,
             1126.0,
-            250.0
+            254.0
           ],
           "worldZ": -253.09,
           "recessDepth": 115.0,
@@ -9089,10 +9165,10 @@
       "bgExpandedWidth": 2700,
       "bgExpandedHeight": 1800,
       "bgExpansionFactor": 1.8,
-      "midCoverageRatio": 0.3913,
+      "midCoverageRatio": 0.3914,
       "fgCoverageRatio": 0.0667,
-      "brickReliefOverTableP50World": 24.16,
-      "brickReliefOverTableP95World": 32.59,
+      "brickReliefOverTableP50World": 24.2,
+      "brickReliefOverTableP95World": 32.63,
       "brickReliefOverTableMaxWorld": 57.41,
       "windowFrameMedianWorldZ": -250.588,
       "midAnchorHost": "bg_depth (scene12_tzofen_v2_depth.png)",
@@ -9139,20 +9215,20 @@
       },
       "portalWorldZ": -253.09,
       "portalInnerBoxPx": [
-        975.0,
-        146.0,
+        978.0,
+        148.0,
         1126.0,
-        250.0
+        254.0
       ],
       "portalRecessDepth": 115.0,
       "topologyVerification": {
         "mid": {
           "contact_pixel_count": 5094,
-          "opaque_pixel_count": 586989,
-          "rim_probe_pixel_count": 74721,
+          "opaque_pixel_count": 587036,
+          "rim_probe_pixel_count": 74703,
           "max_abs_contact_dz_world": 0.39215087890625,
           "p95_abs_contact_dz_world": 0.3725433349609375,
-          "mean_abs_contact_dz_world": 0.20358659327030182,
+          "mean_abs_contact_dz_world": 0.2034902572631836,
           "max_abs_rim_jump_world": 0.0,
           "p95_abs_rim_jump_world": 0.0,
           "min_signed_dz_vs_host_world": -2.0196075439453125,
@@ -9167,7 +9243,7 @@
           "rim_probe_pixel_count": 23176,
           "max_abs_contact_dz_world": 0.4313812255859375,
           "p95_abs_contact_dz_world": 0.4313812255859375,
-          "mean_abs_contact_dz_world": 0.24091817438602448,
+          "mean_abs_contact_dz_world": 0.24445661902427673,
           "max_abs_rim_jump_world": 0.0,
           "p95_abs_rim_jump_world": 0.0,
           "min_signed_dz_vs_host_world": -0.4313812255859375,

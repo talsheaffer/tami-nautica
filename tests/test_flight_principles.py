@@ -279,6 +279,42 @@ console.log(JSON.stringify({{
             places=5,
         )
 
+    def test_tzofen_window_keeps_front_bricks_and_frame_over_treetop_portal(self) -> None:
+        """The Tzofen `fg` must open only the plaster seen through the window frame; the frame
+        posts and the terracotta bricks standing in front of the opening stay opaque so they
+        occlude the treetop portal (a hard rectangle cut once erased them)."""
+        import numpy as np
+        from PIL import Image
+
+        from prototype.tzofen_tree_scenes_builder import default_tzofen_tree_bundle_config
+
+        cfg = default_tzofen_tree_bundle_config().tzofen
+        fg_path = PROTOTYPE_DIR / "assets" / "scenes" / f"{cfg.asset_prefix}_fg.png"
+        if not fg_path.is_file():
+            self.skipTest(f"Missing built Tzofen fg asset: {fg_path}")
+        fg_alpha = np.asarray(Image.open(fg_path).convert("RGBA"))[:, :, 3].astype(np.float32)
+        src = Image.open(REPO_ROOT / cfg.source_image_relpath).convert("RGB")
+        src = src.resize((cfg.inner_dims.width, cfg.scaled_height_px), Image.Resampling.LANCZOS)
+        rgb = np.zeros((cfg.inner_dims.height, cfg.inner_dims.width, 3), dtype=np.float32)
+        y0 = cfg.inner_y_offset_px
+        rgb[y0 : y0 + cfg.scaled_height_px] = np.asarray(src, dtype=np.float32)
+
+        wx0, wy0, wx1, wy1 = (int(round(v)) for v in cfg.window_portal_inner_box_px)
+        box_rgb = rgb[wy0:wy1, wx0:wx1]
+        box_alpha = fg_alpha[wy0:wy1, wx0:wx1]
+        r_minus_b = box_rgb[:, :, 0] - box_rgb[:, :, 2]
+        luma = box_rgb @ np.array([0.299, 0.587, 0.114], dtype=np.float32)
+        brick = r_minus_b > 90.0
+        wall = (luma > 238.0) & (r_minus_b > 8.0) & (r_minus_b < 20.0)
+        self.assertGreater(int(brick.sum()), 500, "Expected terracotta bricks inside the window box")
+        self.assertGreater(int(wall.sum()), 5000, "Expected plaster wall inside the window opening")
+        self.assertGreater(
+            float(np.median(box_alpha[brick])), 240.0, "Bricks in front of the window were cut out"
+        )
+        self.assertLess(
+            float(np.median(box_alpha[wall])), 5.0, "Plaster seen through the window was not opened"
+        )
+
 
 class TestFlightPrinciplesWebGLRuntime(unittest.TestCase):
     """Empirical headless Chrome WebGL2 verification of flight continuity & scene state isomorphism."""
@@ -950,6 +986,73 @@ class TestFlightPrinciplesWebGLRuntime(unittest.TestCase):
             self.assertLess(report["nestedMatrixErr"], 1e-4, "Nested Purim mount in shelf cubby differs from standalone")
         finally:
             self._close_chrome_cdp(proc, sock, tmp_dir)
+
+    def test_tzofen_shelf_cubby_flight_shows_nested_treetop_window(self) -> None:
+        """New bottom-left shelf cubby flies into Tzofen; the cubby's copy of Tzofen mirrors the
+        treetop seen through the window (same transform as the standalone portal diorama,
+        clipped to the window from the live camera), so landing has no white-window snap."""
+        proc, sock, tmp_dir, eval_js = self._launch_chrome_cdp(
+            THRESHOLDS.desktop_width, THRESHOLDS.desktop_height
+        )
+        try:
+            report = eval_js(
+                """
+                (async () => {
+                  const sm = window.__tamiSceneManager;
+                  await sm._loadSceneBundleReady('tzofen_brick_table', false);
+                  sm._updatePortalShelfTransforms();
+                  const cubby = sm._portalInstances.find((p) => p.spec.id === 'cubby_tzofen');
+                  const src = sm._portalInstances.find((p) => p.spec.id === 'portal_tzofen_tree_window');
+                  const cp = cubby && cubby.childPortalMeshes.find(
+                    (c) => c.childSpec.id === 'portal_tzofen_tree_window'
+                  );
+                  const mirror = cp && cp.nestedMirror;
+                  const out = {
+                    cubbyHost: cubby && cubby.hostSceneId,
+                    cubbyEmbed: Boolean(cubby && cubby.embedDiorama),
+                    hasMirror: Boolean(mirror),
+                    mirrorMeshes: mirror ? mirror.pairs.length : 0,
+                    sourceMeshes: src.dioramaGroup.children.filter((o) => o.isMesh || o.isPoints).length,
+                    groupPosErr: mirror ? mirror.group.position.distanceTo(src.dioramaGroup.position) : -1,
+                    groupScaleErr: mirror ? Math.abs(mirror.group.scale.x - src.dioramaGroup.scale.x) : -1,
+                    placeholderHidden: !cp.childDioBgMesh || !cp.childDioBgMesh.visible
+                  };
+                  sm.transitionTo('tzofen_brick_table');
+                  out.isPortalFlight = Boolean(sm._portalFlight && !sm._portalFlight.reverse);
+                  sm._portalFlight.frozenProgress = 0.95;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.maxMirrorPlaneConst = Math.max(...mirror.planes.map((pl) => Math.abs(pl.constant)));
+                  out.mirrorBgVisible = mirror.pairs[0].dst.visible;
+                  sm._portalFlight.frozenProgress = 1.0;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.landed = sm.currentSceneId;
+                  sm.transitionTo('shelf_portal');
+                  out.reverseIsPortalFlight = Boolean(sm._portalFlight && sm._portalFlight.reverse);
+                  sm._portalFlight.frozenProgress = 1.0;
+                  sm.animate(); cancelAnimationFrame(sm.animId);
+                  out.backOn = sm.currentSceneId;
+                  return out;
+                })()
+                """,
+                await_promise=True,
+                timeout_sec=THRESHOLDS.cdp_heavy_eval_timeout_sec,
+            )
+            self.assertEqual(report["cubbyHost"], "shelf_portal")
+            self.assertTrue(report["cubbyEmbed"])
+            self.assertTrue(report["hasMirror"], "Shelf cubby copy of Tzofen has no treetop mirror")
+            self.assertEqual(report["mirrorMeshes"], report["sourceMeshes"])
+            self.assertLess(report["groupPosErr"], THRESHOLDS.position_world_tol)
+            self.assertLess(report["groupScaleErr"], 1e-9)
+            self.assertTrue(report["placeholderHidden"])
+            self.assertTrue(report["isPortalFlight"])
+            self.assertTrue(report["mirrorBgVisible"])
+            self.assertLess(report["maxMirrorPlaneConst"], THRESHOLDS.unclipped_plane_sentinel)
+            self.assertEqual(report["landed"], "tzofen_brick_table")
+            self.assertTrue(report["reverseIsPortalFlight"])
+            self.assertEqual(report["backOn"], "shelf_portal")
+        finally:
+            self._close_chrome_cdp(proc, sock, tmp_dir)
+
 
 if __name__ == "__main__":
     unittest.main()

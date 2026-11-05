@@ -40,6 +40,7 @@ const PORTAL_SHORT_BADGE_LABELS_HE = Object.freeze({
   cubby_bene_beitcha: 'בנה ביתך',
   cubby_bar_giora: 'בר גיורא',
   cubby_paris_table: 'פאריס · שולחן לבן',
+  cubby_tzofen: 'צופן',
   cubby_wandering_2: 'שיטוט 2',
   cubby_denya_model: 'דגם דניה',
   cubby_marseille: 'מרסיי',
