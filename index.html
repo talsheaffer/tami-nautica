@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#121314">
+  <meta name="description" content="תמי-נאוטיקה (Tami-Nautica) — מסע מרחבי 2.5D אינטראקטיבי לרגל יום הולדתה ה-70 של האמנית תמר שפר (תמי)">
+  <title>תמי-נאוטיקה · Tami-Nautica | מסע במרחבי היצירה והזיכרון של תמר שפר @ 70</title>
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/feedback.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/ui_styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>70</text></svg>">
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('tami70_theme');
+        document.documentElement.setAttribute('data-theme', savedTheme || 'ocean');
+        var savedUi = localStorage.getItem('tami70_ui_style');
+        document.documentElement.setAttribute('data-ui', savedUi || 'glass-light');
+        var savedFont = localStorage.getItem('tami70_beta_font');
+        if (savedFont) {
+          document.documentElement.setAttribute('data-beta-font', savedFont);
+        } else {
+          document.documentElement.setAttribute('data-beta-font', 'ibm_plex');
+        }
+      } catch (e) {}
+
+      var diagEnabled = location.protocol.indexOf('http') === 0;
+      var t0 = Date.now();
+      var sid = Math.random().toString(36).slice(2, 8);
+      window.__DIAG_SID__ = sid;
+      window.__sendDiag = function (event, detail) {
+        if (!diagEnabled) return;
+        var payload = JSON.stringify({
+          sid: sid,
+          t_ms: Date.now() - t0,
+          event: event,
+          detail: detail || {}
+        });
+        try {
+          fetch('/__diag', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true
+          }).catch(function () {});
+        } catch (e) {}
+      };
+      if (!diagEnabled) return;
+      var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      window.__sendDiag('html_boot', {
+        host: location.hostname,
+        ua: navigator.userAgent,
+        vw: window.innerWidth,
+        vh: window.innerHeight,
+        dpr: window.devicePixelRatio || 1,
+        secure: !!window.isSecureContext,
+        orient: (screen.orientation && screen.orientation.type) || window.orientation || 'unknown',
+        conn: conn ? { type: conn.effectiveType, downMbps: conn.downlink, rtt: conn.rtt } : null
+      });
+      window.addEventListener('error', function (ev) {
+        var target = ev.target && ev.target !== window ? (ev.target.src || ev.target.href || ev.target.tagName) : null;
+        window.__sendDiag('window_error', {
+          msg: ev.message || 'resource_error',
+          file: ev.filename || target,
+          line: ev.lineno || 0,
+          col: ev.colno || 0
+        });
+      }, true);
+      window.addEventListener('unhandledrejection', function (ev) {
+        window.__sendDiag('unhandled_rejection', {
+          reason: String(ev.reason && (ev.reason.stack || ev.reason.message || ev.reason))
+        });
+      });
+      var origErr = console.error;
+      console.error = function () {
+        origErr.apply(console, arguments);
+        window.__sendDiag('console_error', { args: Array.prototype.slice.call(arguments).map(String).join(' ') });
+      };
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Loading Screen Overlay -->
+  <div id="loading-overlay">
+    <div class="loading-brand" aria-hidden="true">
+      <span class="loading-brand-he">תמי-נאוטיקה <span class="age-tag">70</span></span>
+      <span class="loading-brand-en">Tami-Nautica · תמר שפר</span>
+    </div>
+    <div class="spinner"></div>
+    <div id="loading-status-text" class="loading-text" role="status" aria-live="polite">טוען מרחבים...</div>
+    <div id="loading-skip-hint" class="loading-skip-hint hidden">המרחב מוכן · לחצו לכניסה</div>
+  </div>
+
+  <!-- WebGL Canvas Container -->
+  <div id="canvas-container">
+    <canvas id="spatial-canvas"></canvas>
+  </div>
+
+  <!-- Minimalist RTL Hebrew UI Chrome -->
+  <div id="ui-overlay" dir="rtl">
+    
+    <!-- Top Bar Navigation -->
+    <header class="top-bar">
+      <div class="title-badge">
+        <h1>
+          תמי-נאוטיקה
+          <span class="age-tag">70</span>
+        </h1>
+        <p>תמר שפר · מסע במרחבי יצירה וזיכרון</p>
+      </div>
+
+      <div class="top-actions">
+        <button id="fullscreen-btn" class="icon-btn" type="button" aria-label="מסך מלא">
+          מסך מלא
+        </button>
+        <button id="sidebar-toggle-btn" class="icon-btn sidebar-toggle-btn" type="button" aria-expanded="false" aria-controls="spatial-sidebar" aria-label="פתח תפריט ניווט במרחבים">
+          <span class="hamburger-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>מרחבים</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Spatial Breadcrumbs, Back/Forward History & Nested Scene Portals Bar (#29) -->
+    <nav id="spatial-nav-bar" class="spatial-nav-bar" aria-label="מסלול ניווט בתמי-נאוטיקה">
+      <div class="spatial-nav-primary-row">
+        <div class="spatial-history-btns">
+          <button id="spatial-back-btn" class="spatial-hist-btn" type="button" disabled title="חזרה למרחב הקודם בהיסטוריה" aria-label="חזרה למרחב הקודם בהיסטוריה">
+            › חזור
+          </button>
+          <button id="spatial-forward-btn" class="spatial-hist-btn" type="button" disabled title="קדימה למרחב הבא בהיסטוריה" aria-label="קדימה למרחב הבא בהיסטוריה">
+            קדימה ‹
+          </button>
+        </div>
+        <div id="spatial-breadcrumb-list" class="spatial-breadcrumb-list" role="list"></div>
+      </div>
+      <div id="spatial-outgoing-portals" class="spatial-outgoing-portals hidden" aria-label="שערים מתוך מרחב זה"></div>
+      <button id="portal-return-btn" class="portal-return-btn hidden" type="button" aria-label="חזרה אל קיר המדפים התלת-ממדי">
+        חזרה לקיר המדפים
+      </button>
+    </nav>
+
+    <!-- Center Interaction Hint -->
+    <div id="center-hint" class="center-hint">
+      לחצו על חפצים במדפים להסרתם ועל תא פתוח לצלילה פנימה · WASD / Q/E לניווט
+    </div>
+
+    <!-- 3D Shelf Portal Micro-Badges & Desktop Hover Plaque -->
+    <div id="portal-badges-layer" class="portal-badges-layer hidden" aria-label="שערי המדפים התלת-ממדיים"></div>
+    <div id="portal-hover-plaque" class="portal-hover-plaque hidden" role="status" aria-live="polite"></div>
+
+    <!-- Collapsible Minimalist Left Sidebar: Grouped Scene Navigation, Controls & Beta Typography -->
+    <aside id="spatial-sidebar" class="spatial-sidebar collapsed" dir="rtl" aria-label="תפריט ניווט במרחבי התערוכה">
+      <div class="sidebar-header">
+        <span class="sidebar-title">תמי-נאוטיקה · מרחבים</span>
+        <div class="sidebar-header-actions">
+          <button id="exhibition-prev-btn" class="exhibition-step-btn" type="button" title="המרחב הקודם" aria-label="המרחב הקודם">›</button>
+          <button id="exhibition-next-btn" class="exhibition-step-btn" type="button" title="המרחב הבא" aria-label="המרחב הבא">‹</button>
+          <button id="sidebar-close-btn" class="sidebar-close-btn" type="button" aria-label="סגור תפריט מרחבים">✕</button>
+        </div>
+      </div>
+
+      <div class="sidebar-scroll">
+        <!-- Exhibition Group Filter / Jump Bar -->
+        <div class="sidebar-section">
+          <span class="sidebar-section-label">סדרות</span>
+          <div class="exhibition-tabs-row" role="tablist" aria-label="קבוצות תערוכה ומרחבים">
+            <div id="exhibition-tabs" class="exhibition-tabs">
+              <button class="exhibition-tab-btn active" type="button" role="tab" data-exhibition-group="portal_hub" aria-selected="true">
+                קיר המדפים
+              </button>
+              <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="binyamin_plan_b" aria-selected="false">
+                גלריה בנימין · Plan B
+              </button>
+              <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="bene_beitcha_home" aria-selected="false">
+                בנה ביתך ודניה
+              </button>
+              <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="wandering_drawings" aria-selected="false">
+                שיטוט ברישום
+              </button>
+              <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="family_places" aria-selected="false">
+                בתים, ילדות ומרסיי
+              </button>
+              <button class="exhibition-tab-btn" type="button" role="tab" data-exhibition-group="archive_versions" aria-selected="false">
+                ארכיון
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grouped Scene List (Zero Icons/Emojis) -->
+        <div class="sidebar-section">
+          <span class="sidebar-section-label">כל המרחבים</span>
+          <nav class="scene-pills" data-filtered="false" role="navigation" aria-label="בחירת מרחב בתערוכה">
+            <div class="sidebar-group-heading" data-group-heading="portal_hub">שער התערוכות</div>
+            <button class="scene-btn scene-pill active in-active-group" type="button" data-scene="shelf_portal" data-group="portal_hub" aria-pressed="true">
+              קיר המדפים
+            </button>
+
+            <div class="sidebar-group-heading" data-group-heading="binyamin_plan_b">גלריה בנימין · Plan B</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="paper_capsules" data-group="binyamin_plan_b" aria-pressed="false">
+              קפסולות נייר
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="tzofen_brick_table" data-group="binyamin_plan_b" aria-pressed="false">
+              צופן: שולחן וחלון לעץ
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe_v3" data-group="binyamin_plan_b" aria-pressed="false">
+              Plan B: תמי ויערה
+            </button>
+
+            <div class="sidebar-group-heading" data-group-heading="bene_beitcha_home">בנה ביתך ודניה</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="bene_beitcha" data-group="bene_beitcha_home" aria-pressed="false">
+              בנה ביתך
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="bene_beitcha_scroll_foot" data-group="bene_beitcha_home" aria-pressed="false">
+              מגילה וכף רגל
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="purim_costume_1966" data-group="bene_beitcha_home" aria-pressed="false">
+              תחפושת פורים, 1966
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="vitrine_keys_pen" data-group="bene_beitcha_home" aria-pressed="false">
+              ויטרינת המפתחות והעט
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="humpty_dumpty_booth" data-group="bene_beitcha_home" aria-pressed="false">
+              האמפטי דאמפטי בתא
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="denya_model" data-group="bene_beitcha_home" aria-pressed="false">
+              דגם בית דניה
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="denya_living_room" data-group="bene_beitcha_home" aria-pressed="false">
+              סלון דניה: שולחן ושערים
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="denya_couch_guitar" data-group="bene_beitcha_home" aria-pressed="false">
+              ספת דניה: גיטרה ושיטוט
+            </button>
+
+            <div class="sidebar-group-heading" data-group-heading="wandering_drawings">שיטוט ברישום</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="wandering_drawing_1" data-group="wandering_drawings" aria-pressed="false">
+              שיטוט ברישום 1
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="scroll_palm_world" data-group="wandering_drawings" aria-pressed="false">
+              עולם המגילה
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="wandering_drawing" data-group="wandering_drawings" aria-pressed="false">
+              שיטוט ברישום 2
+            </button>
+
+            <div class="sidebar-group-heading" data-group-heading="family_places">בתים, ילדות ומרסיי</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="fried_yard_installation" data-group="family_places" aria-pressed="false">
+              חצר בית פריד: מרחב לא מוגן
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="fried_house_railing" data-group="family_places" aria-pressed="false">
+              בית פריד: כרית ואבן
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="fried_table_hybrid" data-group="family_places" aria-pressed="false">
+              שולחן בית פריד: היבריד
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="herzliya_lawn_carpet" data-group="family_places" aria-pressed="false">
+              הדשא בהרצליה: שטיח ואדמה
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="herzliya_tree_canopy" data-group="family_places" aria-pressed="false">
+              צמרת העץ בהרצליה
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="bar_giora_bedroom" data-group="family_places" aria-pressed="false">
+              חדר השינה בבר גיורא
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="paris_cite_white_table" data-group="family_places" aria-pressed="false">
+              סטודיו פריז: השולחן הלבן
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="toddler_tami_1958" data-group="family_places" aria-pressed="false">
+              תמי הפעוטה, 1958
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="marseille_mirror" data-group="family_places" aria-pressed="false">
+              מרסיי: מתחת למראה
+            </button>
+
+            <div class="sidebar-group-heading" data-group-heading="archive_versions">ארכיון גרסאות</div>
+            <button class="scene-btn scene-pill" type="button" data-scene="tzofen_brick_table_v2" data-group="archive_versions" aria-pressed="false">
+              צופן: הפרדת לבנים (ארכיון)
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe" data-group="archive_versions" aria-pressed="false">
+              צינור Plan B (ארכיון)
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="humpty_dumpty_bundle" data-group="archive_versions" aria-pressed="false">
+              צרור עטוף בבד וחבל (ארכיון)
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="plan_b_pipe_v1" data-group="archive_versions" aria-pressed="false">
+              Plan B (גרסה 1)
+            </button>
+            <button class="scene-btn scene-pill" type="button" data-scene="marseille_mirror_v1" data-group="archive_versions" aria-pressed="false">
+              מרסיי (גרסה 1)
+            </button>
+          </nav>
+        </div>
+
+        <!-- Auxiliary Controls (Sound, Gyro, Pose Reset & Shelf Occluder Restore) -->
+        <div class="sidebar-section">
+          <span class="sidebar-section-label">בקרת מרחב וסאונד</span>
+          <div class="aux-controls">
+            <button id="audio-toggle" class="aux-btn" type="button" aria-label="סאונד סביבתי">
+              צלילי גן ורוח
+            </button>
+            <button id="gyro-toggle" class="aux-btn" type="button" aria-label="מצב ג'יירו למובייל">
+              מצב הטיה: עכבר / ג׳יירו
+            </button>
+            <button id="reset-pose-btn" class="aux-btn" type="button" aria-label="איפוס מיקום וזווית מצלמה">
+              איפוס מבט
+            </button>
+            <button id="restore-occluders-btn" class="aux-btn hidden" type="button" aria-label="השב חפצים למדפים">
+              השב חפצים למדפים
+            </button>
+          </div>
+        </div>
+
+        <!-- Global Beta Typography Switcher (#37) -->
+        <div class="sidebar-section" id="beta-font-section">
+          <span class="sidebar-section-label">גופן תצוגה (בחירה לבטא — חל בכל האתר)</span>
+          <div id="beta-font-selector" class="beta-font-selector" role="group" aria-label="בחירת גופן תצוגה"></div>
+        </div>
+
+        <!-- UI Design Style Picker -->
+        <div class="sidebar-section" id="ui-style-section">
+          <span class="sidebar-section-label">עיצוב ממשק</span>
+          <div id="ui-style-selector" class="ui-style-selector" role="group" aria-label="בחירת עיצוב ממשק"></div>
+        </div>
+
+        <!-- UI Color Scheme Picker (bottom of sidebar) -->
+        <div class="sidebar-section" id="theme-section">
+          <span class="sidebar-section-label">ערכת צבעים</span>
+          <div id="theme-selector" class="theme-selector" role="group" aria-label="בחירת ערכת צבעים"></div>
+        </div>
+
+        <!-- Family Beta Workspace Links Slot -->
+        <div id="spatial-sidebar-hub-slot" class="sidebar-hub-slot"></div>
+
+        <!-- Curatorial Info Drawer Trigger (Bottom of Sidebar #57) -->
+        <div class="sidebar-section sidebar-info-section">
+          <button id="info-toggle-btn" class="aux-btn sidebar-info-btn" type="button" aria-label="אודות המרחב והיצירה">
+            ℹ️ אודות המרחב והיצירה
+          </button>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Curatorial Info Drawer (Expandable) -->
+  <aside id="info-drawer" class="info-drawer" dir="rtl" aria-label="מידע אוצרותי וביוגרפי">
+    <div class="drawer-header">
+      <h2>מרחבי הזיכרון והחומר של תמר שפר</h2>
+      <button id="close-drawer-btn" class="close-btn" aria-label="סגור חלונית">✕</button>
+    </div>
+
+    <div class="drawer-content">
+      <!-- Story Card 0: 3D Shelf Portal Hub (Binyamin Gallery Concrete & Paper Compartments) -->
+      <article id="story-shelf_portal" class="story-card active-story">
+        <h3>שער התערוכות — קיר מדפי המלט והנייר (גלריה בנימין)</h3>
+        <p>
+          קיר התאים המודולרי ממלט ונייר מתערוכתה של תמי בגלריה בנימין הופך כאן לשער ארכיטקטוני חי בין העבודות, הרישומים והבתים שלה. בתוך כל תא חלול נפרש מיניאטורה תלת-ממדית בעומק אמיתי שמגיבה לזווית המבט — לחצו או הקישו על כל תא בקיר כדי לטוס פנימה אל תוך המרחב שבפנים.
+        </p>
+        <blockquote>
+          ״כל מדף ותא בקיר הוא יחידת מגורים זעירה ומקלט למחשבה — מסגרת חומרית שבעדה נפתחים חדרים, מחילות ואיים מרחפים.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog" target="_blank" rel="noopener">קטלוג הצילומים (IMG_BINY_0007) ↗</a> |
+          <a href="/wiki?page=art/materials-paper-and-cement.md" target="_blank" rel="noopener">ויקי: חומריות, נייר ומלט</a>
+        </span>
+      </article>
+
+      <!-- Story Card 1: Suspended Paper Capsules -->
+      <article id="story-paper_capsules" class="story-card">
+        <h3>1. קפסולות נייר תלויות — ״אולי שם יהיה יותר טוב״</h3>
+        <p>
+          מיצב הקפסולות התלויות מנייר אריזה חום וחוטים בגלריה בנימין, השואב השראה ישירה מבית העץ ומקומות המסתור בחצר הילדות בהרצליה — פקעות חלולות ועדינות המרחפות בחלל הגלריה כמקלט שברירי מן הכאוס שבחוץ.
+        </p>
+        <blockquote>
+          ״בית שהיה לי בילדותי על עץ בחצר והיה מקום מפלט מושלם... הקפסולות עשויות נייר אריזה חום פשוט והן חלולות — מקום המיועד למנוחה וכמפלט מהכאוס שמסביב.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="https://www.tamarsheaffer.site/he/" target="_blank" rel="noopener">תמר שפר — עבודות נבחרות ↗</a> |
+          <a href="/wiki?page=art/motifs-capsules-and-mirrors.md" target="_blank" rel="noopener">ויקי: מקלט, שבריריות ודאגה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 1b: Tzofen (2011) Brick Table & Window Portal to Herzliya Tree Canopy -->
+      <article id="story-tzofen_brick_table" class="story-card">
+        <h3>״צופן״ (2011) — שולחן לבני החרס וחלון אל צמרת העץ</h3>
+        <p>
+          על שולחן ברזל לבן מסודרות בצפיפות 380 לבני בוץ וטרקוטה חמות ככתב סתרים חומרי או כעיר מוקטנת. מתוך מסגרת המתכת הלבנה הניצבת בפינה הימנית העליונה של השולחן נפתח שער תלת-ממדי חי אל צמרת העץ המוארת בחצר הילדות בהרצליה — לחצו על החלון הלבן כדי לצלול אל תוך העלווה והאור.
+        </p>
+        <blockquote>
+          ״בין המשמעת הגיאומטרית של לבני החרס לבין המסגרת הריקה שמעליהן נפתח חלון לנשימה ירוקה.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_BINY_0019" target="_blank" rel="noopener">קטלוג העבודות (IMG_BINY_0019 · IMG_HERZ_0372) ↗</a> |
+          <a href="/wiki?page=art/exhibitions-chronology.md" target="_blank" rel="noopener">ויקי: כרונולוגיית תערוכות</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2: Solo Exhibition Bene Beitcha (Ramat Gan Museum) -->
+      <article id="story-bene_beitcha" class="story-card">
+        <h3>2. תערוכת היחיד ״בנה ביתך״ (מוזיאון רמת גן לאמנות ישראלית, 2026)</h3>
+        <p>
+          תערוכת היחיד המוזיאלית של תמי באוצרות שרי גולן: ארונות מודולריים, ויטרינות זכוכית ומבנים היברידיים המפרקים את ההבטחה הישראלית של הבית הבטוח לאחר שבעה באוקטובר. בהטיית המבט מבליחה במראה המעוותת דמותה של תמי בסטודיו.
+        </p>
+        <blockquote>
+          ״הציווי ׳בנה ביתך׳ נשען על הבטחה כמעט תמימה: שאם רק נבנה את הבית כראוי, הוא יעמוד... אלא שבתערוכת היחיד של תמר שפר, הציווי הזה נשמע כאילו הגיע מאוחר מדי. הבית כבר נבנה, אבל משהו יסודי בהבטחה שלו קרס.״ — ורה פלפול
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="https://www.prtfl.co.il/archives/257256" target="_blank" rel="noopener">ורה פלפול, מגזין פורטפוליו (2026) ↗</a> |
+          <a href="/wiki?page=art/solo-exhibition-bene-beitcha.md" target="_blank" rel="noopener">ויקי: תערוכת ״בנה ביתך״</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2a-booth: Humpty Dumpty inside Tami's Wooden Booth Installation -->
+      <article id="story-humpty_dumpty_booth" class="story-card">
+        <h3>האמפטי דאמפטי בתא העץ — שולחן המשבצות הוורוד והמאוורר</h3>
+        <p>
+          דיאלוג מחויך ופואטי עם תאי העץ והמלט החשופים ביצירתה של תמי: בתוך התא האפור המצויד במאוורר קטן יושב האמפטי דאמפטי באפודה כחולה ועניבת פרפר אדומה לצד שולחן עץ קטן ומפה משובצת ורוד-לבן — שבריריות ספרותית שמוצאת לעצמה חדר שקט ומוגן.
+        </p>
+        <blockquote>
+          ״בתוך הקופסה האפורה הפשוטה הופך השולחן הקטן למקלט שבו אפילו השביר מכל יכול לשבת בשלווה.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/wiki?page=art/motifs-capsules-and-mirrors.md" target="_blank" rel="noopener">ויקי: קפסולות, מעטפות ושבריריות</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2a: Wrapped Cloth & Twine Bundle -->
+      <article id="story-humpty_dumpty_bundle" class="story-card">
+        <h3>צרור עטוף בבד וחבל — שבריריות עטופה</h3>
+        <p>
+          פסל צרור עטוף בבד בהיר וקשור בחוטי שפגט בעבודתה של תמי: בתוך קפלי הכותנה והקשרים העדינים נוצר נפח מוגן ודרוך של חמלה חומרית והשגחה.
+        </p>
+        <blockquote>
+          ״הבד הקשור והחוט המהודק אינם מסתירים את השבר האפשרי, אלא בונים סביבו ערסל של השגחה ודאגה.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/wiki?page=art/motifs-capsules-and-mirrors.md" target="_blank" rel="noopener">ויקי: קפסולות, מעטפות ושבריריות</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2-scroll-foot: Bene Beitcha Scroll & Sculpted Foot + Purim 1966 Photo -->
+      <article id="story-bene_beitcha_scroll_foot" class="story-card">
+        <h3>״מגילה וכף רגל״ (בנה ביתך, 2026) — צילום פורים מתחת לכף הרגל המפוסלת</h3>
+        <p>
+          במיצב הרצפה והקיר <em>״מגילה וכף רגל״</em> מתערוכת היחיד במוזיאון רמת גן משתלשלת מגילת רישום ארוכה מן הקיר אל הרצפה, כשבקצה מוט שחור ניצבת כף רגל מפוסלת ומוצמדת אל פינת צילום ילדות של תמי מפורים 1966. לחצו על כף הרגל כדי להעלימה ולהפיל את המוט השחור הצידה — הצילום מתגלה במלואו על גבי המגילה, ולחיצה עליו מובילה אל תוך צילום פורים בתלת-ממד.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_MUSE_0256" target="_blank" rel="noopener">קטלוג העבודות והמשפחה (IMG_MUSE_0256 · IMG_WHAT_0433) ↗</a> |
+          <a href="/wiki?page=art/solo-exhibition-bene-beitcha.md" target="_blank" rel="noopener">ויקי: תערוכת ״בנה ביתך״</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2-purim: Purim 1966 Childhood Costume -->
+      <article id="story-purim_costume_1966" class="story-card">
+        <h3>תמי ועדה בפורים עם סלסלת הקש (~1966)</h3>
+        <p>
+          תמי ואחותה עדה כורעות יחד בגינה בתחפושות פורים ביתיות סביב סלסלת קש קלועה (~1966) — רגע ילדות חם שנחשף מתחת לכף הרגל המפוסלת במיצב <em>״מגילה וכף רגל״</em> ונפתח כאן למרחב תלת-ממדי חי.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WHAT_0433" target="_blank" rel="noopener">קטלוג המשפחה (IMG_WHAT_0433) ↗</a> |
+          <a href="/wiki?page=places/herzliya-home-and-yard.md" target="_blank" rel="noopener">ויקי: הבית והחצר בהרצליה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2-vitrine: Keys & Pen Vitrine -->
+      <article id="story-vitrine_keys_pen" class="story-card">
+        <h3>ויטרינת המפתחות והעט — תא עץ וזכוכית תלוי על הקיר</h3>
+        <p>
+          קופסת עץ וזכוכית אינטימית של תמי שבתוכה תלויים צרור מפתחות ביתיים, עט ופתקים קטנים על ווים זעירים — ארכיאולוגיה שקטה של יומיום, נעילה וזיכרון.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WORD_0211" target="_blank" rel="noopener">קטלוג העבודות (IMG_WORD_0211 · IMG_MUSE_0258) ↗</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2b: Denya Architectural House Model -->
+      <article id="story-denya_model" class="story-card">
+        <h3>דגם בית דניה — ארכיטקטורה של בית, קרטון ועץ על לבד אפור</h3>
+        <p>
+          דגם הקרטון והעץ האדריכלי שבנתה תמי לבית המשפחה ברחוב גרינבוים 80 בדניה, חיפה, מרחף כאן בתלת-ממד על רקע הלבד האפור המנומר מתוך מיצב המדפים בגלריה בנימין. הפרדת המודל מהרקע ומפת העומק של חזיתותיו מאפשרות להביט אל תוך המודל כפי שמביטים אל בית שנבנה בשכבות של דיוק ודאגה.
+        </p>
+        <blockquote>
+          ״המעבר מן התכנון האדריכלי אל הפיסול החומרי משמר את קנה המידה של המודל — מקום שבו הקיר הדק מגן על פנים חמים ושברירי.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WORD_0189" target="_blank" rel="noopener">קטלוג העבודות (IMG_WORD_0189 · IMG_HAIF_0276–0279) ↗</a> |
+          <a href="/wiki?page=places/haifa-greenboim-80-denya.md" target="_blank" rel="noopener">ויקי: הבית ברחוב גרינבוים, דניה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2c: Denya Living Room Dining Table & Multi-Portal View -->
+      <article id="story-denya_living_room" class="story-card">
+        <h3>ארוחה בסלון דניה — שער אל הספה והגיטרה ואל ״שיטוט 2״</h3>
+        <p>
+          שתי רגעים ביתיים בסלון גרינבוים 80 בדניה נשזרים כאן למרחב אחד רציף: סביב שולחן האוכל המשובץ בקדמת הבמה יושבים תמי, גדי, נעמה, יערה וכרמל, ובעומק הסלון, מעבר לכורסאות העץ ולשולחן הקפה, יושבים על הספה האפורה טל, יערה וכרמל עם הגיטרה הקלאסית מתוך חורף דצמבר 2025. על קיר העבודות שמעל הספה תלוי במסגרת אלון הרישום <em>״שיטוט 2״</em> כשער תלת-ממדי חי נוסף — לחצו על הספה לצלילה אל הנגינה בגיטרה, או על המסגרת שעל הקיר לצלילה אל תוך הרישום.
+        </p>
+        <blockquote>
+          ״בסלון בדניה נפגשים זמנים שונים סביב אותה ספה אפורה ואותו קיר עבודות — ארוחת קיץ משפחתית, נגינה בגיטרה בחורף, ופתח אל האיים המרחפים של הרישום.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_DROP_0106" target="_blank" rel="noopener">קטלוג המשפחה והיצירה (IMG_DROP_0106 · IMG_DROP_0104) ↗</a> |
+          <a href="/wiki?page=places/haifa-greenboim-80-denya.md" target="_blank" rel="noopener">ויקי: הבית ברחוב גרינבוים, דניה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 2d: Denya Gray Couch Guitar & Wandering 2 Wall Portal -->
+      <article id="story-denya_couch_guitar" class="story-card">
+        <h3>ספת הסלון בדניה — נגינה בגיטרה תחת קיר העבודות ושער ״שיטוט 2״</h3>
+        <p>
+          מבט קרוב אל הספה האפורה בסלון דניה מתחת לקיר ההדפסים והרישומים: טל מנגן בגיטרה הקלאסית לצד יערה וכרמל מאחורי שולחן העץ המלא בספרים וכלי קרמיקה. בלב קיר העבודות תלויה מסגרת עץ האלון של <em>״שיטוט 2״</em> שבתוכה חי הרישום בתלת-ממד — לחצו עליה לצלילה פנימה, או חזרו בשער הדו-כיווני אל המבט משולחן האוכל.
+        </p>
+        <blockquote>
+          ״מעל הספה האפורה הופך קיר הסלון לגלריה חיה שבה הרישומים מלווים את הנגינה והשיחה המשפחתית.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_DROP_0104" target="_blank" rel="noopener">קטלוג המשפחה והיצירה (IMG_DROP_0104 · IMG_DROP_0106) ↗</a> |
+          <a href="/wiki?page=places/haifa-greenboim-80-denya.md" target="_blank" rel="noopener">ויקי: הבית ברחוב גרינבוים, דניה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 3: Plan B Concrete Pipe (Version 2 — Authentic Textures & Calibrated Pipe Depth) -->
+      <article id="story-plan_b_pipe" class="story-card">
+        <h3>3. Plan B — מבעד לצינור המלט והנייר (גלריה בנימין)</h3>
+        <p>
+          מיצב צינור המלט ועיסת הנייר מתוך התערוכה בגלריה בנימין מוצג בטקסטורה החומרית המקורית של העבודה ובמפת עומק תלת-ממדית מכוילת לדפנות הצינור: קופסת הפח בקדמת הפתח, טבעת המלט התלויה מתקרת הצינור, עמוד העץ וכדור האבן בעומק הביניים ודיסקית התלייה האחורית נותרים מעוגנים לנקודות המפגש שלהם עם דופן המחילה תוך תנועה במרחב.
+        </p>
+        <blockquote>
+          ״שפר בונה הכלאות ארכיטקטוניות המציעות ׳תוכנית מגירה׳ (Plan B) קיומית — מחילות, צינורות ומעברים שבהם הקשיחות התעשייתית של המלט מתגלה כקליפה דקה של נייר.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="https://binyamingallery.com/" target="_blank" rel="noopener">גלריה בנימין תל אביב ↗</a> |
+          <a href="/wiki?page=art/exhibitions-chronology.md" target="_blank" rel="noopener">ויקי: כרונולוגיית תערוכות</a>
+        </span>
+      </article>
+
+      <!-- Story Card 3b: Plan B Version 3 — Tami & Ya'ara in the Far Diffuse Pipe Opening -->
+      <article id="story-plan_b_pipe_v3" class="story-card">
+        <h3>4. Plan B (גרסה 3) — תמי ויערה באור הדיפוזי בקצה הצינור</h3>
+        <p>
+          חיבור פואטי בין מחילת המלט והנייר של <em>Plan B</em> לבין צילום בין-ערביים ביתי מחיפה (מאי 2020) שבו תמי ויערה הקטנה שרועות מול חלון מואר מעל ספר פתוח. הדמויות מוארות מחדש באור הכחלחל-לבן הדיפוזי של פתח הצינור המרוחק בשכבות עומק נפרדות המתמזגות ברכות לרקע — גללו או צבטו קדימה כדי לצלול לתוך הצינור ולהתקרב אליהן.
+        </p>
+        <blockquote>
+          ״בקצה המחילה האפלה מבליח רגע ביתי של הקשבה, ספר ואור בין-ערביים — תוכנית המגירה האמיתית שבה המקלט הפיסולי פוגש את החום המשפחתי.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog" target="_blank" rel="noopener">קטלוג הצילומים והעבודות (IMG_DROP_0098 · IMG_BINY_0002) ↗</a> |
+          <a href="/wiki?page=art/motifs-capsules-and-mirrors.md" target="_blank" rel="noopener">ויקי: מקלט, שבריריות ודאגה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 4a: Wandering 1 (Naama's Curated 9-Work Drawing Space) -->
+      <article id="story-wandering_drawing_1" class="story-card">
+        <h3>״שיטוט ברישום 1״ — מרחב רישומי משולב (בחירת נעמה)</h3>
+        <p>
+          תשעה רישומים ותבליטי נייר נבחרים מתוך הקטלוג שוזרו יחד ללא כפילויות למרחב תלת-ממדי רציף אחד: אכסדרת <em>״מסך שבור״</em> והשתקפויות הרצפה והחלון ברקע, סרטי הכביש המקופלים ומגילת כף הרגל מ<em>״בנה ביתך״</em> בעומק הביניים, ודיוקן <em>״פורום״</em>, העגורן הצהוב והעציץ על השרפרף בקדמת הבמה:
+        </p>
+        <div class="story-drawings-strip" aria-label="תשעת הרישומים המשולבים בשיטוט ברישום 1">
+          <a class="story-drawing-thumb" href="/media/portfolio_site/portfolio_drawing_broken_screen_2021_1823cbfe.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_w1_broken_screen_0259.jpg" loading="lazy" alt="מסך שבור 2021">
+            <span>״מסך שבור״ (2021)</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/portfolio_site/portfolio_drawing_reflection_floor_1_2021_ea1865cb.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_w1_reflection_floor_0260.jpg" loading="lazy" alt="השתקפות רצפה 1 2021">
+            <span>״השתקפות רצפה 1״ (2021)</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/portfolio_site/IMG_7141-m-scaled.jpg_732de4b2.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_w1_road_ribbons_0043.jpg" loading="lazy" alt="סרטי כביש מקופלים 2021">
+            <span>סרטי כביש מקופלים (2021)</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/binyamin_gallery/binyamin_פורום_פרט.jpg_4e23d30b.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_w1_forum_detail_0018.jpg" loading="lazy" alt="פורום פרט 2022">
+            <span>״פורום״ — פרט (2022)</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/portfolio_site/IMG_7167B-m-scaled.jpg_bef5ac69.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_w1_yellow_crane_0049.jpg" loading="lazy" alt="מגדל עגורן וחלונות צהובים 2021">
+            <span>עגורן וחלונות צהובים (2021)</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/portfolio_site/IMG_7147B-m.jpg_850eca39.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_w1_potted_stool_0044.jpg" loading="lazy" alt="עציץ על שרפרף 2021">
+            <span>עציץ על שרפרף (2021)</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/museum_press/rgma_bene_beitcha_scroll_drawing_foot_2026_331d870d.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_w1_scroll_foot_0256.jpg" loading="lazy" alt="מגילת רישום וכף רגל מפוסלת 2026">
+            <span>מגילה וכף רגל, ״בנה ביתך״ (2026)</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/portfolio_site/IMG_7135B-m-scaled.jpg_78f770a3.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_w1_golden_palms_0042.jpg" loading="lazy" alt="צמרת דקל וגגות בעיפרון צבעוני">
+            <span>צמרת דקל וגגות</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/portfolio_site/IMG_7148B-m.jpg_ca9ddebb.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_w1_vertical_refl_0045.jpg" loading="lazy" alt="השתקפות חלון וחוטי חשמל 2021">
+            <span>השתקפות חלון וחוטי חשמל (2021)</span>
+          </a>
+        </div>
+        <a class="story-drawings-more-link" href="/catalog" target="_blank" rel="noopener">לכל 418 העבודות והצילומים בקטלוג המלא ↗</a>
+        <blockquote>
+          ״הרישום בעיפרון מבקש לבנות אחיזה באוויר — ארכיטקטורה קווית שבה השבריריות עצמה היא חומר הבניין.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="https://www.tamarsheaffer.site/he/" target="_blank" rel="noopener">תמר שפר — רישומים נבחרים ↗</a> |
+          <a href="/wiki?page=art/materials-paper-and-cement.md" target="_blank" rel="noopener">ויקי: חומריות, נייר ורישום</a>
+        </span>
+      </article>
+
+      <!-- Story Card 4a-scroll: World Inside the Scroll (Megillah & Foot) -->
+      <article id="story-scroll_palm_world" class="story-card">
+        <h3>עולם המגילה — קרחת החול, עץ הדקל והמוטות השחורים מתוך ״מגילה וכף רגל״</h3>
+        <p>
+          התגשמות תלת-ממדית חיה של הנוף המצויר בתוך גליל הנייר האנכי בעבודה <em>״מגילה וכף רגל״</em> (״בנה ביתך״, 2026): קרחת חוף חולית מוצפת שמש בין עצי דקל וקנים, שעל חולה מונחים סלעים אפורים ומוטות גליליים שחורים במקצב אדריכלי מסתורי. ניתן לצלול לכאן ברצף חלק ישירות מתוך המגילה התלויה בימין הסצנה <em>״שיטוט ברישום 1״</em>, או לחזור אחורה אל דף הנייר וכף הרגל המפוסלת.
+        </p>
+        <blockquote>
+          ״כאשר צוללים אל מעבר לקווי הגרפיט של המגילה, הרישום הדו-ממדי נפתח אל מרחב של חול, רוח וצללי כפות דקל.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_MUSE_0256" target="_blank" rel="noopener">קטלוג העבודות (IMG_MUSE_0256 — מגילה וכף רגל) ↗</a> |
+          <a href="/wiki?page=art/solo-exhibition-bene-beitcha.md" target="_blank" rel="noopener">ויקי: תערוכת ״בנה ביתך״</a>
+        </span>
+      </article>
+
+      <!-- Story Card 4: Wandering 2 Drawing Relief + Exhibition Scroll & Drawing Strip -->
+      <article id="story-wandering_drawing" class="story-card">
+        <h3>5. ״שיטוט 2״ — רישום איים מרחפים ומגילת הרישום מ״בנה ביתך״</h3>
+        <p>
+          הרישום העדין <em>״שיטוט 2״</em> פורק לשכבות עומק של איים ארכיטקטוניים הניצבים על כלונסאות דקיקים מעל מפת תבליט תלת-ממדית מפוסלת של גיליון הנייר. לצדו נוספו לקטלוג רישום המגילה הארוך מתערוכת היחיד האחרונה <em>״בנה ביתך״</em> (מוזיאון רמת גן, 2026) וסדרת רישומי העיפרון והדיו של תמי:
+        </p>
+        <div class="story-drawings-strip" aria-label="מבחר רישומים מתערוכת בנה ביתך ומהקטלוג">
+          <a class="story-drawing-thumb" href="/media/museum_press/rgma_bene_beitcha_scroll_drawing_foot_2026_331d870d.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_scroll_bene_beitcha_2026.jpg" loading="lazy" alt="רישום המגילה מתערוכת בנה ביתך 2026">
+            <span>רישום המגילה מ״בנה ביתך״ (2026)</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/museum_press/rgma_bene_beitcha_tree_shirts_wall_drawing_2026_288075ce.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_wall_drawing_bene_beitcha_2026.jpg" loading="lazy" alt="רישום קיר וכותנות מתערוכת בנה ביתך 2026">
+            <span>רישום קיר וכותנות, ״בנה ביתך״ (2026)</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/portfolio_site/portfolio_pencil_cruising_1_2019_fadbadfd.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_cruising_1_2019.jpg" loading="lazy" alt="שיטוט 1 עיפרון על נייר 2019">
+            <span>״שיטוט 1״ — עיפרון על נייר (2019)</span>
+          </a>
+          <a class="story-drawing-thumb" href="/media/portfolio_site/portfolio_drawing_reflection_window_home_2021_bc00f9c3.jpg" target="_blank" rel="noopener">
+            <img src="assets/drawings/thumb_reflection_window_2021.jpg" loading="lazy" alt="השתקפות בחלון הבית 2021">
+            <span>״השתקפות בחלון הבית״ (2021)</span>
+          </a>
+        </div>
+        <a class="story-drawings-more-link" href="/catalog" target="_blank" rel="noopener">לכל 418 העבודות והצילומים בקטלוג המלא ↗</a>
+        <blockquote>
+          ״הרישומים של שפר נראים כתוכניות אדריכליות של ערים צפות או מכונות חסרות תכלית — שיטוט קווי שבו הכובד מתבטל והמבנה תלוי על חוט השערה.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="https://www.prtfl.co.il/archives/179933" target="_blank" rel="noopener">ראיון במגזין פורטפוליו ↗</a> |
+          <a href="/wiki?page=art/materials-paper-and-cement.md" target="_blank" rel="noopener">ויקי: חומריות, נייר ורישום</a>
+        </span>
+      </article>
+
+      <!-- Story Card 50: Herzliya Fried Yard + Unprotected Space 7 Occluder before Green Railing -->
+      <article id="story-fried_yard_installation" class="story-card">
+        <h3>חצר בית פריד בהרצליה — ״מרחב לא מוגן 7״ לפני המעקה הירוק</h3>
+        <p>
+          בחצר הבית של אהובה ומיכאל פריד בהרצליה, לאורך שביל הריצוף והמעקה הירוק של כניסת הבית, ניצב המיצב הפיסולי הרב-שכבתי <em>״מרחב לא מוגן 7״</em> (מלט, עיסת נייר ורישום) כשהוא נטוע בעומק החצר לפני המעקה. לחצו על המיצב כדי להסירו כבמעשה גילוי ארכיאולוגי — מאחוריו נחשפות תמי ואחותה אראלה סדן נשענות על המעקה הירוק, ולחיצה עליהן מובילה אל מרחב הכניסה לבית פריד.
+        </p>
+        <blockquote>
+          ״המיצב ניצב בחצר הילדות כמחיצה דקה ושברירית בין המבט העכשווי לבין הזיכרון החם שממתין מאחורי המעקה הירוק.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WORD_0215" target="_blank" rel="noopener">קטלוג המשפחה והיצירה (IMG_WORD_0215 · IMG_PORT_0062 · IMG_HERZ_0397) ↗</a> |
+          <a href="/wiki?page=places/herzliya-home-and-yard.md" target="_blank" rel="noopener">ויקי: בית פריד והחצר בהרצליה</a> |
+          <a href="/wiki?page=family/erela-sadan.md" target="_blank" rel="noopener">ויקי: אראלה סדן</a>
+        </span>
+      </article>
+
+      <!-- Story Card 5a: Herzliya Fried House Ramp + Cushion & Stone + Window Shutter Portal -->
+      <article id="story-fried_house_railing" class="story-card">
+        <h3>בית פריד בהרצליה — תמי ואראלה לצד ״כרית ואבן״ ותריס העץ אל ״שיטוט 1״</h3>
+        <p>
+          צילום משפחתי מחצר בית פריד ברחוב וייצמן בהרצליה (נובמבר 2006), שבו תמי ואחותה אראלה סדן נשענות בחיוך על מעקה המתכת הירוק של כבש הבטון בפתח הבית, ולמרגלותיהן מונחת באור השמש עבודתה של תמי <em>״כרית ואבן״</em> מגלריה בנימין. לחצו על תריס העץ החום הסגור שבקיר השמאלי כדי לפתוח אותו ולחשוף מבעד לחלון שער תלת-ממדי חי אל <em>״שיטוט ברישום 1״</em>.
+        </p>
+        <blockquote>
+          ״בין המעקה הירוק ותריס העץ של בית הילדות בהרצליה לבין כרית החרס והרישומים נוצר רגע שבו הזיכרון המשפחתי והחומר הפיסולי חולקים את אותו בית.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_HERZ_0397" target="_blank" rel="noopener">קטלוג המשפחה והיצירה (IMG_HERZ_0397 · IMG_BINY_0013) ↗</a> |
+          <a href="/wiki?page=places/herzliya-childhood-compound.md" target="_blank" rel="noopener">ויקי: מתחם הילדות בהרצליה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 5c: Herzliya Sunlit Tree Canopy -->
+      <article id="story-herzliya_tree_canopy" class="story-card">
+        <h3>צמרת העץ בחצר בהרצליה — אור, עלווה וזיכרון בית העץ</h3>
+        <p>
+          מבט מלמטה אל ענפי העץ וצמרת העלווה הירוקה המוארת בשמש בחצר הבית בהרצליה — הנוף החי שניבט מבעד לחלון המסגרת הלבנה של <em>״צופן״</em> ומהדהד את בית העץ של ילדותה של תמי, מקור ההשראה הישיר לקפסולות הנייר התלויות שלה.
+        </p>
+        <blockquote>
+          ״בין הענפים והאור המסונן של צמרת העץ בהרצליה נולד המפלט הראשון — גבוה מעל קומת הקרקע, עטוף בעלים ובשקט.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_HERZ_0372" target="_blank" rel="noopener">קטלוג המשפחה (IMG_HERZ_0372 · IMG_BINY_0019) ↗</a> |
+          <a href="/wiki?page=places/herzliya-home-and-yard.md" target="_blank" rel="noopener">ויקי: הבית והחצר בהרצליה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 5b: Herzliya Fried Dining Table + Mirrored Hybrid Installation -->
+      <article id="story-fried_table_hybrid" class="story-card">
+        <h3>שולחן האוכל בבית פריד בהרצליה — ״היבריד״ בין סבא מיכאל לסבתא אהובה</h3>
+        <p>
+          בפינת האוכל של בית פריד בהרצליה, סביב השולחן האדום בין סבא מיכאל פריד והנכד משמאל לבין סבתא אהובה פריד והנכד מימין, מונח במהופך לאורך ציר השולחן מיצבה של תמי <em>״היבריד״</em> (גלריה בנימין, 2021) — פקעת מלט מחורצת שממנה נשפכים כדורים שקופים ובהירים הקשורים בחוטים דקים אל עבר חזית השולחן.
+        </p>
+        <blockquote>
+          ״על המפה האדומה בפינת האוכל של הוריה הופך המיצב ההיברידי לאורח טבעי סביב השולחן — גוף חומרי שנובט מתוך הזיכרון המשפחתי.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WORD_0200" target="_blank" rel="noopener">קטלוג המשפחה והיצירה (IMG_WORD_0200 · IMG_BINY_0010) ↗</a> |
+          <a href="/wiki?page=places/herzliya-childhood-compound.md" target="_blank" rel="noopener">ויקי: מתחם הילדות בהרצליה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 5: Marseille Mirror Pavilion Fusion (Version 2) -->
+      <article id="story-marseille_mirror" class="story-card">
+        <h3>6. תחת תקרת המראה במרסיי — קפסולות ואיים מרחפים</h3>
+        <p>
+          מתחת לביתן המראה של נורמן פוסטר בנמל הישן במרסיי (<em>L’Ombrière du Vieux-Port</em>), מתמזגים המבט המשפחתי והצחוק של תמי עם יקום הדימויים שלה: קפסולות נייר חומות מ<em>״אולי שם יהיה יותר טוב״</em> ואיים רישומיים מרחפים מ<em>״שיטוט 2״</em> צפים בין הדמויות לתקרת הפלדה המלוטשת, וממשיכים אל תוך עולם מראה תלת-ממדי עמוק שבו גם ההשתקפויות והצללים מקבלים עומק חי בניווט רחב ובהתקרבות אל המראה.
+        </p>
+        <blockquote>
+          ״בין רצפת האבן לתקרת המראה נוצר מרחב כפול שבו המציאות המשפחתית והמבנים הדמיוניים מנייר ועיפרון חולקים את אותו אוויר ואור.״
+        </blockquote>
+        <span class="source-tag">
+          מקורות: <a href="/catalog" target="_blank" rel="noopener">קטלוג הצילומים המשפחתי ↗</a> |
+          <a href="/wiki?page=art/motifs-capsules-and-mirrors.md" target="_blank" rel="noopener">ויקי: קפסולות, מראות ומקלט</a>
+        </span>
+      </article>
+
+      <!-- Story Card 6a: Herzliya Lawn + Unrolling Carpet & Earth Installation -->
+      <article id="story-herzliya_lawn_carpet" class="story-card">
+        <h3>הדשא בהרצליה — השטיח המגולגל ושובל האדמה</h3>
+        <p>
+          על מדשאת חצר הילדות בהרצליה מונח השטיח המגולגל ממיצבה של תמי בגלריה בנימין כשמאחוריו נמשך שובל אדמה כהה אל מחוץ לפריים. לחצו על גליל השטיח כדי לגלגל אותו לאורך הדשא משמאל לימין ולפרוש את שובל האדמה החומרי לרוחב הגינה כולה.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_HERZ_0399" target="_blank" rel="noopener">קטלוג המשפחה והיצירה (IMG_HERZ_0399 · IMG_BINY_0009) ↗</a> |
+          <a href="/wiki?page=places/herzliya-home-and-yard.md" target="_blank" rel="noopener">ויקי: הבית והחצר בהרצליה</a>
+        </span>
+      </article>
+
+      <!-- Story Card 6b: Bar Giora Bedroom + Tilted Wall Vitrine -->
+      <article id="story-bar_giora_bedroom" class="story-card">
+        <h3>חדר השינה בבר גיורא — ויטרינת המפתחות באור החלון</h3>
+        <p>
+          בחדר השינה המואר באור החלון הימני תלויה מתחת לציור הממוסגר ויטרינת המפתחות והעט של תמי כשהיא מוטה בזווית ההולמת את כיוון הצל הטבעי של החדר. לחצו על הוויטרינה שעל הקיר כדי לטוס פנימה תוך סיבוב הדרגתי של המצלמה עד להתיישרות מול תא הזכוכית.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_MUSE_0258" target="_blank" rel="noopener">קטלוג המשפחה והיצירה (IMG_MUSE_0258 · IMG_WORD_0211) ↗</a>
+        </span>
+      </article>
+
+      <!-- Story Card 6c: Paris Cité Studio White Table + Toddler Tami Photo -->
+      <article id="story-paris_cite_white_table" class="story-card">
+        <h3>סטודיו הסיטה בפריז — צילום ילדות על השולחן הלבן</h3>
+        <p>
+          חלל העבודה הבהיר בשהות האמן בסיטה דז אר בפריז: על משטח השולחן הלבן מונח בפרספקטיבה צילום ילדות של תמי הפעוטה מ-1958 — לחצו על הצילום שעל השולחן כדי לצלול פנימה אל תוך זיכרון הילדות.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WORD_0153" target="_blank" rel="noopener">קטלוג היצירה והמשפחה (IMG_WORD_0153 · IMG_WHAT_0424) ↗</a>
+        </span>
+      </article>
+
+      <!-- Story Card 6d: Toddler Tami 1958 -->
+      <article id="story-toddler_tami_1958" class="story-card">
+        <h3>תמי הפעוטה בחצר (1958)</h3>
+        <p>
+          מבט קרוב ותלת-ממדי אל צילום הילדות המוקדם של תמי הפעוטה משנת 1958, הנפתח מתוך השולחן הלבן בסטודיו בפריז.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_WHAT_0424" target="_blank" rel="noopener">קטלוג המשפחה (IMG_WHAT_0424) ↗</a>
+        </span>
+      </article>
+
+      <!-- Story Card 7a: Tzofen Segmented Front Bricks (Archived Version 2) -->
+      <article id="story-tzofen_brick_table_v2" class="story-card">
+        <h3>״צופן״ (2011) — גרסת הפרדת לבני החזית והשולחן (ארכיון)</h3>
+        <p>
+          גרסת ניסוי שמורה בארכיון של המיצב <em>״צופן״</em> מגלריה בנימין, שבה 11 לבני החזית והפסגה החופשיות מהסתרה הופרדו לשכבת קדמה עצמאית מעל משטח השולחן הלבן והמדפים המשוחזרים, לצד החלון הפתוח אל צמרת העץ בהרצליה.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog?media=IMG_BINY_0019" target="_blank" rel="noopener">קטלוג העבודות (IMG_BINY_0019 · IMG_HERZ_0372) ↗</a> |
+          <a href="/wiki?page=art/exhibitions-chronology.md" target="_blank" rel="noopener">ויקי: כרונולוגיית תערוכות</a>
+        </span>
+      </article>
+
+      <!-- Story Card 7: Plan B Concrete Pipe (Archived Version 1) -->
+      <article id="story-plan_b_pipe_v1" class="story-card">
+        <h3>7. Plan B — גרסה 1 (שמורה להשוואה)</h3>
+        <p>
+          הגרסה הראשונה השמורה של סצנת <em>Plan B</em> מגלריה בנימין, השמורה בארכיון לצד הגרסאות החדשות להשוואת טקסטורות ומפת העומק של דפנות הצינור.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="https://binyamingallery.com/" target="_blank" rel="noopener">גלריה בנימין תל אביב ↗</a> |
+          <a href="/wiki?page=art/exhibitions-chronology.md" target="_blank" rel="noopener">ויקי: כרונולוגיית תערוכות</a>
+        </span>
+      </article>
+
+      <!-- Story Card 8: Marseille Mirror Pavilion (Archived Version 1) -->
+      <article id="story-marseille_mirror_v1" class="story-card">
+        <h3>8. תחת תקרת המראה במרסיי — גרסה 1 (שמורה להשוואה)</h3>
+        <p>
+          הגרסה הראשונה השמורה של סצנת מרסיי מתחת ל-<em>L’Ombrière du Vieux-Port</em>, שבה קפסולות הנייר והאיים המצוירים מרחפים מעל הדמויות ומשתקפים בתקרת המראה. שמורה לצד הגרסה המורחבת להשוואה ולעיון משפחתי.
+        </p>
+        <span class="source-tag">
+          מקורות: <a href="/catalog" target="_blank" rel="noopener">קטלוג הצילומים המשפחתי ↗</a> |
+          <a href="/wiki?page=art/motifs-capsules-and-mirrors.md" target="_blank" rel="noopener">ויקי: קפסולות, מראות ומקלט</a>
+        </span>
+      </article>
+
+      <!-- Desktop & Mobile Navigation Reference -->
+      <article id="controls-guide-card" class="story-card">
+        <h3>⌨️ ניווט במרחב (מחשב ונייד)</h3>
+        <p>
+          <strong>מחשב:</strong> גרירה לסיבוב מבט · גלגלת או <code>W/S</code> / <code>↑/↓</code> להליכה קדימה ואחורה · <code>A/D</code> / <code>←/→</code> לתזוזה לצדדים · <code>Q/E</code> או <code>PgUp/PgDn</code> לעלייה וירידה בגובה · גרירה עם <code>Shift</code> או קליק ימני להזזה חופשית · <code>R</code> לאיפוס מבט · <code>F</code> למסך מלא.<br>
+          <strong>נייד:</strong> החלקה באצבע לסיבוב · צביטה בשתי אצבעות להליכה והזזה · כפתור הג׳יירו להטיית הטלפון בחלל.
+        </p>
+      </article>
+    </div>
+  </aside>
+
+  <!-- Module Entry Script -->
+  <script type="module" src="js/app.js"></script>
+
+</body>
+</html>

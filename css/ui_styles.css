@@ -1,0 +1,254 @@
+/* prototype/css/ui_styles.css
+   Selectable UI chrome designs (header, nav/breadcrumb bar, buttons, sidebar).
+   Applied via <html data-ui="...">. "classic" = no overrides (style.css as-is).
+   Loaded after style.css/themes.css. Colors still come from the theme tokens. */
+
+/* ---------- Shared modern pieces: icon-only chevron history buttons ---------- */
+html[data-ui="glass"] .spatial-hist-btn,
+html[data-ui="glass-light"] .spatial-hist-btn,
+html[data-ui="quiet"] .spatial-hist-btn {
+  font-size: 0;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.07);
+}
+html[data-ui="glass"] .spatial-hist-btn::before,
+html[data-ui="glass-light"] .spatial-hist-btn::before,
+html[data-ui="quiet"] .spatial-hist-btn::before {
+  font-size: 1.15rem;
+  line-height: 1;
+  font-weight: 400;
+  transform: translateY(-1px);
+}
+html[data-ui="glass"] #spatial-back-btn::before,
+html[data-ui="glass-light"] #spatial-back-btn::before,
+html[data-ui="quiet"] #spatial-back-btn::before { content: "\203A"; }
+html[data-ui="glass"] #spatial-forward-btn::before,
+html[data-ui="glass-light"] #spatial-forward-btn::before,
+html[data-ui="quiet"] #spatial-forward-btn::before { content: "\2039"; }
+
+/* ---------- 1. Glass (Apple-style frosted dark capsules) ---------- */
+html[data-ui="glass"] .title-badge {
+  background: rgba(var(--bg-panel-rgb), 0.5);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: none;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 10px 36px rgba(0, 0, 0, 0.25);
+  border-radius: 22px;
+}
+html[data-ui="glass"] .title-badge h1 { font-weight: 600; letter-spacing: -0.01em; }
+html[data-ui="glass"] .title-badge h1 .age-tag { border-radius: 999px; padding: 2px 9px; }
+html[data-ui="glass"] .title-badge p { font-weight: 400; opacity: 0.8; }
+html[data-ui="glass"] .icon-btn {
+  background: rgba(var(--bg-panel-rgb), 0.5);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: none;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  font-weight: 500;
+}
+html[data-ui="glass"] .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.3);
+}
+html[data-ui="glass"] .spatial-nav-bar {
+  border: none;
+  border-radius: 999px;
+  background: rgba(var(--bg-panel-rgb), 0.5);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 10px 36px rgba(0, 0, 0, 0.25);
+}
+@media (min-width: 861px) {
+  html[data-ui="glass"] .spatial-nav-bar:not(:hover):not(:focus-within) { background: rgba(var(--bg-panel-rgb), 0.5); }
+  html[data-ui="glass"] .spatial-nav-bar:hover,
+  html[data-ui="glass"] .spatial-nav-bar:focus-within { background: rgba(var(--bg-panel-rgb), 0.72); border: none; }
+}
+html[data-ui="glass"] .spatial-hist-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.22); color: #fff; }
+html[data-ui="glass"] .spatial-history-btns { border-inline-end-color: rgba(255, 255, 255, 0.12); }
+html[data-ui="glass"] .spatial-crumb-btn,
+html[data-ui="glass"] .spatial-crumb-current { border: none; border-radius: 999px; }
+html[data-ui="glass"] .spatial-crumb-current { background: rgba(255, 255, 255, 0.16); color: var(--text-primary); }
+html[data-ui="glass"] .spatial-crumb-btn:hover { background: rgba(255, 255, 255, 0.1); border: none; color: var(--text-primary); }
+html[data-ui="glass"] .spatial-crumb-sep { color: rgba(255, 255, 255, 0.35); }
+
+/* ---------- 2. Glass Light (Apple-style frosted white, dark text) ---------- */
+html[data-ui="glass-light"] .title-badge,
+html[data-ui="glass-light"] .icon-btn,
+html[data-ui="glass-light"] .spatial-nav-bar {
+  --text-primary: #1d1d1f;
+  --text-secondary: #5c5c61;
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+  border: none;
+  color: #1d1d1f;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 8px 30px rgba(0, 0, 0, 0.16);
+}
+html[data-ui="glass-light"] .title-badge { border-radius: 22px; }
+html[data-ui="glass-light"] .title-badge h1 { font-weight: 600; letter-spacing: -0.01em; }
+html[data-ui="glass-light"] .title-badge h1 .age-tag { border-radius: 999px; padding: 2px 9px; color: #fff; }
+html[data-ui="glass-light"] .title-badge p { font-weight: 400; }
+html[data-ui="glass-light"] .icon-btn { border-radius: 999px; font-weight: 500; }
+html[data-ui="glass-light"] .icon-btn:hover { background: rgba(255, 255, 255, 0.92); color: #000; border: none; }
+html[data-ui="glass-light"] .spatial-nav-bar { border-radius: 999px; }
+@media (min-width: 861px) {
+  html[data-ui="glass-light"] .spatial-nav-bar,
+  html[data-ui="glass-light"] .spatial-nav-bar:hover,
+  html[data-ui="glass-light"] .spatial-nav-bar:focus-within { background: rgba(255, 255, 255, 0.68); border: none; }
+  html[data-ui="glass-light"] .spatial-nav-bar:hover,
+  html[data-ui="glass-light"] .spatial-nav-bar:focus-within { background: rgba(255, 255, 255, 0.86); }
+}
+html[data-ui="glass-light"] .spatial-hist-btn { background: rgba(0, 0, 0, 0.06); color: #1d1d1f; }
+html[data-ui="glass-light"] .spatial-hist-btn:hover:not(:disabled) { background: rgba(0, 0, 0, 0.14); color: #000; }
+html[data-ui="glass-light"] .spatial-history-btns { border-inline-end-color: rgba(0, 0, 0, 0.1); }
+html[data-ui="glass-light"] .spatial-crumb-btn,
+html[data-ui="glass-light"] .spatial-crumb-current { border: none; border-radius: 999px; }
+html[data-ui="glass-light"] .spatial-crumb-btn { color: #5c5c61; }
+html[data-ui="glass-light"] .spatial-crumb-btn:hover { background: rgba(0, 0, 0, 0.07); color: #000; border: none; }
+html[data-ui="glass-light"] .spatial-crumb-current { background: rgba(0, 0, 0, 0.09); color: #1d1d1f; }
+html[data-ui="glass-light"] .spatial-crumb-sep { color: rgba(0, 0, 0, 0.3); }
+
+/* ---------- 3. Quiet (nearly invisible chrome, text first) ---------- */
+html[data-ui="quiet"] .title-badge,
+html[data-ui="quiet"] .icon-btn,
+html[data-ui="quiet"] .spatial-nav-bar {
+  background: rgba(var(--bg-deep-rgb), 0.28);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: none;
+  box-shadow: none;
+}
+html[data-ui="quiet"] .title-badge { border-radius: 14px; }
+html[data-ui="quiet"] .title-badge h1,
+html[data-ui="quiet"] .title-badge p,
+html[data-ui="quiet"] .icon-btn,
+html[data-ui="quiet"] .spatial-crumb-btn,
+html[data-ui="quiet"] .spatial-crumb-current { text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55); }
+html[data-ui="quiet"] .title-badge h1 { font-weight: 300; font-size: 1.05rem; }
+html[data-ui="quiet"] .title-badge h1 .age-tag { background: transparent; color: var(--accent-soft); padding: 0; font-weight: 500; text-shadow: inherit; }
+html[data-ui="quiet"] .title-badge p { display: none; }
+html[data-ui="quiet"] .icon-btn { border-radius: 999px; font-weight: 300; }
+html[data-ui="quiet"] .icon-btn:hover { background: rgba(var(--bg-deep-rgb), 0.6); border: none; }
+html[data-ui="quiet"] .spatial-nav-bar { border-radius: 999px; }
+@media (min-width: 861px) {
+  html[data-ui="quiet"] .spatial-nav-bar { background: rgba(var(--bg-deep-rgb), 0.18); opacity: 0.8; border: none; }
+  html[data-ui="quiet"] .spatial-nav-bar:hover,
+  html[data-ui="quiet"] .spatial-nav-bar:focus-within { background: rgba(var(--bg-deep-rgb), 0.62); opacity: 1; border: none; box-shadow: none; }
+}
+html[data-ui="quiet"] .spatial-hist-btn { background: transparent; }
+html[data-ui="quiet"] .spatial-hist-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.14); color: #fff; }
+html[data-ui="quiet"] .spatial-history-btns { border-inline-end: none; }
+html[data-ui="quiet"] .spatial-crumb-btn,
+html[data-ui="quiet"] .spatial-crumb-current { border: none; background: transparent; border-radius: 999px; font-weight: 300; }
+html[data-ui="quiet"] .spatial-crumb-current { color: var(--text-primary); font-weight: 500; }
+html[data-ui="quiet"] .spatial-crumb-btn:hover { background: rgba(255, 255, 255, 0.1); border: none; }
+
+/* ---------- 4. Museum (editorial: hairlines, square corners, caps labels) ---------- */
+html[data-ui="museum"] .title-badge,
+html[data-ui="museum"] .icon-btn,
+html[data-ui="museum"] .spatial-nav-bar {
+  background: rgba(var(--bg-deep-rgb), 0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  box-shadow: none;
+}
+html[data-ui="museum"] .title-badge h1 {
+  font-family: 'Frank Ruhl Libre', Georgia, serif;
+  font-weight: 400;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+html[data-ui="museum"] .title-badge h1 .age-tag { border-radius: 0; background: transparent; color: var(--accent-soft); border: 1px solid var(--accent-gold); font-weight: 500; }
+html[data-ui="museum"] .title-badge p { letter-spacing: 0.06em; font-size: 0.78rem; }
+html[data-ui="museum"] .icon-btn { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+html[data-ui="museum"] .icon-btn:hover { background: var(--text-primary); color: #111; border-color: var(--text-primary); }
+html[data-ui="museum"] .spatial-hist-btn,
+html[data-ui="museum"] .spatial-crumb-btn,
+html[data-ui="museum"] .spatial-crumb-current { border-radius: 0; }
+html[data-ui="museum"] .spatial-hist-btn { background: transparent; }
+html[data-ui="museum"] .spatial-hist-btn:hover:not(:disabled) { background: var(--text-primary); border-color: var(--text-primary); color: #111; }
+html[data-ui="museum"] .spatial-crumb-current { background: transparent; border: none; border-bottom: 1px solid var(--accent-gold); padding-bottom: 2px; }
+html[data-ui="museum"] .spatial-crumb-btn:hover { background: transparent; border-color: transparent; text-decoration: underline; text-underline-offset: 4px; }
+@media (min-width: 861px) {
+  html[data-ui="museum"] .spatial-nav-bar,
+  html[data-ui="museum"] .spatial-nav-bar:hover,
+  html[data-ui="museum"] .spatial-nav-bar:focus-within { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(var(--bg-deep-rgb), 0.82); }
+}
+
+/* ---------- Sidebar picker chips ---------- */
+.ui-style-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.ui-style-chip {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(230, 232, 234, 0.12);
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: right;
+  line-height: 1.25;
+  transition: all 0.18s ease;
+}
+.ui-style-chip:hover { color: var(--text-primary); border-color: rgba(230, 232, 234, 0.28); }
+.ui-style-chip.active {
+  background: rgba(var(--accent-rgb), 0.22);
+  border-color: var(--accent-gold);
+  color: var(--accent-pale);
+  font-weight: 600;
+}
+
+/* ---------- Beta action buttons (feedback.css forces !important colors) ---------- */
+html[data-ui="glass"] .beta-action-btn { background: rgba(var(--bg-panel-rgb), 0.5) !important; border: none !important; }
+html[data-ui="glass"] .beta-action-btn:hover,
+html[data-ui="glass"] .beta-action-btn.active { background: rgba(255, 255, 255, 0.18) !important; border: none !important; }
+
+html[data-ui="glass-light"] .beta-action-btn { background: rgba(255, 255, 255, 0.68) !important; color: #1d1d1f !important; border: none !important; }
+html[data-ui="glass-light"] .beta-action-btn:hover,
+html[data-ui="glass-light"] .beta-action-btn.active { background: rgba(255, 255, 255, 0.92) !important; color: #000 !important; border: none !important; }
+
+html[data-ui="quiet"] .beta-action-btn { background: rgba(var(--bg-deep-rgb), 0.28) !important; border: none !important; }
+html[data-ui="quiet"] .beta-action-btn:hover,
+html[data-ui="quiet"] .beta-action-btn.active { background: rgba(var(--bg-deep-rgb), 0.62) !important; border: none !important; }
+
+html[data-ui="museum"] .beta-action-btn { background: rgba(var(--bg-deep-rgb), 0.82) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; border-radius: 2px !important; }
+html[data-ui="museum"] .beta-action-btn:hover,
+html[data-ui="museum"] .beta-action-btn.active { background: var(--text-primary) !important; color: #111 !important; border-color: var(--text-primary) !important; }
+
+/* ---------- Glass Light: text inside the nav bar must be dark on the white bar ---------- */
+html[data-ui="glass-light"] .spatial-portal-label { color: #5c5c61; }
+html[data-ui="glass-light"] .spatial-portal-chip,
+html[data-ui="glass-light"] .spatial-portal-chip.locked,
+html[data-ui="glass-light"] .spatial-portal-chip.sibling-chip {
+  background: rgba(0, 0, 0, 0.06);
+  border: none;
+  color: #1d1d1f;
+}
+html[data-ui="glass-light"] .spatial-portal-chip.locked { color: #6e6e73; }
+html[data-ui="glass-light"] .spatial-portal-chip:hover {
+  background: var(--accent-gold);
+  color: #fff;
+}
+html[data-ui="glass-light"] .spatial-outgoing-portals { border-inline-start-color: rgba(0, 0, 0, 0.1); }
+html[data-ui="glass-light"] .portal-return-btn {
+  background: rgba(0, 0, 0, 0.07);
+  border: none;
+  color: #1d1d1f;
+  box-shadow: none;
+}
+html[data-ui="glass-light"] .portal-return-btn:hover { background: var(--accent-gold); color: #fff; }
+html[data-ui="glass-light"] .beta-pill-tag {
+  background: rgba(var(--accent-rgb), 0.16);
+  border: none;
+  color: #1d1d1f;
+}

@@ -1,0 +1,3220 @@
+{
+  "feedback_id": "fb-20261030-231405-f5e3f7",
+  "scenes": {
+    "denya_living_room": {
+      "id": "denya_living_room",
+      "title": "ארוחה בסלון דניה — שער אל הספה והגיטרה ואל ׳שיטוט 2׳",
+      "shortLabelHe": "🍽️ סלון דניה: שולחן ושערים",
+      "icon": "🍽️",
+      "exhibitionGroup": "bene_beitcha_home",
+      "sourceCatalogIds": [
+        "IMG_DROP_0106",
+        "IMG_DROP_0104"
+      ],
+      "sourceImage": "media/drop_folder_imports/denya_2026_08_17_dining_table_tami_gadi_a75e3694.jpg",
+      "secondarySourceImage": "media/drop_folder_imports/denya_2025_12_27_guitar_living_room_artworks_35f16626.jpg",
+      "segmentationBackend": "denya_living_sam_isnet_lama_c0_edt",
+      "depthBackend": "denya_living_contact_anchored_da2_edt",
+      "innerWidth": 1500,
+      "innerHeight": 1000,
+      "bgExpandedWidth": 2700,
+      "bgExpandedHeight": 1800,
+      "bgExpansionFactor": 1.8,
+      "fgExpanded": false,
+      "fgBleedEdges": {
+        "left": false,
+        "right": true,
+        "top": false,
+        "bottom": true,
+        "guardMinZ": 210.0
+      },
+      "boreSightAtRest": true,
+      "minInnerScale": 2.12,
+      "roomDepthAmplitude": 110.0,
+      "sceneBgZ": -385.0,
+      "midZ": -382.0,
+      "midDepthAmplitude": 88.0,
+      "midPinMarginUv": 0.0,
+      "midSegmentsX": 192,
+      "midSegmentsY": 128,
+      "midDepthTest": false,
+      "midDepthWrite": false,
+      "fgZ": -374.0,
+      "fgDepthAmplitude": 195.0,
+      "fgPinMarginUv": 0.0,
+      "fgSegmentsX": 224,
+      "fgSegmentsY": 150,
+      "fgDepthTest": false,
+      "fgDepthWrite": false,
+      "bgSegmentsX": 224,
+      "bgSegmentsY": 150,
+      "initialCameraY": 0.0,
+      "initialCameraZ": 460.0,
+      "minCameraZ": -120.0,
+      "maxCameraZ": 640.0,
+      "maxYawDeg": 18.5,
+      "maxPitchDeg": 12.5,
+      "maxStrafeX": 68.0,
+      "maxStrafeY": 46.0,
+      "dollySpeedMult": 1.35,
+      "midRenderOrder": 8,
+      "fgRenderOrder": 10,
+      "particleColorHex": 15260868,
+      "particleCount": 65,
+      "bgTexture": "assets/scenes/denya_living_dining_bg.jpg",
+      "depthTexture": "assets/scenes/denya_living_dining_depth.png",
+      "midTexture": "assets/scenes/denya_living_dining_mid.png",
+      "midDepthTexture": "assets/scenes/denya_living_dining_mid_depth.png",
+      "fgTexture": "assets/scenes/denya_living_dining_fg.png",
+      "fgDepthTexture": "assets/scenes/denya_living_dining_fg_depth.png",
+      "extraLayers": [
+        {
+          "id": "wandering2_wall_frame",
+          "labelHe": "מסגרת עץ אלון על קיר הסלון בדניה — שער אל ׳שיטוט 2׳",
+          "texture": "assets/scenes/denya_living_dining_wandering2_frame.png",
+          "depthTexture": "assets/scenes/denya_living_dining_wandering2_frame_depth.png",
+          "zPos": -385.0,
+          "depthAmplitude": 26.0,
+          "pinMarginUv": 0.0,
+          "segmentsX": 160,
+          "segmentsY": 108,
+          "renderOrder": 6,
+          "expanded": false,
+          "baseOpacity": 1.0,
+          "excursionBoost": 0.0,
+          "depthTest": false,
+          "depthWrite": false
+        },
+        {
+          "id": "planted_couch_trio",
+          "labelHe": "טל, יערה וכרמל עם הגיטרה על הספה האפורה בסלון דניה",
+          "texture": "assets/scenes/denya_living_dining_couch_people.png",
+          "depthTexture": "assets/scenes/denya_living_dining_couch_people_depth.png",
+          "zPos": -384.0,
+          "depthAmplitude": 84.0,
+          "pinMarginUv": 0.0,
+          "segmentsX": 192,
+          "segmentsY": 128,
+          "renderOrder": 7,
+          "expanded": false,
+          "baseOpacity": 1.0,
+          "excursionBoost": 0.0,
+          "depthTest": false,
+          "depthWrite": false
+        }
+      ],
+      "portalShelves": [
+        {
+          "id": "portal_denya_dining_wandering_2",
+          "targetSceneId": "wandering_drawing",
+          "portalMode": "aperture",
+          "labelHe": "✏️ ׳שיטוט 2׳ על קיר הסלון · איים מרחפים",
+          "shortBadgeHe": "✏️ שיטוט 2",
+          "innerBoxPx": [
+            626.26,
+            221.46,
+            685.93,
+            258.65
+          ],
+          "worldZ": -379.39,
+          "recessDepth": 96.0,
+          "restFrameOpacity": 0.0,
+          "badgeOffsetYFactor": -0.68
+        },
+        {
+          "id": "portal_denya_to_couch",
+          "targetSceneId": "denya_couch_guitar",
+          "portalMode": "crossfade",
+          "labelHe": "🎸 ספת הסלון בדניה · טל, יערה וכרמל עם הגיטרה",
+          "shortBadgeHe": "🎸 לספה והגיטרה",
+          "innerBoxPx": [
+            435.0,
+            266.0,
+            815.0,
+            422.0
+          ],
+          "worldZ": -378.4,
+          "recessDepth": 0.0,
+          "restFrameOpacity": 0.0,
+          "fadeStartProgress": 0.24,
+          "badgeOffsetYFactor": -0.35
+        }
+      ],
+      "reflectionTexture": null,
+      "hasReflection": false,
+      "fgCoverageRatio": 0.5328,
+      "midCoverageRatio": 0.0139,
+      "plantedTrioCoverageRatio": 0.0163,
+      "topologyVerification": {
+        "wandering2_wall_frame": {
+          "contact_pixel_count": 864,
+          "opaque_pixel_count": 1933,
+          "rim_probe_pixel_count": 3410,
+          "max_abs_contact_dz_world": 0.0,
+          "p95_abs_contact_dz_world": 0.0,
+          "mean_abs_contact_dz_world": 0.0,
+          "max_abs_rim_jump_world": 0.0,
+          "p95_abs_rim_jump_world": 0.0,
+          "min_signed_dz_vs_host_world": 0.0,
+          "contact_passed": true,
+          "discontinuity_passed": true,
+          "monotonicity_passed": true,
+          "all_passed": true
+        },
+        "planted_couch_trio": {
+          "contact_pixel_count": 1532,
+          "opaque_pixel_count": 24376,
+          "rim_probe_pixel_count": 9548,
+          "max_abs_contact_dz_world": 0.1529541015625,
+          "p95_abs_contact_dz_world": 0.145111083984375,
+          "mean_abs_contact_dz_world": 0.08157342672348022,
+          "max_abs_rim_jump_world": 0.0,
+          "p95_abs_rim_jump_world": 0.0,
+          "min_signed_dz_vs_host_world": -0.6549072265625,
+          "contact_passed": true,
+          "discontinuity_passed": true,
+          "monotonicity_passed": true,
+          "all_passed": true
+        },
+        "mid": {
+          "contact_pixel_count": 1549,
+          "opaque_pixel_count": 20902,
+          "rim_probe_pixel_count": 6412,
+          "max_abs_contact_dz_world": 0.1529541015625,
+          "p95_abs_contact_dz_world": 0.1529541015625,
+          "mean_abs_contact_dz_world": 0.08653402328491211,
+          "max_abs_rim_jump_world": 0.0,
+          "p95_abs_rim_jump_world": 0.0,
+          "min_signed_dz_vs_host_world": -0.278411865234375,
+          "contact_passed": true,
+          "discontinuity_passed": true,
+          "monotonicity_passed": true,
+          "all_passed": true
+        },
+        "fg": {
+          "contact_pixel_count": 1482,
+          "opaque_pixel_count": 799231,
+          "rim_probe_pixel_count": 23947,
+          "max_abs_contact_dz_world": 0.37255859375,
+          "p95_abs_contact_dz_world": 0.352935791015625,
+          "mean_abs_contact_dz_world": 0.1897404044866562,
+          "max_abs_rim_jump_world": 0.0,
+          "p95_abs_rim_jump_world": 0.0,
+          "min_signed_dz_vs_host_world": -1.039215087890625,
+          "contact_passed": true,
+          "discontinuity_passed": true,
+          "monotonicity_passed": true,
+          "all_passed": true
+        }
+      }
+    },
+    "denya_couch_guitar": {
+      "id": "denya_couch_guitar",
+      "title": "ספת הסלון בדניה — נגינה בגיטרה תחת קיר העבודות ושער ׳שיטוט 2׳",
+      "shortLabelHe": "🎸 ספת דניה: גיטרה ושיטוט",
+      "icon": "🎸",
+      "exhibitionGroup": "bene_beitcha_home",
+      "sourceCatalogIds": [
+        "IMG_DROP_0104"
+      ],
+      "sourceImage": "media/drop_folder_imports/denya_2025_12_27_guitar_living_room_artworks_35f16626.jpg",
+      "segmentationBackend": "denya_living_sam_isnet_lama_c0_edt",
+      "depthBackend": "denya_living_contact_anchored_da2_edt",
+      "innerWidth": 1500,
+      "innerHeight": 1000,
+      "bgExpandedWidth": 2700,
+      "bgExpandedHeight": 1800,
+      "bgExpansionFactor": 1.8,
+      "fgExpanded": true,
+      "boreSightAtRest": true,
+      "minInnerScale": 1.98,
+      "roomDepthAmplitude": 102.0,
+      "sceneBgZ": -350.0,
+      "midZ": -342.0,
+      "midDepthAmplitude": 82.0,
+      "midPinMarginUv": 0.0,
+      "midSegmentsX": 224,
+      "midSegmentsY": 150,
+      "midDepthTest": false,
+      "midDepthWrite": false,
+      "fgZ": -322.0,
+      "fgDepthAmplitude": 125.0,
+      "fgPinMarginUv": 0.0,
+      "fgSegmentsX": 224,
+      "fgSegmentsY": 150,
+      "fgDepthTest": false,
+      "fgDepthWrite": false,
+      "bgSegmentsX": 224,
+      "bgSegmentsY": 150,
+      "initialCameraY": 0.0,
+      "initialCameraZ": 455.0,
+      "minCameraZ": -90.0,
+      "maxCameraZ": 650.0,
+      "maxYawDeg": 28.0,
+      "maxPitchDeg": 20.0,
+      "maxStrafeX": 220.0,
+      "maxStrafeY": 140.0,
+      "dollySpeedMult": 1.3,
+      "midRenderOrder": 8,
+      "fgRenderOrder": 10,
+      "particleColorHex": 14866373,
+      "particleCount": 60,
+      "bgTexture": "assets/scenes/denya_living_couch_bg.jpg",
+      "depthTexture": "assets/scenes/denya_living_couch_depth.png",
+      "midTexture": "assets/scenes/denya_living_couch_mid.png",
+      "midDepthTexture": "assets/scenes/denya_living_couch_mid_depth.png",
+      "fgTexture": "assets/scenes/denya_living_couch_fg.png",
+      "fgDepthTexture": "assets/scenes/denya_living_couch_fg_depth.png",
+      "extraLayers": [
+        {
+          "id": "wandering2_wall_frame",
+          "labelHe": "מסגרת עץ אלון על קיר הסלון בדניה — שער אל ׳שיטוט 2׳",
+          "texture": "assets/scenes/denya_living_couch_wandering2_frame.png",
+          "depthTexture": "assets/scenes/denya_living_couch_wandering2_frame_depth.png",
+          "zPos": -348.0,
+          "depthAmplitude": 24.0,
+          "pinMarginUv": 0.0,
+          "segmentsX": 160,
+          "segmentsY": 108,
+          "renderOrder": 6,
+          "expanded": false,
+          "baseOpacity": 1.0,
+          "excursionBoost": 0.0,
+          "depthTest": false,
+          "depthWrite": false
+        }
+      ],
+      "portalShelves": [
+        {
+          "id": "portal_denya_couch_wandering_2",
+          "targetSceneId": "wandering_drawing",
+          "portalMode": "aperture",
+          "labelHe": "✏️ ׳שיטוט 2׳ על קיר הסלון · איים מרחפים",
+          "shortBadgeHe": "✏️ שיטוט 2",
+          "innerBoxPx": [
+            623.0,
+            163.0,
+            749.0,
+            237.0
+          ],
+          "worldZ": -341.6,
+          "recessDepth": 96.0,
+          "restFrameOpacity": 0.0,
+          "badgeOffsetYFactor": -0.68
+        },
+        {
+          "id": "portal_denya_back_to_dining",
+          "targetSceneId": "denya_living_room",
+          "portalMode": "reverse_transition",
+          "labelHe": "🍽️ מבט משולחן האוכל · תמי, גדי והמשפחה",
+          "shortBadgeHe": "🍽️ לשולחן האוכל",
+          "innerBoxPx": [
+            540.0,
+            580.0,
+            760.0,
+            648.0
+          ],
+          "worldZ": -281.8,
+          "recessDepth": 0.0,
+          "restFrameOpacity": 0.0,
+          "badgeOffsetYFactor": 0.0
+        }
+      ],
+      "reflectionTexture": null,
+      "hasReflection": false,
+      "fgCoverageRatio": 0.0449,
+      "midCoverageRatio": 0.107,
+      "topologyVerification": {
+        "wandering2_wall_frame": {
+          "contact_pixel_count": 1855,
+          "opaque_pixel_count": 8448,
+          "rim_probe_pixel_count": 7385,
+          "max_abs_contact_dz_world": 0.0,
+          "p95_abs_contact_dz_world": 0.0,
+          "mean_abs_contact_dz_world": 0.0,
+          "max_abs_rim_jump_world": 0.0,
+          "p95_abs_rim_jump_world": 0.0,
+          "min_signed_dz_vs_host_world": 0.0,
+          "contact_passed": true,
+          "discontinuity_passed": true,
+          "monotonicity_passed": true,
+          "all_passed": true
+        },
+        "mid": {
+          "contact_pixel_count": 4728,
+          "opaque_pixel_count": 160542,
+          "rim_probe_pixel_count": 27171,
+          "max_abs_contact_dz_world": 0.1568603515625,
+          "p95_abs_contact_dz_world": 0.1568603515625,
+          "mean_abs_contact_dz_world": 0.08508303016424179,
+          "max_abs_rim_jump_world": 0.0,
+          "p95_abs_rim_jump_world": 0.0,
+          "min_signed_dz_vs_host_world": -0.470611572265625,
+          "contact_passed": true,
+          "discontinuity_passed": true,
+          "monotonicity_passed": true,
+          "all_passed": true
+        },
+        "fg": {
+          "contact_pixel_count": 1230,
+          "opaque_pixel_count": 218446,
+          "rim_probe_pixel_count": 20478,
+          "max_abs_contact_dz_world": 0.243133544921875,
+          "p95_abs_contact_dz_world": 0.243133544921875,
+          "mean_abs_contact_dz_world": 0.1590884029865265,
+          "max_abs_rim_jump_world": 0.0,
+          "p95_abs_rim_jump_world": 0.0,
+          "min_signed_dz_vs_host_world": -0.29412841796875,
+          "contact_passed": true,
+          "discontinuity_passed": true,
+          "monotonicity_passed": true,
+          "all_passed": true
+        }
+      }
+    }
+  },
+  "verification_reports": {
+    "denya_living_room": {
+      "wandering2_wall_frame": {
+        "contact_pixel_count": 864,
+        "opaque_pixel_count": 1933,
+        "rim_probe_pixel_count": 3410,
+        "max_abs_contact_dz_world": 0.0,
+        "p95_abs_contact_dz_world": 0.0,
+        "mean_abs_contact_dz_world": 0.0,
+        "max_abs_rim_jump_world": 0.0,
+        "p95_abs_rim_jump_world": 0.0,
+        "min_signed_dz_vs_host_world": 0.0,
+        "contact_passed": true,
+        "discontinuity_passed": true,
+        "monotonicity_passed": true,
+        "all_passed": true
+      },
+      "planted_couch_trio": {
+        "contact_pixel_count": 1532,
+        "opaque_pixel_count": 24376,
+        "rim_probe_pixel_count": 9548,
+        "max_abs_contact_dz_world": 0.1529541015625,
+        "p95_abs_contact_dz_world": 0.145111083984375,
+        "mean_abs_contact_dz_world": 0.08157342672348022,
+        "max_abs_rim_jump_world": 0.0,
+        "p95_abs_rim_jump_world": 0.0,
+        "min_signed_dz_vs_host_world": -0.6549072265625,
+        "contact_passed": true,
+        "discontinuity_passed": true,
+        "monotonicity_passed": true,
+        "all_passed": true
+      },
+      "mid": {
+        "contact_pixel_count": 1549,
+        "opaque_pixel_count": 20902,
+        "rim_probe_pixel_count": 6412,
+        "max_abs_contact_dz_world": 0.1529541015625,
+        "p95_abs_contact_dz_world": 0.1529541015625,
+        "mean_abs_contact_dz_world": 0.08653402328491211,
+        "max_abs_rim_jump_world": 0.0,
+        "p95_abs_rim_jump_world": 0.0,
+        "min_signed_dz_vs_host_world": -0.278411865234375,
+        "contact_passed": true,
+        "discontinuity_passed": true,
+        "monotonicity_passed": true,
+        "all_passed": true
+      },
+      "fg": {
+        "contact_pixel_count": 1482,
+        "opaque_pixel_count": 799231,
+        "rim_probe_pixel_count": 23947,
+        "max_abs_contact_dz_world": 0.37255859375,
+        "p95_abs_contact_dz_world": 0.352935791015625,
+        "mean_abs_contact_dz_world": 0.1897404044866562,
+        "max_abs_rim_jump_world": 0.0,
+        "p95_abs_rim_jump_world": 0.0,
+        "min_signed_dz_vs_host_world": -1.039215087890625,
+        "contact_passed": true,
+        "discontinuity_passed": true,
+        "monotonicity_passed": true,
+        "all_passed": true
+      }
+    },
+    "denya_couch_guitar": {
+      "wandering2_wall_frame": {
+        "contact_pixel_count": 1855,
+        "opaque_pixel_count": 8448,
+        "rim_probe_pixel_count": 7385,
+        "max_abs_contact_dz_world": 0.0,
+        "p95_abs_contact_dz_world": 0.0,
+        "mean_abs_contact_dz_world": 0.0,
+        "max_abs_rim_jump_world": 0.0,
+        "p95_abs_rim_jump_world": 0.0,
+        "min_signed_dz_vs_host_world": 0.0,
+        "contact_passed": true,
+        "discontinuity_passed": true,
+        "monotonicity_passed": true,
+        "all_passed": true
+      },
+      "mid": {
+        "contact_pixel_count": 4728,
+        "opaque_pixel_count": 160542,
+        "rim_probe_pixel_count": 27171,
+        "max_abs_contact_dz_world": 0.1568603515625,
+        "p95_abs_contact_dz_world": 0.1568603515625,
+        "mean_abs_contact_dz_world": 0.08508303016424179,
+        "max_abs_rim_jump_world": 0.0,
+        "p95_abs_rim_jump_world": 0.0,
+        "min_signed_dz_vs_host_world": -0.470611572265625,
+        "contact_passed": true,
+        "discontinuity_passed": true,
+        "monotonicity_passed": true,
+        "all_passed": true
+      },
+      "fg": {
+        "contact_pixel_count": 1230,
+        "opaque_pixel_count": 218446,
+        "rim_probe_pixel_count": 20478,
+        "max_abs_contact_dz_world": 0.243133544921875,
+        "p95_abs_contact_dz_world": 0.243133544921875,
+        "mean_abs_contact_dz_world": 0.1590884029865265,
+        "max_abs_rim_jump_world": 0.0,
+        "p95_abs_rim_jump_world": 0.0,
+        "min_signed_dz_vs_host_world": -0.29412841796875,
+        "contact_passed": true,
+        "discontinuity_passed": true,
+        "monotonicity_passed": true,
+        "all_passed": true
+      }
+    }
+  },
+  "ssot_config": {
+    "feedback_id": "fb-20261030-231405-f5e3f7",
+    "spec_output_relpath": "prototype/assets/scenes/denya_living_bundle_spec.json",
+    "dimensions": {
+      "width": 1500,
+      "height": 1000
+    },
+    "outpainting": {
+      "expansion_factor": 1.8,
+      "feather_collar_px": 48,
+      "color_match_band_px": 40,
+      "min_registration_corr": 0.92,
+      "homography_patch_width": 300,
+      "homography_patch_height": 220,
+      "homography_search_margin_px": 90,
+      "homography_min_patch_corr": 0.7,
+      "similarity_salient_grad_percentile": 82.0,
+      "similarity_coarse_downsample": 0.35,
+      "similarity_coarse_scale_min": 0.42,
+      "similarity_coarse_scale_max": 1.15,
+      "similarity_coarse_steps": 48,
+      "similarity_fine_half_span": 0.045,
+      "similarity_fine_steps": 19,
+      "similarity_fine_margin_px": 60,
+      "gain_clamp_min": 0.82,
+      "gain_clamp_max": 1.22,
+      "max_warp_border_pull_px": 18.0
+    },
+    "mirror_outpaint": {
+      "resized_source_wh": [
+        1500,
+        1125
+      ],
+      "inner_crop_y0": 62
+    },
+    "depth_model": {
+      "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+      "background_gaussian_sigma": 14.0,
+      "depth_discontinuity_percentile_fg": 62.0,
+      "depth_discontinuity_percentile_mid": 30.0
+    },
+    "segmentation": {
+      "rembg_model_name": "isnet-general-use",
+      "sam_model_id": "facebook/sam-vit-base",
+      "alpha_foreground_threshold": 92,
+      "alpha_full_opaque_threshold": 195,
+      "min_component_area_px": 320,
+      "sam_morph_close_px": 5,
+      "edge_feather_sigma": 0.75
+    },
+    "salient_edge_support_px": 3,
+    "alpha_clean_threshold_u8": 20,
+    "interior_solidify_erode_px": 4,
+    "interior_solidify_threshold_u8": 96,
+    "inpainting": {
+      "dilation_radius_px": 26,
+      "mask_blur_sigma": 2.5,
+      "jpeg_quality": 92
+    },
+    "topology_verification": {
+      "alpha_threshold_u8": 20,
+      "rim_erosion_px": 2,
+      "rim_exterior_probe_px": 8,
+      "max_allowed_contact_dz_world": 2.0,
+      "max_allowed_p95_contact_dz_world": 1.2,
+      "max_allowed_rim_jump_world": 2.5,
+      "host_monotonicity_tolerance_world": 2.0
+    },
+    "wall_homography_pairs": [
+      {
+        "src_xy": [
+          192.0,
+          107.0
+        ],
+        "dst_xy": [
+          465.0,
+          208.0
+        ]
+      },
+      {
+        "src_xy": [
+          79.0,
+          101.0
+        ],
+        "dst_xy": [
+          427.0,
+          207.0
+        ]
+      },
+      {
+        "src_xy": [
+          362.0,
+          40.0
+        ],
+        "dst_xy": [
+          517.0,
+          173.0
+        ]
+      },
+      {
+        "src_xy": [
+          472.0,
+          49.0
+        ],
+        "dst_xy": [
+          566.0,
+          174.0
+        ]
+      },
+      {
+        "src_xy": [
+          364.0,
+          88.0
+        ],
+        "dst_xy": [
+          521.0,
+          194.0
+        ]
+      },
+      {
+        "src_xy": [
+          472.0,
+          89.0
+        ],
+        "dst_xy": [
+          567.0,
+          195.0
+        ]
+      },
+      {
+        "src_xy": [
+          486.0,
+          235.0
+        ],
+        "dst_xy": [
+          571.0,
+          260.0
+        ]
+      },
+      {
+        "src_xy": [
+          384.0,
+          237.0
+        ],
+        "dst_xy": [
+          526.0,
+          259.0
+        ]
+      },
+      {
+        "src_xy": [
+          628.0,
+          38.0
+        ],
+        "dst_xy": [
+          628.0,
+          166.0
+        ]
+      },
+      {
+        "src_xy": [
+          684.0,
+          40.0
+        ],
+        "dst_xy": [
+          653.0,
+          167.0
+        ]
+      },
+      {
+        "src_xy": [
+          683.0,
+          122.0
+        ],
+        "dst_xy": [
+          653.0,
+          204.0
+        ]
+      },
+      {
+        "src_xy": [
+          627.0,
+          120.0
+        ],
+        "dst_xy": [
+          628.0,
+          203.0
+        ]
+      },
+      {
+        "src_xy": [
+          771.0,
+          39.0
+        ],
+        "dst_xy": [
+          692.0,
+          160.0
+        ]
+      },
+      {
+        "src_xy": [
+          895.0,
+          42.0
+        ],
+        "dst_xy": [
+          750.0,
+          159.0
+        ]
+      },
+      {
+        "src_xy": [
+          886.0,
+          146.0
+        ],
+        "dst_xy": [
+          750.0,
+          208.0
+        ]
+      },
+      {
+        "src_xy": [
+          768.0,
+          144.0
+        ],
+        "dst_xy": [
+          693.0,
+          208.0
+        ]
+      },
+      {
+        "src_xy": [
+          987.0,
+          32.0
+        ],
+        "dst_xy": [
+          801.0,
+          152.0
+        ]
+      },
+      {
+        "src_xy": [
+          1058.0,
+          37.0
+        ],
+        "dst_xy": [
+          839.0,
+          152.0
+        ]
+      },
+      {
+        "src_xy": [
+          1051.0,
+          94.0
+        ],
+        "dst_xy": [
+          838.0,
+          180.0
+        ]
+      },
+      {
+        "src_xy": [
+          981.0,
+          91.0
+        ],
+        "dst_xy": [
+          801.0,
+          180.0
+        ]
+      },
+      {
+        "src_xy": [
+          981.0,
+          116.0
+        ],
+        "dst_xy": [
+          802.0,
+          192.0
+        ]
+      },
+      {
+        "src_xy": [
+          1040.0,
+          119.0
+        ],
+        "dst_xy": [
+          834.0,
+          192.0
+        ]
+      },
+      {
+        "src_xy": [
+          1034.0,
+          174.0
+        ],
+        "dst_xy": [
+          834.0,
+          221.0
+        ]
+      },
+      {
+        "src_xy": [
+          976.0,
+          173.0
+        ],
+        "dst_xy": [
+          802.0,
+          221.0
+        ]
+      }
+    ],
+    "wall_color_ref_box_couch": {
+      "x0": 500,
+      "y0": 145,
+      "x1": 600,
+      "y1": 248
+    },
+    "wall_color_ref_box_dining": {
+      "x0": 575,
+      "y0": 208,
+      "x1": 616,
+      "y1": 268
+    },
+    "framed_painting": {
+      "target_scene_id": "wandering_drawing",
+      "portal_id_in_dining": "portal_denya_dining_wandering_2",
+      "portal_id_in_couch": "portal_denya_couch_wandering_2",
+      "label_he": "✏️ ׳שיטוט 2׳ על קיר הסלון · איים מרחפים",
+      "short_badge_he": "✏️ שיטוט 2",
+      "source_bg_relpath": "prototype/assets/scenes/scene5_wandering_bg_inpainted.jpg",
+      "source_mid_relpath": "prototype/assets/scenes/scene5_wandering_mid.png",
+      "source_fg_relpath": "prototype/assets/scenes/scene5_wandering_fg.png",
+      "couch_outer_box_xyxy": [
+        608,
+        148,
+        764,
+        252
+      ],
+      "couch_moulding_px": 6,
+      "couch_matboard_px": 9,
+      "couch_bevel_px": 2,
+      "oak_base_rgb": [
+        152,
+        125,
+        94
+      ],
+      "oak_light_rgb": [
+        176,
+        149,
+        116
+      ],
+      "oak_dark_rgb": [
+        112,
+        88,
+        63
+      ],
+      "couch_mat_rgb": [
+        213,
+        211,
+        202
+      ],
+      "dining_mat_rgb": [
+        199,
+        194,
+        179
+      ],
+      "bevel_shadow_rgb": [
+        162,
+        158,
+        148
+      ],
+      "bevel_highlight_rgb": [
+        228,
+        226,
+        216
+      ],
+      "drop_shadow_offset_couch_xy": [
+        -4,
+        4
+      ],
+      "drop_shadow_sigma_couch": 3.2,
+      "drop_shadow_opacity": 0.34,
+      "glass_warm_tint_rgb": [
+        0.985,
+        0.978,
+        0.945
+      ],
+      "glass_contrast": 0.94,
+      "recess_depth": 96.0,
+      "moulding_relief_norm": 1.0,
+      "matboard_relief_norm": 0.38,
+      "frame_min_component_px": 200,
+      "badge_offset_y_factor": -0.68
+    },
+    "planted_trio": {
+      "layer_id": "planted_couch_trio",
+      "label_he": "טל, יערה וכרמל עם הגיטרה על הספה האפורה בסלון דניה",
+      "depth_output_filename": "denya_living_dining_couch_people_depth.png",
+      "depth_solve": {
+        "bg_z": -385.0,
+        "room_depth_amplitude": 110.0,
+        "room_pin_margin_uv": 0.045,
+        "layer_z": -384.0,
+        "layer_depth_amplitude": 84.0,
+        "layer_pin_margin_uv": 0.0,
+        "alpha_threshold_u8": 20,
+        "component_bridge_px": 8,
+        "min_component_area_px": 200,
+        "auto_floor_band_px": 6,
+        "auto_floor_max_rise_px": 48,
+        "contact_boxes": [
+          {
+            "x0": 480,
+            "y0": 350,
+            "x1": 825,
+            "y1": 435,
+            "mode": "bottom_band",
+            "band_px": 6
+          }
+        ],
+        "neural_relief_amplitude": 12.0,
+        "contact_relief_taper_px": 8.0,
+        "enforce_front_of_host": true,
+        "host_clearance_tolerance_world": 0.5,
+        "interior_smooth_sigma_px": 3.5,
+        "overflow_tolerance_world": 0.5
+      },
+      "protrusion": {
+        "da2_smooth_sigma_px": 6.0,
+        "anchor_baseline_percentile": 8.0,
+        "upper_percentile": 98.0,
+        "core_erode_px": 2
+      },
+      "segments_x": 192,
+      "segments_y": 128,
+      "render_order": 7,
+      "min_warped_component_px": 2500,
+      "people_plane_pairs": [
+        {
+          "src_xy": [
+            272.0,
+            338.0
+          ],
+          "dst_xy": [
+            492.0,
+            290.0
+          ]
+        },
+        {
+          "src_xy": [
+            965.0,
+            342.0
+          ],
+          "dst_xy": [
+            785.0,
+            298.0
+          ]
+        },
+        {
+          "src_xy": [
+            272.0,
+            530.0
+          ],
+          "dst_xy": [
+            490.0,
+            358.0
+          ]
+        },
+        {
+          "src_xy": [
+            965.0,
+            530.0
+          ],
+          "dst_xy": [
+            786.0,
+            366.0
+          ]
+        },
+        {
+          "src_xy": [
+            272.0,
+            635.0
+          ],
+          "dst_xy": [
+            486.0,
+            394.0
+          ]
+        },
+        {
+          "src_xy": [
+            965.0,
+            635.0
+          ],
+          "dst_xy": [
+            786.0,
+            402.0
+          ]
+        }
+      ],
+      "relight_blend": 0.76,
+      "gain_clamp_range": [
+        0.86,
+        1.12
+      ],
+      "sofa_shadow_rgb": [
+        64,
+        60,
+        54
+      ],
+      "sofa_shadow_offset_xy": [
+        -4,
+        4
+      ],
+      "sofa_shadow_sigma_yx": [
+        5.0,
+        6.0
+      ],
+      "sofa_shadow_opacity": 0.32,
+      "wall_shadow_offset_xy": [
+        -5,
+        2
+      ],
+      "wall_shadow_sigma_yx": [
+        6.5,
+        7.5
+      ],
+      "wall_shadow_opacity": 0.12,
+      "portal_id_to_couch": "portal_denya_to_couch",
+      "portal_label_he": "🎸 ספת הסלון בדניה · טל, יערה וכרמל עם הגיטרה",
+      "portal_short_badge_he": "🎸 לספה והגיטרה",
+      "portal_inner_box_xyxy": [
+        435.0,
+        266.0,
+        815.0,
+        422.0
+      ],
+      "portal_fade_start_progress": 0.24,
+      "badge_offset_y_factor": -0.35
+    },
+    "dining_scene": {
+      "scene_id": "denya_living_room",
+      "title_he": "ארוחה בסלון דניה — שער אל הספה והגיטרה ואל ׳שיטוט 2׳",
+      "short_label_he": "🍽️ סלון דניה: שולחן ושערים",
+      "icon": "🍽️",
+      "exhibition_group": "bene_beitcha_home",
+      "catalog_id": "IMG_DROP_0106",
+      "source_relpath": "media/drop_folder_imports/denya_2026_08_17_dining_table_tami_gadi_a75e3694.jpg",
+      "bg_output_filename": "denya_living_dining_bg.jpg",
+      "depth_output_filename": "denya_living_dining_depth.png",
+      "mid_output_filename": "denya_living_dining_mid.png",
+      "mid_depth_output_filename": "denya_living_dining_mid_depth.png",
+      "fg_output_filename": "denya_living_dining_fg.png",
+      "fg_depth_output_filename": "denya_living_dining_fg_depth.png",
+      "planted_people_output_filename": "denya_living_dining_couch_people.png",
+      "frame_output_filename": "denya_living_dining_wandering2_frame.png",
+      "frame_depth_output_filename": "denya_living_dining_wandering2_frame_depth.png",
+      "fg_sam_prompts": [
+        {
+          "box": {
+            "x0": 110,
+            "y0": 240,
+            "x1": 445,
+            "y1": 760
+          },
+          "points_xy": [
+            [
+              345.0,
+              285.0
+            ],
+            [
+              345.0,
+              390.0
+            ],
+            [
+              320.0,
+              520.0
+            ],
+            [
+              245.0,
+              485.0
+            ],
+            [
+              175.0,
+              620.0
+            ],
+            [
+              145.0,
+              710.0
+            ],
+            [
+              430.0,
+              330.0
+            ],
+            [
+              220.0,
+              310.0
+            ],
+            [
+              105.0,
+              500.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 395,
+            "y0": 376,
+            "x1": 658,
+            "y1": 630
+          },
+          "points_xy": [
+            [
+              498.0,
+              392.0
+            ],
+            [
+              480.0,
+              445.0
+            ],
+            [
+              475.0,
+              535.0
+            ],
+            [
+              585.0,
+              490.0
+            ],
+            [
+              632.0,
+              492.0
+            ],
+            [
+              425.0,
+              565.0
+            ],
+            [
+              560.0,
+              415.0
+            ],
+            [
+              405.0,
+              405.0
+            ],
+            [
+              610.0,
+              440.0
+            ],
+            [
+              498.0,
+              368.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 60,
+            "y0": 528,
+            "x1": 570,
+            "y1": 965
+          },
+          "points_xy": [
+            [
+              285.0,
+              580.0
+            ],
+            [
+              295.0,
+              665.0
+            ],
+            [
+              245.0,
+              760.0
+            ],
+            [
+              465.0,
+              695.0
+            ],
+            [
+              150.0,
+              595.0
+            ],
+            [
+              115.0,
+              785.0
+            ],
+            [
+              125.0,
+              865.0
+            ],
+            [
+              55.0,
+              620.0
+            ],
+            [
+              55.0,
+              760.0
+            ],
+            [
+              140.0,
+              500.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 970,
+            "y0": 358,
+            "x1": 1255,
+            "y1": 880
+          },
+          "points_xy": [
+            [
+              1095.0,
+              405.0
+            ],
+            [
+              1095.0,
+              485.0
+            ],
+            [
+              1125.0,
+              575.0
+            ],
+            [
+              1025.0,
+              540.0
+            ],
+            [
+              1140.0,
+              685.0
+            ],
+            [
+              1095.0,
+              765.0
+            ],
+            [
+              1125.0,
+              815.0
+            ],
+            [
+              945.0,
+              420.0
+            ],
+            [
+              960.0,
+              515.0
+            ],
+            [
+              1010.0,
+              365.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 1105,
+            "y0": 262,
+            "x1": 1500,
+            "y1": 1000
+          },
+          "points_xy": [
+            [
+              1315.0,
+              315.0
+            ],
+            [
+              1285.0,
+              430.0
+            ],
+            [
+              1320.0,
+              690.0
+            ],
+            [
+              1440.0,
+              650.0
+            ],
+            [
+              1220.0,
+              860.0
+            ],
+            [
+              1420.0,
+              920.0
+            ],
+            [
+              1145.0,
+              860.0
+            ],
+            [
+              1158.0,
+              935.0
+            ],
+            [
+              1175.0,
+              985.0
+            ],
+            [
+              1245.0,
+              985.0
+            ],
+            [
+              1160.0,
+              310.0
+            ],
+            [
+              1155.0,
+              430.0
+            ],
+            [
+              1475.0,
+              340.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 732,
+            "y0": 466,
+            "x1": 786,
+            "y1": 535
+          },
+          "points_xy": [
+            [
+              764.0,
+              476.0
+            ],
+            [
+              764.0,
+              504.0
+            ],
+            [
+              760.0,
+              456.0
+            ],
+            [
+              715.0,
+              472.0
+            ],
+            [
+              800.0,
+              472.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 790,
+            "y0": 468,
+            "x1": 862,
+            "y1": 532
+          },
+          "points_xy": [
+            [
+              815.0,
+              488.0
+            ],
+            [
+              835.0,
+              505.0
+            ],
+            [
+              802.0,
+              512.0
+            ],
+            [
+              820.0,
+              458.0
+            ],
+            [
+              868.0,
+              472.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 38,
+            "y0": 920,
+            "x1": 215,
+            "y1": 1000
+          },
+          "points_xy": [
+            [
+              62.0,
+              988.0
+            ],
+            [
+              95.0,
+              965.0
+            ],
+            [
+              140.0,
+              990.0
+            ],
+            [
+              42.0,
+              918.0
+            ],
+            [
+              28.0,
+              955.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 125,
+            "y0": 448,
+            "x1": 1210,
+            "y1": 1000
+          },
+          "points_xy": [
+            [
+              700.0,
+              820.0
+            ],
+            [
+              850.0,
+              550.0
+            ],
+            [
+              300.0,
+              950.0
+            ],
+            [
+              580.0,
+              850.0
+            ],
+            [
+              660.0,
+              700.0
+            ],
+            [
+              680.0,
+              475.0
+            ],
+            [
+              840.0,
+              480.0
+            ],
+            [
+              815.0,
+              492.0
+            ],
+            [
+              545.0,
+              530.0
+            ],
+            [
+              355.0,
+              760.0
+            ],
+            [
+              755.0,
+              625.0
+            ],
+            [
+              435.0,
+              785.0
+            ],
+            [
+              190.0,
+              965.0
+            ],
+            [
+              905.0,
+              520.0
+            ],
+            [
+              110.0,
+              520.0
+            ],
+            [
+              415.0,
+              460.0
+            ],
+            [
+              650.0,
+              435.0
+            ],
+            [
+              850.0,
+              445.0
+            ],
+            [
+              955.0,
+              485.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "fg_exclude_boxes": [
+        {
+          "x0": 455,
+          "y0": 325,
+          "x1": 535,
+          "y1": 378
+        }
+      ],
+      "fg_max_pinhole_fill_px": 85000,
+      "fg_min_component_px": 10000,
+      "bottom_fg_extension_x0": 65,
+      "right_fg_extension_y0": 490,
+      "mid_sam_prompts": [
+        {
+          "box": {
+            "x0": 548,
+            "y0": 385,
+            "x1": 708,
+            "y1": 474
+          },
+          "points_xy": [
+            [
+              590.0,
+              412.0
+            ],
+            [
+              635.0,
+              412.0
+            ],
+            [
+              680.0,
+              415.0
+            ],
+            [
+              658.0,
+              456.0
+            ],
+            [
+              635.0,
+              368.0
+            ],
+            [
+              532.0,
+              395.0
+            ],
+            [
+              565.0,
+              462.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 694,
+            "y0": 366,
+            "x1": 856,
+            "y1": 478
+          },
+          "points_xy": [
+            [
+              772.0,
+              412.0
+            ],
+            [
+              842.0,
+              382.0
+            ],
+            [
+              712.0,
+              425.0
+            ],
+            [
+              772.0,
+              456.0
+            ],
+            [
+              825.0,
+              452.0
+            ],
+            [
+              755.0,
+              352.0
+            ],
+            [
+              720.0,
+              352.0
+            ],
+            [
+              805.0,
+              352.0
+            ],
+            [
+              868.0,
+              410.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "mid_max_pinhole_fill_px": 4500,
+      "mid_min_component_px": 1500,
+      "mid_apron": {
+        "downward_extension_px": 24,
+        "max_depth_into_occluder_px": 26.0,
+        "bottom_feather_px": 6.0,
+        "seam_blend_px": 4.0,
+        "alpha_threshold_u8": 20,
+        "occluder_threshold_u8": 64,
+        "inpaint_dilation_px": 20
+      },
+      "sofa_ref_box": {
+        "x0": 435,
+        "y0": 286,
+        "x1": 815,
+        "y1": 405
+      },
+      "perched_backrest_pillow_box": {
+        "x0": 625,
+        "y0": 236,
+        "x1": 700,
+        "y1": 305
+      },
+      "wall_flatten_pin": {
+        "inner_xy": [
+          635.0,
+          215.0
+        ],
+        "radii_xy": [
+          260.0,
+          120.0
+        ],
+        "feather_px": 95.0,
+        "target_norm_depth": 0.08
+      },
+      "da2_gaussian_sigma": 12.0,
+      "room_depth_clean": {
+        "alpha_threshold_u8": 16,
+        "mask_dilation_px": 16,
+        "extra_clean_boxes_expanded": [],
+        "preserve_boxes_expanded": [
+          [
+            600,
+            340,
+            2100,
+            805
+          ],
+          [
+            600,
+            340,
+            985,
+            950
+          ],
+          [
+            985,
+            765,
+            1146,
+            875
+          ],
+          [
+            1458,
+            704,
+            1630,
+            965
+          ],
+          [
+            1630,
+            340,
+            2100,
+            950
+          ]
+        ],
+        "post_smooth_sigma_px": 2.5,
+        "interior_blend_band_px": 10.0
+      },
+      "frame_depth_solve": {
+        "bg_z": -385.0,
+        "room_depth_amplitude": 110.0,
+        "room_pin_margin_uv": 0.045,
+        "layer_z": -385.0,
+        "layer_depth_amplitude": 26.0,
+        "layer_pin_margin_uv": 0.0,
+        "alpha_threshold_u8": 20,
+        "component_bridge_px": 4,
+        "min_component_area_px": 100,
+        "auto_floor_band_px": 6,
+        "auto_floor_max_rise_px": 48,
+        "contact_boxes": [
+          {
+            "x0": 0,
+            "y0": 0,
+            "x1": 1500,
+            "y1": 1000,
+            "mode": "perimeter_rim",
+            "band_px": 2
+          }
+        ],
+        "neural_relief_amplitude": 1.2,
+        "contact_relief_taper_px": 3.0,
+        "enforce_front_of_host": true,
+        "host_clearance_tolerance_world": 0.5,
+        "interior_smooth_sigma_px": 0.8,
+        "overflow_tolerance_world": 0.5
+      },
+      "mid_depth_solve": {
+        "bg_z": -385.0,
+        "room_depth_amplitude": 110.0,
+        "room_pin_margin_uv": 0.045,
+        "layer_z": -382.0,
+        "layer_depth_amplitude": 88.0,
+        "layer_pin_margin_uv": 0.0,
+        "alpha_threshold_u8": 20,
+        "component_bridge_px": 8,
+        "min_component_area_px": 200,
+        "auto_floor_band_px": 6,
+        "auto_floor_max_rise_px": 48,
+        "contact_boxes": [
+          {
+            "x0": 545,
+            "y0": 440,
+            "x1": 860,
+            "y1": 512,
+            "mode": "bottom_band",
+            "band_px": 6
+          }
+        ],
+        "neural_relief_amplitude": 15.0,
+        "contact_relief_taper_px": 8.0,
+        "enforce_front_of_host": true,
+        "host_clearance_tolerance_world": 0.5,
+        "interior_smooth_sigma_px": 1.5,
+        "overflow_tolerance_world": 0.5
+      },
+      "mid_protrusion": {
+        "da2_smooth_sigma_px": 2.0,
+        "anchor_baseline_percentile": 10.0,
+        "upper_percentile": 98.0,
+        "core_erode_px": 1
+      },
+      "fg_depth_solve": {
+        "bg_z": -385.0,
+        "room_depth_amplitude": 110.0,
+        "room_pin_margin_uv": 0.045,
+        "layer_z": -374.0,
+        "layer_depth_amplitude": 195.0,
+        "layer_pin_margin_uv": 0.0,
+        "alpha_threshold_u8": 20,
+        "component_bridge_px": 8,
+        "min_component_area_px": 500,
+        "auto_floor_band_px": 6,
+        "auto_floor_max_rise_px": 48,
+        "contact_boxes": [
+          {
+            "x0": 72,
+            "y0": 555,
+            "x1": 160,
+            "y1": 675,
+            "mode": "left_band",
+            "band_px": 6
+          },
+          {
+            "x0": 55,
+            "y0": 795,
+            "x1": 132,
+            "y1": 945,
+            "mode": "left_band",
+            "band_px": 6
+          }
+        ],
+        "neural_relief_amplitude": 98.0,
+        "contact_relief_taper_px": 12.0,
+        "enforce_front_of_host": true,
+        "host_clearance_tolerance_world": 0.5,
+        "interior_smooth_sigma_px": 2.0,
+        "overflow_tolerance_world": 0.5
+      },
+      "fg_protrusion": {
+        "da2_smooth_sigma_px": 2.5,
+        "anchor_baseline_percentile": 6.0,
+        "upper_percentile": 98.5,
+        "core_erode_px": 1
+      },
+      "scene_bg_z": -385.0,
+      "room_depth_amplitude": 110.0,
+      "bg_segments_x": 224,
+      "bg_segments_y": 150,
+      "frame_segments_x": 160,
+      "frame_segments_y": 108,
+      "mid_segments_x": 192,
+      "mid_segments_y": 128,
+      "fg_segments_x": 224,
+      "fg_segments_y": 150,
+      "min_inner_scale": 2.12,
+      "initial_camera_y": 0.0,
+      "initial_camera_z": 460.0,
+      "min_camera_z": -120.0,
+      "max_camera_z": 640.0,
+      "max_yaw_deg": 18.5,
+      "max_pitch_deg": 12.5,
+      "max_strafe_x": 68.0,
+      "max_strafe_y": 46.0,
+      "dolly_speed_mult": 1.35,
+      "frame_render_order": 6,
+      "mid_render_order": 8,
+      "fg_render_order": 10,
+      "fg_bleed_guard_min_z": 210.0,
+      "particle_color_hex": 15260868,
+      "particle_count": 65
+    },
+    "couch_scene": {
+      "scene_id": "denya_couch_guitar",
+      "title_he": "ספת הסלון בדניה — נגינה בגיטרה תחת קיר העבודות ושער ׳שיטוט 2׳",
+      "short_label_he": "🎸 ספת דניה: גיטרה ושיטוט",
+      "icon": "🎸",
+      "exhibition_group": "bene_beitcha_home",
+      "catalog_id": "IMG_DROP_0104",
+      "source_relpath": "media/drop_folder_imports/denya_2025_12_27_guitar_living_room_artworks_35f16626.jpg",
+      "bg_output_filename": "denya_living_couch_bg.jpg",
+      "depth_output_filename": "denya_living_couch_depth.png",
+      "mid_output_filename": "denya_living_couch_mid.png",
+      "mid_depth_output_filename": "denya_living_couch_mid_depth.png",
+      "fg_output_filename": "denya_living_couch_fg.png",
+      "fg_depth_output_filename": "denya_living_couch_fg_depth.png",
+      "frame_output_filename": "denya_living_couch_wandering2_frame.png",
+      "frame_depth_output_filename": "denya_living_couch_wandering2_frame_depth.png",
+      "people_sam_prompts": [
+        {
+          "box": {
+            "x0": 404,
+            "y0": 268,
+            "x1": 672,
+            "y1": 686
+          },
+          "points_xy": [
+            [
+              573.0,
+              286.0
+            ],
+            [
+              575.0,
+              345.0
+            ],
+            [
+              610.0,
+              365.0
+            ],
+            [
+              638.0,
+              350.0
+            ],
+            [
+              618.0,
+              382.0
+            ],
+            [
+              595.0,
+              410.0
+            ],
+            [
+              535.0,
+              345.0
+            ],
+            [
+              446.0,
+              425.0
+            ],
+            [
+              438.0,
+              455.0
+            ],
+            [
+              430.0,
+              485.0
+            ],
+            [
+              428.0,
+              515.0
+            ],
+            [
+              424.0,
+              545.0
+            ],
+            [
+              428.0,
+              580.0
+            ],
+            [
+              495.0,
+              455.0
+            ],
+            [
+              560.0,
+              480.0
+            ],
+            [
+              615.0,
+              445.0
+            ],
+            [
+              620.0,
+              475.0
+            ],
+            [
+              626.0,
+              505.0
+            ],
+            [
+              600.0,
+              600.0
+            ],
+            [
+              520.0,
+              585.0
+            ],
+            [
+              640.0,
+              580.0
+            ],
+            [
+              612.0,
+              662.0
+            ],
+            [
+              638.0,
+              658.0
+            ],
+            [
+              652.0,
+              668.0
+            ],
+            [
+              636.0,
+              673.0
+            ],
+            [
+              575.0,
+              266.0
+            ],
+            [
+              646.0,
+              338.0
+            ],
+            [
+              648.0,
+              352.0
+            ],
+            [
+              642.0,
+              368.0
+            ],
+            [
+              642.0,
+              382.0
+            ],
+            [
+              636.0,
+              405.0
+            ],
+            [
+              636.0,
+              435.0
+            ],
+            [
+              638.0,
+              465.0
+            ],
+            [
+              601.0,
+              508.0
+            ],
+            [
+              644.0,
+              552.0
+            ],
+            [
+              450.0,
+              355.0
+            ],
+            [
+              432.0,
+              422.0
+            ],
+            [
+              425.0,
+              442.0
+            ],
+            [
+              416.0,
+              465.0
+            ],
+            [
+              414.0,
+              495.0
+            ],
+            [
+              416.0,
+              525.0
+            ],
+            [
+              408.0,
+              545.0
+            ],
+            [
+              610.0,
+              684.0
+            ],
+            [
+              485.0,
+              675.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 636,
+            "y0": 418,
+            "x1": 1028,
+            "y1": 588
+          },
+          "points_xy": [
+            [
+              700.0,
+              450.0
+            ],
+            [
+              712.0,
+              485.0
+            ],
+            [
+              700.0,
+              548.0
+            ],
+            [
+              775.0,
+              495.0
+            ],
+            [
+              865.0,
+              486.0
+            ],
+            [
+              920.0,
+              484.0
+            ],
+            [
+              968.0,
+              482.0
+            ],
+            [
+              1005.0,
+              480.0
+            ],
+            [
+              680.0,
+              600.0
+            ],
+            [
+              885.0,
+              455.0
+            ],
+            [
+              885.0,
+              518.0
+            ],
+            [
+              985.0,
+              450.0
+            ],
+            [
+              985.0,
+              515.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 722,
+            "y0": 286,
+            "x1": 885,
+            "y1": 670
+          },
+          "points_xy": [
+            [
+              828.0,
+              304.0
+            ],
+            [
+              822.0,
+              324.0
+            ],
+            [
+              815.0,
+              365.0
+            ],
+            [
+              795.0,
+              410.0
+            ],
+            [
+              858.0,
+              415.0
+            ],
+            [
+              866.0,
+              394.0
+            ],
+            [
+              866.0,
+              450.0
+            ],
+            [
+              775.0,
+              625.0
+            ],
+            [
+              855.0,
+              615.0
+            ],
+            [
+              825.0,
+              282.0
+            ],
+            [
+              795.0,
+              295.0
+            ],
+            [
+              856.0,
+              302.0
+            ],
+            [
+              780.0,
+              320.0
+            ],
+            [
+              725.0,
+              370.0
+            ],
+            [
+              878.0,
+              384.0
+            ],
+            [
+              880.0,
+              402.0
+            ],
+            [
+              882.0,
+              420.0
+            ],
+            [
+              882.0,
+              438.0
+            ],
+            [
+              820.0,
+              676.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 882,
+            "y0": 348,
+            "x1": 1024,
+            "y1": 650
+          },
+          "points_xy": [
+            [
+              976.0,
+              378.0
+            ],
+            [
+              968.0,
+              405.0
+            ],
+            [
+              955.0,
+              428.0
+            ],
+            [
+              902.0,
+              438.0
+            ],
+            [
+              935.0,
+              500.0
+            ],
+            [
+              930.0,
+              545.0
+            ],
+            [
+              915.0,
+              608.0
+            ],
+            [
+              968.0,
+              600.0
+            ],
+            [
+              936.0,
+              366.0
+            ],
+            [
+              944.0,
+              355.0
+            ],
+            [
+              968.0,
+              346.0
+            ],
+            [
+              1000.0,
+              342.0
+            ],
+            [
+              886.0,
+              395.0
+            ],
+            [
+              892.0,
+              408.0
+            ],
+            [
+              886.0,
+              425.0
+            ],
+            [
+              885.0,
+              442.0
+            ],
+            [
+              1026.0,
+              480.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "people_exclude_boxes": [
+        {
+          "x0": 445,
+          "y0": 652,
+          "x1": 525,
+          "y1": 705
+        }
+      ],
+      "people_max_pinhole_fill_px": 1200,
+      "people_min_component_px": 2500,
+      "people_head_salient_max_y": 430,
+      "people_matte_cleanse": {
+        "oriented_hair_boxes": [
+          {
+            "box": {
+              "x0": 496,
+              "y0": 252,
+              "x1": 658,
+              "y1": 402
+            },
+            "upright_angle_deg": 0.0,
+            "taper_margin_px": 8,
+            "sam_core_erode_px": 11,
+            "exclude_boxes": [],
+            "suppress_warm_box": null,
+            "suppress_warm_rg_diff": 21.0,
+            "suppress_warm_sigma": 2.2,
+            "suppress_warm_gain": 1.35
+          },
+          {
+            "box": {
+              "x0": 742,
+              "y0": 268,
+              "x1": 886,
+              "y1": 382
+            },
+            "upright_angle_deg": 0.0,
+            "taper_margin_px": 8,
+            "sam_core_erode_px": 17,
+            "exclude_boxes": [],
+            "suppress_warm_box": null,
+            "suppress_warm_rg_diff": 21.0,
+            "suppress_warm_sigma": 2.2,
+            "suppress_warm_gain": 1.35
+          },
+          {
+            "box": {
+              "x0": 902,
+              "y0": 336,
+              "x1": 1034,
+              "y1": 468
+            },
+            "upright_angle_deg": 0.0,
+            "taper_margin_px": 8,
+            "sam_core_erode_px": 11,
+            "exclude_boxes": [],
+            "suppress_warm_box": null,
+            "suppress_warm_rg_diff": 21.0,
+            "suppress_warm_sigma": 2.2,
+            "suppress_warm_gain": 1.35
+          }
+        ],
+        "sam_core_support_dilate_px": 9,
+        "pillow_notch_box_inner": {
+          "x0": 858,
+          "y0": 374,
+          "x1": 892,
+          "y1": 452
+        },
+        "pillow_max_rg_diff": 18.0,
+        "pillow_max_rb_diff": 24.0,
+        "pillow_smooth_sigma": 0.8,
+        "sofa_erase_pillow_box_inner": {
+          "x0": 858,
+          "y0": 374,
+          "x1": 958,
+          "y1": 502
+        },
+        "sofa_erase_donor_box_inner": {
+          "x0": 858,
+          "y0": 338,
+          "x1": 958,
+          "y1": 374
+        },
+        "sofa_erase_min_luma": 160.0,
+        "sofa_erase_max_rg_diff": 22.0,
+        "hair_wall_max_y_inner": 388,
+        "hair_wall_rim_px": 8.0,
+        "hair_wall_luma_lo": 166.0,
+        "hair_wall_luma_hi": 194.0,
+        "hair_wall_max_chroma_diff": 16.0,
+        "decontam_core_erode_px": 5,
+        "decontam_core_min_alpha_u8": 242,
+        "decontam_bright_halo_delta_luma": 16.0,
+        "decontam_bright_halo_span_luma": 26.0,
+        "decontam_outward_pad_px": 6.0,
+        "protect_wall_art_boxes_inner": [
+          {
+            "x0": 360,
+            "y0": 0,
+            "x1": 500,
+            "y1": 246
+          },
+          {
+            "x0": 970,
+            "y0": 0,
+            "x1": 1085,
+            "y1": 344
+          }
+        ],
+        "hair_bg_dilation_px": 30,
+        "body_bg_dilation_px": 16,
+        "table_bg_dilation_px": 26,
+        "bg_final_dilation_px": 2
+      },
+      "coffee_table_full_sam_prompts": [
+        {
+          "box": {
+            "x0": 340,
+            "y0": 688,
+            "x1": 1320,
+            "y1": 1072
+          },
+          "points_xy": [
+            [
+              550.0,
+              860.0
+            ],
+            [
+              750.0,
+              800.0
+            ],
+            [
+              820.0,
+              845.0
+            ],
+            [
+              950.0,
+              820.0
+            ],
+            [
+              1080.0,
+              875.0
+            ],
+            [
+              380.0,
+              960.0
+            ],
+            [
+              370.0,
+              995.0
+            ],
+            [
+              530.0,
+              1015.0
+            ],
+            [
+              535.0,
+              1052.0
+            ],
+            [
+              1135.0,
+              925.0
+            ],
+            [
+              1130.0,
+              962.0
+            ],
+            [
+              1260.0,
+              875.0
+            ],
+            [
+              1295.0,
+              860.0
+            ],
+            [
+              410.0,
+              760.0
+            ],
+            [
+              635.0,
+              742.0
+            ],
+            [
+              650.0,
+              742.0
+            ],
+            [
+              660.0,
+              745.0
+            ],
+            [
+              800.0,
+              735.0
+            ],
+            [
+              965.0,
+              720.0
+            ],
+            [
+              1095.0,
+              715.0
+            ],
+            [
+              290.0,
+              850.0
+            ],
+            [
+              450.0,
+              1025.0
+            ],
+            [
+              750.0,
+              980.0
+            ],
+            [
+              960.0,
+              960.0
+            ],
+            [
+              1045.0,
+              975.0
+            ],
+            [
+              1230.0,
+              945.0
+            ],
+            [
+              1345.0,
+              860.0
+            ],
+            [
+              620.0,
+              695.0
+            ],
+            [
+              800.0,
+              690.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 345,
+            "y0": 795,
+            "x1": 552,
+            "y1": 986
+          },
+          "points_xy": [
+            [
+              385.0,
+              895.0
+            ],
+            [
+              465.0,
+              890.0
+            ],
+            [
+              460.0,
+              945.0
+            ],
+            [
+              455.0,
+              818.0
+            ],
+            [
+              315.0,
+              895.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 452,
+            "y0": 718,
+            "x1": 652,
+            "y1": 875
+          },
+          "points_xy": [
+            [
+              485.0,
+              742.0
+            ],
+            [
+              535.0,
+              805.0
+            ],
+            [
+              595.0,
+              732.0
+            ],
+            [
+              622.0,
+              745.0
+            ],
+            [
+              622.0,
+              785.0
+            ],
+            [
+              535.0,
+              700.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 655,
+            "y0": 838,
+            "x1": 736,
+            "y1": 906
+          },
+          "points_xy": [
+            [
+              695.0,
+              872.0
+            ],
+            [
+              635.0,
+              872.0
+            ],
+            [
+              755.0,
+              872.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 686,
+            "y0": 696,
+            "x1": 758,
+            "y1": 764
+          },
+          "points_xy": [
+            [
+              720.0,
+              725.0
+            ],
+            [
+              720.0,
+              748.0
+            ],
+            [
+              672.0,
+              705.0
+            ],
+            [
+              772.0,
+              705.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 826,
+            "y0": 694,
+            "x1": 946,
+            "y1": 748
+          },
+          "points_xy": [
+            [
+              862.0,
+              716.0
+            ],
+            [
+              912.0,
+              715.0
+            ],
+            [
+              885.0,
+              736.0
+            ],
+            [
+              810.0,
+              692.0
+            ],
+            [
+              885.0,
+              686.0
+            ],
+            [
+              956.0,
+              690.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 1082,
+            "y0": 678,
+            "x1": 1206,
+            "y1": 760
+          },
+          "points_xy": [
+            [
+              1122.0,
+              698.0
+            ],
+            [
+              1152.0,
+              720.0
+            ],
+            [
+              1176.0,
+              742.0
+            ],
+            [
+              1105.0,
+              732.0
+            ],
+            [
+              1065.0,
+              678.0
+            ],
+            [
+              1212.0,
+              692.0
+            ],
+            [
+              1185.0,
+              680.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "box": {
+            "x0": 960,
+            "y0": 702,
+            "x1": 1308,
+            "y1": 868
+          },
+          "points_xy": [
+            [
+              1025.0,
+              732.0
+            ],
+            [
+              1055.0,
+              768.0
+            ],
+            [
+              1135.0,
+              765.0
+            ],
+            [
+              1228.0,
+              752.0
+            ],
+            [
+              1228.0,
+              785.0
+            ],
+            [
+              1262.0,
+              825.0
+            ],
+            [
+              1240.0,
+              808.0
+            ],
+            [
+              1030.0,
+              688.0
+            ],
+            [
+              1320.0,
+              780.0
+            ],
+            [
+              1275.0,
+              735.0
+            ]
+          ],
+          "point_labels": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "coffee_table_morph_close_px": 7,
+      "coffee_table_edge_feather_sigma": 0.85,
+      "coffee_table_max_pinhole_fill_px": 45000,
+      "coffee_table_min_component_px": 10000,
+      "bottom_chair_tips_boxes_full": [
+        {
+          "x0": 350,
+          "y0": 1015,
+          "x1": 480,
+          "y1": 1125
+        },
+        {
+          "x0": 735,
+          "y0": 1015,
+          "x1": 1165,
+          "y1": 1125
+        },
+        {
+          "x0": 985,
+          "y0": 955,
+          "x1": 1155,
+          "y1": 1125
+        }
+      ],
+      "mid_apron": {
+        "downward_extension_px": 48,
+        "max_depth_into_occluder_px": 50.0,
+        "bottom_feather_px": 7.0,
+        "seam_blend_px": 4.0,
+        "alpha_threshold_u8": 20,
+        "occluder_threshold_u8": 64,
+        "inpaint_dilation_px": 22
+      },
+      "wall_flatten_pin": {
+        "inner_xy": [
+          650.0,
+          145.0
+        ],
+        "radii_xy": [
+          520.0,
+          195.0
+        ],
+        "feather_px": 120.0,
+        "target_norm_depth": 0.1
+      },
+      "da2_gaussian_sigma": 12.0,
+      "room_depth_clean": {
+        "alpha_threshold_u8": 16,
+        "mask_dilation_px": 18,
+        "extra_clean_boxes_expanded": [
+          [
+            950,
+            1353,
+            1080,
+            1465
+          ],
+          [
+            1335,
+            1353,
+            1765,
+            1465
+          ]
+        ],
+        "preserve_boxes_expanded": [
+          [
+            600,
+            340,
+            2100,
+            1045
+          ]
+        ],
+        "post_smooth_sigma_px": 2.5,
+        "interior_blend_band_px": 10.0
+      },
+      "frame_depth_solve": {
+        "bg_z": -350.0,
+        "room_depth_amplitude": 102.0,
+        "room_pin_margin_uv": 0.045,
+        "layer_z": -348.0,
+        "layer_depth_amplitude": 24.0,
+        "layer_pin_margin_uv": 0.0,
+        "alpha_threshold_u8": 20,
+        "component_bridge_px": 4,
+        "min_component_area_px": 100,
+        "auto_floor_band_px": 6,
+        "auto_floor_max_rise_px": 48,
+        "contact_boxes": [
+          {
+            "x0": 0,
+            "y0": 0,
+            "x1": 1500,
+            "y1": 1000,
+            "mode": "perimeter_rim",
+            "band_px": 2
+          }
+        ],
+        "neural_relief_amplitude": 1.4,
+        "contact_relief_taper_px": 3.0,
+        "enforce_front_of_host": true,
+        "host_clearance_tolerance_world": 0.5,
+        "interior_smooth_sigma_px": 0.8,
+        "overflow_tolerance_world": 0.5
+      },
+      "mid_depth_solve": {
+        "bg_z": -350.0,
+        "room_depth_amplitude": 102.0,
+        "room_pin_margin_uv": 0.045,
+        "layer_z": -342.0,
+        "layer_depth_amplitude": 82.0,
+        "layer_pin_margin_uv": 0.0,
+        "alpha_threshold_u8": 20,
+        "component_bridge_px": 8,
+        "min_component_area_px": 500,
+        "auto_floor_band_px": 6,
+        "auto_floor_max_rise_px": 48,
+        "contact_boxes": [
+          {
+            "x0": 404,
+            "y0": 540,
+            "x1": 1028,
+            "y1": 725,
+            "mode": "bottom_band",
+            "band_px": 8
+          }
+        ],
+        "neural_relief_amplitude": 14.0,
+        "contact_relief_taper_px": 12.0,
+        "enforce_front_of_host": true,
+        "host_clearance_tolerance_world": 0.5,
+        "interior_smooth_sigma_px": 4.0,
+        "overflow_tolerance_world": 0.5
+      },
+      "mid_protrusion": {
+        "da2_smooth_sigma_px": 7.0,
+        "anchor_baseline_percentile": 10.0,
+        "upper_percentile": 98.0,
+        "core_erode_px": 2
+      },
+      "fg_depth_solve": {
+        "bg_z": -350.0,
+        "room_depth_amplitude": 102.0,
+        "room_pin_margin_uv": 0.045,
+        "layer_z": -322.0,
+        "layer_depth_amplitude": 125.0,
+        "layer_pin_margin_uv": 0.0,
+        "alpha_threshold_u8": 20,
+        "component_bridge_px": 8,
+        "min_component_area_px": 500,
+        "auto_floor_band_px": 6,
+        "auto_floor_max_rise_px": 48,
+        "contact_boxes": [
+          {
+            "x0": 1080,
+            "y0": 1320,
+            "x1": 1180,
+            "y1": 1420,
+            "mode": "bottom_band",
+            "band_px": 6
+          },
+          {
+            "x0": 1680,
+            "y0": 1220,
+            "x1": 1785,
+            "y1": 1328,
+            "mode": "bottom_band",
+            "band_px": 6
+          }
+        ],
+        "neural_relief_amplitude": 64.0,
+        "contact_relief_taper_px": 10.0,
+        "enforce_front_of_host": true,
+        "host_clearance_tolerance_world": 0.5,
+        "interior_smooth_sigma_px": 2.0,
+        "overflow_tolerance_world": 0.5
+      },
+      "fg_protrusion": {
+        "da2_smooth_sigma_px": 2.5,
+        "anchor_baseline_percentile": 8.0,
+        "upper_percentile": 98.5,
+        "core_erode_px": 1
+      },
+      "scene_bg_z": -350.0,
+      "room_depth_amplitude": 102.0,
+      "bg_segments_x": 224,
+      "bg_segments_y": 150,
+      "frame_segments_x": 160,
+      "frame_segments_y": 108,
+      "mid_segments_x": 224,
+      "mid_segments_y": 150,
+      "fg_segments_x": 224,
+      "fg_segments_y": 150,
+      "min_inner_scale": 1.98,
+      "initial_camera_y": 0.0,
+      "initial_camera_z": 455.0,
+      "min_camera_z": -90.0,
+      "max_camera_z": 650.0,
+      "max_yaw_deg": 28.0,
+      "max_pitch_deg": 20.0,
+      "max_strafe_x": 220.0,
+      "max_strafe_y": 140.0,
+      "dolly_speed_mult": 1.3,
+      "frame_render_order": 6,
+      "mid_render_order": 8,
+      "fg_render_order": 10,
+      "return_portal_id": "portal_denya_back_to_dining",
+      "return_portal_label_he": "🍽️ מבט משולחן האוכל · תמי, גדי והמשפחה",
+      "return_portal_short_badge_he": "🍽️ לשולחן האוכל",
+      "return_portal_inner_box_xyxy": [
+        540.0,
+        580.0,
+        760.0,
+        648.0
+      ],
+      "particle_color_hex": 14866373,
+      "particle_count": 60
+    }
+  }
+}
