@@ -4654,6 +4654,7 @@ export class SpatialSceneManager {
       ? 'webgl2'
       : 'webgl';
 
+    if (window.__diagStage) window.__diagStage('webgl_init');
     if (window.__sendDiag) {
       const gl = this.renderer.getContext();
       let gpu = 'unknown';

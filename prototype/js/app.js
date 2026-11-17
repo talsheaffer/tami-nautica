@@ -289,6 +289,7 @@ class SpatialApp {
     if (this.loadingOverlay) {
       this.loadingOverlay.classList.remove('ready-to-skip');
       this.loadingOverlay.classList.add('hidden');
+      if (window.__diagStage) window.__diagStage('loaded');
     }
   }
 

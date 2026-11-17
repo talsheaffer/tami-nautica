@@ -27,7 +27,12 @@
         }
       } catch (e) {}
 
-      var diagEnabled = location.protocol.indexOf('http') === 0;
+      // Diagnostics sink. Local dev server handles /__diag; on GitHub Pages
+      // (static hosting) events go to the Apps Script collector below.
+      // Paste the deployed web-app URL (ends in /exec) here; empty = disabled.
+      var DIAG_REMOTE_URL = '';
+      var diagEndpoint = /\.github\.io$/.test(location.hostname) ? DIAG_REMOTE_URL : '/__diag';
+      var diagEnabled = location.protocol.indexOf('http') === 0 && !!diagEndpoint;
       var t0 = Date.now();
       var sid = Math.random().toString(36).slice(2, 8);
       window.__DIAG_SID__ = sid;
@@ -39,16 +44,38 @@
           event: event,
           detail: detail || {}
         });
+        // sendBeacon survives page teardown (iOS Safari kills tabs abruptly);
+        // text/plain avoids a CORS preflight against Apps Script.
         try {
-          fetch('/__diag', {
+          if (navigator.sendBeacon &&
+              navigator.sendBeacon(diagEndpoint, new Blob([payload], { type: 'text/plain' }))) {
+            return;
+          }
+        } catch (e) {}
+        try {
+          fetch(diagEndpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: payload,
             keepalive: true
           }).catch(function () {});
         } catch (e) {}
       };
       if (!diagEnabled) return;
+      // Crash detection: a tab killed by memory pressure cannot report itself,
+      // so the next visit reports the last stage the previous run reached.
+      try {
+        var prev = sessionStorage.getItem('tami70_last_stage');
+        if (prev && prev !== 'loaded') {
+          window.__sendDiag('previous_run_died', { last_stage: prev });
+        }
+        sessionStorage.setItem('tami70_last_stage', 'html_boot');
+        window.__diagStage = function (stage) {
+          try { sessionStorage.setItem('tami70_last_stage', stage); } catch (e) {}
+        };
+      } catch (e) {
+        window.__diagStage = function () {};
+      }
       var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
       window.__sendDiag('html_boot', {
         host: location.hostname,
